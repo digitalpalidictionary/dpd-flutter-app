@@ -56,7 +56,7 @@ All tasks follow a strict lifecycle:
     - **Step 10.2: Write Plan:** Write the updated content back to `plan.md`.
 
 11. **Commit Plan Update:**
-    - Stage `plan.md` and commit: `conductor(plan): Mark task '<task name>' as complete`
+    - Stage `plan.md` and commit: `chore: marked task '<task name>' as complete`
 
 ### Phase Completion Verification and Checkpointing Protocol
 
@@ -82,7 +82,7 @@ All tasks follow a strict lifecycle:
     -   **PAUSE** and await response.
 
 6.  **Create Checkpoint Commit:**
-    -   Stage all changes. Commit: `conductor(checkpoint): Checkpoint end of Phase X`
+    -   Stage all changes. Commit: `chore: checkpoint end of Phase X`
 
 7.  **Attach Verification Report using Git Notes:**
     -   Draft and attach a verification report to the checkpoint commit.
@@ -91,7 +91,7 @@ All tasks follow a strict lifecycle:
     -   Update `plan.md` phase heading with `[checkpoint: <sha>]`.
 
 9.  **Commit Plan Update:**
-    -   Commit: `conductor(plan): Mark phase '<PHASE NAME>' as complete`
+    -   Commit: `chore: marked phase '<PHASE NAME>' as complete`
 
 10. **Announce Completion.**
 
@@ -166,10 +166,10 @@ Short and sweet. No body, no footer, no essays.
 
 ### Examples
 ```bash
-git commit -m "feat: synced style with webapp"
-git commit -m "fix: missing button in entry display"
-git commit -m "feat: add root family expandable section"
-git commit -m "refactor: simplify search provider logic"
+git commit -m "feat: added webapp style parity"
+git commit -m "fix: inflection button naming"
+git commit -m "chore: updated conductor track"
+git commit -m "refactor: simplified search provider logic"
 ```
 
 ## Definition of Done
