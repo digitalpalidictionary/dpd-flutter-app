@@ -45,9 +45,30 @@ class DpdApp extends ConsumerWidget {
       onError: Colors.white,
     );
 
-    TextTheme buildTextTheme(TextTheme base) => settings.useSerifFont
-        ? GoogleFonts.notoSerifTextTheme(base)
-        : GoogleFonts.interTextTheme(base);
+    TextTheme buildTextTheme(TextTheme base) {
+      final themed = settings.useSerifFont
+          ? GoogleFonts.notoSerifTextTheme(base)
+          : GoogleFonts.interTextTheme(base);
+      return themed.copyWith(
+        // h3 equivalent — headword titles at 130%
+        titleLarge: themed.titleLarge?.copyWith(
+          fontSize: base.bodyMedium!.fontSize! * 1.3,
+          height: 1.3,
+          fontWeight: FontWeight.w700,
+        ),
+        // Default body text — line-height 150%
+        bodyLarge: themed.bodyLarge?.copyWith(height: 1.5),
+        bodyMedium: themed.bodyMedium?.copyWith(height: 1.5),
+        bodySmall: themed.bodySmall?.copyWith(height: 1.5),
+        // Button text — 80% size
+        labelSmall: themed.labelSmall?.copyWith(
+          fontSize: base.bodyMedium!.fontSize! * 0.8,
+        ),
+        labelMedium: themed.labelMedium?.copyWith(
+          fontSize: base.bodyMedium!.fontSize! * 0.8,
+        ),
+      );
+    }
 
     return MaterialApp(
       title: 'DPD',
