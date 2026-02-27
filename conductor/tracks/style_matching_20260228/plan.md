@@ -2,7 +2,7 @@
 
 ## Phase 1: Theme Foundation
 
-- [ ] Task: Define DPD color constants matching webapp CSS variables (primary, primary-alt, primary-text, light, dark, grays, shadows)
+- [x] Task: Define DPD color constants matching webapp CSS variables (primary, primary-alt, primary-text, light, dark, grays, shadows) 7212126
 - [ ] Task: Configure Flutter theme with DPD colors for both light and dark modes, replacing Material 3 auto-generated palette
 - [ ] Task: Set up typography theme with Inter defaults (line-height 150%, h3 at 130%, button text at 80%, bold weight 700)
 - [ ] Task: Conductor - User Manual Verification 'Theme Foundation' (Protocol in workflow.md)
