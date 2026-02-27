@@ -1,0 +1,32 @@
+# Plan: Match App Styles with the DPD Webapp
+
+## Phase 1: Theme Foundation
+
+- [ ] Task: Define DPD color constants matching webapp CSS variables (primary, primary-alt, primary-text, light, dark, grays, shadows)
+- [ ] Task: Configure Flutter theme with DPD colors for both light and dark modes, replacing Material 3 auto-generated palette
+- [ ] Task: Set up typography theme with Inter defaults (line-height 150%, h3 at 130%, button text at 80%, bold weight 700)
+- [ ] Task: Conductor - User Manual Verification 'Theme Foundation' (Protocol in workflow.md)
+
+## Phase 2: Component Styling
+
+- [ ] Task: Standardize all border-radius values to 7px across the app (inputs, cards, containers, bottom sheets)
+- [ ] Task: Style entry containers with 2px solid primary border, 7px radius, 3px 7px padding
+- [ ] Task: Style section toggle buttons to match webapp (filled cyan background, 1px border, 7px radius, 80% font, 2px 5px padding, shadow, dark text, active state with primary-alt)
+- [ ] Task: Style button box as flex-wrap horizontal row with flex-start justify and correct margins
+- [ ] Task: Style word cards in search results to match webapp summary appearance
+- [ ] Task: Conductor - User Manual Verification 'Component Styling' (Protocol in workflow.md)
+
+## Phase 3: Tables & Dark Mode
+
+- [ ] Task: Style inflection tables matching webapp (7px corner radius, 1px gray cell borders, primary header borders, centered text, 5px cell padding)
+- [ ] Task: Style frequency heatmap tables with 10-level cyan gradient colors matching webapp
+- [ ] Task: Style grammar/sutta-info tables (no borders, primary-text header color, bold headers, nowrap)
+- [ ] Task: Implement dark mode with exact webapp colors (dark background, light text, gray-transparent borders, primary accent unchanged)
+- [ ] Task: Conductor - User Manual Verification 'Tables & Dark Mode' (Protocol in workflow.md)
+
+## Phase 4: Final Polish
+
+- [ ] Task: Style search input to match webapp (primary border, 7px radius, correct padding and focus states)
+- [ ] Task: Review and align all remaining spacing, margins, and padding with webapp values
+- [ ] Task: Verify visual parity by comparing app screenshots side-by-side with webapp on same entries
+- [ ] Task: Conductor - User Manual Verification 'Final Polish' (Protocol in workflow.md)
