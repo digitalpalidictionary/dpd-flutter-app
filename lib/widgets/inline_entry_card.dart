@@ -117,33 +117,33 @@ class _InlineEntryCardState extends ConsumerState<InlineEntryCard> {
               spacing: 4,
               children: [
                 if (grammarRows.isNotEmpty)
-                  _ToggleButton(
+                  DpdSectionButton(
                     label: 'Grammar',
-                    isOpen: _grammarOpen,
+                    isActive: _grammarOpen,
                     onTap: () => setState(() => _grammarOpen = !_grammarOpen),
                   ),
                 if (hasExamples)
-                  _ToggleButton(
+                  DpdSectionButton(
                     label: 'Examples',
-                    isOpen: _examplesOpen,
+                    isActive: _examplesOpen,
                     onTap: () => setState(() => _examplesOpen = !_examplesOpen),
                   ),
                 if (hasInflections)
-                  _ToggleButton(
+                  DpdSectionButton(
                     label: 'Inflections',
-                    isOpen: _inflectionsOpen,
+                    isActive: _inflectionsOpen,
                     onTap: () => setState(() => _inflectionsOpen = !_inflectionsOpen),
                   ),
                 if (familyRows.isNotEmpty)
-                  _ToggleButton(
+                  DpdSectionButton(
                     label: 'Families',
-                    isOpen: _familiesOpen,
+                    isActive: _familiesOpen,
                     onTap: () => setState(() => _familiesOpen = !_familiesOpen),
                   ),
                 if (hasNotes)
-                  _ToggleButton(
+                  DpdSectionButton(
                     label: 'Notes',
-                    isOpen: _notesOpen,
+                    isActive: _notesOpen,
                     onTap: () => setState(() => _notesOpen = !_notesOpen),
                   ),
               ],
@@ -235,34 +235,6 @@ class _InlineEntryCardState extends ConsumerState<InlineEntryCard> {
           const SizedBox(height: 4),
         ],
       ),
-    );
-  }
-}
-
-class _ToggleButton extends StatelessWidget {
-  const _ToggleButton({
-    required this.label,
-    required this.isOpen,
-    required this.onTap,
-  });
-
-  final String label;
-  final bool isOpen;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return TextButton(
-      onPressed: onTap,
-      style: TextButton.styleFrom(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-        minimumSize: Size.zero,
-        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-        foregroundColor: isOpen
-            ? Theme.of(context).colorScheme.primary
-            : Theme.of(context).colorScheme.outline,
-      ),
-      child: Text(label),
     );
   }
 }

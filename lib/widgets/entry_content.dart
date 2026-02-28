@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 
 import '../database/database.dart';
+import '../theme/dpd_colors.dart';
 
 List<(String, String)> buildGrammarRows(DpdHeadword h) => [
       if (h.pos != null && h.pos!.isNotEmpty) ('Part of speech', h.pos!),
@@ -150,6 +151,49 @@ class EntrySummaryBox extends StatelessWidget {
             ),
           ],
         ],
+      ),
+    );
+  }
+}
+
+/// Webapp-style section toggle button matching .dpd-button CSS class.
+/// Inactive: cyan fill, dark text. Active: primary-alt fill, light text.
+class DpdSectionButton extends StatelessWidget {
+  const DpdSectionButton({
+    super.key,
+    required this.label,
+    required this.isActive,
+    required this.onTap,
+  });
+
+  final String label;
+  final bool isActive;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final bg = isActive ? DpdColors.primaryAlt : DpdColors.primary;
+    final fg = isActive ? DpdColors.light : DpdColors.dark;
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        margin: const EdgeInsets.fromLTRB(1, 1, 1, 2),
+        padding: const EdgeInsets.fromLTRB(5, 2, 5, 2),
+        decoration: BoxDecoration(
+          color: bg,
+          border: Border.all(color: bg, width: 1),
+          borderRadius: BorderRadius.circular(7),
+          boxShadow: DpdColors.shadowDefault,
+        ),
+        child: Text(
+          label,
+          style: TextStyle(
+            color: fg,
+            fontSize: 14.0 * 0.8,
+            fontWeight: FontWeight.w400,
+            height: 1.5,
+          ),
+        ),
       ),
     );
   }
