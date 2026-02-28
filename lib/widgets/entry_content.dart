@@ -132,44 +132,36 @@ class EntrySummaryBox extends StatelessWidget {
       decoration: BoxDecoration(
         border: Border.all(
           color: theme.brightness == Brightness.light
-              ? theme.colorScheme.primary
-              : theme.colorScheme.outline,
+              ? DpdColors.primary
+              : DpdColors.grayTransparent,
           width: 2,
         ),
         borderRadius: DpdColors.borderRadius,
       ),
       padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          RichText(
-            text: TextSpan(
-              style: theme.textTheme.bodyMedium,
-              children: [
-                if (headword.pos != null)
-                  TextSpan(
-                    text: '${headword.pos}. ',
-                    style: const TextStyle(fontStyle: FontStyle.italic),
-                  ),
-                if (headword.plusCase != null)
-                  TextSpan(text: '(${headword.plusCase}) '),
-                if (headword.meaning1 != null)
-                  TextSpan(text: headword.meaning1),
-              ],
-            ),
-          ),
-          if (headword.meaningLit != null &&
-              headword.meaningLit!.isNotEmpty) ...[
-            const SizedBox(height: 2),
-            Text(
-              'lit. ${headword.meaningLit}',
-              style: theme.textTheme.bodySmall?.copyWith(
-                fontStyle: FontStyle.italic,
-                color: theme.colorScheme.onSurfaceVariant,
+      child: RichText(
+        text: TextSpan(
+          style: theme.textTheme.bodyMedium?.copyWith(height: 1.5),
+          children: [
+            if (headword.pos != null && headword.pos!.isNotEmpty)
+              TextSpan(
+                text: '${headword.pos}. ',
+                style: const TextStyle(fontStyle: FontStyle.italic),
               ),
-            ),
+            if (headword.plusCase != null && headword.plusCase!.isNotEmpty)
+              TextSpan(text: '(${headword.plusCase}) '),
+            if (headword.meaning1 != null && headword.meaning1!.isNotEmpty)
+              TextSpan(text: '${headword.meaning1} '),
+            if (headword.meaningLit != null && headword.meaningLit!.isNotEmpty)
+              TextSpan(
+                text: 'lit. ${headword.meaningLit} ',
+                style: theme.textTheme.bodySmall?.copyWith(
+                  fontStyle: FontStyle.italic,
+                  color: theme.colorScheme.onSurfaceVariant,
+                ),
+              ),
           ],
-        ],
+        ),
       ),
     );
   }
@@ -192,8 +184,8 @@ class DpdSectionContainer extends StatelessWidget {
         color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
         border: Border.all(
           color: theme.brightness == Brightness.light
-              ? theme.colorScheme.primary
-              : theme.colorScheme.outline,
+              ? DpdColors.primary
+              : DpdColors.grayTransparent,
           width: 2,
         ),
         borderRadius: DpdColors.borderRadius,

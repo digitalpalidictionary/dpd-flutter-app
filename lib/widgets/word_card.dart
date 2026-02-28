@@ -25,8 +25,8 @@ class WordCard extends StatelessWidget {
           decoration: BoxDecoration(
             border: Border.all(
               color: theme.brightness == Brightness.light
-                  ? theme.colorScheme.primary
-                  : theme.colorScheme.outline,
+                  ? DpdColors.primary
+                  : DpdColors.grayTransparent,
               width: 2,
             ),
             borderRadius: DpdColors.borderRadius,

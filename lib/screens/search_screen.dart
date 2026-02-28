@@ -67,8 +67,8 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
               borderRadius: DpdColors.borderRadius,
               borderSide: BorderSide(
                 color: theme.brightness == Brightness.light
-                    ? theme.colorScheme.primary
-                    : theme.colorScheme.outline,
+                    ? DpdColors.primary
+                    : DpdColors.grayTransparent,
                 width: 1.5,
               ),
             ),
@@ -76,8 +76,8 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
               borderRadius: DpdColors.borderRadius,
               borderSide: BorderSide(
                 color: theme.brightness == Brightness.light
-                    ? theme.colorScheme.primary
-                    : theme.colorScheme.outline,
+                    ? DpdColors.primary
+                    : DpdColors.grayTransparent,
                 width: 2,
               ),
             ),
