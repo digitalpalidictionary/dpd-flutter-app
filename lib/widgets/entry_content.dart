@@ -239,3 +239,60 @@ class DpdSectionButton extends StatelessWidget {
     );
   }
 }
+
+class EntryExampleFooter extends StatelessWidget {
+  const EntryExampleFooter({
+    super.key,
+    required this.headwordId,
+    required this.lemma1,
+  });
+
+  final int headwordId;
+  final String lemma1;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final fontSize = (theme.textTheme.bodyMedium?.fontSize ?? 14.0) * 0.8;
+    final now = DateTime.now();
+    final date =
+        '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}';
+    final encodedLemma = Uri.encodeComponent(lemma1);
+    final url =
+        'https://docs.google.com/forms/d/e/1FAIpQLSf9boBe7k5tCwq7LdWgBHHGIPVc4ROO5yjVDo1X5LDAxkmGWQ/viewform?usp=pp_url&entry.438735500=$headwordId%20$encodedLemma&entry.326955045=Examples&entry.1433863141=DPD+$date';
+
+    return GestureDetector(
+      onTap: () async {
+        await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
+      },
+      child: Container(
+        margin: const EdgeInsets.only(top: 5),
+        padding: const EdgeInsets.symmetric(vertical: 5),
+        decoration: BoxDecoration(
+          border: Border(
+            top: BorderSide(color: DpdColors.primary, width: 1),
+          ),
+        ),
+        child: RichText(
+          text: TextSpan(
+            style: TextStyle(
+              fontSize: fontSize,
+              color: theme.colorScheme.onSurface,
+            ),
+            children: [
+              const TextSpan(text: 'Can you think of a better example? '),
+              TextSpan(
+                text: 'Add it here.',
+                style: TextStyle(
+                  color: DpdColors.primaryText,
+                  fontWeight: FontWeight.bold,
+                  decoration: TextDecoration.none,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
