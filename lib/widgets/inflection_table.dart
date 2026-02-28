@@ -188,8 +188,10 @@ class InflectionTable extends StatelessWidget {
     final richText = RichText(
       textAlign: TextAlign.center,
       text: TextSpan(
-        // Highlighted forms use white text on primary blue; normal forms use default.
-        style: isMatch ? base.copyWith(color: Colors.white) : base,
+        // Highlighted forms use onPrimary text on primary blue; normal forms use default.
+        style: isMatch
+            ? base.copyWith(color: Theme.of(context).colorScheme.onPrimary)
+            : base,
         children: [
           if (form.stem.isNotEmpty) TextSpan(text: form.stem),
           TextSpan(
