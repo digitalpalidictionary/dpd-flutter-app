@@ -50,18 +50,18 @@
 
 ## Phase 4: Feedback Footer
 
-- [ ] Task: Add `EntryExampleFooter` widget — UI
-  - [ ] In `entry_content.dart`: create `EntryExampleFooter` accepting `headwordId`
+- [x] Task: Add `EntryExampleFooter` widget — UI [1db86f6]
+  - [x] In `entry_content.dart`: create `EntryExampleFooter` accepting `headwordId`
         (int) and `lemma1` (String)
-  - [ ] Widget layout:
+  - [x] Widget layout:
     - Container with `border-top: 1px solid primary`, `margin-top: 5px`,
       `padding: 5px 0px`
     - `RichText` at 80 % of body font size (≈ 11.2 px)
     - Plain text: `"Can you think of a better example? "`
     - Tappable `TextSpan`: `"Add it here."` — `DpdColors.primaryText`, bold, no underline
-  - [ ] On tap: build URL with `headwordId`, URL-encoded `lemma1`, and today's date;
+  - [x] On tap: build URL with `headwordId`, URL-encoded `lemma1`, and today's date;
         launch via `launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication)`
-  - [ ] Commit: `feat: add EntryExampleFooter widget`
+  - [x] Commit: `feat: add EntryExampleFooter widget`
 
 - [ ] Task: Integrate footer in all display contexts — UI
   - [ ] In `accordion_card.dart`: add `EntryExampleFooter(headwordId: h.id, lemma1: h.lemma1)`
