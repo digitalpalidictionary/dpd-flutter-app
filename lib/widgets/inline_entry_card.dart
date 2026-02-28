@@ -3,9 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../database/database.dart';
 import '../providers/settings_provider.dart';
-import 'dpd_html_table.dart';
+import '../providers/template_cache_provider.dart';
 import 'entry_content.dart';
 import 'grammar_table.dart';
+import 'inflection_section.dart';
 
 class InlineEntryCard extends ConsumerStatefulWidget {
   const InlineEntryCard({super.key, required this.headword});
@@ -37,9 +38,9 @@ class _InlineEntryCardState extends ConsumerState<InlineEntryCard> {
     final h = widget.headword;
 
     final familyRows = buildFamilyRows(h);
-    final hasInflections =
-        (h.inflectionsHtml != null && h.inflectionsHtml!.isNotEmpty) ||
-        (h.freqHtml != null && h.freqHtml!.isNotEmpty);
+    final templateCache =
+        ref.watch(templateCacheProvider).valueOrNull ?? {};
+    final hasInflections = hasInflectionContent(h);
     final hasEx1 = h.example1 != null && h.example1!.isNotEmpty;
     final hasEx2 = h.example2 != null && h.example2!.isNotEmpty;
     final hasExamples = hasEx1 || hasEx2;
@@ -84,7 +85,7 @@ class _InlineEntryCardState extends ConsumerState<InlineEntryCard> {
                   ),
                 if (hasInflections)
                   DpdSectionButton(
-                    label: 'Inflections',
+                    label: inflectionButtonLabel(h.pos),
                     isActive: _inflectionsOpen,
                     onTap: () =>
                         setState(() => _inflectionsOpen = !_inflectionsOpen),
@@ -144,32 +145,9 @@ class _InlineEntryCardState extends ConsumerState<InlineEntryCard> {
           // Inflections section content
           if (_inflectionsOpen && hasInflections)
             DpdSectionContainer(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  if (h.inflectionsHtml != null &&
-                      h.inflectionsHtml!.isNotEmpty)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: DpdHtmlTable(data: h.inflectionsHtml!),
-                    ),
-                  if (h.freqHtml != null && h.freqHtml!.isNotEmpty) ...[
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
-                      child: Text(
-                        'Frequency',
-                        style: Theme.of(context).textTheme.titleSmall,
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 8,
-                      ),
-                      child: DpdHtmlTable(data: h.freqHtml!),
-                    ),
-                  ],
-                ],
+              child: InflectionSection(
+                headword: h,
+                templateCache: templateCache,
               ),
             ),
 
