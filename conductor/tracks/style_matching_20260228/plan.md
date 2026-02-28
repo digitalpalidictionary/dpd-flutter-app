@@ -1,16 +1,16 @@
 # Plan: Match App Styles with the DPD Webapp
 
-## Phase 1: Theme Foundation
+## Phase 1: Theme Foundation [checkpoint: fbc348e]
 
 - [x] Task: Define DPD color constants matching webapp CSS variables (primary, primary-alt, primary-text, light, dark, grays, shadows) 7212126
 - [x] Task: Configure Flutter theme with DPD colors for both light and dark modes, replacing Material 3 auto-generated palette 2fdbd17
 - [x] Task: Set up typography theme with Inter defaults (line-height 150%, h3 at 130%, button text at 80%, bold weight 700) 52a3b99
-- [ ] Task: Conductor - User Manual Verification 'Theme Foundation' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Theme Foundation' (Protocol in workflow.md) fbc348e
 
 ## Phase 2: Component Styling
 
-- [ ] Task: Standardize all border-radius values to 7px across the app (inputs, cards, containers, bottom sheets)
-- [ ] Task: Style entry containers with 2px solid primary border, 7px radius, 3px 7px padding
+- [x] Task: Standardize all border-radius values to 7px across the app (inputs, cards, containers, bottom sheets) 36a0098
+- [~] Task: Style entry containers with 2px solid primary border, 7px radius, 3px 7px padding
 - [ ] Task: Style section toggle buttons to match webapp (filled cyan background, 1px border, 7px radius, 80% font, 2px 5px padding, shadow, dark text, active state with primary-alt)
 - [ ] Task: Style button box as flex-wrap horizontal row with flex-start justify and correct margins
 - [ ] Task: Style word cards in search results to match webapp summary appearance
