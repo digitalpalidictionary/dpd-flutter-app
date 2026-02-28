@@ -34,32 +34,32 @@
 ## Phase 2: Grammar Table UI Implementation
 
 ### Phase 2.1: Create Grammar Table Widget
-- [ ] Task: Create `lib/widgets/grammar_table.dart`.
-- [ ] Task: Implement a native `Table` widget.
-- [ ] Task: Define `columnWidths` with `0: IntrinsicColumnWidth()` (for labels) and `1: FlexColumnWidth()` (for values).
-- [ ] Task: Set up modular row generation methods (e.g., `TableRow? _buildLemmaRow(...)`) that return `TableRow?` and filter out nulls before rendering.
+- [x] Task: Create `lib/widgets/grammar_table.dart`. [2c24c97]
+- [x] Task: Implement a native `Table` widget. [2c24c97]
+- [x] Task: Define `columnWidths` with `0: IntrinsicColumnWidth()` (for labels) and `1: FlexColumnWidth()` (for values). [2c24c97]
+- [x] Task: Set up modular row generation methods (e.g., `TableRow? _buildLemmaRow(...)`) that return `TableRow?` and filter out nulls before rendering. [2c24c97]
 
 ### Phase 2.2: Implement Field-by-Field Rendering
-- [ ] Task: Implement `lemma_clean` row (`headword.lemmaClean`).
-- [ ] Task: Implement `lemma_trad_clean` row (placeholder).
-- [ ] Task: Implement `lemma_ipa` row with static SVG audio button UI placeholders.
-- [ ] Task: Implement `d.grammar` row (`headword.grammarLine`).
-- [ ] Task: Implement `family_root` and root details rows using the `DpdRoots` join.
-- [ ] Task: Implement `construction` row using `flutter_html`'s `Html(data: ...)` widget.
-- [ ] Task: Implement `derivative + suffix` row.
-- [ ] Task: Implement `phonetic` row using `Html(data: ...)`.
-- [ ] Task: Implement `compound_type + compound_construction` row using `Html(data: ...)`.
-- [ ] Task: Implement `antonym`, `synonym`, `variant` rows.
-- [ ] Task: Implement `commentary` and `notes` rows using `Html(data: ...)`.
-- [ ] Task: Implement `cognate`, `link`, `non_ia` rows.
-- [ ] Task: Implement `sanskrit` and Sanskrit root rows.
+- [x] Task: Implement `lemma_clean` row (`headword.lemmaClean`). [614e351]
+- [x] Task: Implement `lemma_trad_clean` row (placeholder). [614e351]
+- [x] Task: Implement `lemma_ipa` row with static SVG audio button UI placeholders. [614e351]
+- [x] Task: Implement `d.grammar` row (`headword.grammarLine`). [614e351]
+- [x] Task: Implement `family_root` and root details rows using the `DpdRoots` join. [614e351]
+- [x] Task: Implement `construction` row using `flutter_html`'s `Html(data: ...)` widget. [614e351]
+- [x] Task: Implement `derivative + suffix` row. [614e351]
+- [x] Task: Implement `phonetic` row using `Html(data: ...)`. [614e351]
+- [x] Task: Implement `compound_type + compound_construction` row using `Html(data: ...)`. [614e351]
+- [x] Task: Implement `antonym`, `synonym`, `variant` rows. [614e351]
+- [x] Task: Implement `commentary` and `notes` rows using `Html(data: ...)`. [614e351]
+- [x] Task: Implement `cognate`, `link`, `non_ia` rows. [614e351]
+- [x] Task: Implement `sanskrit` and Sanskrit root rows. [614e351]
 
 ### Phase 2.3: Add Footer and Complete Table
-- [ ] Task: Add "Did you spot a mistake?" footer with Google Form link matching webapp.
-- [ ] Task: Use `Uri.encodeComponent` on variables like lemma inserted into the Google form URL.
+- [x] Task: Add "Did you spot a mistake?" footer with Google Form link matching webapp. [614e351]
+- [x] Task: Use `Uri.encodeComponent` on variables like lemma inserted into the Google form URL. [614e351]
 
 ### Phase 2.4: Integrate Grammar Table
-- [ ] Task: Replace all calls to `buildGrammarRows()` in existing components (`entry_content.dart`, `entry_bottom_sheet.dart`, `inline_entry_card.dart`, `accordion_card.dart`, `entry_screen.dart`) with the new `GrammarTable` widget.
+- [~] Task: Replace all calls to `buildGrammarRows()` in existing components (`entry_content.dart`, `entry_bottom_sheet.dart`, `inline_entry_card.dart`, `accordion_card.dart`, `entry_screen.dart`) with the new `GrammarTable` widget.
 - [ ] Task: Remove old `buildGrammarRows()` and related deprecated list-based row generation code.
 
 - [ ] Task: Conductor - User Manual Verification 'Phase 2: Grammar Table UI Implementation' (Protocol in workflow.md)

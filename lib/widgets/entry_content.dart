@@ -4,27 +4,6 @@ import 'package:flutter_html/flutter_html.dart';
 import '../database/database.dart';
 import '../theme/dpd_colors.dart';
 
-List<(String, String)> buildGrammarRows(DpdHeadwordWithRoot h) => [
-  if (h.pos != null && h.pos!.isNotEmpty) ('Part of speech', h.pos!),
-  if (h.grammar != null && h.grammar!.isNotEmpty) ('Grammar', h.grammar!),
-  if (h.derivedFrom != null && h.derivedFrom!.isNotEmpty)
-    ('Derived from', h.derivedFrom!),
-  if (h.neg != null && h.neg!.isNotEmpty) ('Negative', h.neg!),
-  if (h.verb != null && h.verb!.isNotEmpty) ('Verb type', h.verb!),
-  if (h.trans != null && h.trans!.isNotEmpty) ('Transitive', h.trans!),
-  if (h.plusCase != null && h.plusCase!.isNotEmpty) ('Plus case', h.plusCase!),
-  if (h.derivative != null && h.derivative!.isNotEmpty)
-    ('Derivative', h.derivative!),
-  if (h.stem != null && h.stem!.isNotEmpty) ('Stem', h.stem!),
-  if (h.pattern != null && h.pattern!.isNotEmpty) ('Pattern', h.pattern!),
-  if (h.rootKey != null && h.rootKey!.isNotEmpty) ('Root', h.rootKey!),
-  if (h.rootSign != null && h.rootSign!.isNotEmpty) ('Root sign', h.rootSign!),
-  if (h.rootBase != null && h.rootBase!.isNotEmpty) ('Root base', h.rootBase!),
-  if (h.suffix != null && h.suffix!.isNotEmpty) ('Suffix', h.suffix!),
-  if (h.compoundType != null && h.compoundType!.isNotEmpty)
-    ('Compound type', h.compoundType!),
-];
-
 List<(String, String)> buildFamilyRows(DpdHeadwordWithRoot h) => [
   if (h.familyRoot != null && h.familyRoot!.isNotEmpty)
     ('Root family', h.familyRoot!),

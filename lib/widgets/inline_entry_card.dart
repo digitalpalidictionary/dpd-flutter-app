@@ -5,6 +5,7 @@ import '../database/database.dart';
 import '../providers/settings_provider.dart';
 import 'dpd_html_table.dart';
 import 'entry_content.dart';
+import 'grammar_table.dart';
 
 class InlineEntryCard extends ConsumerStatefulWidget {
   const InlineEntryCard({super.key, required this.headword});
@@ -35,7 +36,6 @@ class _InlineEntryCardState extends ConsumerState<InlineEntryCard> {
     final theme = Theme.of(context);
     final h = widget.headword;
 
-    final grammarRows = buildGrammarRows(h);
     final familyRows = buildFamilyRows(h);
     final hasInflections =
         (h.inflectionsHtml != null && h.inflectionsHtml!.isNotEmpty) ||
@@ -71,12 +71,11 @@ class _InlineEntryCardState extends ConsumerState<InlineEntryCard> {
               spacing: 0,
               runSpacing: 0,
               children: [
-                if (grammarRows.isNotEmpty)
-                  DpdSectionButton(
-                    label: 'Grammar',
-                    isActive: _grammarOpen,
-                    onTap: () => setState(() => _grammarOpen = !_grammarOpen),
-                  ),
+                DpdSectionButton(
+                  label: 'Grammar',
+                  isActive: _grammarOpen,
+                  onTap: () => setState(() => _grammarOpen = !_grammarOpen),
+                ),
                 if (hasExamples)
                   DpdSectionButton(
                     label: 'Examples',
@@ -107,12 +106,11 @@ class _InlineEntryCardState extends ConsumerState<InlineEntryCard> {
           ),
 
           // Grammar section content
-          if (_grammarOpen && grammarRows.isNotEmpty)
+          if (_grammarOpen)
             DpdSectionContainer(
-              child: Column(
-                children: grammarRows
-                    .map((r) => EntryLabelValue(label: r.$1, value: r.$2))
-                    .toList(),
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: GrammarTable(headword: h),
               ),
             ),
 

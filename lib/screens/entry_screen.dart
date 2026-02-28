@@ -6,11 +6,12 @@ import '../database/database.dart';
 import '../providers/database_provider.dart';
 import '../providers/settings_provider.dart';
 import '../widgets/entry_content.dart';
+import '../widgets/grammar_table.dart';
 
-final _entryProvider =
-    FutureProvider.autoDispose.family<DpdHeadwordWithRoot?, int>((ref, id) {
-  return ref.watch(daoProvider).getById(id);
-});
+final _entryProvider = FutureProvider.autoDispose
+    .family<DpdHeadwordWithRoot?, int>((ref, id) {
+      return ref.watch(daoProvider).getById(id);
+    });
 
 class EntryScreen extends ConsumerWidget {
   const EntryScreen({super.key, required this.headwordId});
@@ -22,9 +23,8 @@ class EntryScreen extends ConsumerWidget {
     final entry = ref.watch(_entryProvider(headwordId));
 
     return entry.when(
-      loading: () => const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
-      ),
+      loading: () =>
+          const Scaffold(body: Center(child: CircularProgressIndicator())),
       error: (e, _) => Scaffold(
         appBar: AppBar(),
         body: Center(child: Text('Error: $e')),
@@ -52,8 +52,9 @@ class _EntryView extends ConsumerWidget {
     final theme = Theme.of(context);
     final settings = ref.watch(settingsProvider);
 
-    final grammarRows = buildGrammarRows(headword);
-    final hasInflections = (headword.inflectionsHtml != null && headword.inflectionsHtml!.isNotEmpty) ||
+    final hasInflections =
+        (headword.inflectionsHtml != null &&
+            headword.inflectionsHtml!.isNotEmpty) ||
         (headword.freqHtml != null && headword.freqHtml!.isNotEmpty);
     final familySections = buildFamilyRows(headword);
     final hasEx1 = headword.example1 != null && headword.example1!.isNotEmpty;
@@ -91,14 +92,16 @@ class _EntryView extends ConsumerWidget {
                 EntrySummaryBox(headword: headword),
 
                 // Grammar section
-                if (grammarRows.isNotEmpty)
-                  ExpansionTile(
-                    title: const Text('Grammar'),
-                    initiallyExpanded: settings.grammarOpen,
-                    children: grammarRows
-                        .map((r) => EntryLabelValue(label: r.$1, value: r.$2))
-                        .toList(),
-                  ),
+                ExpansionTile(
+                  title: const Text('Grammar'),
+                  initiallyExpanded: settings.grammarOpen,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: GrammarTable(headword: headword),
+                    ),
+                  ],
+                ),
 
                 // Examples section
                 if (hasExamples)
@@ -136,13 +139,15 @@ class _EntryView extends ConsumerWidget {
                     title: const Text('Inflections'),
                     initiallyExpanded: false,
                     children: [
-                      if (headword.inflectionsHtml != null && headword.inflectionsHtml!.isNotEmpty)
+                      if (headword.inflectionsHtml != null &&
+                          headword.inflectionsHtml!.isNotEmpty)
                         SingleChildScrollView(
                           scrollDirection: Axis.horizontal,
                           padding: const EdgeInsets.symmetric(horizontal: 16),
                           child: Html(data: headword.inflectionsHtml!),
                         ),
-                      if (headword.freqHtml != null && headword.freqHtml!.isNotEmpty) ...[
+                      if (headword.freqHtml != null &&
+                          headword.freqHtml!.isNotEmpty) ...[
                         Padding(
                           padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
                           child: Text(

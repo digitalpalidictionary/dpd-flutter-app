@@ -6,6 +6,7 @@ import '../providers/settings_provider.dart';
 import '../theme/dpd_colors.dart';
 import 'dpd_html_table.dart';
 import 'entry_content.dart';
+import 'grammar_table.dart';
 
 class EntryBottomSheet extends ConsumerStatefulWidget {
   const EntryBottomSheet({
@@ -41,7 +42,6 @@ class _EntryBottomSheetState extends ConsumerState<EntryBottomSheet> {
     final theme = Theme.of(context);
     final h = widget.headword;
 
-    final grammarRows = buildGrammarRows(h);
     final familyRows = buildFamilyRows(h);
     final hasInflections =
         (h.inflectionsHtml != null && h.inflectionsHtml!.isNotEmpty) ||
@@ -93,12 +93,11 @@ class _EntryBottomSheetState extends ConsumerState<EntryBottomSheet> {
               spacing: 0,
               runSpacing: 0,
               children: [
-                if (grammarRows.isNotEmpty)
-                  DpdSectionButton(
-                    label: 'Grammar',
-                    isActive: _grammarOpen,
-                    onTap: () => setState(() => _grammarOpen = !_grammarOpen),
-                  ),
+                DpdSectionButton(
+                  label: 'Grammar',
+                  isActive: _grammarOpen,
+                  onTap: () => setState(() => _grammarOpen = !_grammarOpen),
+                ),
                 if (hasExamples)
                   DpdSectionButton(
                     label: 'Examples',
@@ -129,12 +128,11 @@ class _EntryBottomSheetState extends ConsumerState<EntryBottomSheet> {
           ),
 
           // Sections
-          if (_grammarOpen && grammarRows.isNotEmpty)
+          if (_grammarOpen)
             DpdSectionContainer(
-              child: Column(
-                children: grammarRows
-                    .map((r) => EntryLabelValue(label: r.$1, value: r.$2))
-                    .toList(),
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: GrammarTable(headword: h),
               ),
             ),
 
