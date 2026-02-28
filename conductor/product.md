@@ -30,42 +30,24 @@ Bring the full power of the Digital Pāḷi Dictionary to mobile devices as a fa
 - Results displayed as compact word cards (lemma, pos, meaning)
 
 ### Entry Display
-Mirrors the DPD webapp/GoldenDict entry structure with button-driven expandable sections:
-- **Summary box** — pos, meaning, literal meaning, construction (always visible, cyan left border)
-- **Audio** — Pronunciation playback (conditional, male/female variants)
-- **Sutta Info** — CST code, Sutta Central references, BJT references, external links
-- **Grammar** — Full morphological detail table (root, base, construction, compound type, derivative, phonetic changes, cognates, etc.)
-- **Example(s)** — Up to 2 example sentences with sutta source citations
-- **Conjugation / Declension** — Pre-rendered HTML inflection tables with grayed-out unattested forms
-- **Root Family** — Words derived from the same root
-- **Word Family** — Words in the same word family
-- **Compound Family/Families** — Compound groupings containing the word
-- **Idioms** — Idiomatic expressions containing the word
-- **Set(s)** — Thematic set memberships
-- **Frequency** — Corpus occurrence heatmap across multiple collections
-- **Feedback** — Link to report errors/omissions
+Mirrors the DPD webapp sibling-based hierarchy (Lemma > Summary > Buttons > Sections):
+- **Lemma** — Headword title (h3 equivalent), no border, bold weight 700.
+- **Summary box** — pos, meaning, literal meaning (continuous paragraph, 2px blue border).
+- **Buttons** — Sibling button box for section toggles (filled cyan, 9.0 radius).
+- **Sections** — Separate bordered containers for expandable detail (grammar, examples, tables, etc.).
 
-### Settings
-- Dark/light/system theme
-- Font toggle: Sans-serif (Inter) / Serif (Noto Serif)
-- Font size adjustment
-- Default section open/closed preferences
-- Database version info and update management
-
-### Platform Integration
-- Android ACTION_PROCESS_TEXT intent — "Look up in DPD" in text selection popup
-- First-launch database download with progress indicator
-- Monthly update check via GitHub Releases API
+...
 
 ## Design Reference
 
 The **DPD webapp dictionary middle pane** is the primary visual reference:
-- Primary color: Cyan `hsl(198, 100%, 50%)` / `#00BFFF`
-- Default font: Inter (sans-serif)
-- Button-driven expandable sections with toggle visibility
-- 2px solid primary-color borders, 7px border-radius
-- Shadow elevation on buttons
-- Dark mode support with inverted background, same primary accent
+- Primary color: Cyan `hsl(198, 100%, 50%)` / `#00BFFF`.
+- Default font: Inter (sans-serif) with 1.5 line height.
+- Hierarchical layout with separate bordered boxes for summary and active sections.
+- 2px solid primary-color borders (blue in light mode, gray-transparent in dark).
+- 9.0 border-radius (optimized for visual match with 7px CSS borders).
+- Shadow elevation on buttons (shadow-default / shadow-hover).
+- Dark mode support with exact webapp background and text colors.
 
 ## Platform Target
 
