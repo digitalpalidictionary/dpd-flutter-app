@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../database/database.dart';
-import '../providers/search_provider.dart';
 import '../providers/settings_provider.dart';
-import '../providers/template_cache_provider.dart';
 import '../theme/dpd_colors.dart';
 import 'entry_content.dart';
-import 'family_toggle_section.dart';
+import 'family_state_mixin.dart';
 import 'grammar_table.dart';
 import 'inflection_section.dart';
+import '../providers/search_provider.dart';
+import '../providers/template_cache_provider.dart';
 
 class EntryBottomSheet extends ConsumerStatefulWidget {
   const EntryBottomSheet({
@@ -25,11 +25,15 @@ class EntryBottomSheet extends ConsumerStatefulWidget {
   ConsumerState<EntryBottomSheet> createState() => _EntryBottomSheetState();
 }
 
-class _EntryBottomSheetState extends ConsumerState<EntryBottomSheet> {
+class _EntryBottomSheetState extends ConsumerState<EntryBottomSheet>
+    with FamilyStateMixin<EntryBottomSheet> {
   bool _grammarOpen = false;
   bool _examplesOpen = false;
   bool _inflectionsOpen = false;
   bool _notesOpen = false;
+
+  @override
+  DpdHeadwordWithRoot get familyHeadword => widget.headword;
 
   @override
   void initState() {
@@ -88,7 +92,7 @@ class _EntryBottomSheetState extends ConsumerState<EntryBottomSheet> {
           // Summary box
           EntrySummaryBox(headword: h),
 
-          // Button Box (Sibling)
+          // Unified button row (Grammar + Examples + Inflections + Family + Notes)
           Padding(
             padding: const EdgeInsets.fromLTRB(7, 2, 7, 3),
             child: Wrap(
@@ -104,7 +108,8 @@ class _EntryBottomSheetState extends ConsumerState<EntryBottomSheet> {
                   DpdSectionButton(
                     label: hasTwoExamples ? 'examples' : 'example',
                     isActive: _examplesOpen,
-                    onTap: () => setState(() => _examplesOpen = !_examplesOpen),
+                    onTap: () =>
+                        setState(() => _examplesOpen = !_examplesOpen),
                   ),
                 if (hasInflections)
                   DpdSectionButton(
@@ -113,6 +118,7 @@ class _EntryBottomSheetState extends ConsumerState<EntryBottomSheet> {
                     onTap: () =>
                         setState(() => _inflectionsOpen = !_inflectionsOpen),
                   ),
+                ...buildFamilyButtons(),
                 if (hasNotes)
                   DpdSectionButton(
                     label: 'Notes',
@@ -166,7 +172,7 @@ class _EntryBottomSheetState extends ConsumerState<EntryBottomSheet> {
               ),
             ),
 
-          FamilyToggleSection(headword: h),
+          ...buildFamilySections(),
 
           if (_notesOpen && hasNotes)
             DpdSectionContainer(

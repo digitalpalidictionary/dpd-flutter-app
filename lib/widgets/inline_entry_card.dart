@@ -6,7 +6,7 @@ import '../providers/search_provider.dart';
 import '../providers/settings_provider.dart';
 import '../providers/template_cache_provider.dart';
 import 'entry_content.dart';
-import 'family_toggle_section.dart';
+import 'family_state_mixin.dart';
 import 'grammar_table.dart';
 import 'inflection_section.dart';
 
@@ -19,11 +19,15 @@ class InlineEntryCard extends ConsumerStatefulWidget {
   ConsumerState<InlineEntryCard> createState() => _InlineEntryCardState();
 }
 
-class _InlineEntryCardState extends ConsumerState<InlineEntryCard> {
+class _InlineEntryCardState extends ConsumerState<InlineEntryCard>
+    with FamilyStateMixin<InlineEntryCard> {
   bool _grammarOpen = false;
   bool _examplesOpen = false;
   bool _inflectionsOpen = false;
   bool _notesOpen = false;
+
+  @override
+  DpdHeadwordWithRoot get familyHeadword => widget.headword;
 
   @override
   void initState() {
@@ -65,7 +69,7 @@ class _InlineEntryCardState extends ConsumerState<InlineEntryCard> {
           // Summary Box (Bordered)
           EntrySummaryBox(headword: h),
 
-          // Toggle buttons row (Sibling)
+          // Unified button row
           Padding(
             padding: const EdgeInsets.fromLTRB(7, 2, 7, 3),
             child: Wrap(
@@ -81,7 +85,8 @@ class _InlineEntryCardState extends ConsumerState<InlineEntryCard> {
                   DpdSectionButton(
                     label: 'Examples',
                     isActive: _examplesOpen,
-                    onTap: () => setState(() => _examplesOpen = !_examplesOpen),
+                    onTap: () =>
+                        setState(() => _examplesOpen = !_examplesOpen),
                   ),
                 if (hasInflections)
                   DpdSectionButton(
@@ -90,6 +95,7 @@ class _InlineEntryCardState extends ConsumerState<InlineEntryCard> {
                     onTap: () =>
                         setState(() => _inflectionsOpen = !_inflectionsOpen),
                   ),
+                ...buildFamilyButtons(),
                 if (hasNotes)
                   DpdSectionButton(
                     label: 'Notes',
@@ -145,7 +151,7 @@ class _InlineEntryCardState extends ConsumerState<InlineEntryCard> {
               ),
             ),
 
-          FamilyToggleSection(headword: h),
+          ...buildFamilySections(),
 
           // Notes section content
           if (_notesOpen && hasNotes)

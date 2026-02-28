@@ -262,7 +262,7 @@ class _FamilySubTable extends StatelessWidget {
               padding: const EdgeInsets.only(bottom: 2),
               child: Text(
                 entry.completion,
-                style: regularStyle?.copyWith(color: DpdColors.primaryText),
+                style: regularStyle?.copyWith(color: DpdColors.gray),
               ),
             ),
           ],

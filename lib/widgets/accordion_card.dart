@@ -6,7 +6,7 @@ import '../providers/search_provider.dart';
 import '../providers/settings_provider.dart';
 import '../providers/template_cache_provider.dart';
 import 'entry_content.dart';
-import 'family_toggle_section.dart';
+import 'family_state_mixin.dart';
 import 'grammar_table.dart';
 import 'inflection_section.dart';
 
@@ -21,12 +21,16 @@ class AccordionCard extends ConsumerStatefulWidget {
   ConsumerState<AccordionCard> createState() => _AccordionCardState();
 }
 
-class _AccordionCardState extends ConsumerState<AccordionCard> {
+class _AccordionCardState extends ConsumerState<AccordionCard>
+    with FamilyStateMixin<AccordionCard> {
   _CardState _cardState = _CardState.compact;
   bool _grammarOpen = false;
   bool _examplesOpen = false;
   bool _inflectionsOpen = false;
   bool _notesOpen = false;
+
+  @override
+  DpdHeadwordWithRoot get familyHeadword => widget.headword;
 
   @override
   void initState() {
@@ -84,7 +88,7 @@ class _AccordionCardState extends ConsumerState<AccordionCard> {
 
               // Expanded section: buttons + sections
               if (isExpanded) ...[
-                // Button Box (Sibling)
+                // Unified button row
                 Padding(
                   padding: const EdgeInsets.fromLTRB(7, 2, 7, 3),
                   child: Wrap(
@@ -112,17 +116,19 @@ class _AccordionCardState extends ConsumerState<AccordionCard> {
                             () => _inflectionsOpen = !_inflectionsOpen,
                           ),
                         ),
+                      ...buildFamilyButtons(),
                       if (hasNotes)
                         DpdSectionButton(
                           label: 'Notes',
                           isActive: _notesOpen,
-                          onTap: () => setState(() => _notesOpen = !_notesOpen),
+                          onTap: () =>
+                              setState(() => _notesOpen = !_notesOpen),
                         ),
                     ],
                   ),
                 ),
 
-                // Sections (Each in its own DpdSectionContainer)
+                // Sections
                 if (_grammarOpen)
                   DpdSectionContainer(
                     child: Padding(
@@ -168,7 +174,7 @@ class _AccordionCardState extends ConsumerState<AccordionCard> {
                     ),
                   ),
 
-                FamilyToggleSection(headword: h),
+                ...buildFamilySections(),
 
                 if (_notesOpen && hasNotes)
                   DpdSectionContainer(
