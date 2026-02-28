@@ -60,6 +60,7 @@ class _EntryView extends ConsumerWidget {
     final hasEx1 = headword.example1 != null && headword.example1!.isNotEmpty;
     final hasEx2 = headword.example2 != null && headword.example2!.isNotEmpty;
     final hasExamples = hasEx1 || hasEx2;
+    final hasTwoExamples = hasEx1 && hasEx2;
 
     return Scaffold(
       body: CustomScrollView(
@@ -106,7 +107,7 @@ class _EntryView extends ConsumerWidget {
                 // Examples section
                 if (hasExamples)
                   ExpansionTile(
-                    title: const Text('Examples'),
+                    title: Text(hasTwoExamples ? 'examples' : 'example'),
                     initiallyExpanded: settings.examplesOpen,
                     children: [
                       Padding(

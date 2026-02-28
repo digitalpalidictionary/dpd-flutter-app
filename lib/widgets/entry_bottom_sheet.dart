@@ -49,6 +49,7 @@ class _EntryBottomSheetState extends ConsumerState<EntryBottomSheet> {
     final hasEx1 = h.example1 != null && h.example1!.isNotEmpty;
     final hasEx2 = h.example2 != null && h.example2!.isNotEmpty;
     final hasExamples = hasEx1 || hasEx2;
+    final hasTwoExamples = hasEx1 && hasEx2;
     final hasNotes = h.notes != null && h.notes!.isNotEmpty;
 
     return Material(
@@ -100,7 +101,7 @@ class _EntryBottomSheetState extends ConsumerState<EntryBottomSheet> {
                 ),
                 if (hasExamples)
                   DpdSectionButton(
-                    label: 'Examples',
+                    label: hasTwoExamples ? 'examples' : 'example',
                     isActive: _examplesOpen,
                     onTap: () => setState(() => _examplesOpen = !_examplesOpen),
                   ),
