@@ -60,7 +60,7 @@ final _multiEndingGrid = _encodeGrid([
   ],
   [
     ['gen'],
-    ['ssa', 'no'],
+    ['assa', 'no'],
     ['gen sg'],
   ],
 ]);
@@ -153,7 +153,7 @@ void main() {
       );
 
       expect(result, isNotNull);
-      final nomRow = result.rows[0];
+      final nomRow = result!.rows[0];
       expect(nomRow.$2[0].forms.first.word, 'atthi');
       expect(nomRow.$2[0].forms.first.stem, '');
       expect(nomRow.$2[0].forms.first.ending, 'atthi');
@@ -173,7 +173,7 @@ void main() {
       );
 
       expect(result, isNotNull);
-      final nomRow = result.rows[0];
+      final nomRow = result!.rows[0];
       expect(nomRow.$2[0].forms.first.word, 'dhammo');
     });
 
@@ -216,7 +216,7 @@ void main() {
       final genSg = genRow.$2[0];
       expect(genSg.forms.length, 2);
       expect(genSg.forms[0].word, 'dhammassa');
-      expect(genSg.forms[1].word, 'dhammano');
+      expect(genSg.forms[1].word, 'dhammno');
     });
 
     test('empty ending produces empty cell', () {
