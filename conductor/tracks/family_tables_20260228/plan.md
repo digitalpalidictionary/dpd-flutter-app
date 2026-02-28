@@ -48,33 +48,33 @@
 
 ## Phase 3: Family Section Integration
 
-- [ ] Task 3.1: Create family section builder functions
-  - [ ] Create header builder for each family type matching webapp text patterns:
+- [x] Task 3.1: Create family section builder functions (8edb503)
+  - [x] Create header builder for each family type matching webapp text patterns:
     - Root: "N word(s) belong to the root family X (meaning)"
     - Word: "N words which belong to the X family"
     - Compound: "N compound(s) which contain(s) X"
     - Idiom: "N idiomatic expression(s) which contain(s) X"
     - Set: "lemma belongs to the set of X"
-  - [ ] Create footer config for each family type with correct feedback form section names
+  - [x] Create footer config for each family type with correct feedback form section names
 
-- [ ] Task 3.2: Create multi-family section widget for compound families and sets
-  - [ ] Build "jump to" navigation header when multiple sub-families exist
-  - [ ] Render each sub-family with its own header separated by overline styling
-  - [ ] Add ⤴ back-to-top scroll links between sub-families
+- [x] Task 3.2: Create multi-family section widget for compound families and sets (8edb503)
+  - [x] Build "jump to" navigation header when multiple sub-families exist
+  - [x] Render each sub-family with its own header separated by overline styling
+  - [x] Add ⤴ back-to-top scroll links between sub-families
 
-- [ ] Task 3.3: Add family buttons to entry button bar
-  - [ ] Add "root family" button — shown when `familyRoot` is non-empty
-  - [ ] Add "word family" button — shown when `familyWord` is non-empty
-  - [ ] Add "compound family" / "compound families" button — single vs multiple
-  - [ ] Add "idioms" button — shown when `familyIdioms` is non-empty
-  - [ ] Add "set" / "sets" button — shown when `familySet` has single vs multiple entries
-  - [ ] Each button toggles visibility of its corresponding section
+- [x] Task 3.3: Add family buttons to entry button bar (8edb503)
+  - [x] Add "root family" button — shown when `familyRoot` is non-empty
+  - [x] Add "word family" button — shown when `familyWord` is non-empty
+  - [x] Add "compound family" / "compound families" button — single vs multiple
+  - [x] Add "idioms" button — shown when `familyIdioms` is non-empty
+  - [x] Add "set" / "sets" button — shown when `familySet` has single vs multiple entries
+  - [x] Each button toggles visibility of its corresponding section
 
-- [ ] Task 3.4: Wire family sections into entry screen
-  - [ ] Replace current `buildFamilyRows` ExpansionTile with individual family button/section pairs
-  - [ ] Add Riverpod providers or local state to manage section visibility toggles
-  - [ ] Load family data from DAO when section is opened (lazy load)
-  - [ ] Parse JSON data and pass to `FamilyTableWidget`
+- [x] Task 3.4: Wire family sections into entry screen (8edb503)
+  - [x] Replace current `buildFamilyRows` ExpansionTile with individual family button/section pairs
+  - [x] Add Riverpod providers or local state to manage section visibility toggles
+  - [x] Load family data from DAO when section is opened (lazy load)
+  - [x] Parse JSON data and pass to `FamilyTableWidget`
 
 ## Phase 4: User Verification & Fix-up
 
