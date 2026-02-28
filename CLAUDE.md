@@ -2,6 +2,8 @@
 
 ## Commit Convention
 
+**CRITICAL:** Use `conductor:` prefix for ALL conductor-related commits, NOT `chore:`.
+
 - `conductor:` - Conductor framework updates (plan.md, tracks.md, phase/task tracking, checkpoints)
 - `feat:` - New features
 - `fix:` - Bug fixes
@@ -18,6 +20,21 @@ git commit -m "conductor: completed phase 1 of restyle"
 git commit -m "feat: added webapp style parity"
 git commit -m "fix: inflection button naming"
 ```
+
+## DPD Database Reference
+
+The DPD database and webapp exporter are in the sibling folder: `../dpd-db/`
+
+Key paths:
+- Database: `../dpd-db/dpd.db`
+- Python DB models: `../dpd-db/db/models.py` (DpdHeadword, DpdRoot definitions)
+- Webapp templates: `../dpd-db/exporter/webapp/templates/`
+- Webapp CSS: `../dpd-db/exporter/webapp/static/dpd.css`
+- Python tools: `../dpd-db/tools/` (meaning_construction.py, lemma_traditional.py, etc.)
+
+When implementing webapp parity, compare against:
+- Template: `exporter/webapp/templates/dpd_headword.html` (lines 995-1175 for grammar table)
+- CSS: `exporter/webapp/static/dpd.css`
 
 ## Database Notes
 
