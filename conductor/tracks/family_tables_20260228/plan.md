@@ -1,6 +1,6 @@
 # Plan: Family Tables
 
-## Phase 1: Database Layer — Drift Tables & DAO Queries
+## Phase 1: Database Layer — Drift Tables & DAO Queries [checkpoint: ee59154]
 
 - [x] Task 1.1: Add Drift table definitions for all five family tables (a2ce740)
   - [x] Add `FamilyRootTable` with columns: `root_family_key` (PK), `root_key`, `root_family`, `root_meaning`, `data`, `count`
