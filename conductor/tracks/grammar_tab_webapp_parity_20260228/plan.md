@@ -1,6 +1,6 @@
 # Grammar Tab Webapp Parity Implementation Plan
 
-## Phase 1: Database Schema & Core Data
+## Phase 1: Database Schema & Core Data [checkpoint: 12ddf4e]
 
 ### Phase 1.1: Add Missing Database Fields
 - [x] Task: Add missing fields to `lib/database/tables.dart` in the `DpdHeadwords` table: [dec36c6]
@@ -29,7 +29,7 @@
 - [x] Task: Create static placeholder getters for `lemmaTradClean` and `lemmaIpa`. [202cd6e]
 - [x] Task: Write basic unit tests for extension methods. [202cd6e]
 
-- [ ] Task: Conductor - User Manual Verification 'Phase 1: Database Schema & Core Data' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 1: Database Schema & Core Data' (Protocol in workflow.md) [12ddf4e]
 
 ## Phase 2: Grammar Table UI Implementation
 
