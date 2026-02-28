@@ -16,13 +16,13 @@
 - [x] Task: Style word cards in search results to match webapp summary appearance 197b5d0
 - [x] Task: Conductor - User Manual Verification 'Component Styling' (Protocol in workflow.md) 55ea921
 
-## Phase 3: Tables & Dark Mode
+## Phase 3: Tables & Dark Mode [checkpoint: 0f3b708]
 
-- [~] Task: Style inflection tables matching webapp (7px corner radius, 1px gray cell borders, primary header borders, centered text, 5px cell padding)
+- [x] Task: Style inflection tables matching webapp (7px corner radius, 1px gray cell borders, primary header borders, centered text, 5px cell padding) 7b7c22f
 - [x] Task: Style frequency heatmap tables with 10-level cyan gradient colors matching webapp 8e1b3a9
 - [x] Task: Style grammar/sutta-info tables (no borders, primary-text header color, bold headers, nowrap) 31a2964
 - [x] Task: Implement dark mode with exact webapp colors (dark background, light text, gray-transparent borders, primary accent unchanged) a26b4d9
-- [ ] Task: Conductor - User Manual Verification 'Tables & Dark Mode' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Tables & Dark Mode' (Protocol in workflow.md) 0f3b708
 
 ## Phase 4: Final Polish
 
