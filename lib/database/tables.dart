@@ -15,7 +15,8 @@ class DpdHeadwords extends Table {
   TextColumn get meaning1 => text().named('meaning_1').nullable()();
   TextColumn get meaningLit => text().named('meaning_lit').nullable()();
   TextColumn get meaning2 => text().named('meaning_2').nullable()();
-  TextColumn get rootKey => text().named('root_key').references(DpdRoots, #root).nullable()();
+  TextColumn get rootKey =>
+      text().named('root_key').references(DpdRoots, #root).nullable()();
   TextColumn get rootSign => text().named('root_sign').nullable()();
   TextColumn get rootBase => text().named('root_base').nullable()();
   TextColumn get familyRoot => text().named('family_root').nullable()();
@@ -25,7 +26,8 @@ class DpdHeadwords extends Table {
   TextColumn get familySet => text().named('family_set').nullable()();
   TextColumn get construction => text().nullable()();
   TextColumn get compoundType => text().named('compound_type').nullable()();
-  TextColumn get compoundConstruction => text().named('compound_construction').nullable()();
+  TextColumn get compoundConstruction =>
+      text().named('compound_construction').nullable()();
   TextColumn get source1 => text().named('source_1').nullable()();
   TextColumn get sutta1 => text().named('sutta_1').nullable()();
   TextColumn get example1 => text().named('example_1').nullable()();
@@ -38,10 +40,12 @@ class DpdHeadwords extends Table {
   TextColumn get stem => text().nullable()();
   TextColumn get pattern => text().nullable()();
   TextColumn get suffix => text().nullable()();
-  TextColumn get inflectionsHtml => text().named('inflections_html').nullable()();
+  TextColumn get inflectionsHtml =>
+      text().named('inflections_html').nullable()();
   TextColumn get freqHtml => text().named('freq_html').nullable()();
   IntColumn get ebtCount => integer().named('ebt_count').nullable()();
   TextColumn get nonIa => text().named('non_ia').nullable()();
+  TextColumn get sanskrit => text().nullable()();
   TextColumn get cognate => text().nullable()();
   TextColumn get link => text().nullable()();
   TextColumn get phonetic => text().nullable()();
@@ -80,8 +84,10 @@ class DpdRoots extends Table {
   IntColumn get rootCount => integer().named('root_count').nullable()();
   TextColumn get rootExample => text().named('root_example').nullable()();
   TextColumn get sanskritRoot => text().named('sanskrit_root').nullable()();
-  TextColumn get sanskritRootMeaning => text().named('sanskrit_root_meaning').nullable()();
-  TextColumn get sanskritRootClass => text().named('sanskrit_root_class').nullable()();
+  TextColumn get sanskritRootMeaning =>
+      text().named('sanskrit_root_meaning').nullable()();
+  TextColumn get sanskritRootClass =>
+      text().named('sanskrit_root_class').nullable()();
   TextColumn get rootInfo => text().named('root_info').nullable()();
 
   @override

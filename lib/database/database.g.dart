@@ -1203,6 +1203,17 @@ class $DpdHeadwordsTable extends DpdHeadwords
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _sanskritMeta = const VerificationMeta(
+    'sanskrit',
+  );
+  @override
+  late final GeneratedColumn<String> sanskrit = GeneratedColumn<String>(
+    'sanskrit',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _cognateMeta = const VerificationMeta(
     'cognate',
   );
@@ -1328,6 +1339,7 @@ class $DpdHeadwordsTable extends DpdHeadwords
     freqHtml,
     ebtCount,
     nonIa,
+    sanskrit,
     cognate,
     link,
     phonetic,
@@ -1615,6 +1627,12 @@ class $DpdHeadwordsTable extends DpdHeadwords
         nonIa.isAcceptableOrUnknown(data['non_ia']!, _nonIaMeta),
       );
     }
+    if (data.containsKey('sanskrit')) {
+      context.handle(
+        _sanskritMeta,
+        sanskrit.isAcceptableOrUnknown(data['sanskrit']!, _sanskritMeta),
+      );
+    }
     if (data.containsKey('cognate')) {
       context.handle(
         _cognateMeta,
@@ -1839,6 +1857,10 @@ class $DpdHeadwordsTable extends DpdHeadwords
         DriftSqlType.string,
         data['${effectivePrefix}non_ia'],
       ),
+      sanskrit: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}sanskrit'],
+      ),
       cognate: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}cognate'],
@@ -1922,6 +1944,7 @@ class DpdHeadword extends DataClass implements Insertable<DpdHeadword> {
   final String? freqHtml;
   final int? ebtCount;
   final String? nonIa;
+  final String? sanskrit;
   final String? cognate;
   final String? link;
   final String? phonetic;
@@ -1972,6 +1995,7 @@ class DpdHeadword extends DataClass implements Insertable<DpdHeadword> {
     this.freqHtml,
     this.ebtCount,
     this.nonIa,
+    this.sanskrit,
     this.cognate,
     this.link,
     this.phonetic,
@@ -2102,6 +2126,9 @@ class DpdHeadword extends DataClass implements Insertable<DpdHeadword> {
     }
     if (!nullToAbsent || nonIa != null) {
       map['non_ia'] = Variable<String>(nonIa);
+    }
+    if (!nullToAbsent || sanskrit != null) {
+      map['sanskrit'] = Variable<String>(sanskrit);
     }
     if (!nullToAbsent || cognate != null) {
       map['cognate'] = Variable<String>(cognate);
@@ -2243,6 +2270,9 @@ class DpdHeadword extends DataClass implements Insertable<DpdHeadword> {
       nonIa: nonIa == null && nullToAbsent
           ? const Value.absent()
           : Value(nonIa),
+      sanskrit: sanskrit == null && nullToAbsent
+          ? const Value.absent()
+          : Value(sanskrit),
       cognate: cognate == null && nullToAbsent
           ? const Value.absent()
           : Value(cognate),
@@ -2317,6 +2347,7 @@ class DpdHeadword extends DataClass implements Insertable<DpdHeadword> {
       freqHtml: serializer.fromJson<String?>(json['freqHtml']),
       ebtCount: serializer.fromJson<int?>(json['ebtCount']),
       nonIa: serializer.fromJson<String?>(json['nonIa']),
+      sanskrit: serializer.fromJson<String?>(json['sanskrit']),
       cognate: serializer.fromJson<String?>(json['cognate']),
       link: serializer.fromJson<String?>(json['link']),
       phonetic: serializer.fromJson<String?>(json['phonetic']),
@@ -2372,6 +2403,7 @@ class DpdHeadword extends DataClass implements Insertable<DpdHeadword> {
       'freqHtml': serializer.toJson<String?>(freqHtml),
       'ebtCount': serializer.toJson<int?>(ebtCount),
       'nonIa': serializer.toJson<String?>(nonIa),
+      'sanskrit': serializer.toJson<String?>(sanskrit),
       'cognate': serializer.toJson<String?>(cognate),
       'link': serializer.toJson<String?>(link),
       'phonetic': serializer.toJson<String?>(phonetic),
@@ -2425,6 +2457,7 @@ class DpdHeadword extends DataClass implements Insertable<DpdHeadword> {
     Value<String?> freqHtml = const Value.absent(),
     Value<int?> ebtCount = const Value.absent(),
     Value<String?> nonIa = const Value.absent(),
+    Value<String?> sanskrit = const Value.absent(),
     Value<String?> cognate = const Value.absent(),
     Value<String?> link = const Value.absent(),
     Value<String?> phonetic = const Value.absent(),
@@ -2481,6 +2514,7 @@ class DpdHeadword extends DataClass implements Insertable<DpdHeadword> {
     freqHtml: freqHtml.present ? freqHtml.value : this.freqHtml,
     ebtCount: ebtCount.present ? ebtCount.value : this.ebtCount,
     nonIa: nonIa.present ? nonIa.value : this.nonIa,
+    sanskrit: sanskrit.present ? sanskrit.value : this.sanskrit,
     cognate: cognate.present ? cognate.value : this.cognate,
     link: link.present ? link.value : this.link,
     phonetic: phonetic.present ? phonetic.value : this.phonetic,
@@ -2555,6 +2589,7 @@ class DpdHeadword extends DataClass implements Insertable<DpdHeadword> {
       freqHtml: data.freqHtml.present ? data.freqHtml.value : this.freqHtml,
       ebtCount: data.ebtCount.present ? data.ebtCount.value : this.ebtCount,
       nonIa: data.nonIa.present ? data.nonIa.value : this.nonIa,
+      sanskrit: data.sanskrit.present ? data.sanskrit.value : this.sanskrit,
       cognate: data.cognate.present ? data.cognate.value : this.cognate,
       link: data.link.present ? data.link.value : this.link,
       phonetic: data.phonetic.present ? data.phonetic.value : this.phonetic,
@@ -2614,6 +2649,7 @@ class DpdHeadword extends DataClass implements Insertable<DpdHeadword> {
           ..write('freqHtml: $freqHtml, ')
           ..write('ebtCount: $ebtCount, ')
           ..write('nonIa: $nonIa, ')
+          ..write('sanskrit: $sanskrit, ')
           ..write('cognate: $cognate, ')
           ..write('link: $link, ')
           ..write('phonetic: $phonetic, ')
@@ -2669,6 +2705,7 @@ class DpdHeadword extends DataClass implements Insertable<DpdHeadword> {
     freqHtml,
     ebtCount,
     nonIa,
+    sanskrit,
     cognate,
     link,
     phonetic,
@@ -2723,6 +2760,7 @@ class DpdHeadword extends DataClass implements Insertable<DpdHeadword> {
           other.freqHtml == this.freqHtml &&
           other.ebtCount == this.ebtCount &&
           other.nonIa == this.nonIa &&
+          other.sanskrit == this.sanskrit &&
           other.cognate == this.cognate &&
           other.link == this.link &&
           other.phonetic == this.phonetic &&
@@ -2775,6 +2813,7 @@ class DpdHeadwordsCompanion extends UpdateCompanion<DpdHeadword> {
   final Value<String?> freqHtml;
   final Value<int?> ebtCount;
   final Value<String?> nonIa;
+  final Value<String?> sanskrit;
   final Value<String?> cognate;
   final Value<String?> link;
   final Value<String?> phonetic;
@@ -2825,6 +2864,7 @@ class DpdHeadwordsCompanion extends UpdateCompanion<DpdHeadword> {
     this.freqHtml = const Value.absent(),
     this.ebtCount = const Value.absent(),
     this.nonIa = const Value.absent(),
+    this.sanskrit = const Value.absent(),
     this.cognate = const Value.absent(),
     this.link = const Value.absent(),
     this.phonetic = const Value.absent(),
@@ -2876,6 +2916,7 @@ class DpdHeadwordsCompanion extends UpdateCompanion<DpdHeadword> {
     this.freqHtml = const Value.absent(),
     this.ebtCount = const Value.absent(),
     this.nonIa = const Value.absent(),
+    this.sanskrit = const Value.absent(),
     this.cognate = const Value.absent(),
     this.link = const Value.absent(),
     this.phonetic = const Value.absent(),
@@ -2927,6 +2968,7 @@ class DpdHeadwordsCompanion extends UpdateCompanion<DpdHeadword> {
     Expression<String>? freqHtml,
     Expression<int>? ebtCount,
     Expression<String>? nonIa,
+    Expression<String>? sanskrit,
     Expression<String>? cognate,
     Expression<String>? link,
     Expression<String>? phonetic,
@@ -2979,6 +3021,7 @@ class DpdHeadwordsCompanion extends UpdateCompanion<DpdHeadword> {
       if (freqHtml != null) 'freq_html': freqHtml,
       if (ebtCount != null) 'ebt_count': ebtCount,
       if (nonIa != null) 'non_ia': nonIa,
+      if (sanskrit != null) 'sanskrit': sanskrit,
       if (cognate != null) 'cognate': cognate,
       if (link != null) 'link': link,
       if (phonetic != null) 'phonetic': phonetic,
@@ -3032,6 +3075,7 @@ class DpdHeadwordsCompanion extends UpdateCompanion<DpdHeadword> {
     Value<String?>? freqHtml,
     Value<int?>? ebtCount,
     Value<String?>? nonIa,
+    Value<String?>? sanskrit,
     Value<String?>? cognate,
     Value<String?>? link,
     Value<String?>? phonetic,
@@ -3083,6 +3127,7 @@ class DpdHeadwordsCompanion extends UpdateCompanion<DpdHeadword> {
       freqHtml: freqHtml ?? this.freqHtml,
       ebtCount: ebtCount ?? this.ebtCount,
       nonIa: nonIa ?? this.nonIa,
+      sanskrit: sanskrit ?? this.sanskrit,
       cognate: cognate ?? this.cognate,
       link: link ?? this.link,
       phonetic: phonetic ?? this.phonetic,
@@ -3222,6 +3267,9 @@ class DpdHeadwordsCompanion extends UpdateCompanion<DpdHeadword> {
     if (nonIa.present) {
       map['non_ia'] = Variable<String>(nonIa.value);
     }
+    if (sanskrit.present) {
+      map['sanskrit'] = Variable<String>(sanskrit.value);
+    }
     if (cognate.present) {
       map['cognate'] = Variable<String>(cognate.value);
     }
@@ -3293,6 +3341,7 @@ class DpdHeadwordsCompanion extends UpdateCompanion<DpdHeadword> {
           ..write('freqHtml: $freqHtml, ')
           ..write('ebtCount: $ebtCount, ')
           ..write('nonIa: $nonIa, ')
+          ..write('sanskrit: $sanskrit, ')
           ..write('cognate: $cognate, ')
           ..write('link: $link, ')
           ..write('phonetic: $phonetic, ')
@@ -4591,6 +4640,7 @@ typedef $$DpdHeadwordsTableCreateCompanionBuilder =
       Value<String?> freqHtml,
       Value<int?> ebtCount,
       Value<String?> nonIa,
+      Value<String?> sanskrit,
       Value<String?> cognate,
       Value<String?> link,
       Value<String?> phonetic,
@@ -4643,6 +4693,7 @@ typedef $$DpdHeadwordsTableUpdateCompanionBuilder =
       Value<String?> freqHtml,
       Value<int?> ebtCount,
       Value<String?> nonIa,
+      Value<String?> sanskrit,
       Value<String?> cognate,
       Value<String?> link,
       Value<String?> phonetic,
@@ -4883,6 +4934,11 @@ class $$DpdHeadwordsTableFilterComposer
 
   ColumnFilters<String> get nonIa => $composableBuilder(
     column: $table.nonIa,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get sanskrit => $composableBuilder(
+    column: $table.sanskrit,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -5159,6 +5215,11 @@ class $$DpdHeadwordsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get sanskrit => $composableBuilder(
+    column: $table.sanskrit,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get cognate => $composableBuilder(
     column: $table.cognate,
     builder: (column) => ColumnOrderings(column),
@@ -5374,6 +5435,9 @@ class $$DpdHeadwordsTableAnnotationComposer
   GeneratedColumn<String> get nonIa =>
       $composableBuilder(column: $table.nonIa, builder: (column) => column);
 
+  GeneratedColumn<String> get sanskrit =>
+      $composableBuilder(column: $table.sanskrit, builder: (column) => column);
+
   GeneratedColumn<String> get cognate =>
       $composableBuilder(column: $table.cognate, builder: (column) => column);
 
@@ -5495,6 +5559,7 @@ class $$DpdHeadwordsTableTableManager
                 Value<String?> freqHtml = const Value.absent(),
                 Value<int?> ebtCount = const Value.absent(),
                 Value<String?> nonIa = const Value.absent(),
+                Value<String?> sanskrit = const Value.absent(),
                 Value<String?> cognate = const Value.absent(),
                 Value<String?> link = const Value.absent(),
                 Value<String?> phonetic = const Value.absent(),
@@ -5545,6 +5610,7 @@ class $$DpdHeadwordsTableTableManager
                 freqHtml: freqHtml,
                 ebtCount: ebtCount,
                 nonIa: nonIa,
+                sanskrit: sanskrit,
                 cognate: cognate,
                 link: link,
                 phonetic: phonetic,
@@ -5597,6 +5663,7 @@ class $$DpdHeadwordsTableTableManager
                 Value<String?> freqHtml = const Value.absent(),
                 Value<int?> ebtCount = const Value.absent(),
                 Value<String?> nonIa = const Value.absent(),
+                Value<String?> sanskrit = const Value.absent(),
                 Value<String?> cognate = const Value.absent(),
                 Value<String?> link = const Value.absent(),
                 Value<String?> phonetic = const Value.absent(),
@@ -5647,6 +5714,7 @@ class $$DpdHeadwordsTableTableManager
                 freqHtml: freqHtml,
                 ebtCount: ebtCount,
                 nonIa: nonIa,
+                sanskrit: sanskrit,
                 cognate: cognate,
                 link: link,
                 phonetic: phonetic,

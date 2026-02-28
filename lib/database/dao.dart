@@ -165,6 +165,7 @@ extension on String {
     }
   }
 }
+
 extension DpdHeadwordGetters on DpdHeadwordWithRoot {
   int get id => headword.id;
   String get lemma1 => headword.lemma1;
@@ -207,6 +208,7 @@ extension DpdHeadwordGetters on DpdHeadwordWithRoot {
   String? get freqHtml => headword.freqHtml;
   int? get ebtCount => headword.ebtCount;
   String? get nonIa => headword.nonIa;
+  String? get sanskrit => headword.sanskrit;
   String? get cognate => headword.cognate;
   String? get link => headword.link;
   String? get phonetic => headword.phonetic;
