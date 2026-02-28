@@ -11,7 +11,7 @@
 
 - [x] Task: Standardize all border-radius values to 7px across the app (inputs, cards, containers, bottom sheets) 36a0098
 - [x] Task: Style entry containers with 2px solid primary border, 7px radius, 3px 7px padding 285923c
-- [ ] Task: Style section toggle buttons to match webapp (filled cyan background, 1px border, 7px radius, 80% font, 2px 5px padding, shadow, dark text, active state with primary-alt)
+- [x] Task: Style section toggle buttons to match webapp (filled cyan background, 1px border, 7px radius, 80% font, 2px 5px padding, shadow, dark text, active state with primary-alt) 6052088
 - [ ] Task: Style button box as flex-wrap horizontal row with flex-start justify and correct margins
 - [ ] Task: Style word cards in search results to match webapp summary appearance
 - [ ] Task: Conductor - User Manual Verification 'Component Styling' (Protocol in workflow.md)
