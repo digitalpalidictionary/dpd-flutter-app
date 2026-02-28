@@ -20,13 +20,13 @@
   - [x] Add `getSets(List<String> sets)` → list of results
   - [x] Run code generation
 
-- [ ] Task 1.3: Write tests for family DAO queries
-  - [ ] Test root family lookup by composite key
-  - [ ] Test word family lookup
-  - [ ] Test compound family lookup with single and multiple keys
-  - [ ] Test idiom lookup with single and multiple keys
-  - [ ] Test set lookup with single and multiple keys
-  - [ ] Test empty/null key handling
+- [x] Task 1.3: Write tests for family DAO queries (9c88b54)
+  - [x] Test root family lookup by composite key
+  - [x] Test word family lookup
+  - [x] Test compound family lookup with single and multiple keys
+  - [x] Test idiom lookup with single and multiple keys
+  - [x] Test set lookup with single and multiple keys
+  - [x] Test empty/null key handling
 
 ## Phase 2: Reusable FamilyTable Widget
 
