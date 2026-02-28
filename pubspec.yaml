@@ -1,0 +1,59 @@
+name: dpd_flutter_app
+description: "Digital Pali Dictionary - offline Flutter app"
+publish_to: 'none'
+
+version: 0.1.0+1
+
+environment:
+  sdk: ^3.10.7
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.8
+
+  # Database
+  drift: ^2.23.1
+  drift_flutter: ^0.2.4
+  sqlite3_flutter_libs: ^0.5.28
+
+  # State management
+  flutter_riverpod: ^2.6.1
+  riverpod_annotation: ^2.6.1
+
+  # HTML rendering (for inflections_html, example HTML)
+  flutter_html: ^3.0.0-beta.2
+
+  # HTTP for DB download/update check
+  dio: ^5.8.0+1
+
+  # File system access for DB management
+  path_provider: ^2.1.5
+  path: ^1.9.1
+
+  # Preferences (settings, first-launch flag)
+  shared_preferences: ^2.5.3
+
+  # URL launcher (open sutta links)
+  url_launcher: ^6.3.1
+
+  # Fonts
+  google_fonts: ^6.2.1
+
+  # Progress indicator for DB download
+  percent_indicator: ^4.2.3
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+  # Drift code generation
+  drift_dev: ^2.23.0
+  build_runner: ^2.4.14
+  riverpod_generator: ^2.6.5
+
+flutter:
+  uses-material-design: true
+
