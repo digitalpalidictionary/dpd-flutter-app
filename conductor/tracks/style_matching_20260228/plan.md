@@ -27,6 +27,6 @@
 ## Phase 4: Final Polish
 
 - [x] Task: Style search input to match webapp (primary border, 7px radius, correct padding and focus states) b9c2cab
-- [ ] Task: Review and align all remaining spacing, margins, and padding with webapp values
+- [~] Task: Review and align all remaining spacing, margins, and padding with webapp values
 - [ ] Task: Verify visual parity by comparing app screenshots side-by-side with webapp on same entries
 - [ ] Task: Conductor - User Manual Verification 'Final Polish' (Protocol in workflow.md)
