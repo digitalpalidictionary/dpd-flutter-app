@@ -46,7 +46,7 @@
   - [x] Add `DpdFooter` at bottom with configurable feedback URL
   - [x] Style header as "heading underlined" (bold text, underline border, matching webapp)
 
-## Phase 3: Family Section Integration
+## Phase 3: Family Section Integration [checkpoint: 06898cd]
 
 - [x] Task 3.1: Create family section builder functions (8edb503)
   - [x] Create header builder for each family type matching webapp text patterns:
