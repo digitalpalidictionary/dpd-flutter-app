@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../database/database.dart';
 import '../providers/settings_provider.dart';
+import 'dpd_html_table.dart';
 import 'entry_content.dart';
 
 class EntryBottomSheet extends ConsumerWidget {
@@ -24,7 +24,8 @@ class EntryBottomSheet extends ConsumerWidget {
 
     final grammarRows = buildGrammarRows(h);
     final familyRows = buildFamilyRows(h);
-    final hasInflections = (h.inflectionsHtml != null && h.inflectionsHtml!.isNotEmpty) ||
+    final hasInflections =
+        (h.inflectionsHtml != null && h.inflectionsHtml!.isNotEmpty) ||
         (h.freqHtml != null && h.freqHtml!.isNotEmpty);
     final hasEx1 = h.example1 != null && h.example1!.isNotEmpty;
     final hasEx2 = h.example2 != null && h.example2!.isNotEmpty;
@@ -122,20 +123,21 @@ class EntryBottomSheet extends ConsumerWidget {
               initiallyExpanded: false,
               children: [
                 if (h.inflectionsHtml != null && h.inflectionsHtml!.isNotEmpty)
-                  SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
+                  Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: Html(data: h.inflectionsHtml!),
+                    child: DpdHtmlTable(data: h.inflectionsHtml!),
                   ),
                 if (h.freqHtml != null && h.freqHtml!.isNotEmpty) ...[
                   Padding(
                     padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
                     child: Text('Frequency', style: theme.textTheme.titleSmall),
                   ),
-                  SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: Html(data: h.freqHtml!),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 8,
+                    ),
+                    child: DpdHtmlTable(data: h.freqHtml!),
                   ),
                 ],
               ],

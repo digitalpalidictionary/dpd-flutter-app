@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../database/database.dart';
 import '../providers/settings_provider.dart';
+import 'dpd_html_table.dart';
 import 'entry_content.dart';
 
 class InlineEntryCard extends ConsumerStatefulWidget {
@@ -197,10 +197,9 @@ class _InlineEntryCardState extends ConsumerState<InlineEntryCard> {
                 children: [
                   if (h.inflectionsHtml != null &&
                       h.inflectionsHtml!.isNotEmpty)
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
+                    Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: Html(data: h.inflectionsHtml!),
+                      child: DpdHtmlTable(data: h.inflectionsHtml!),
                     ),
                   if (h.freqHtml != null && h.freqHtml!.isNotEmpty) ...[
                     Padding(
@@ -210,10 +209,12 @@ class _InlineEntryCardState extends ConsumerState<InlineEntryCard> {
                         style: Theme.of(context).textTheme.titleSmall,
                       ),
                     ),
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: Html(data: h.freqHtml!),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 8,
+                      ),
+                      child: DpdHtmlTable(data: h.freqHtml!),
                     ),
                   ],
                 ],
