@@ -188,8 +188,8 @@ class InflectionTable extends StatelessWidget {
     final richText = RichText(
       textAlign: TextAlign.center,
       text: TextSpan(
-        // Highlighted forms use dark text on yellow; normal forms use default.
-        style: isMatch ? base.copyWith(color: DpdColors.dark) : base,
+        // Highlighted forms use white text on primary blue; normal forms use default.
+        style: isMatch ? base.copyWith(color: Colors.white) : base,
         children: [
           if (form.stem.isNotEmpty) TextSpan(text: form.stem),
           TextSpan(
@@ -202,11 +202,9 @@ class InflectionTable extends StatelessWidget {
 
     if (!isMatch) return richText;
 
-    // Wrap in yellow highlight matching webapp `.inflection-highlight`:
-    // background-color: yellow; border-radius: 3px; padding: 0 2px
     return Container(
       decoration: BoxDecoration(
-        color: Colors.yellow,
+        color: DpdColors.primary,
         borderRadius: BorderRadius.circular(3),
       ),
       padding: const EdgeInsets.symmetric(horizontal: 2),
