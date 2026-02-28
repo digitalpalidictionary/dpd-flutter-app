@@ -10,4 +10,9 @@ mixin _$DpdDaoMixin on DatabaseAccessor<AppDatabase> {
   $DbInfoTable get dbInfo => attachedDatabase.dbInfo;
   $InflectionTemplatesTable get inflectionTemplates =>
       attachedDatabase.inflectionTemplates;
+  $FamilyRootTable get familyRoot => attachedDatabase.familyRoot;
+  $FamilyWordTable get familyWord => attachedDatabase.familyWord;
+  $FamilyCompoundTable get familyCompound => attachedDatabase.familyCompound;
+  $FamilyIdiomTable get familyIdiom => attachedDatabase.familyIdiom;
+  $FamilySetTable get familySet => attachedDatabase.familySet;
 }

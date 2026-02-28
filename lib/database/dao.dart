@@ -15,7 +15,18 @@ class DpdHeadwordWithRoot {
   DpdHeadwordWithRoot(this.headword, this.root);
 }
 
-@DriftAccessor(tables: [DpdHeadwords, Lookup, DpdRoots, DbInfo, InflectionTemplates])
+@DriftAccessor(tables: [
+  DpdHeadwords,
+  Lookup,
+  DpdRoots,
+  DbInfo,
+  InflectionTemplates,
+  FamilyRoot,
+  FamilyWord,
+  FamilyCompound,
+  FamilyIdiom,
+  FamilySet,
+])
 class DpdDao extends DatabaseAccessor<AppDatabase> with _$DpdDaoMixin {
   DpdDao(super.db);
 
@@ -141,6 +152,45 @@ class DpdDao extends DatabaseAccessor<AppDatabase> with _$DpdDaoMixin {
 
   Future<List<InflectionTemplate>> getAllInflectionTemplates() {
     return select(inflectionTemplates).get();
+  }
+
+  // ── DB metadata ───────────────────────────────────────────────────────────
+
+  // ── Family tables ─────────────────────────────────────────────────────────
+
+  Future<FamilyRootData?> getRootFamily(String rootKey, String familyRootVal) {
+    return (select(familyRoot)
+          ..where(
+            (t) =>
+                t.rootKey.equals(rootKey) &
+                t.rootFamily.equals(familyRootVal),
+          ))
+        .getSingleOrNull();
+  }
+
+  Future<FamilyWordData?> getWordFamily(String wordFamilyKey) {
+    return (select(familyWord)
+          ..where((t) => t.wordFamily.equals(wordFamilyKey)))
+        .getSingleOrNull();
+  }
+
+  Future<List<FamilyCompoundData>> getCompoundFamilies(
+    List<String> compoundFamilies,
+  ) {
+    if (compoundFamilies.isEmpty) return Future.value([]);
+    return (select(familyCompound)
+          ..where((t) => t.compoundFamily.isIn(compoundFamilies)))
+        .get();
+  }
+
+  Future<List<FamilyIdiomData>> getIdioms(List<String> idioms) {
+    if (idioms.isEmpty) return Future.value([]);
+    return (select(familyIdiom)..where((t) => t.idiom.isIn(idioms))).get();
+  }
+
+  Future<List<FamilySetData>> getSets(List<String> sets) {
+    if (sets.isEmpty) return Future.value([]);
+    return (select(familySet)..where((t) => t.set_.isIn(sets))).get();
   }
 
   // ── DB metadata ───────────────────────────────────────────────────────────
