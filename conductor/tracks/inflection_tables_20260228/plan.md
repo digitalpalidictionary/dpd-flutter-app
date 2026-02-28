@@ -45,10 +45,10 @@
   - [x] Handle multiple forms per cell (line breaks)
   - [x] Handle empty cells
 
-- [ ] Task: Extract reusable InflectionSection widget
-  - [ ] Wraps InflectionTable + frequency sub-section + DpdFooter
-  - [ ] Accepts headword data and template cache
-  - [ ] Handles the "no table" case (indeclinable)
+- [x] Task: Extract reusable InflectionSection widget [1fc9741]
+  - [x] Wraps InflectionTable + frequency sub-section + DpdFooter
+  - [x] Accepts headword data and template cache
+  - [x] Handles the "no table" case (indeclinable)
 
 - [ ] Task: Integrate into AccordionCard, InlineEntryCard, and EntryBottomSheet
   - [ ] Replace current `DpdHtmlTable(data: h.inflectionsHtml!)` with new InflectionSection
