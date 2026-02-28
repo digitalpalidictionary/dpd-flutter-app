@@ -85,7 +85,7 @@ class EntryExampleBlock extends StatelessWidget {
         if (sutta != null || source != null) ...[
           const SizedBox(height: 4),
           Text(
-            [source, sutta].whereType<String>().join(' · '),
+            [source, sutta].whereType<String>().join(' '),
             style: theme.textTheme.bodySmall?.copyWith(
               color: DpdColors.primaryText,
               fontStyle: FontStyle.italic,
