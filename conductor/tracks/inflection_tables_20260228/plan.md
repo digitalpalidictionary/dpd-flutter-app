@@ -11,14 +11,14 @@
   - [x] Define `InflectionCell` class: list of forms, grammar tooltip
   - [x] Define `InflectionForm` class: stem, ending, full word
 
-- [ ] Task: Write tests for inflection table builder logic
-  - [ ] Test standard declension (e.g., `a masc` pattern with known stem)
-  - [ ] Test conjugation (e.g., `pr` pattern)
-  - [ ] Test irregular stem (`*`) — template contains full forms
-  - [ ] Test already-inflected stem (`!`) — returns table but limited inflections
-  - [ ] Test indeclinable stem (`-`) — returns null/no table
-  - [ ] Test multiple endings in one cell
-  - [ ] Test empty endings produce empty cells
+- [x] Task: Write tests for inflection table builder logic [e98f063]
+  - [x] Test standard declension (e.g., `a masc` pattern with known stem)
+  - [x] Test conjugation (e.g., `pr` pattern)
+  - [x] Test irregular stem (`*`) — template contains full forms
+  - [x] Test already-inflected stem (`!`) — returns table but limited inflections
+  - [x] Test indeclinable stem (`-`) — returns null/no table
+  - [x] Test multiple endings in one cell
+  - [x] Test empty endings produce empty cells
 
 - [ ] Task: Implement inflection table builder
   - [ ] Parse 3D JSON array from template data
