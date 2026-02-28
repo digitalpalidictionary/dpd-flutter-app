@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import '../database/database.dart';
 import '../database/dpd_headword_extensions.dart';
 import '../theme/dpd_colors.dart';
+import 'entry_content.dart';
 
 class GrammarTable extends StatelessWidget {
   final DpdHeadwordWithRoot headword;
@@ -52,46 +52,13 @@ class GrammarTable extends StatelessWidget {
   }
 
   Widget _buildFooter(BuildContext context, DpdHeadwordWithRoot headword) {
-    return Container(
-      margin: const EdgeInsets.only(top: 5.0),
-      padding: const EdgeInsets.only(top: 5.0),
-      decoration: BoxDecoration(
-        border: Border(top: BorderSide(color: DpdColors.primary, width: 1)),
-      ),
-      child: Align(
-        alignment: Alignment.centerLeft,
-        child: InkWell(
-          onTap: () => _launchMistakeForm(headword.lemma1),
-          child: RichText(
-            text: TextSpan(
-              style: const TextStyle(fontSize: 12.8, color: Colors.grey),
-              children: [
-                const TextSpan(text: 'Did you spot a mistake? '),
-                TextSpan(
-                  text: 'Correct it here',
-                  style: TextStyle(
-                    color: DpdColors.primaryText,
-                    decoration: TextDecoration.underline,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
+    final encodedLemma = Uri.encodeComponent(headword.lemma1);
+    return DpdFooter(
+      messagePrefix: 'Did you spot a mistake?',
+      linkText: 'Correct it here',
+      urlBuilder: () =>
+          'https://docs.google.com/forms/d/e/1FAIpQLSf9boBe7k5tCwq7LdWgBHHGIPVc4ROO5yjVDo1X5LDAxkmGWQ/viewform?usp=pp_url&entry.438735500=$encodedLemma&entry.326955045=Grammar',
     );
-  }
-
-  Future<void> _launchMistakeForm(String lemma) async {
-    final encodedLemma = Uri.encodeComponent(lemma);
-    final url = Uri.parse(
-      'https://docs.google.com/forms/d/e/1FAIpQLSf9boBe7k5tCwq7LdWgBHHGIPVc4ROO5yjVDo1X5LDAxkmGWQ/viewform?usp=pp_url&entry.438735500=$encodedLemma&entry.326955045=Grammar',
-    );
-    try {
-      await launchUrl(url, mode: LaunchMode.platformDefault);
-    } catch (e) {
-      debugPrint('Could not launch $url: $e');
-    }
   }
 
   TableRow _buildRow(String label, Widget content) {

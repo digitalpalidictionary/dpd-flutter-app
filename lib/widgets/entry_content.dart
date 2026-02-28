@@ -5,6 +5,56 @@ import 'package:url_launcher/url_launcher.dart';
 import '../database/database.dart';
 import '../theme/dpd_colors.dart';
 
+class DpdFooter extends StatelessWidget {
+  const DpdFooter({
+    super.key,
+    required this.messagePrefix,
+    required this.linkText,
+    required this.urlBuilder,
+  });
+
+  final String messagePrefix;
+  final String linkText;
+  final String Function() urlBuilder;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.only(top: 5.0),
+      padding: const EdgeInsets.only(top: 5.0),
+      decoration: BoxDecoration(
+        border: Border(top: BorderSide(color: DpdColors.primary, width: 1)),
+      ),
+      child: Align(
+        alignment: Alignment.centerLeft,
+        child: InkWell(
+          onTap: () async {
+            await launchUrl(
+              Uri.parse(urlBuilder()),
+              mode: LaunchMode.platformDefault,
+            );
+          },
+          child: RichText(
+            text: TextSpan(
+              style: const TextStyle(fontSize: 12.8, color: Colors.grey),
+              children: [
+                TextSpan(text: '$messagePrefix '),
+                TextSpan(
+                  text: linkText,
+                  style: TextStyle(
+                    color: DpdColors.primaryText,
+                    decoration: TextDecoration.underline,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 List<(String, String)> buildFamilyRows(DpdHeadwordWithRoot h) => [
   if (h.familyRoot != null && h.familyRoot!.isNotEmpty)
     ('Root family', h.familyRoot!),
@@ -98,9 +148,7 @@ class EntryExampleBlock extends StatelessWidget {
               'p.sutta': Style(
                 color: DpdColors.primaryText,
                 fontStyle: FontStyle.italic,
-                fontSize: FontSize(
-                  theme.textTheme.bodySmall?.fontSize ?? 12.0,
-                ),
+                fontSize: FontSize(theme.textTheme.bodySmall?.fontSize ?? 12.0),
                 margin: Margins.zero,
                 padding: HtmlPaddings.only(bottom: 3),
               ),
@@ -252,47 +300,16 @@ class EntryExampleFooter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final fontSize = (theme.textTheme.bodyMedium?.fontSize ?? 14.0) * 0.8;
     final now = DateTime.now();
     final date =
         '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}';
     final encodedLemma = Uri.encodeComponent(lemma1);
-    final url =
-        'https://docs.google.com/forms/d/e/1FAIpQLSf9boBe7k5tCwq7LdWgBHHGIPVc4ROO5yjVDo1X5LDAxkmGWQ/viewform?usp=pp_url&entry.438735500=$headwordId%20$encodedLemma&entry.326955045=Examples&entry.1433863141=DPD+$date';
 
-    return GestureDetector(
-      onTap: () async {
-        await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
-      },
-      child: Container(
-        margin: const EdgeInsets.only(top: 5),
-        padding: const EdgeInsets.symmetric(vertical: 5),
-        decoration: BoxDecoration(
-          border: Border(
-            top: BorderSide(color: DpdColors.primary, width: 1),
-          ),
-        ),
-        child: RichText(
-          text: TextSpan(
-            style: TextStyle(
-              fontSize: fontSize,
-              color: theme.colorScheme.onSurface,
-            ),
-            children: [
-              const TextSpan(text: 'Can you think of a better example? '),
-              TextSpan(
-                text: 'Add it here.',
-                style: TextStyle(
-                  color: DpdColors.primaryText,
-                  fontWeight: FontWeight.bold,
-                  decoration: TextDecoration.none,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
+    return DpdFooter(
+      messagePrefix: 'Can you think of a better example?',
+      linkText: 'Add it here.',
+      urlBuilder: () =>
+          'https://docs.google.com/forms/d/e/1FAIpQLSf9boBe7k5tCwq7LdWgBHHGIPVc4ROO5yjVDo1X5LDAxkmGWQ/viewform?usp=pp_url&entry.438735500=$headwordId%20$encodedLemma&entry.326955045=Examples&entry.1433863141=DPD+$date',
     );
   }
 }
