@@ -6,6 +6,7 @@ import '../providers/search_provider.dart';
 import '../providers/settings_provider.dart';
 import '../providers/template_cache_provider.dart';
 import 'entry_content.dart';
+import 'family_toggle_section.dart';
 import 'grammar_table.dart';
 import 'inflection_section.dart';
 
@@ -22,7 +23,6 @@ class _InlineEntryCardState extends ConsumerState<InlineEntryCard> {
   bool _grammarOpen = false;
   bool _examplesOpen = false;
   bool _inflectionsOpen = false;
-  bool _familiesOpen = false;
   bool _notesOpen = false;
 
   @override
@@ -38,7 +38,6 @@ class _InlineEntryCardState extends ConsumerState<InlineEntryCard> {
     final theme = Theme.of(context);
     final h = widget.headword;
 
-    final familyRows = buildFamilyRows(h);
     final templateCache =
         ref.watch(templateCacheProvider).valueOrNull ?? {};
     final hasInflections = hasInflectionContent(h);
@@ -90,12 +89,6 @@ class _InlineEntryCardState extends ConsumerState<InlineEntryCard> {
                     isActive: _inflectionsOpen,
                     onTap: () =>
                         setState(() => _inflectionsOpen = !_inflectionsOpen),
-                  ),
-                if (familyRows.isNotEmpty)
-                  DpdSectionButton(
-                    label: 'Families',
-                    isActive: _familiesOpen,
-                    onTap: () => setState(() => _familiesOpen = !_familiesOpen),
                   ),
                 if (hasNotes)
                   DpdSectionButton(
@@ -152,15 +145,7 @@ class _InlineEntryCardState extends ConsumerState<InlineEntryCard> {
               ),
             ),
 
-          // Families section content
-          if (_familiesOpen && familyRows.isNotEmpty)
-            DpdSectionContainer(
-              child: Column(
-                children: familyRows
-                    .map((r) => EntryLabelValue(label: r.$1, value: r.$2))
-                    .toList(),
-              ),
-            ),
+          FamilyToggleSection(headword: h),
 
           // Notes section content
           if (_notesOpen && hasNotes)

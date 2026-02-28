@@ -6,6 +6,7 @@ import '../providers/search_provider.dart';
 import '../providers/settings_provider.dart';
 import '../providers/template_cache_provider.dart';
 import 'entry_content.dart';
+import 'family_toggle_section.dart';
 import 'grammar_table.dart';
 import 'inflection_section.dart';
 
@@ -25,7 +26,6 @@ class _AccordionCardState extends ConsumerState<AccordionCard> {
   bool _grammarOpen = false;
   bool _examplesOpen = false;
   bool _inflectionsOpen = false;
-  bool _familiesOpen = false;
   bool _notesOpen = false;
 
   @override
@@ -50,7 +50,6 @@ class _AccordionCardState extends ConsumerState<AccordionCard> {
     final h = widget.headword;
     final isExpanded = _cardState == _CardState.buttonsVisible;
 
-    final familyRows = buildFamilyRows(h);
     final templateCache =
         ref.watch(templateCacheProvider).valueOrNull ?? {};
     final hasInflections = hasInflectionContent(h);
@@ -113,13 +112,6 @@ class _AccordionCardState extends ConsumerState<AccordionCard> {
                             () => _inflectionsOpen = !_inflectionsOpen,
                           ),
                         ),
-                      if (familyRows.isNotEmpty)
-                        DpdSectionButton(
-                          label: 'Families',
-                          isActive: _familiesOpen,
-                          onTap: () =>
-                              setState(() => _familiesOpen = !_familiesOpen),
-                        ),
                       if (hasNotes)
                         DpdSectionButton(
                           label: 'Notes',
@@ -176,14 +168,7 @@ class _AccordionCardState extends ConsumerState<AccordionCard> {
                     ),
                   ),
 
-                if (_familiesOpen && familyRows.isNotEmpty)
-                  DpdSectionContainer(
-                    child: Column(
-                      children: familyRows
-                          .map((r) => EntryLabelValue(label: r.$1, value: r.$2))
-                          .toList(),
-                    ),
-                  ),
+                FamilyToggleSection(headword: h),
 
                 if (_notesOpen && hasNotes)
                   DpdSectionContainer(

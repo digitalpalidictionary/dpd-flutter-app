@@ -7,6 +7,7 @@ import '../providers/settings_provider.dart';
 import '../providers/template_cache_provider.dart';
 import '../theme/dpd_colors.dart';
 import 'entry_content.dart';
+import 'family_toggle_section.dart';
 import 'grammar_table.dart';
 import 'inflection_section.dart';
 
@@ -28,7 +29,6 @@ class _EntryBottomSheetState extends ConsumerState<EntryBottomSheet> {
   bool _grammarOpen = false;
   bool _examplesOpen = false;
   bool _inflectionsOpen = false;
-  bool _familiesOpen = false;
   bool _notesOpen = false;
 
   @override
@@ -44,7 +44,6 @@ class _EntryBottomSheetState extends ConsumerState<EntryBottomSheet> {
     final theme = Theme.of(context);
     final h = widget.headword;
 
-    final familyRows = buildFamilyRows(h);
     final templateCache =
         ref.watch(templateCacheProvider).valueOrNull ?? {};
     final hasInflections = hasInflectionContent(h);
@@ -114,12 +113,6 @@ class _EntryBottomSheetState extends ConsumerState<EntryBottomSheet> {
                     onTap: () =>
                         setState(() => _inflectionsOpen = !_inflectionsOpen),
                   ),
-                if (familyRows.isNotEmpty)
-                  DpdSectionButton(
-                    label: 'Families',
-                    isActive: _familiesOpen,
-                    onTap: () => setState(() => _familiesOpen = !_familiesOpen),
-                  ),
                 if (hasNotes)
                   DpdSectionButton(
                     label: 'Notes',
@@ -173,14 +166,7 @@ class _EntryBottomSheetState extends ConsumerState<EntryBottomSheet> {
               ),
             ),
 
-          if (_familiesOpen && familyRows.isNotEmpty)
-            DpdSectionContainer(
-              child: Column(
-                children: familyRows
-                    .map((r) => EntryLabelValue(label: r.$1, value: r.$2))
-                    .toList(),
-              ),
-            ),
+          FamilyToggleSection(headword: h),
 
           if (_notesOpen && hasNotes)
             DpdSectionContainer(
