@@ -1,6 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../database/dao.dart';
 import '../database/database.dart';
 
 final databaseProvider = Provider<AppDatabase>((ref) {

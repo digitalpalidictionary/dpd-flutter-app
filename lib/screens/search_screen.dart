@@ -109,7 +109,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   Widget _buildResults(
     BuildContext context,
     String query,
-    List<DpdHeadword> headwords,
+    List<DpdHeadwordWithRoot> headwords,
   ) {
     if (query.isEmpty) {
       return const _EmptyPrompt();
@@ -130,7 +130,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
 class _InlineList extends StatelessWidget {
   const _InlineList({required this.headwords});
 
-  final List<DpdHeadword> headwords;
+  final List<DpdHeadwordWithRoot> headwords;
 
   @override
   Widget build(BuildContext context) {
@@ -146,7 +146,7 @@ class _InlineList extends StatelessWidget {
 class _AccordionList extends StatelessWidget {
   const _AccordionList({required this.headwords});
 
-  final List<DpdHeadword> headwords;
+  final List<DpdHeadwordWithRoot> headwords;
 
   @override
   Widget build(BuildContext context) {
@@ -162,7 +162,7 @@ class _AccordionList extends StatelessWidget {
 class _BottomSheetList extends StatelessWidget {
   const _BottomSheetList({required this.headwords});
 
-  final List<DpdHeadword> headwords;
+  final List<DpdHeadwordWithRoot> headwords;
 
   @override
   Widget build(BuildContext context) {
@@ -177,7 +177,7 @@ class _BottomSheetList extends StatelessWidget {
     );
   }
 
-  void _showBottomSheet(BuildContext context, DpdHeadword headword) {
+  void _showBottomSheet(BuildContext context, DpdHeadwordWithRoot headword) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,

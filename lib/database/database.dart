@@ -6,6 +6,7 @@ import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 
 import 'tables.dart';
+export 'dao.dart';
 
 part 'database.g.dart';
 
@@ -13,14 +14,18 @@ part 'database.g.dart';
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
+  AppDatabase.forTesting(QueryExecutor e) : super(e);
+
   @override
   int get schemaVersion => 1;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
-        onCreate: (m) async {},
-        onUpgrade: (m, from, to) async {},
-      );
+    onCreate: (m) async {
+      await m.createAll();
+    },
+    onUpgrade: (m, from, to) async {},
+  );
 }
 
 LazyDatabase _openConnection() {

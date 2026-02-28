@@ -14,7 +14,7 @@ class EntryBottomSheet extends ConsumerStatefulWidget {
     required this.scrollController,
   });
 
-  final DpdHeadword headword;
+  final DpdHeadwordWithRoot headword;
   final ScrollController scrollController;
 
   @override

@@ -7,21 +7,32 @@ import 'tables.dart';
 
 part 'dao.g.dart';
 
+class DpdHeadwordWithRoot {
+  final DpdHeadword headword;
+  final DpdRoot? root;
+
+  DpdHeadwordWithRoot(this.headword, this.root);
+}
+
 @DriftAccessor(tables: [DpdHeadwords, Lookup, DpdRoots, DbInfo])
 class DpdDao extends DatabaseAccessor<AppDatabase> with _$DpdDaoMixin {
   DpdDao(super.db);
 
   // ── Search ────────────────────────────────────────────────────────────────
 
-  Future<List<DpdHeadword>> search(String query, {int limit = 20}) async {
+  Future<List<DpdHeadwordWithRoot>> search(
+    String query, {
+    int limit = 20,
+  }) async {
     if (query.isEmpty) return [];
 
     final normalized = _normalizeQuery(query);
 
-    final lookupRows = await (select(lookup)
-          ..where((t) => t.lookupKey.like('$normalized%'))
-          ..limit(limit))
-        .get();
+    final lookupRows =
+        await (select(lookup)
+              ..where((t) => t.lookupKey.like('$normalized%'))
+              ..limit(limit))
+            .get();
 
     final idSet = <int>{};
     for (final row in lookupRows) {
@@ -34,35 +45,63 @@ class DpdDao extends DatabaseAccessor<AppDatabase> with _$DpdDaoMixin {
 
     if (idSet.isEmpty) return [];
 
-    final headwords = await (select(dpdHeadwords)
-          ..where((t) => t.id.isIn(idSet)))
-        .get();
+    final rows = await (select(dpdHeadwords).join([
+      leftOuterJoin(dpdRoots, dpdRoots.root.equalsExp(dpdHeadwords.rootKey)),
+    ])..where(dpdHeadwords.id.isIn(idSet))).get();
 
-    headwords.sort((a, b) => paliSortKey(a.lemma1).compareTo(paliSortKey(b.lemma1)));
-    return headwords;
+    final results = rows.map((row) {
+      return DpdHeadwordWithRoot(
+        row.readTable(dpdHeadwords),
+        row.readTableOrNull(dpdRoots),
+      );
+    }).toList();
+
+    results.sort(
+      (a, b) => paliSortKey(
+        a.headword.lemma1,
+      ).compareTo(paliSortKey(b.headword.lemma1)),
+    );
+    return results;
   }
 
   // ── Single entry ──────────────────────────────────────────────────────────
 
-  Future<DpdHeadword?> getById(int id) {
-    return (select(dpdHeadwords)..where((t) => t.id.equals(id))).getSingleOrNull();
+  Future<DpdHeadwordWithRoot?> getById(int id) async {
+    final row = await (select(dpdHeadwords).join([
+      leftOuterJoin(dpdRoots, dpdRoots.root.equalsExp(dpdHeadwords.rootKey)),
+    ])..where(dpdHeadwords.id.equals(id))).getSingleOrNull();
+
+    if (row == null) return null;
+
+    return DpdHeadwordWithRoot(
+      row.readTable(dpdHeadwords),
+      row.readTableOrNull(dpdRoots),
+    );
   }
 
   Future<DpdRoot?> getRoot(String rootKey) {
-    return (select(dpdRoots)..where((t) => t.root.equals(rootKey))).getSingleOrNull();
+    return (select(
+      dpdRoots,
+    )..where((t) => t.root.equals(rootKey))).getSingleOrNull();
   }
 
   // ── DB metadata ───────────────────────────────────────────────────────────
 
   Future<String?> getDbValue(String key) async {
-    final row = await (select(dbInfo)..where((t) => t.key.equals(key))).getSingleOrNull();
+    final row = await (select(
+      dbInfo,
+    )..where((t) => t.key.equals(key))).getSingleOrNull();
     return row?.value;
   }
 
   // ── Helpers ───────────────────────────────────────────────────────────────
 
   String _normalizeQuery(String input) {
-    return input.trim().toLowerCase().replaceAll("'", '').replaceAll('\u1e43', '\u1e43');
+    return input
+        .trim()
+        .toLowerCase()
+        .replaceAll("'", '')
+        .replaceAll('\u1e43', '\u1e43');
   }
 }
 
@@ -125,4 +164,55 @@ extension on String {
       i += rune > 0xFFFF ? 2 : 1;
     }
   }
+}
+extension DpdHeadwordGetters on DpdHeadwordWithRoot {
+  int get id => headword.id;
+  String get lemma1 => headword.lemma1;
+  String? get lemma2 => headword.lemma2;
+  String? get pos => headword.pos;
+  String? get grammar => headword.grammar;
+  String? get derivedFrom => headword.derivedFrom;
+  String? get neg => headword.neg;
+  String? get verb => headword.verb;
+  String? get trans => headword.trans;
+  String? get plusCase => headword.plusCase;
+  String? get derivative => headword.derivative;
+  String? get meaning1 => headword.meaning1;
+  String? get meaningLit => headword.meaningLit;
+  String? get meaning2 => headword.meaning2;
+  String? get rootKey => headword.rootKey;
+  String? get rootSign => headword.rootSign;
+  String? get rootBase => headword.rootBase;
+  String? get familyRoot => headword.familyRoot;
+  String? get familyWord => headword.familyWord;
+  String? get familyCompound => headword.familyCompound;
+  String? get familyIdioms => headword.familyIdioms;
+  String? get familySet => headword.familySet;
+  String? get construction => headword.construction;
+  String? get compoundType => headword.compoundType;
+  String? get compoundConstruction => headword.compoundConstruction;
+  String? get source1 => headword.source1;
+  String? get sutta1 => headword.sutta1;
+  String? get example1 => headword.example1;
+  String? get source2 => headword.source2;
+  String? get sutta2 => headword.sutta2;
+  String? get example2 => headword.example2;
+  String? get antonym => headword.antonym;
+  String? get synonym => headword.synonym;
+  String? get variant => headword.variant;
+  String? get stem => headword.stem;
+  String? get pattern => headword.pattern;
+  String? get suffix => headword.suffix;
+  String? get inflectionsHtml => headword.inflectionsHtml;
+  String? get freqHtml => headword.freqHtml;
+  int? get ebtCount => headword.ebtCount;
+  String? get nonIa => headword.nonIa;
+  String? get cognate => headword.cognate;
+  String? get link => headword.link;
+  String? get phonetic => headword.phonetic;
+  String? get varPhonetic => headword.varPhonetic;
+  String? get varText => headword.varText;
+  String? get origin => headword.origin;
+  String? get notes => headword.notes;
+  String? get commentary => headword.commentary;
 }

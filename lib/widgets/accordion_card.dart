@@ -11,7 +11,7 @@ enum _CardState { compact, buttonsVisible }
 class AccordionCard extends ConsumerStatefulWidget {
   const AccordionCard({super.key, required this.headword});
 
-  final DpdHeadword headword;
+  final DpdHeadwordWithRoot headword;
 
   @override
   ConsumerState<AccordionCard> createState() => _AccordionCardState();

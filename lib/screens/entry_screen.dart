@@ -8,7 +8,7 @@ import '../providers/settings_provider.dart';
 import '../widgets/entry_content.dart';
 
 final _entryProvider =
-    FutureProvider.autoDispose.family<DpdHeadword?, int>((ref, id) {
+    FutureProvider.autoDispose.family<DpdHeadwordWithRoot?, int>((ref, id) {
   return ref.watch(daoProvider).getById(id);
 });
 
@@ -45,7 +45,7 @@ class EntryScreen extends ConsumerWidget {
 class _EntryView extends ConsumerWidget {
   const _EntryView({required this.headword});
 
-  final DpdHeadword headword;
+  final DpdHeadwordWithRoot headword;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

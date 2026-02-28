@@ -9,7 +9,7 @@ import 'entry_content.dart';
 class InlineEntryCard extends ConsumerStatefulWidget {
   const InlineEntryCard({super.key, required this.headword});
 
-  final DpdHeadword headword;
+  final DpdHeadwordWithRoot headword;
 
   @override
   ConsumerState<InlineEntryCard> createState() => _InlineEntryCardState();

@@ -4,7 +4,7 @@ import 'package:flutter_html/flutter_html.dart';
 import '../database/database.dart';
 import '../theme/dpd_colors.dart';
 
-List<(String, String)> buildGrammarRows(DpdHeadword h) => [
+List<(String, String)> buildGrammarRows(DpdHeadwordWithRoot h) => [
   if (h.pos != null && h.pos!.isNotEmpty) ('Part of speech', h.pos!),
   if (h.grammar != null && h.grammar!.isNotEmpty) ('Grammar', h.grammar!),
   if (h.derivedFrom != null && h.derivedFrom!.isNotEmpty)
@@ -25,7 +25,7 @@ List<(String, String)> buildGrammarRows(DpdHeadword h) => [
     ('Compound type', h.compoundType!),
 ];
 
-List<(String, String)> buildFamilyRows(DpdHeadword h) => [
+List<(String, String)> buildFamilyRows(DpdHeadwordWithRoot h) => [
   if (h.familyRoot != null && h.familyRoot!.isNotEmpty)
     ('Root family', h.familyRoot!),
   if (h.familyWord != null && h.familyWord!.isNotEmpty)
@@ -41,7 +41,7 @@ List<(String, String)> buildFamilyRows(DpdHeadword h) => [
   if (h.variant != null && h.variant!.isNotEmpty) ('Variants', h.variant!),
 ];
 
-String posGrammarLine(DpdHeadword h) {
+String posGrammarLine(DpdHeadwordWithRoot h) {
   final parts = [
     h.pos,
     h.grammar,
@@ -121,7 +121,7 @@ class EntryExampleBlock extends StatelessWidget {
 class EntrySummaryBox extends StatelessWidget {
   const EntrySummaryBox({super.key, required this.headword});
 
-  final DpdHeadword headword;
+  final DpdHeadwordWithRoot headword;
 
   @override
   Widget build(BuildContext context) {

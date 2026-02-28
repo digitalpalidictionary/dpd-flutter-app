@@ -7,7 +7,7 @@ import '../theme/dpd_colors.dart';
 class WordCard extends StatelessWidget {
   const WordCard({super.key, required this.headword, required this.onTap});
 
-  final DpdHeadword headword;
+  final DpdHeadwordWithRoot headword;
   final VoidCallback onTap;
 
   @override
