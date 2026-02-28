@@ -28,7 +28,7 @@
   - [x] Test set lookup with single and multiple keys
   - [x] Test empty/null key handling
 
-## Phase 2: Reusable FamilyTable Widget
+## Phase 2: Reusable FamilyTable Widget [checkpoint: 56d025b]
 
 - [x] Task 2.1: Create data model for parsed family data (5f4a94d)
   - [x] Create `FamilyEntry` class with fields: `lemma`, `pos`, `meaning`, `completion`
