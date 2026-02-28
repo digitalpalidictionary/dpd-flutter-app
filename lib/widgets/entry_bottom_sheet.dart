@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../database/database.dart';
 import '../providers/settings_provider.dart';
+import '../theme/dpd_colors.dart';
 import 'dpd_html_table.dart';
 import 'entry_content.dart';
 
@@ -33,7 +34,9 @@ class EntryBottomSheet extends ConsumerWidget {
 
     return Material(
       color: theme.colorScheme.surface,
-      borderRadius: const BorderRadius.vertical(top: Radius.circular(7)),
+      borderRadius: BorderRadius.vertical(
+        top: Radius.circular(DpdColors.borderRadiusValue),
+      ),
       child: ListView(
         controller: scrollController,
         children: [

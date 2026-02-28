@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../database/database.dart';
 import '../providers/settings_provider.dart';
+import '../theme/dpd_colors.dart';
 import 'dpd_html_table.dart';
 import 'entry_content.dart';
 
@@ -49,7 +50,7 @@ class _InlineEntryCardState extends ConsumerState<InlineEntryCard> {
       margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
         border: Border.all(color: theme.colorScheme.primary, width: 2),
-        borderRadius: BorderRadius.circular(7),
+        borderRadius: DpdColors.borderRadius,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

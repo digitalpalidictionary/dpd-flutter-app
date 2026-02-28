@@ -13,14 +13,14 @@ class DpdHtmlTable extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(7),
+        borderRadius: DpdColors.borderRadius,
         border: Border.all(
           color: theme.colorScheme.outline.withValues(alpha: 0.2),
           width: 1,
         ),
       ),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(7),
+        borderRadius: DpdColors.borderRadius,
         child: Html(
           data: data,
           style: {

@@ -5,37 +5,47 @@ import '../database/database.dart';
 import '../theme/dpd_colors.dart';
 
 List<(String, String)> buildGrammarRows(DpdHeadword h) => [
-      if (h.pos != null && h.pos!.isNotEmpty) ('Part of speech', h.pos!),
-      if (h.grammar != null && h.grammar!.isNotEmpty) ('Grammar', h.grammar!),
-      if (h.derivedFrom != null && h.derivedFrom!.isNotEmpty) ('Derived from', h.derivedFrom!),
-      if (h.neg != null && h.neg!.isNotEmpty) ('Negative', h.neg!),
-      if (h.verb != null && h.verb!.isNotEmpty) ('Verb type', h.verb!),
-      if (h.trans != null && h.trans!.isNotEmpty) ('Transitive', h.trans!),
-      if (h.plusCase != null && h.plusCase!.isNotEmpty) ('Plus case', h.plusCase!),
-      if (h.derivative != null && h.derivative!.isNotEmpty) ('Derivative', h.derivative!),
-      if (h.stem != null && h.stem!.isNotEmpty) ('Stem', h.stem!),
-      if (h.pattern != null && h.pattern!.isNotEmpty) ('Pattern', h.pattern!),
-      if (h.rootKey != null && h.rootKey!.isNotEmpty) ('Root', h.rootKey!),
-      if (h.rootSign != null && h.rootSign!.isNotEmpty) ('Root sign', h.rootSign!),
-      if (h.rootBase != null && h.rootBase!.isNotEmpty) ('Root base', h.rootBase!),
-      if (h.suffix != null && h.suffix!.isNotEmpty) ('Suffix', h.suffix!),
-      if (h.compoundType != null && h.compoundType!.isNotEmpty) ('Compound type', h.compoundType!),
-    ];
+  if (h.pos != null && h.pos!.isNotEmpty) ('Part of speech', h.pos!),
+  if (h.grammar != null && h.grammar!.isNotEmpty) ('Grammar', h.grammar!),
+  if (h.derivedFrom != null && h.derivedFrom!.isNotEmpty)
+    ('Derived from', h.derivedFrom!),
+  if (h.neg != null && h.neg!.isNotEmpty) ('Negative', h.neg!),
+  if (h.verb != null && h.verb!.isNotEmpty) ('Verb type', h.verb!),
+  if (h.trans != null && h.trans!.isNotEmpty) ('Transitive', h.trans!),
+  if (h.plusCase != null && h.plusCase!.isNotEmpty) ('Plus case', h.plusCase!),
+  if (h.derivative != null && h.derivative!.isNotEmpty)
+    ('Derivative', h.derivative!),
+  if (h.stem != null && h.stem!.isNotEmpty) ('Stem', h.stem!),
+  if (h.pattern != null && h.pattern!.isNotEmpty) ('Pattern', h.pattern!),
+  if (h.rootKey != null && h.rootKey!.isNotEmpty) ('Root', h.rootKey!),
+  if (h.rootSign != null && h.rootSign!.isNotEmpty) ('Root sign', h.rootSign!),
+  if (h.rootBase != null && h.rootBase!.isNotEmpty) ('Root base', h.rootBase!),
+  if (h.suffix != null && h.suffix!.isNotEmpty) ('Suffix', h.suffix!),
+  if (h.compoundType != null && h.compoundType!.isNotEmpty)
+    ('Compound type', h.compoundType!),
+];
 
 List<(String, String)> buildFamilyRows(DpdHeadword h) => [
-      if (h.familyRoot != null && h.familyRoot!.isNotEmpty) ('Root family', h.familyRoot!),
-      if (h.familyWord != null && h.familyWord!.isNotEmpty) ('Word family', h.familyWord!),
-      if (h.familyCompound != null && h.familyCompound!.isNotEmpty)
-        ('Compound members', h.familyCompound!),
-      if (h.familyIdioms != null && h.familyIdioms!.isNotEmpty) ('Idioms', h.familyIdioms!),
-      if (h.familySet != null && h.familySet!.isNotEmpty) ('Thematic sets', h.familySet!),
-      if (h.antonym != null && h.antonym!.isNotEmpty) ('Antonyms', h.antonym!),
-      if (h.synonym != null && h.synonym!.isNotEmpty) ('Synonyms', h.synonym!),
-      if (h.variant != null && h.variant!.isNotEmpty) ('Variants', h.variant!),
-    ];
+  if (h.familyRoot != null && h.familyRoot!.isNotEmpty)
+    ('Root family', h.familyRoot!),
+  if (h.familyWord != null && h.familyWord!.isNotEmpty)
+    ('Word family', h.familyWord!),
+  if (h.familyCompound != null && h.familyCompound!.isNotEmpty)
+    ('Compound members', h.familyCompound!),
+  if (h.familyIdioms != null && h.familyIdioms!.isNotEmpty)
+    ('Idioms', h.familyIdioms!),
+  if (h.familySet != null && h.familySet!.isNotEmpty)
+    ('Thematic sets', h.familySet!),
+  if (h.antonym != null && h.antonym!.isNotEmpty) ('Antonyms', h.antonym!),
+  if (h.synonym != null && h.synonym!.isNotEmpty) ('Synonyms', h.synonym!),
+  if (h.variant != null && h.variant!.isNotEmpty) ('Variants', h.variant!),
+];
 
 String posGrammarLine(DpdHeadword h) {
-  final parts = [h.pos, h.grammar].whereType<String>().where((s) => s.isNotEmpty);
+  final parts = [
+    h.pos,
+    h.grammar,
+  ].whereType<String>().where((s) => s.isNotEmpty);
   return parts.join(' · ');
 }
 
@@ -63,9 +73,7 @@ class EntryLabelValue extends StatelessWidget {
               ),
             ),
           ),
-          Expanded(
-            child: Text(value, style: theme.textTheme.bodyMedium),
-          ),
+          Expanded(child: Text(value, style: theme.textTheme.bodyMedium)),
         ],
       ),
     );
@@ -120,7 +128,7 @@ class EntrySummaryBox extends StatelessWidget {
       margin: const EdgeInsets.fromLTRB(8, 8, 8, 4),
       decoration: BoxDecoration(
         border: Border.all(color: theme.colorScheme.primary, width: 2),
-        borderRadius: BorderRadius.circular(7),
+        borderRadius: DpdColors.borderRadius,
       ),
       padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
       child: Column(
@@ -131,7 +139,8 @@ class EntrySummaryBox extends StatelessWidget {
               '${headword.pos}${headword.meaning1 != null && headword.meaning1!.isNotEmpty ? ' (${headword.meaning1})' : ''}',
               style: theme.textTheme.bodyLarge,
             ),
-          if (headword.meaningLit != null && headword.meaningLit!.isNotEmpty) ...[
+          if (headword.meaningLit != null &&
+              headword.meaningLit!.isNotEmpty) ...[
             const SizedBox(height: 6),
             Text(
               'lit. ${headword.meaningLit}',
@@ -141,7 +150,8 @@ class EntrySummaryBox extends StatelessWidget {
               ),
             ),
           ],
-          if (headword.construction != null && headword.construction!.isNotEmpty) ...[
+          if (headword.construction != null &&
+              headword.construction!.isNotEmpty) ...[
             const SizedBox(height: 6),
             Text(
               headword.construction!,
@@ -182,7 +192,7 @@ class DpdSectionButton extends StatelessWidget {
         decoration: BoxDecoration(
           color: bg,
           border: Border.all(color: bg, width: 1),
-          borderRadius: BorderRadius.circular(7),
+          borderRadius: DpdColors.borderRadius,
           boxShadow: DpdColors.shadowDefault,
         ),
         child: Text(

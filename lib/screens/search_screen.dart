@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../database/database.dart';
 import '../providers/search_provider.dart';
 import '../providers/settings_provider.dart';
+import '../theme/dpd_colors.dart';
 import '../utils/velthuis.dart';
 import '../widgets/accordion_card.dart';
 import '../widgets/entry_bottom_sheet.dart';
@@ -63,14 +64,23 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
               color: theme.colorScheme.onSurface.withValues(alpha: 0.4),
             ),
             enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(7),
-              borderSide: BorderSide(color: theme.colorScheme.primary, width: 1.5),
+              borderRadius: DpdColors.borderRadius,
+              borderSide: BorderSide(
+                color: theme.colorScheme.primary,
+                width: 1.5,
+              ),
             ),
             focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(7),
-              borderSide: BorderSide(color: theme.colorScheme.primary, width: 2),
+              borderRadius: DpdColors.borderRadius,
+              borderSide: BorderSide(
+                color: theme.colorScheme.primary,
+                width: 2,
+              ),
             ),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 12,
+              vertical: 10,
+            ),
           ),
         ),
         actions: [
@@ -176,10 +186,8 @@ class _BottomSheetList extends StatelessWidget {
         initialChildSize: 0.6,
         minChildSize: 0.3,
         maxChildSize: 0.95,
-        builder: (_, controller) => EntryBottomSheet(
-          headword: headword,
-          scrollController: controller,
-        ),
+        builder: (_, controller) =>
+            EntryBottomSheet(headword: headword, scrollController: controller),
       ),
     );
   }
@@ -203,8 +211,8 @@ class _EmptyPrompt extends StatelessWidget {
           Text(
             'Type a Pāḷi word to begin',
             style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  color: Theme.of(context).colorScheme.outline,
-                ),
+              color: Theme.of(context).colorScheme.outline,
+            ),
           ),
         ],
       ),
@@ -223,8 +231,8 @@ class _NoResults extends StatelessWidget {
       child: Text(
         'No results for "$query"',
         style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-              color: Theme.of(context).colorScheme.outline,
-            ),
+          color: Theme.of(context).colorScheme.outline,
+        ),
       ),
     );
   }

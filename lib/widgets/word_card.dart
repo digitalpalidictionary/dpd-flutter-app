@@ -24,7 +24,7 @@ class WordCard extends StatelessWidget {
         child: Container(
           decoration: BoxDecoration(
             border: Border.all(color: theme.colorScheme.primary, width: 2),
-            borderRadius: BorderRadius.circular(7),
+            borderRadius: DpdColors.borderRadius,
           ),
           padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
           margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),

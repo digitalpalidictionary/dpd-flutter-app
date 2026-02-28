@@ -13,8 +13,12 @@ abstract final class DpdColors {
 
   // Readable accent text
   // --primary-text: hsl(205, 79%, 48%)
-  static final Color primaryText =
-      HSLColor.fromAHSL(1, 205, 0.79, 0.48).toColor();
+  static final Color primaryText = HSLColor.fromAHSL(
+    1,
+    205,
+    0.79,
+    0.48,
+  ).toColor();
 
   // Light mode backgrounds
   // --light: hsl(198, 100%, 95%)
@@ -41,8 +45,12 @@ abstract final class DpdColors {
   static final Color grayDark = HSLColor.fromAHSL(1, 0, 0, 0.25).toColor();
 
   // --gray-transparent: hsla(0, 0%, 50%, 0.25)
-  static final Color grayTransparent =
-      HSLColor.fromAHSL(0.25, 0, 0, 0.5).toColor();
+  static final Color grayTransparent = HSLColor.fromAHSL(
+    0.25,
+    0,
+    0,
+    0.5,
+  ).toColor();
 
   // Shadows
   // --shadow-default: 2px 2px 4px hsla(0, 0%, 20%, 0.4)
@@ -81,4 +89,11 @@ abstract final class DpdColors {
     HSLColor.fromAHSL(1, 216, 0.9, 0.5).toColor(), // freq9
     HSLColor.fromAHSL(1, 218, 0.9, 0.5).toColor(), // freq10
   ];
+
+  // Visual Styling Constants
+  // Set to 9.0 to match the visual weight of webapp's 7px radius.
+  static const double borderRadiusValue = 9.0;
+  static final BorderRadius borderRadius = BorderRadius.circular(
+    borderRadiusValue,
+  );
 }
