@@ -78,7 +78,7 @@
 
 ## Phase 4: User Verification & Fix-up
 
-- [ ] Task 4.1: User visual verification of root family section
+- [~] Task 4.1: User visual verification of root family section
   - [ ] User tests root family button and section on multiple entries
   - [ ] Fix any layout, data, or styling issues found
 
