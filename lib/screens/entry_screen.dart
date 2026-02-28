@@ -127,6 +127,10 @@ class _EntryView extends ConsumerWidget {
                                 sutta: headword.sutta2,
                                 source: headword.source2,
                               ),
+                            EntryExampleFooter(
+                              headwordId: headword.id,
+                              lemma1: headword.lemma1,
+                            ),
                           ],
                         ),
                       ),

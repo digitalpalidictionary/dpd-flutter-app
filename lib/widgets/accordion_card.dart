@@ -156,6 +156,10 @@ class _AccordionCardState extends ConsumerState<AccordionCard> {
                               sutta: h.sutta2,
                               source: h.source2,
                             ),
+                          EntryExampleFooter(
+                            headwordId: h.id,
+                            lemma1: h.lemma1,
+                          ),
                         ],
                       ),
                     ),
