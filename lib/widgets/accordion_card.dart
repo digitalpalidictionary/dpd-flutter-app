@@ -49,7 +49,8 @@ class _AccordionCardState extends ConsumerState<AccordionCard> {
 
     final grammarRows = buildGrammarRows(h);
     final familyRows = buildFamilyRows(h);
-    final hasInflections = (h.inflectionsHtml != null && h.inflectionsHtml!.isNotEmpty) ||
+    final hasInflections =
+        (h.inflectionsHtml != null && h.inflectionsHtml!.isNotEmpty) ||
         (h.freqHtml != null && h.freqHtml!.isNotEmpty);
     final hasEx1 = h.example1 != null && h.example1!.isNotEmpty;
     final hasEx2 = h.example2 != null && h.example2!.isNotEmpty;
@@ -106,7 +107,9 @@ class _AccordionCardState extends ConsumerState<AccordionCard> {
                         h.meaning1!,
                         style: theme.textTheme.bodyMedium,
                         maxLines: isExpanded ? null : 2,
-                        overflow: isExpanded ? TextOverflow.visible : TextOverflow.ellipsis,
+                        overflow: isExpanded
+                            ? TextOverflow.visible
+                            : TextOverflow.ellipsis,
                       ),
                     if (isExpanded) ...[
                       if (h.meaningLit != null && h.meaningLit!.isNotEmpty) ...[
@@ -119,7 +122,8 @@ class _AccordionCardState extends ConsumerState<AccordionCard> {
                           ),
                         ),
                       ],
-                      if (h.construction != null && h.construction!.isNotEmpty) ...[
+                      if (h.construction != null &&
+                          h.construction!.isNotEmpty) ...[
                         const SizedBox(height: 4),
                         Text(
                           h.construction!,
@@ -140,33 +144,39 @@ class _AccordionCardState extends ConsumerState<AccordionCard> {
                   child: Divider(height: 1),
                 ),
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(7, 0, 7, 3),
+                  padding: const EdgeInsets.fromLTRB(7, 2, 7, 3),
                   child: Wrap(
-                    spacing: 4,
+                    spacing: 0,
+                    runSpacing: 0,
                     children: [
                       if (grammarRows.isNotEmpty)
                         DpdSectionButton(
                           label: 'Grammar',
                           isActive: _grammarOpen,
-                          onTap: () => setState(() => _grammarOpen = !_grammarOpen),
+                          onTap: () =>
+                              setState(() => _grammarOpen = !_grammarOpen),
                         ),
                       if (hasExamples)
                         DpdSectionButton(
                           label: 'Examples',
                           isActive: _examplesOpen,
-                          onTap: () => setState(() => _examplesOpen = !_examplesOpen),
+                          onTap: () =>
+                              setState(() => _examplesOpen = !_examplesOpen),
                         ),
                       if (hasInflections)
                         DpdSectionButton(
                           label: 'Inflections',
                           isActive: _inflectionsOpen,
-                          onTap: () => setState(() => _inflectionsOpen = !_inflectionsOpen),
+                          onTap: () => setState(
+                            () => _inflectionsOpen = !_inflectionsOpen,
+                          ),
                         ),
                       if (familyRows.isNotEmpty)
                         DpdSectionButton(
                           label: 'Families',
                           isActive: _familiesOpen,
-                          onTap: () => setState(() => _familiesOpen = !_familiesOpen),
+                          onTap: () =>
+                              setState(() => _familiesOpen = !_familiesOpen),
                         ),
                       if (hasNotes)
                         DpdSectionButton(
@@ -220,7 +230,8 @@ class _AccordionCardState extends ConsumerState<AccordionCard> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        if (h.inflectionsHtml != null && h.inflectionsHtml!.isNotEmpty)
+                        if (h.inflectionsHtml != null &&
+                            h.inflectionsHtml!.isNotEmpty)
                           SingleChildScrollView(
                             scrollDirection: Axis.horizontal,
                             padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -283,7 +294,9 @@ class _SectionContent extends StatelessWidget {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
+        color: Theme.of(
+          context,
+        ).colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
       ),
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: child,

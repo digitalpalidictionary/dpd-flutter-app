@@ -37,7 +37,8 @@ class _InlineEntryCardState extends ConsumerState<InlineEntryCard> {
 
     final grammarRows = buildGrammarRows(h);
     final familyRows = buildFamilyRows(h);
-    final hasInflections = (h.inflectionsHtml != null && h.inflectionsHtml!.isNotEmpty) ||
+    final hasInflections =
+        (h.inflectionsHtml != null && h.inflectionsHtml!.isNotEmpty) ||
         (h.freqHtml != null && h.freqHtml!.isNotEmpty);
     final hasEx1 = h.example1 != null && h.example1!.isNotEmpty;
     final hasEx2 = h.example2 != null && h.example2!.isNotEmpty;
@@ -112,9 +113,10 @@ class _InlineEntryCardState extends ConsumerState<InlineEntryCard> {
 
           // Toggle buttons row
           Padding(
-            padding: const EdgeInsets.fromLTRB(7, 0, 7, 3),
+            padding: const EdgeInsets.fromLTRB(7, 2, 7, 3),
             child: Wrap(
-              spacing: 4,
+              spacing: 0,
+              runSpacing: 0,
               children: [
                 if (grammarRows.isNotEmpty)
                   DpdSectionButton(
@@ -132,7 +134,8 @@ class _InlineEntryCardState extends ConsumerState<InlineEntryCard> {
                   DpdSectionButton(
                     label: 'Inflections',
                     isActive: _inflectionsOpen,
-                    onTap: () => setState(() => _inflectionsOpen = !_inflectionsOpen),
+                    onTap: () =>
+                        setState(() => _inflectionsOpen = !_inflectionsOpen),
                   ),
                 if (familyRows.isNotEmpty)
                   DpdSectionButton(
@@ -192,7 +195,8 @@ class _InlineEntryCardState extends ConsumerState<InlineEntryCard> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  if (h.inflectionsHtml != null && h.inflectionsHtml!.isNotEmpty)
+                  if (h.inflectionsHtml != null &&
+                      h.inflectionsHtml!.isNotEmpty)
                     SingleChildScrollView(
                       scrollDirection: Axis.horizontal,
                       padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -201,7 +205,10 @@ class _InlineEntryCardState extends ConsumerState<InlineEntryCard> {
                   if (h.freqHtml != null && h.freqHtml!.isNotEmpty) ...[
                     Padding(
                       padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
-                      child: Text('Frequency', style: Theme.of(context).textTheme.titleSmall),
+                      child: Text(
+                        'Frequency',
+                        style: Theme.of(context).textTheme.titleSmall,
+                      ),
                     ),
                     SingleChildScrollView(
                       scrollDirection: Axis.horizontal,
@@ -249,7 +256,9 @@ class _SectionContent extends StatelessWidget {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
+        color: Theme.of(
+          context,
+        ).colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
       ),
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: child,
