@@ -150,7 +150,6 @@ class _AccordionCardState extends ConsumerState<AccordionCard> {
                               sutta: h.sutta1,
                               source: h.source1,
                             ),
-                          if (hasEx1 && hasEx2) const SizedBox(height: 16),
                           if (hasEx2)
                             EntryExampleBlock(
                               example: h.example2!,

@@ -121,7 +121,6 @@ class _EntryView extends ConsumerWidget {
                                 sutta: headword.sutta1,
                                 source: headword.source1,
                               ),
-                            if (hasEx1 && hasEx2) const SizedBox(height: 16),
                             if (hasEx2)
                               EntryExampleBlock(
                                 example: headword.example2!,
