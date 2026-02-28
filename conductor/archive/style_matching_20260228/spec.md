@@ -8,50 +8,30 @@ Align the Flutter app's visual styling to exactly match the DPD webapp dictionar
 
 - **Webapp CSS:** `/home/bodhirasa/MyFiles/3_Active/dpd-db/exporter/webapp/static/dpd.css`
 - **Webapp Layout:** `/home/bodhirasa/MyFiles/3_Active/dpd-db/exporter/webapp/static/home.css`
+- **Webapp Templates:** `/home/bodhirasa/MyFiles/3_Active/dpd-db/exporter/webapp/templates/`
+- **GoldenDict Templates:** `/home/bodhirasa/MyFiles/3_Active/dpd-db/exporter/goldendict/templates/`
 - **Product Guidelines:** `conductor/product-guidelines.md`
 
-## Color System (from webapp CSS variables)
-
-| Token | Light Mode | Dark Mode | Usage |
-|-------|-----------|-----------|-------|
-| primary | `hsl(198, 100%, 50%)` | same | Borders, buttons, accents |
-| primary-alt | `hsl(205, 100%, 40%)` | same | Pressed/hover states |
-| primary-text | `hsl(205, 79%, 48%)` | same | Readable accent text |
-| light | `hsl(198, 100%, 95%)` | — | Light mode background |
-| light-shade | `hsl(198, 100%, 93%)` | — | Light mode alt background |
-| dark | `hsl(198, 100%, 5%)` | — | Dark mode background |
-| dark-shade | `hsl(198, 100%, 7%)` | — | Dark mode alt background |
-| gray | `hsl(0, 0%, 50%)` | same | Muted text, dividers |
-| gray-light | `hsl(0, 0%, 75%)` | same | Light gray |
-| gray-dark | `hsl(0, 0%, 25%)` | same | Dark gray |
-| gray-transparent | `hsla(0, 0%, 50%, 0.25)` | same | Table headers, overlays |
-| shadow-default | `2px 2px 4px hsla(0, 0%, 20%, 0.4)` | same | Button shadow |
-| shadow-hover | `2px 2px 4px hsla(0, 0%, 20%, 0.5)` | same | Button hover shadow |
-
-### Frequency Heatmap Colors (10 levels)
-- `freq0` through `freq10`: `hsla(198–218, 90%, 50%, 0.1–1.0)`
-
-## Typography
-
-| Property | Value |
-|----------|-------|
-| Default font | Inter, sans-serif |
-| Serif option | Noto Serif (user toggle) |
-| Base size | 1em (user-adjustable) |
-| Line height | 150% |
-| h2 | 150% (1.5em) |
-| h3 (headword) | 130% (1.3em) |
-| Buttons | 80% (0.8em) |
-| Bold weight | 700 |
+...
 
 ## Component Styles
 
-### Entry Container (.dpd)
-- Border: 2px solid primary
-- Border-radius: 7px
-- Padding: 3px 7px
-- Line-height: 150%
-- Text-align: left
+### Entry Hierarchy (Sibling-based)
+1. **Lemma (h3)**: No border, bold weight 700.
+2. **Summary Box (.dpd.summary)**: 
+   - Contains: POS, Plus Case, Meaning, Summary.
+   - Border: 2px solid primary (light) / gray-transparent (dark).
+   - Radius: 9.0 (visual match for 7px).
+   - Padding: 3px 7px.
+3. **Button Box (.button-box)**: 
+   - Sibling below Summary Box.
+   - Flex-wrap: wrap.
+   - Margin: 2px 0px 3px 0px.
+4. **Section Content (.dpd.content)**:
+   - Separate bordered container per section.
+   - Border: 2px solid primary (light) / gray-transparent (dark).
+   - Radius: 9.0.
+   - Background: surfaceContainerHighest (0.5 alpha).
 
 ### Buttons (.dpd-button)
 - Background: primary
