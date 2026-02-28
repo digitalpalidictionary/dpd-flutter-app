@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../database/database.dart';
 import '../theme/dpd_colors.dart';
@@ -84,12 +85,34 @@ class EntryExampleBlock extends StatelessWidget {
         Html(data: example),
         if (sutta != null || source != null) ...[
           const SizedBox(height: 4),
-          Text(
-            [source, sutta].whereType<String>().join(' '),
-            style: theme.textTheme.bodySmall?.copyWith(
-              color: DpdColors.primaryText,
-              fontStyle: FontStyle.italic,
-            ),
+          Html(
+            data:
+                '<p class="sutta">${[source, sutta].whereType<String>().join(' ')}</p>',
+            style: {
+              'p.sutta': Style(
+                color: DpdColors.primaryText,
+                fontStyle: FontStyle.italic,
+                fontSize: FontSize(
+                  theme.textTheme.bodySmall?.fontSize ?? 12.0,
+                ),
+                margin: Margins.zero,
+                padding: HtmlPaddings.zero,
+              ),
+              'a.sutta_link': Style(
+                color: DpdColors.primaryText,
+                fontStyle: FontStyle.italic,
+                fontWeight: FontWeight.bold,
+                textDecoration: TextDecoration.none,
+              ),
+            },
+            onLinkTap: (url, attributes, element) async {
+              if (url != null) {
+                await launchUrl(
+                  Uri.parse(url),
+                  mode: LaunchMode.externalApplication,
+                );
+              }
+            },
           ),
         ],
       ],
