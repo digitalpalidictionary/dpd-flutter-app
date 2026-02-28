@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../database/database.dart';
 import '../providers/database_provider.dart';
 import '../providers/settings_provider.dart';
+import '../providers/template_cache_provider.dart';
 import '../widgets/entry_content.dart';
 import '../widgets/grammar_table.dart';
+import '../widgets/inflection_section.dart';
 
 final _entryProvider = FutureProvider.autoDispose
     .family<DpdHeadwordWithRoot?, int>((ref, id) {
@@ -51,11 +52,10 @@ class _EntryView extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final settings = ref.watch(settingsProvider);
+    final templateCache =
+        ref.watch(templateCacheProvider).valueOrNull ?? {};
 
-    final hasInflections =
-        (headword.inflectionsHtml != null &&
-            headword.inflectionsHtml!.isNotEmpty) ||
-        (headword.freqHtml != null && headword.freqHtml!.isNotEmpty);
+    final hasInflections = hasInflectionContent(headword);
     final familySections = buildFamilyRows(headword);
     final hasEx1 = headword.example1 != null && headword.example1!.isNotEmpty;
     final hasEx2 = headword.example2 != null && headword.example2!.isNotEmpty;
@@ -133,31 +133,13 @@ class _EntryView extends ConsumerWidget {
                 // Inflections section
                 if (hasInflections)
                   ExpansionTile(
-                    title: const Text('Inflections'),
+                    title: Text(inflectionButtonLabel(headword.pos)),
                     initiallyExpanded: false,
                     children: [
-                      if (headword.inflectionsHtml != null &&
-                          headword.inflectionsHtml!.isNotEmpty)
-                        SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                          child: Html(data: headword.inflectionsHtml!),
-                        ),
-                      if (headword.freqHtml != null &&
-                          headword.freqHtml!.isNotEmpty) ...[
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
-                          child: Text(
-                            'Frequency',
-                            style: theme.textTheme.titleSmall,
-                          ),
-                        ),
-                        SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                          child: Html(data: headword.freqHtml!),
-                        ),
-                      ],
+                      InflectionSection(
+                        headword: headword,
+                        templateCache: templateCache,
+                      ),
                     ],
                   ),
 
