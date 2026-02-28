@@ -152,6 +152,7 @@ class InflectionTable extends StatelessWidget {
   /// Matches CSS `table.inflection th`.
   Widget _thCell({required Color headerBg, required Widget child}) {
     return TableCell(
+      verticalAlignment: TableCellVerticalAlignment.fill,
       child: Padding(
         padding: const EdgeInsets.all(1),
         child: Container(
@@ -172,6 +173,7 @@ class InflectionTable extends StatelessWidget {
   /// Matches CSS `table.inflection td`.
   Widget _tdCell({required Widget child}) {
     return TableCell(
+      verticalAlignment: TableCellVerticalAlignment.fill,
       child: Padding(
         padding: const EdgeInsets.all(1),
         child: Container(
