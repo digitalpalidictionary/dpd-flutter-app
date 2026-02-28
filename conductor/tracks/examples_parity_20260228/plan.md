@@ -40,11 +40,11 @@
   - [x] Apply the same change in `entry_screen.dart`
   - [x] Commit: `fix: examples container horizontal padding 7px matches webapp`
 
-- [ ] Task: Remove inter-example spacer — UI
-  - [ ] In `accordion_card.dart`: remove `SizedBox(height: 16)` between example blocks
-  - [ ] Apply the same removal in `entry_bottom_sheet.dart`
-  - [ ] Apply the same removal in `entry_screen.dart`
-  - [ ] Commit: `fix: remove inter-example gap matching webapp paragraph flow`
+- [x] Task: Remove inter-example spacer — UI [a1f3156]
+  - [x] In `accordion_card.dart`: remove `SizedBox(height: 16)` between example blocks
+  - [x] Apply the same removal in `entry_bottom_sheet.dart`
+  - [x] Apply the same removal in `entry_screen.dart`
+  - [x] Commit: `fix: remove inter-example gap matching webapp paragraph flow`
 
 ---
 
