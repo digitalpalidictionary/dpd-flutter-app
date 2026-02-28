@@ -55,9 +55,9 @@
   - [x] Update button label from "Inflections" to "Declension"/"Conjugation" based on pos
   - [x] Keep frequency rendering via DpdHtmlTable unchanged
 
-- [ ] Task: Integrate into EntryScreen
-  - [ ] Replace current raw Html inflection rendering with new InflectionSection
-  - [ ] Update ExpansionTile title to "Declension"/"Conjugation"
+- [x] Task: Integrate into EntryScreen [f74562f]
+  - [x] Replace current raw Html inflection rendering with new InflectionSection
+  - [x] Update ExpansionTile title to "Declension"/"Conjugation"
 
 - [ ] Task: Add DpdFooter to inflection section
   - [ ] Feedback link matching grammar/examples footer pattern
