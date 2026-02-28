@@ -15,7 +15,7 @@ class DpdHeadwords extends Table {
   TextColumn get meaning1 => text().named('meaning_1').nullable()();
   TextColumn get meaningLit => text().named('meaning_lit').nullable()();
   TextColumn get meaning2 => text().named('meaning_2').nullable()();
-  TextColumn get rootKey => text().named('root_key').nullable()();
+  TextColumn get rootKey => text().named('root_key').references(DpdRoots, #root).nullable()();
   TextColumn get rootSign => text().named('root_sign').nullable()();
   TextColumn get rootBase => text().named('root_base').nullable()();
   TextColumn get familyRoot => text().named('family_root').nullable()();
@@ -41,6 +41,13 @@ class DpdHeadwords extends Table {
   TextColumn get inflectionsHtml => text().named('inflections_html').nullable()();
   TextColumn get freqHtml => text().named('freq_html').nullable()();
   IntColumn get ebtCount => integer().named('ebt_count').nullable()();
+  TextColumn get nonIa => text().named('non_ia').nullable()();
+  TextColumn get cognate => text().nullable()();
+  TextColumn get link => text().nullable()();
+  TextColumn get phonetic => text().nullable()();
+  TextColumn get varPhonetic => text().named('var_phonetic').nullable()();
+  TextColumn get varText => text().named('var_text').nullable()();
+  TextColumn get origin => text().nullable()();
   TextColumn get notes => text().nullable()();
   TextColumn get commentary => text().nullable()();
 
