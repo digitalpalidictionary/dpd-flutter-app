@@ -24,9 +24,9 @@
 - [x] Task: Implement dark mode with exact webapp colors (dark background, light text, gray-transparent borders, primary accent unchanged) a26b4d9
 - [x] Task: Conductor - User Manual Verification 'Tables & Dark Mode' (Protocol in workflow.md) 0f3b708
 
-## Phase 4: Final Polish
+## Phase 4: Final Polish [checkpoint: 65d4ecc]
 
 - [x] Task: Style search input to match webapp (primary border, 7px radius, correct padding and focus states) b9c2cab
-- [~] Task: Review and align all remaining spacing, margins, and padding with webapp values
-- [ ] Task: Verify visual parity by comparing app screenshots side-by-side with webapp on same entries
-- [ ] Task: Conductor - User Manual Verification 'Final Polish' (Protocol in workflow.md)
+- [x] Task: Refactor entry hierarchy to sibling-based (Lemma > Summary Box > Buttons > Sections) and align all remaining spacing 292d9b6
+- [x] Task: Verify visual parity by comparing app screenshots side-by-side with webapp on same entries 65d4ecc
+- [x] Task: Conductor - User Manual Verification 'Final Polish' (Protocol in workflow.md) 65d4ecc
