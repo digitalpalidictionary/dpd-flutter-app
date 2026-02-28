@@ -21,10 +21,7 @@ class DpdHtmlTable extends StatelessWidget {
         borderRadius: DpdColors.borderRadius,
         border: isBorderless
             ? null
-            : Border.all(
-                color: theme.colorScheme.outline.withValues(alpha: 0.2),
-                width: 1,
-              ),
+            : Border.all(color: theme.colorScheme.primary, width: 2),
       ),
       child: ClipRRect(
         borderRadius: DpdColors.borderRadius,
@@ -56,7 +53,9 @@ class DpdHtmlTable extends StatelessWidget {
               border: isBorderless
                   ? Border.all(width: 0, color: Colors.transparent)
                   : Border.all(
-                      color: theme.colorScheme.outline.withValues(alpha: 0.2),
+                      color: theme.colorScheme.outlineVariant.withValues(
+                        alpha: 0.5,
+                      ),
                       width: 1,
                     ),
               textAlign: isBorderless ? TextAlign.left : TextAlign.center,

@@ -68,7 +68,7 @@ class _AccordionCardState extends ConsumerState<AccordionCard> {
             children: [
               // Header (Lemma) - above the box
               Padding(
-                padding: const EdgeInsets.fromLTRB(12, 4, 12, 1),
+                padding: const EdgeInsets.fromLTRB(12, 10, 12, 1),
                 child: Text(
                   h.lemma1,
                   style: theme.textTheme.titleLarge?.copyWith(

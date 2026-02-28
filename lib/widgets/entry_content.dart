@@ -131,7 +131,7 @@ class EntrySummaryBox extends StatelessWidget {
       width: double.infinity,
       margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
       decoration: BoxDecoration(
-        border: Border.all(color: theme.colorScheme.outline, width: 2),
+        border: Border.all(color: theme.colorScheme.primary, width: 2),
         borderRadius: DpdColors.borderRadius,
       ),
       padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
@@ -140,10 +140,7 @@ class EntrySummaryBox extends StatelessWidget {
           style: theme.textTheme.bodyMedium?.copyWith(height: 1.5),
           children: [
             if (headword.pos != null && headword.pos!.isNotEmpty)
-              TextSpan(
-                text: '${headword.pos}. ',
-                style: const TextStyle(fontStyle: FontStyle.italic),
-              ),
+              TextSpan(text: '${headword.pos}. '),
             if (headword.plusCase != null && headword.plusCase!.isNotEmpty)
               TextSpan(text: '(${headword.plusCase}) '),
             if (headword.meaning1 != null && headword.meaning1!.isNotEmpty)
@@ -152,7 +149,6 @@ class EntrySummaryBox extends StatelessWidget {
               TextSpan(
                 text: 'lit. ${headword.meaningLit} ',
                 style: theme.textTheme.bodySmall?.copyWith(
-                  fontStyle: FontStyle.italic,
                   color: theme.colorScheme.onSurfaceVariant,
                 ),
               ),
@@ -178,7 +174,7 @@ class DpdSectionContainer extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
       decoration: BoxDecoration(
         color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
-        border: Border.all(color: theme.colorScheme.outline, width: 2),
+        border: Border.all(color: theme.colorScheme.primary, width: 2),
         borderRadius: DpdColors.borderRadius,
       ),
       padding: const EdgeInsets.symmetric(vertical: 4),
@@ -203,8 +199,14 @@ class DpdSectionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bg = isActive ? DpdColors.primaryAlt : DpdColors.primary;
-    final fg = isActive ? DpdColors.light : DpdColors.dark;
+    final theme = Theme.of(context);
+    final bg = isActive
+        ? theme.colorScheme.secondary
+        : theme.colorScheme.primary;
+    final fg = isActive
+        ? theme.colorScheme.onSecondary
+        : theme.colorScheme.onPrimary;
+    final shadow = isActive ? DpdColors.shadowHover : DpdColors.shadowDefault;
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -214,7 +216,7 @@ class DpdSectionButton extends StatelessWidget {
           color: bg,
           border: Border.all(color: bg, width: 1),
           borderRadius: DpdColors.borderRadius,
-          boxShadow: DpdColors.shadowDefault,
+          boxShadow: shadow,
         ),
         child: Text(
           label,

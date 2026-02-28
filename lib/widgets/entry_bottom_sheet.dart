@@ -7,7 +7,7 @@ import '../theme/dpd_colors.dart';
 import 'dpd_html_table.dart';
 import 'entry_content.dart';
 
-class EntryBottomSheet extends ConsumerWidget {
+class EntryBottomSheet extends ConsumerStatefulWidget {
   const EntryBottomSheet({
     super.key,
     required this.headword,
@@ -18,10 +18,28 @@ class EntryBottomSheet extends ConsumerWidget {
   final ScrollController scrollController;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<EntryBottomSheet> createState() => _EntryBottomSheetState();
+}
+
+class _EntryBottomSheetState extends ConsumerState<EntryBottomSheet> {
+  bool _grammarOpen = false;
+  bool _examplesOpen = false;
+  bool _inflectionsOpen = false;
+  bool _familiesOpen = false;
+  bool _notesOpen = false;
+
+  @override
+  void initState() {
+    super.initState();
+    final settings = ref.read(settingsProvider);
+    _grammarOpen = settings.grammarOpen;
+    _examplesOpen = settings.examplesOpen;
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final settings = ref.watch(settingsProvider);
-    final h = headword;
+    final h = widget.headword;
 
     final grammarRows = buildGrammarRows(h);
     final familyRows = buildFamilyRows(h);
@@ -31,6 +49,7 @@ class EntryBottomSheet extends ConsumerWidget {
     final hasEx1 = h.example1 != null && h.example1!.isNotEmpty;
     final hasEx2 = h.example2 != null && h.example2!.isNotEmpty;
     final hasExamples = hasEx1 || hasEx2;
+    final hasNotes = h.notes != null && h.notes!.isNotEmpty;
 
     return Material(
       color: theme.colorScheme.surface,
@@ -38,7 +57,7 @@ class EntryBottomSheet extends ConsumerWidget {
         top: Radius.circular(DpdColors.borderRadiusValue),
       ),
       child: ListView(
-        controller: scrollController,
+        controller: widget.scrollController,
         children: [
           // Drag handle
           Center(
@@ -53,120 +72,143 @@ class EntryBottomSheet extends ConsumerWidget {
             ),
           ),
 
-          // Pinned header
+          // Pinned header (Lemma)
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  h.lemma1,
-                  style: theme.textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                if (h.pos != null)
-                  Text(
-                    posGrammarLine(h),
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
-                    ),
-                  ),
-              ],
+            child: Text(
+              h.lemma1,
+              style: theme.textTheme.titleLarge?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
 
           // Summary box
           EntrySummaryBox(headword: h),
 
-          // Grammar
-          if (grammarRows.isNotEmpty)
-            ExpansionTile(
-              title: const Text('Grammar'),
-              initiallyExpanded: settings.grammarOpen,
-              children: grammarRows
-                  .map((r) => EntryLabelValue(label: r.$1, value: r.$2))
-                  .toList(),
-            ),
-
-          // Examples
-          if (hasExamples)
-            ExpansionTile(
-              title: const Text('Examples'),
-              initiallyExpanded: settings.examplesOpen,
+          // Button Box (Sibling)
+          Padding(
+            padding: const EdgeInsets.fromLTRB(7, 2, 7, 3),
+            child: Wrap(
+              spacing: 0,
+              runSpacing: 0,
               children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      if (hasEx1)
-                        EntryExampleBlock(
-                          example: h.example1!,
-                          sutta: h.sutta1,
-                          source: h.source1,
-                        ),
-                      if (hasEx1 && hasEx2) const SizedBox(height: 16),
-                      if (hasEx2)
-                        EntryExampleBlock(
-                          example: h.example2!,
-                          sutta: h.sutta2,
-                          source: h.source2,
-                        ),
-                    ],
+                if (grammarRows.isNotEmpty)
+                  DpdSectionButton(
+                    label: 'Grammar',
+                    isActive: _grammarOpen,
+                    onTap: () => setState(() => _grammarOpen = !_grammarOpen),
                   ),
-                ),
+                if (hasExamples)
+                  DpdSectionButton(
+                    label: 'Examples',
+                    isActive: _examplesOpen,
+                    onTap: () => setState(() => _examplesOpen = !_examplesOpen),
+                  ),
+                if (hasInflections)
+                  DpdSectionButton(
+                    label: 'Inflections',
+                    isActive: _inflectionsOpen,
+                    onTap: () =>
+                        setState(() => _inflectionsOpen = !_inflectionsOpen),
+                  ),
+                if (familyRows.isNotEmpty)
+                  DpdSectionButton(
+                    label: 'Families',
+                    isActive: _familiesOpen,
+                    onTap: () => setState(() => _familiesOpen = !_familiesOpen),
+                  ),
+                if (hasNotes)
+                  DpdSectionButton(
+                    label: 'Notes',
+                    isActive: _notesOpen,
+                    onTap: () => setState(() => _notesOpen = !_notesOpen),
+                  ),
               ],
             ),
+          ),
 
-          // Inflections
-          if (hasInflections)
-            ExpansionTile(
-              title: const Text('Inflections'),
-              initiallyExpanded: false,
-              children: [
-                if (h.inflectionsHtml != null && h.inflectionsHtml!.isNotEmpty)
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: DpdHtmlTable(data: h.inflectionsHtml!),
-                  ),
-                if (h.freqHtml != null && h.freqHtml!.isNotEmpty) ...[
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
-                    child: Text('Frequency', style: theme.textTheme.titleSmall),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 8,
+          // Sections
+          if (_grammarOpen && grammarRows.isNotEmpty)
+            DpdSectionContainer(
+              child: Column(
+                children: grammarRows
+                    .map((r) => EntryLabelValue(label: r.$1, value: r.$2))
+                    .toList(),
+              ),
+            ),
+
+          if (_examplesOpen && hasExamples)
+            DpdSectionContainer(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (hasEx1)
+                      EntryExampleBlock(
+                        example: h.example1!,
+                        sutta: h.sutta1,
+                        source: h.source1,
+                      ),
+                    if (hasEx1 && hasEx2) const SizedBox(height: 16),
+                    if (hasEx2)
+                      EntryExampleBlock(
+                        example: h.example2!,
+                        sutta: h.sutta2,
+                        source: h.source2,
+                      ),
+                  ],
+                ),
+              ),
+            ),
+
+          if (_inflectionsOpen && hasInflections)
+            DpdSectionContainer(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (h.inflectionsHtml != null &&
+                      h.inflectionsHtml!.isNotEmpty)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: DpdHtmlTable(data: h.inflectionsHtml!),
                     ),
-                    child: DpdHtmlTable(data: h.freqHtml!),
-                  ),
+                  if (h.freqHtml != null && h.freqHtml!.isNotEmpty) ...[
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+                      child: Text(
+                        'Frequency',
+                        style: theme.textTheme.titleSmall,
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 8,
+                      ),
+                      child: DpdHtmlTable(data: h.freqHtml!),
+                    ),
+                  ],
                 ],
-              ],
+              ),
             ),
 
-          // Families
-          if (familyRows.isNotEmpty)
-            ExpansionTile(
-              title: const Text('Families'),
-              initiallyExpanded: false,
-              children: familyRows
-                  .map((r) => EntryLabelValue(label: r.$1, value: r.$2))
-                  .toList(),
+          if (_familiesOpen && familyRows.isNotEmpty)
+            DpdSectionContainer(
+              child: Column(
+                children: familyRows
+                    .map((r) => EntryLabelValue(label: r.$1, value: r.$2))
+                    .toList(),
+              ),
             ),
 
-          // Notes
-          if (h.notes != null && h.notes!.isNotEmpty)
-            ExpansionTile(
-              title: const Text('Notes'),
-              initiallyExpanded: false,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-                  child: Text(h.notes!),
-                ),
-              ],
+          if (_notesOpen && hasNotes)
+            DpdSectionContainer(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+                child: Text(h.notes!),
+              ),
             ),
 
           const SizedBox(height: 32),

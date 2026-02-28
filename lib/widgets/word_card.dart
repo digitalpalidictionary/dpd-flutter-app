@@ -24,7 +24,7 @@ class WordCard extends StatelessWidget {
         child: Container(
           width: double.infinity,
           decoration: BoxDecoration(
-            border: Border.all(color: theme.colorScheme.outline, width: 2),
+            border: Border.all(color: theme.colorScheme.primary, width: 2),
             borderRadius: DpdColors.borderRadius,
           ),
           padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
@@ -49,7 +49,6 @@ class WordCard extends StatelessWidget {
                         text: pos,
                         style: theme.textTheme.bodySmall?.copyWith(
                           color: DpdColors.primaryText,
-                          fontStyle: FontStyle.italic,
                         ),
                       ),
                     ],
