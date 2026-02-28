@@ -11,14 +11,14 @@
   - [x] Register all five tables in `AppDatabase` annotation in `database.dart`
   - [x] Run `dart run build_runner build --delete-conflicting-outputs` to regenerate
 
-- [~] Task 1.2: Add DAO query methods for each family table
-  - [ ] Register new tables in `DpdDao` `@DriftAccessor` annotation
-  - [ ] Add `getRootFamily(String rootKey, String familyRoot)` → single result
-  - [ ] Add `getWordFamily(String wordFamily)` → single result
-  - [ ] Add `getCompoundFamilies(List<String> compoundFamilies)` → list of results
-  - [ ] Add `getIdioms(List<String> idioms)` → list of results
-  - [ ] Add `getSets(List<String> sets)` → list of results
-  - [ ] Run code generation
+- [x] Task 1.2: Add DAO query methods for each family table (9c88b54)
+  - [x] Register new tables in `DpdDao` `@DriftAccessor` annotation
+  - [x] Add `getRootFamily(String rootKey, String familyRoot)` → single result
+  - [x] Add `getWordFamily(String wordFamily)` → single result
+  - [x] Add `getCompoundFamilies(List<String> compoundFamilies)` → list of results
+  - [x] Add `getIdioms(List<String> idioms)` → list of results
+  - [x] Add `getSets(List<String> sets)` → list of results
+  - [x] Run code generation
 
 - [ ] Task 1.3: Write tests for family DAO queries
   - [ ] Test root family lookup by composite key
