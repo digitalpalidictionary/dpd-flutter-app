@@ -24,7 +24,7 @@ class DpdApp extends ConsumerWidget {
       surface: DpdColors.light,
       onSurface: DpdColors.dark,
       surfaceContainerHighest: DpdColors.lightShade,
-      outline: DpdColors.gray,
+      outline: DpdColors.primary,
       outlineVariant: DpdColors.grayLight,
       error: Colors.red,
       onError: Colors.white,
