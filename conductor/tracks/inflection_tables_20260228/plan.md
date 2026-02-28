@@ -1,6 +1,6 @@
 # Plan: Dynamic Inflection Tables
 
-## Phase 1: Database & Data Model [checkpoint: ]
+## Phase 1: Database & Data Model [checkpoint: 4d87a50]
 
 - [x] Task: Add InflectionTemplates Drift table definition to tables.dart [3b64692]
   - [x] Define table with `pattern` (text PK), `like` (text), `data` (text/JSON)
@@ -34,7 +34,7 @@
   - [x] Riverpod provider that loads all 153 templates into memory on first access
   - [x] Keyed by pattern string for O(1) lookup
 
-- [ ] Task: Conductor - User Manual Verification 'Phase 1: Database & Data Model' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 1: Database & Data Model' (Protocol in workflow.md) [4d87a50]
 
 ## Phase 2: Widget & Integration [checkpoint: ]
 
