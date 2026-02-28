@@ -45,6 +45,48 @@ class DpdHtmlTable extends StatelessWidget {
                 width: 1,
               ),
               textAlign: TextAlign.center,
+              fontSize: FontSize(0.8, Unit.em),
+            ),
+            // Frequency Heatmap Classes
+            ".gr1": Style(
+              backgroundColor: DpdColors.freq[0],
+              color: DpdColors.dark,
+            ),
+            ".gr2": Style(
+              backgroundColor: DpdColors.freq[1],
+              color: DpdColors.dark,
+            ),
+            ".gr3": Style(
+              backgroundColor: DpdColors.freq[2],
+              color: DpdColors.dark,
+            ),
+            ".gr4": Style(
+              backgroundColor: DpdColors.freq[3],
+              color: DpdColors.dark,
+            ),
+            ".gr5": Style(
+              backgroundColor: DpdColors.freq[4],
+              color: DpdColors.dark,
+            ),
+            ".gr6": Style(
+              backgroundColor: DpdColors.freq[5],
+              color: DpdColors.light,
+            ),
+            ".gr7": Style(
+              backgroundColor: DpdColors.freq[6],
+              color: DpdColors.light,
+            ),
+            ".gr8": Style(
+              backgroundColor: DpdColors.freq[7],
+              color: DpdColors.light,
+            ),
+            ".gr9": Style(
+              backgroundColor: DpdColors.freq[8],
+              color: DpdColors.light,
+            ),
+            ".gr10": Style(
+              backgroundColor: DpdColors.freq[9],
+              color: DpdColors.light,
             ),
           },
         ),
