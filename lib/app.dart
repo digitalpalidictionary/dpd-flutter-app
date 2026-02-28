@@ -49,10 +49,12 @@ class DpdApp extends ConsumerWidget {
       final themed = settings.useSerifFont
           ? GoogleFonts.notoSerifTextTheme(base)
           : GoogleFonts.interTextTheme(base);
+      // Material 3 bodyMedium default is 14sp
+      const baseSize = 14.0;
       return themed.copyWith(
         // h3 equivalent — headword titles at 130%
         titleLarge: themed.titleLarge?.copyWith(
-          fontSize: base.bodyMedium!.fontSize! * 1.3,
+          fontSize: baseSize * 1.3,
           height: 1.3,
           fontWeight: FontWeight.w700,
         ),
@@ -61,12 +63,8 @@ class DpdApp extends ConsumerWidget {
         bodyMedium: themed.bodyMedium?.copyWith(height: 1.5),
         bodySmall: themed.bodySmall?.copyWith(height: 1.5),
         // Button text — 80% size
-        labelSmall: themed.labelSmall?.copyWith(
-          fontSize: base.bodyMedium!.fontSize! * 0.8,
-        ),
-        labelMedium: themed.labelMedium?.copyWith(
-          fontSize: base.bodyMedium!.fontSize! * 0.8,
-        ),
+        labelSmall: themed.labelSmall?.copyWith(fontSize: baseSize * 0.8),
+        labelMedium: themed.labelMedium?.copyWith(fontSize: baseSize * 0.8),
       );
     }
 
