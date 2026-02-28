@@ -148,10 +148,9 @@ class GrammarTable extends StatelessWidget {
     if (root == null) return null;
     final parts = [
       if (root.root.isNotEmpty) root.root,
-      if (root.rootGroup != null) root.rootGroup.toString(),
-      if (root.rootSign != null && root.rootSign!.isNotEmpty) root.rootSign,
-      if (root.rootMeaning != null && root.rootMeaning!.isNotEmpty)
-        '(${root.rootMeaning})',
+      root.rootGroup.toString(),
+      if (root.rootSign.isNotEmpty) root.rootSign,
+      if (root.rootMeaning.isNotEmpty) '(${root.rootMeaning})',
     ];
     final details = parts.join(' ').trim();
     if (details.isEmpty) return null;
@@ -162,7 +161,7 @@ class GrammarTable extends StatelessWidget {
     final root = headword.root;
     if (root == null) return null;
     final inComps = root.rootInComps;
-    if (inComps == null || inComps.isEmpty) return null;
+    if (inComps.isEmpty) return null;
     return _buildTextRow('√ In Sandhi', inComps);
   }
 
@@ -221,8 +220,9 @@ class GrammarTable extends StatelessWidget {
 
   TableRow? _buildCommentaryRow(DpdHeadwordWithRoot headword) {
     final commentary = headword.commentary;
-    if (commentary == null || commentary.isEmpty || commentary == '-')
+    if (commentary == null || commentary.isEmpty || commentary == '-') {
       return null;
+    }
     return _buildHtmlRow('Commentary', commentary);
   }
 
@@ -268,14 +268,11 @@ class GrammarTable extends StatelessWidget {
     final root = headword.root;
     if (root == null) return null;
     final sr = root.sanskritRoot;
-    if (sr == null || sr.isEmpty || sr == '-') return null;
+    if (sr.isEmpty || sr == '-') return null;
     final parts = [
       sr,
-      if (root.sanskritRootClass != null && root.sanskritRootClass!.isNotEmpty)
-        root.sanskritRootClass,
-      if (root.sanskritRootMeaning != null &&
-          root.sanskritRootMeaning!.isNotEmpty)
-        '(${root.sanskritRootMeaning})',
+      if (root.sanskritRootClass.isNotEmpty) root.sanskritRootClass,
+      if (root.sanskritRootMeaning.isNotEmpty) '(${root.sanskritRootMeaning})',
     ];
     final details = parts.join(' ').trim();
     if (details.isEmpty) return null;

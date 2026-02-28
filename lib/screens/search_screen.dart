@@ -137,7 +137,7 @@ class _InlineList extends StatelessWidget {
     return ListView.separated(
       keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
       itemCount: headwords.length,
-      separatorBuilder: (_, __) => const Divider(height: 1),
+      separatorBuilder: (_, _) => const Divider(height: 1),
       itemBuilder: (_, i) => InlineEntryCard(headword: headwords[i]),
     );
   }
@@ -153,7 +153,7 @@ class _AccordionList extends StatelessWidget {
     return ListView.separated(
       keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
       itemCount: headwords.length,
-      separatorBuilder: (_, __) => const Divider(height: 1),
+      separatorBuilder: (_, _) => const Divider(height: 1),
       itemBuilder: (_, i) => AccordionCard(headword: headwords[i]),
     );
   }
@@ -169,7 +169,7 @@ class _BottomSheetList extends StatelessWidget {
     return ListView.separated(
       keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
       itemCount: headwords.length,
-      separatorBuilder: (_, __) => const Divider(height: 1),
+      separatorBuilder: (_, _) => const Divider(height: 1),
       itemBuilder: (_, i) => WordCard(
         headword: headwords[i],
         onTap: () => _showBottomSheet(context, headwords[i]),
