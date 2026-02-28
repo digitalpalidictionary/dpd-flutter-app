@@ -62,5 +62,7 @@
 - [x] Task: Add DpdFooter to inflection section [1fc9741]
   - [x] Feedback link matching grammar/examples footer pattern
 
-- [~] Task: Conductor - User Manual Verification 'Phase 2: Widget & Integration' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 2: Widget & Integration' (Protocol in workflow.md) [6289d09]
   - Fixes applied [5006214]: heading RichText bold, per-cell border/radius, table expansion, frequency removed
+  - Fix [fd3bcb0 → reverted → 6c6087e]: equal-height rows via fill/middle/TableRow.decoration + TableBorder.all(borderRadius)
+  - Highlight [6289d09]: yellow highlight on exact search match via lookupKey from searchQueryProvider
