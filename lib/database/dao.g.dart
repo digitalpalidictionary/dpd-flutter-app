@@ -8,4 +8,6 @@ mixin _$DpdDaoMixin on DatabaseAccessor<AppDatabase> {
   $DpdHeadwordsTable get dpdHeadwords => attachedDatabase.dpdHeadwords;
   $LookupTable get lookup => attachedDatabase.lookup;
   $DbInfoTable get dbInfo => attachedDatabase.dbInfo;
+  $InflectionTemplatesTable get inflectionTemplates =>
+      attachedDatabase.inflectionTemplates;
 }

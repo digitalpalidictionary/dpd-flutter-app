@@ -96,6 +96,15 @@ class DpdRoots extends Table {
   Set<Column> get primaryKey => {root};
 }
 
+class InflectionTemplates extends Table {
+  TextColumn get pattern => text()();
+  TextColumn get templateLike => text().named('like').nullable()();
+  TextColumn get data => text()();
+
+  @override
+  Set<Column> get primaryKey => {pattern};
+}
+
 class DbInfo extends Table {
   TextColumn get key => text()();
   TextColumn get value => text().nullable()();

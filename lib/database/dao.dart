@@ -15,7 +15,7 @@ class DpdHeadwordWithRoot {
   DpdHeadwordWithRoot(this.headword, this.root);
 }
 
-@DriftAccessor(tables: [DpdHeadwords, Lookup, DpdRoots, DbInfo])
+@DriftAccessor(tables: [DpdHeadwords, Lookup, DpdRoots, DbInfo, InflectionTemplates])
 class DpdDao extends DatabaseAccessor<AppDatabase> with _$DpdDaoMixin {
   DpdDao(super.db);
 
@@ -127,6 +127,20 @@ class DpdDao extends DatabaseAccessor<AppDatabase> with _$DpdDaoMixin {
     return (select(
       dpdRoots,
     )..where((t) => t.root.equals(rootKey))).getSingleOrNull();
+  }
+
+  // ── DB metadata ───────────────────────────────────────────────────────────
+
+  // ── Inflection templates ──────────────────────────────────────────────────
+
+  Future<InflectionTemplate?> getInflectionTemplate(String pattern) {
+    return (select(inflectionTemplates)
+          ..where((t) => t.pattern.equals(pattern)))
+        .getSingleOrNull();
+  }
+
+  Future<List<InflectionTemplate>> getAllInflectionTemplates() {
+    return select(inflectionTemplates).get();
   }
 
   // ── DB metadata ───────────────────────────────────────────────────────────

@@ -4066,6 +4066,277 @@ class DbInfoCompanion extends UpdateCompanion<DbInfoData> {
   }
 }
 
+class $InflectionTemplatesTable extends InflectionTemplates
+    with TableInfo<$InflectionTemplatesTable, InflectionTemplate> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $InflectionTemplatesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _patternMeta = const VerificationMeta(
+    'pattern',
+  );
+  @override
+  late final GeneratedColumn<String> pattern = GeneratedColumn<String>(
+    'pattern',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _templateLikeMeta = const VerificationMeta(
+    'templateLike',
+  );
+  @override
+  late final GeneratedColumn<String> templateLike = GeneratedColumn<String>(
+    'like',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _dataMeta = const VerificationMeta('data');
+  @override
+  late final GeneratedColumn<String> data = GeneratedColumn<String>(
+    'data',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [pattern, templateLike, data];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'inflection_templates';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<InflectionTemplate> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('pattern')) {
+      context.handle(
+        _patternMeta,
+        pattern.isAcceptableOrUnknown(data['pattern']!, _patternMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_patternMeta);
+    }
+    if (data.containsKey('like')) {
+      context.handle(
+        _templateLikeMeta,
+        templateLike.isAcceptableOrUnknown(data['like']!, _templateLikeMeta),
+      );
+    }
+    if (data.containsKey('data')) {
+      context.handle(
+        _dataMeta,
+        this.data.isAcceptableOrUnknown(data['data']!, _dataMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_dataMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {pattern};
+  @override
+  InflectionTemplate map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return InflectionTemplate(
+      pattern: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}pattern'],
+      )!,
+      templateLike: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}like'],
+      ),
+      data: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}data'],
+      )!,
+    );
+  }
+
+  @override
+  $InflectionTemplatesTable createAlias(String alias) {
+    return $InflectionTemplatesTable(attachedDatabase, alias);
+  }
+}
+
+class InflectionTemplate extends DataClass
+    implements Insertable<InflectionTemplate> {
+  final String pattern;
+  final String? templateLike;
+  final String data;
+  const InflectionTemplate({
+    required this.pattern,
+    this.templateLike,
+    required this.data,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['pattern'] = Variable<String>(pattern);
+    if (!nullToAbsent || templateLike != null) {
+      map['like'] = Variable<String>(templateLike);
+    }
+    map['data'] = Variable<String>(data);
+    return map;
+  }
+
+  InflectionTemplatesCompanion toCompanion(bool nullToAbsent) {
+    return InflectionTemplatesCompanion(
+      pattern: Value(pattern),
+      templateLike: templateLike == null && nullToAbsent
+          ? const Value.absent()
+          : Value(templateLike),
+      data: Value(data),
+    );
+  }
+
+  factory InflectionTemplate.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return InflectionTemplate(
+      pattern: serializer.fromJson<String>(json['pattern']),
+      templateLike: serializer.fromJson<String?>(json['templateLike']),
+      data: serializer.fromJson<String>(json['data']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'pattern': serializer.toJson<String>(pattern),
+      'templateLike': serializer.toJson<String?>(templateLike),
+      'data': serializer.toJson<String>(data),
+    };
+  }
+
+  InflectionTemplate copyWith({
+    String? pattern,
+    Value<String?> templateLike = const Value.absent(),
+    String? data,
+  }) => InflectionTemplate(
+    pattern: pattern ?? this.pattern,
+    templateLike: templateLike.present ? templateLike.value : this.templateLike,
+    data: data ?? this.data,
+  );
+  InflectionTemplate copyWithCompanion(InflectionTemplatesCompanion data) {
+    return InflectionTemplate(
+      pattern: data.pattern.present ? data.pattern.value : this.pattern,
+      templateLike: data.templateLike.present
+          ? data.templateLike.value
+          : this.templateLike,
+      data: data.data.present ? data.data.value : this.data,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('InflectionTemplate(')
+          ..write('pattern: $pattern, ')
+          ..write('templateLike: $templateLike, ')
+          ..write('data: $data')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(pattern, templateLike, data);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is InflectionTemplate &&
+          other.pattern == this.pattern &&
+          other.templateLike == this.templateLike &&
+          other.data == this.data);
+}
+
+class InflectionTemplatesCompanion extends UpdateCompanion<InflectionTemplate> {
+  final Value<String> pattern;
+  final Value<String?> templateLike;
+  final Value<String> data;
+  final Value<int> rowid;
+  const InflectionTemplatesCompanion({
+    this.pattern = const Value.absent(),
+    this.templateLike = const Value.absent(),
+    this.data = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  InflectionTemplatesCompanion.insert({
+    required String pattern,
+    this.templateLike = const Value.absent(),
+    required String data,
+    this.rowid = const Value.absent(),
+  }) : pattern = Value(pattern),
+       data = Value(data);
+  static Insertable<InflectionTemplate> custom({
+    Expression<String>? pattern,
+    Expression<String>? templateLike,
+    Expression<String>? data,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (pattern != null) 'pattern': pattern,
+      if (templateLike != null) 'like': templateLike,
+      if (data != null) 'data': data,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  InflectionTemplatesCompanion copyWith({
+    Value<String>? pattern,
+    Value<String?>? templateLike,
+    Value<String>? data,
+    Value<int>? rowid,
+  }) {
+    return InflectionTemplatesCompanion(
+      pattern: pattern ?? this.pattern,
+      templateLike: templateLike ?? this.templateLike,
+      data: data ?? this.data,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (pattern.present) {
+      map['pattern'] = Variable<String>(pattern.value);
+    }
+    if (templateLike.present) {
+      map['like'] = Variable<String>(templateLike.value);
+    }
+    if (data.present) {
+      map['data'] = Variable<String>(data.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('InflectionTemplatesCompanion(')
+          ..write('pattern: $pattern, ')
+          ..write('templateLike: $templateLike, ')
+          ..write('data: $data, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -4073,6 +4344,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $DpdHeadwordsTable dpdHeadwords = $DpdHeadwordsTable(this);
   late final $LookupTable lookup = $LookupTable(this);
   late final $DbInfoTable dbInfo = $DbInfoTable(this);
+  late final $InflectionTemplatesTable inflectionTemplates =
+      $InflectionTemplatesTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -4082,6 +4355,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     dpdHeadwords,
     lookup,
     dbInfo,
+    inflectionTemplates,
   ];
 }
 
@@ -6107,6 +6381,186 @@ typedef $$DbInfoTableProcessedTableManager =
       DbInfoData,
       PrefetchHooks Function()
     >;
+typedef $$InflectionTemplatesTableCreateCompanionBuilder =
+    InflectionTemplatesCompanion Function({
+      required String pattern,
+      Value<String?> templateLike,
+      required String data,
+      Value<int> rowid,
+    });
+typedef $$InflectionTemplatesTableUpdateCompanionBuilder =
+    InflectionTemplatesCompanion Function({
+      Value<String> pattern,
+      Value<String?> templateLike,
+      Value<String> data,
+      Value<int> rowid,
+    });
+
+class $$InflectionTemplatesTableFilterComposer
+    extends Composer<_$AppDatabase, $InflectionTemplatesTable> {
+  $$InflectionTemplatesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get pattern => $composableBuilder(
+    column: $table.pattern,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get templateLike => $composableBuilder(
+    column: $table.templateLike,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get data => $composableBuilder(
+    column: $table.data,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$InflectionTemplatesTableOrderingComposer
+    extends Composer<_$AppDatabase, $InflectionTemplatesTable> {
+  $$InflectionTemplatesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get pattern => $composableBuilder(
+    column: $table.pattern,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get templateLike => $composableBuilder(
+    column: $table.templateLike,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get data => $composableBuilder(
+    column: $table.data,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$InflectionTemplatesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $InflectionTemplatesTable> {
+  $$InflectionTemplatesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get pattern =>
+      $composableBuilder(column: $table.pattern, builder: (column) => column);
+
+  GeneratedColumn<String> get templateLike => $composableBuilder(
+    column: $table.templateLike,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get data =>
+      $composableBuilder(column: $table.data, builder: (column) => column);
+}
+
+class $$InflectionTemplatesTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $InflectionTemplatesTable,
+          InflectionTemplate,
+          $$InflectionTemplatesTableFilterComposer,
+          $$InflectionTemplatesTableOrderingComposer,
+          $$InflectionTemplatesTableAnnotationComposer,
+          $$InflectionTemplatesTableCreateCompanionBuilder,
+          $$InflectionTemplatesTableUpdateCompanionBuilder,
+          (
+            InflectionTemplate,
+            BaseReferences<
+              _$AppDatabase,
+              $InflectionTemplatesTable,
+              InflectionTemplate
+            >,
+          ),
+          InflectionTemplate,
+          PrefetchHooks Function()
+        > {
+  $$InflectionTemplatesTableTableManager(
+    _$AppDatabase db,
+    $InflectionTemplatesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$InflectionTemplatesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$InflectionTemplatesTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$InflectionTemplatesTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> pattern = const Value.absent(),
+                Value<String?> templateLike = const Value.absent(),
+                Value<String> data = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => InflectionTemplatesCompanion(
+                pattern: pattern,
+                templateLike: templateLike,
+                data: data,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String pattern,
+                Value<String?> templateLike = const Value.absent(),
+                required String data,
+                Value<int> rowid = const Value.absent(),
+              }) => InflectionTemplatesCompanion.insert(
+                pattern: pattern,
+                templateLike: templateLike,
+                data: data,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$InflectionTemplatesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $InflectionTemplatesTable,
+      InflectionTemplate,
+      $$InflectionTemplatesTableFilterComposer,
+      $$InflectionTemplatesTableOrderingComposer,
+      $$InflectionTemplatesTableAnnotationComposer,
+      $$InflectionTemplatesTableCreateCompanionBuilder,
+      $$InflectionTemplatesTableUpdateCompanionBuilder,
+      (
+        InflectionTemplate,
+        BaseReferences<
+          _$AppDatabase,
+          $InflectionTemplatesTable,
+          InflectionTemplate
+        >,
+      ),
+      InflectionTemplate,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -6119,4 +6573,6 @@ class $AppDatabaseManager {
       $$LookupTableTableManager(_db, _db.lookup);
   $$DbInfoTableTableManager get dbInfo =>
       $$DbInfoTableTableManager(_db, _db.dbInfo);
+  $$InflectionTemplatesTableTableManager get inflectionTemplates =>
+      $$InflectionTemplatesTableTableManager(_db, _db.inflectionTemplates);
 }
