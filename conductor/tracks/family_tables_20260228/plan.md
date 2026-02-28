@@ -39,12 +39,12 @@
   - [x] Test parsing empty/null data
   - [x] Test parsing malformed JSON
 
-- [ ] Task 2.3: Create reusable `FamilyTableWidget`
-  - [ ] Create widget accepting: header widget, `List<FamilyEntry>`, footer config
-  - [ ] Render inside `DpdSectionContainer`
-  - [ ] Build native `Table` with columns: lemma (bold), pos (bold), meaning, completion symbol
-  - [ ] Add `DpdFooter` at bottom with configurable feedback URL
-  - [ ] Style header as "heading underlined" (bold text, underline border, matching webapp)
+- [x] Task 2.3: Create reusable `FamilyTableWidget` (3cfc9f3)
+  - [x] Create widget accepting: header widget, `List<FamilyEntry>`, footer config
+  - [x] Render inside `DpdSectionContainer`
+  - [x] Build native `Table` with columns: lemma (bold), pos (bold), meaning, completion symbol
+  - [x] Add `DpdFooter` at bottom with configurable feedback URL
+  - [x] Style header as "heading underlined" (bold text, underline border, matching webapp)
 
 ## Phase 3: Family Section Integration
 
