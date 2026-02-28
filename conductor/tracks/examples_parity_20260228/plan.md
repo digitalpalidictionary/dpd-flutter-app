@@ -13,10 +13,10 @@
 
 ## Phase 2: Source/Sutta Display Parity
 
-- [ ] Task: Fix source/sutta colour — UI
-  - [ ] In `EntryExampleBlock` (`entry_content.dart`): change sutta text colour from
+- [x] Task: Fix source/sutta colour — UI [cbeda2d]
+  - [x] In `EntryExampleBlock` (`entry_content.dart`): change sutta text colour from
         `theme.colorScheme.outline` to `DpdColors.primaryText`
-  - [ ] Commit: `fix: sutta text colour matches webapp primary-text`
+  - [x] Commit: `fix: sutta text colour matches webapp primary-text`
 
 - [ ] Task: Fix source/sutta separator — UI
   - [ ] In `EntryExampleBlock`: change the join separator from `' · '` to `' '`
