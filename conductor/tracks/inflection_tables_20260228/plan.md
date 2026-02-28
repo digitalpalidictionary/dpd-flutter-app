@@ -50,10 +50,10 @@
   - [x] Accepts headword data and template cache
   - [x] Handles the "no table" case (indeclinable)
 
-- [ ] Task: Integrate into AccordionCard, InlineEntryCard, and EntryBottomSheet
-  - [ ] Replace current `DpdHtmlTable(data: h.inflectionsHtml!)` with new InflectionSection
-  - [ ] Update button label from "Inflections" to "Declension"/"Conjugation" based on pos
-  - [ ] Keep frequency rendering via DpdHtmlTable unchanged
+- [x] Task: Integrate into AccordionCard, InlineEntryCard, and EntryBottomSheet [b59a599]
+  - [x] Replace current `DpdHtmlTable(data: h.inflectionsHtml!)` with new InflectionSection
+  - [x] Update button label from "Inflections" to "Declension"/"Conjugation" based on pos
+  - [x] Keep frequency rendering via DpdHtmlTable unchanged
 
 - [ ] Task: Integrate into EntryScreen
   - [ ] Replace current raw Html inflection rendering with new InflectionSection
