@@ -1,0 +1,81 @@
+import 'package:flutter/material.dart';
+
+import '../database/database.dart';
+
+class WordCard extends StatelessWidget {
+  const WordCard({
+    super.key,
+    required this.headword,
+    required this.onTap,
+  });
+
+  final DpdHeadword headword;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final meaning = headword.meaning1 ?? headword.meaningLit ?? '';
+    final pos = headword.pos ?? '';
+    final grammar = headword.grammar ?? '';
+
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        child: Container(
+          decoration: BoxDecoration(
+            border: Border.all(color: theme.colorScheme.primary, width: 2),
+            borderRadius: BorderRadius.circular(7),
+          ),
+          padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+          margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.baseline,
+                textBaseline: TextBaseline.alphabetic,
+                children: [
+                  Expanded(
+                    child: Text(
+                      headword.lemma1,
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  if (pos.isNotEmpty)
+                    Text(
+                      pos,
+                      style: theme.textTheme.labelSmall?.copyWith(
+                        color: theme.colorScheme.primary,
+                      ),
+                    ),
+                ],
+              ),
+              if (grammar.isNotEmpty) ...[
+                const SizedBox(height: 2),
+                Text(
+                  grammar,
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: theme.colorScheme.outline,
+                  ),
+                ),
+              ],
+              if (meaning.isNotEmpty) ...[
+                const SizedBox(height: 6),
+                Text(
+                  meaning,
+                  style: theme.textTheme.bodyMedium,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
