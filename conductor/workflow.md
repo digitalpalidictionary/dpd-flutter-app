@@ -160,15 +160,16 @@ Short and sweet. No body, no footer, no essays.
 - `fix`: Bug fix
 - `refactor`: Code restructuring
 - `test`: Adding/updating tests
-- `chore`: Maintenance tasks
 - `style`: Formatting only
 - `docs`: Documentation only
+- `conductor`: Conductor framework updates (plan.md, tracks.md, phase/task tracking)
 
 ### Examples
 ```bash
 git commit -m "feat: added webapp style parity"
 git commit -m "fix: inflection button naming"
-git commit -m "chore: updated conductor track"
+git commit -m "conductor: update plan.md"
+git commit -m "conductor: completed phase 1 of restyle"
 git commit -m "refactor: simplified search provider logic"
 ```
 
