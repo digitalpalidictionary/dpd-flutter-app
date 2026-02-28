@@ -2,12 +2,10 @@ import 'package:flutter/material.dart';
 
 import '../database/database.dart';
 
+import '../theme/dpd_colors.dart';
+
 class WordCard extends StatelessWidget {
-  const WordCard({
-    super.key,
-    required this.headword,
-    required this.onTap,
-  });
+  const WordCard({super.key, required this.headword, required this.onTap});
 
   final DpdHeadword headword;
   final VoidCallback onTap;
@@ -33,38 +31,41 @@ class WordCard extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.baseline,
-                textBaseline: TextBaseline.alphabetic,
-                children: [
-                  Expanded(
-                    child: Text(
-                      headword.lemma1,
+              RichText(
+                text: TextSpan(
+                  style: theme.textTheme.bodyMedium,
+                  children: [
+                    TextSpan(
+                      text: headword.lemma1,
                       style: theme.textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
+                        fontWeight: FontWeight.w700,
+                        color: theme.colorScheme.onSurface,
                       ),
                     ),
-                  ),
-                  if (pos.isNotEmpty)
-                    Text(
-                      pos,
-                      style: theme.textTheme.labelSmall?.copyWith(
-                        color: theme.colorScheme.primary,
+                    if (pos.isNotEmpty) ...[
+                      const TextSpan(text: ' '),
+                      TextSpan(
+                        text: pos,
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: DpdColors.primaryText,
+                          fontStyle: FontStyle.italic,
+                        ),
                       ),
-                    ),
-                ],
-              ),
-              if (grammar.isNotEmpty) ...[
-                const SizedBox(height: 2),
-                Text(
-                  grammar,
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: theme.colorScheme.outline,
-                  ),
+                    ],
+                    if (grammar.isNotEmpty) ...[
+                      const TextSpan(text: ' '),
+                      TextSpan(
+                        text: grammar,
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: theme.colorScheme.outline,
+                        ),
+                      ),
+                    ],
+                  ],
                 ),
-              ],
+              ),
               if (meaning.isNotEmpty) ...[
-                const SizedBox(height: 6),
+                const SizedBox(height: 4),
                 Text(
                   meaning,
                   style: theme.textTheme.bodyMedium,
