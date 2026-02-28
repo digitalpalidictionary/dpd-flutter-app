@@ -31,7 +31,7 @@
 
 - [x] Task: Conductor - User Manual Verification 'Phase 1: Database Schema & Core Data' (Protocol in workflow.md) [12ddf4e]
 
-## Phase 2: Grammar Table UI Implementation
+## Phase 2: Grammar Table UI Implementation [checkpoint: b0b5216]
 
 ### Phase 2.1: Create Grammar Table Widget
 - [x] Task: Create `lib/widgets/grammar_table.dart`. [2c24c97]
