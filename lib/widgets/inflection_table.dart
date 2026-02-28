@@ -16,14 +16,12 @@ class InflectionTable extends StatelessWidget {
     final borderColor = DpdColors.primary;
     final headerBg = isDark ? DpdColors.dark : DpdColors.light;
 
-    // Build column widths: first col is intrinsic (row label), rest are equal flex
+    // All columns use IntrinsicColumnWidth so the table sizes to content,
+    // which also works correctly inside a horizontal SingleChildScrollView.
     final colCount = data.headers.length;
     final columnWidths = <int, TableColumnWidth>{
-      0: const IntrinsicColumnWidth(),
+      for (int i = 0; i < colCount; i++) i: const IntrinsicColumnWidth(),
     };
-    for (int i = 1; i < colCount; i++) {
-      columnWidths[i] = const FlexColumnWidth();
-    }
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -40,26 +38,21 @@ class InflectionTable extends StatelessWidget {
           ),
         ),
 
-        // Table with rounded border
-        ClipRRect(
-          borderRadius: DpdColors.borderRadius,
-          child: DecoratedBox(
-            decoration: BoxDecoration(
-              border: Border.all(color: borderColor, width: 1),
-              borderRadius: DpdColors.borderRadius,
-            ),
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Table(
-                columnWidths: columnWidths,
-                border: TableBorder.all(color: borderColor, width: 1),
-                defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-                children: [
-                  _buildHeaderRow(context, headerBg),
-                  for (final row in data.rows)
-                    _buildDataRow(context, row, headerBg),
-                ],
-              ),
+        // Table: SingleChildScrollView with IntrinsicColumnWidth works correctly
+        // because IntrinsicColumnWidth does not need a bounded parent width.
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: ClipRRect(
+            borderRadius: DpdColors.borderRadius,
+            child: Table(
+              columnWidths: columnWidths,
+              border: TableBorder.all(color: borderColor, width: 1),
+              defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+              children: [
+                _buildHeaderRow(context, headerBg),
+                for (final row in data.rows)
+                  _buildDataRow(context, row, headerBg),
+              ],
             ),
           ),
         ),

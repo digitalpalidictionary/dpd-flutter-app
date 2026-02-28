@@ -88,9 +88,12 @@ class _InflectionFooter extends StatelessWidget {
 }
 
 /// Determine if a headword has inflection content to show.
-bool hasInflectionContent(DpdHeadwordWithRoot h) =>
-    (h.stem != null && h.stem != '-' && h.pattern != null) ||
-    (h.freqHtml != null && h.freqHtml!.isNotEmpty);
+/// Indeclinables (stem == '-') never get an inflection button.
+bool hasInflectionContent(DpdHeadwordWithRoot h) {
+  if (h.stem == '-') return false;
+  return (h.stem != null && h.pattern != null && h.pattern!.isNotEmpty) ||
+      (h.freqHtml != null && h.freqHtml!.isNotEmpty);
+}
 
 /// Returns the button label based on the headword's pos.
 /// Uses [DpdColors] constants — delegates to the builder's logic.
