@@ -30,14 +30,14 @@
 
 ## Phase 2: Reusable FamilyTable Widget
 
-- [ ] Task 2.1: Create data model for parsed family data
-  - [ ] Create `FamilyEntry` class with fields: `lemma`, `pos`, `meaning`, `completion`
-  - [ ] Create `parseFamilyData(String jsonData)` → `List<FamilyEntry>`
+- [x] Task 2.1: Create data model for parsed family data (5f4a94d)
+  - [x] Create `FamilyEntry` class with fields: `lemma`, `pos`, `meaning`, `completion`
+  - [x] Create `parseFamilyData(String jsonData)` → `List<FamilyEntry>`
 
-- [ ] Task 2.2: Write tests for family data parsing
-  - [ ] Test parsing valid JSON data from each family type
-  - [ ] Test parsing empty/null data
-  - [ ] Test parsing malformed JSON
+- [x] Task 2.2: Write tests for family data parsing (5f4a94d)
+  - [x] Test parsing valid JSON data from each family type
+  - [x] Test parsing empty/null data
+  - [x] Test parsing malformed JSON
 
 - [ ] Task 2.3: Create reusable `FamilyTableWidget`
   - [ ] Create widget accepting: header widget, `List<FamilyEntry>`, footer config
