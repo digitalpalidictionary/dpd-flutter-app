@@ -1,0 +1,8 @@
+{
+  "track_id": "family_tables_20260228",
+  "type": "feature",
+  "status": "new",
+  "created_at": "2026-02-28T12:00:00Z",
+  "updated_at": "2026-02-28T12:00:00Z",
+  "description": "Add five family table sections (root, word, compound, idiom, set) to entry display with full webapp parity"
+}

@@ -11,7 +11,7 @@
   - [x] Register all five tables in `AppDatabase` annotation in `database.dart`
   - [x] Run `dart run build_runner build --delete-conflicting-outputs` to regenerate
 
-- [ ] Task 1.2: Add DAO query methods for each family table
+- [~] Task 1.2: Add DAO query methods for each family table
   - [ ] Register new tables in `DpdDao` `@DriftAccessor` annotation
   - [ ] Add `getRootFamily(String rootKey, String familyRoot)` → single result
   - [ ] Add `getWordFamily(String wordFamily)` → single result
