@@ -23,7 +23,12 @@ class WordCard extends StatelessWidget {
         onTap: onTap,
         child: Container(
           decoration: BoxDecoration(
-            border: Border.all(color: theme.colorScheme.primary, width: 2),
+            border: Border.all(
+              color: theme.brightness == Brightness.light
+                  ? theme.colorScheme.primary
+                  : theme.colorScheme.outline,
+              width: 2,
+            ),
             borderRadius: DpdColors.borderRadius,
           ),
           padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),

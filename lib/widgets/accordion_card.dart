@@ -65,7 +65,12 @@ class _AccordionCardState extends ConsumerState<AccordionCard> {
         child: Container(
           margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
           decoration: BoxDecoration(
-            border: Border.all(color: theme.colorScheme.primary, width: 2),
+            border: Border.all(
+              color: theme.brightness == Brightness.light
+                  ? theme.colorScheme.primary
+                  : theme.colorScheme.outline,
+              width: 2,
+            ),
             borderRadius: DpdColors.borderRadius,
           ),
           child: Column(

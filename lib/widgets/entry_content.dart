@@ -130,7 +130,12 @@ class EntrySummaryBox extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.fromLTRB(8, 8, 8, 4),
       decoration: BoxDecoration(
-        border: Border.all(color: theme.colorScheme.primary, width: 2),
+        border: Border.all(
+          color: theme.brightness == Brightness.light
+              ? theme.colorScheme.primary
+              : theme.colorScheme.outline,
+          width: 2,
+        ),
         borderRadius: DpdColors.borderRadius,
       ),
       padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),

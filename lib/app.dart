@@ -39,7 +39,7 @@ class DpdApp extends ConsumerWidget {
       surface: DpdColors.dark,
       onSurface: DpdColors.light,
       surfaceContainerHighest: DpdColors.darkShade,
-      outline: DpdColors.gray,
+      outline: DpdColors.grayTransparent,
       outlineVariant: DpdColors.grayDark,
       error: Colors.red,
       onError: Colors.white,
@@ -75,13 +75,17 @@ class DpdApp extends ConsumerWidget {
       theme: ThemeData(
         colorScheme: lightScheme,
         scaffoldBackgroundColor: DpdColors.light,
-        textTheme: buildTextTheme(ThemeData(colorScheme: lightScheme).textTheme),
+        textTheme: buildTextTheme(
+          ThemeData(colorScheme: lightScheme).textTheme,
+        ),
         useMaterial3: true,
       ),
       darkTheme: ThemeData(
         colorScheme: darkScheme,
         scaffoldBackgroundColor: DpdColors.dark,
-        textTheme: buildTextTheme(ThemeData.dark().copyWith(colorScheme: darkScheme).textTheme),
+        textTheme: buildTextTheme(
+          ThemeData.dark().copyWith(colorScheme: darkScheme).textTheme,
+        ),
         useMaterial3: true,
       ),
       initialRoute: '/',
