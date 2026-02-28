@@ -20,15 +20,15 @@
   - [x] Test multiple endings in one cell
   - [x] Test empty endings produce empty cells
 
-- [ ] Task: Implement inflection table builder
-  - [ ] Parse 3D JSON array from template data
-  - [ ] Clean stem (strip `!` and `*` markers)
-  - [ ] Build header row from row 0 odd columns
-  - [ ] Build data rows: column 0 = row label, odd columns = stem + ending
-  - [ ] Extract grammar tooltip from even columns
-  - [ ] Determine button label (Declension vs Conjugation) from pos
-  - [ ] Generate heading text with pattern, like, and lemma
-  - [ ] Handle all special stem cases
+- [x] Task: Implement inflection table builder [dd00a35]
+  - [x] Parse 3D JSON array from template data
+  - [x] Clean stem (strip `!` and `*` markers)
+  - [x] Build header row from row 0 odd columns
+  - [x] Build data rows: column 0 = row label, odd columns = stem + ending
+  - [x] Extract grammar tooltip from even columns
+  - [x] Determine button label (Declension vs Conjugation) from pos
+  - [x] Generate heading text with pattern, like, and lemma
+  - [x] Handle all special stem cases
 
 - [ ] Task: Create template cache provider
   - [ ] Riverpod provider that loads all 153 templates into memory on first access
