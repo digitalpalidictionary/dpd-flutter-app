@@ -21,7 +21,7 @@ class DpdFooter extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.only(top: 5.0),
-      padding: const EdgeInsets.only(top: 5.0),
+      padding: const EdgeInsets.symmetric(vertical: 5.0),
       decoration: BoxDecoration(
         border: Border(top: BorderSide(color: DpdColors.primary, width: 1)),
       ),

@@ -118,7 +118,7 @@ class _InlineEntryCardState extends ConsumerState<InlineEntryCard> {
           if (_examplesOpen && hasExamples)
             DpdSectionContainer(
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
+                padding: const EdgeInsets.all(16.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [

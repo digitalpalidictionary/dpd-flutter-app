@@ -43,3 +43,15 @@ When rebuilding the DPD database, add these computed fields:
 - `dpd_headwords.lemma_ipa`: IPA transcription via Aksharamukha (`transliterate.process("IASTPali", "IPA", lemma_clean)`)
 
 See `lib/database/tables.dart` for details.
+
+## UI Architecture Notes
+
+### Section Containers
+All entry sections (grammar, examples, inflections, families, etc.) MUST use:
+- `DpdSectionContainer` - provides outer border/margin (the "dpd content" div equivalent)
+- Inner content padding: 16px all around (consistent with GrammarTable)
+
+### Footer Widget
+Use `DpdFooter` for all section footers with feedback links:
+- Provides consistent styling matching webapp `.dpd-footer` CSS
+- Pass `messagePrefix`, `linkText`, and `urlBuilder` for customization

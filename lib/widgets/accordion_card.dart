@@ -140,7 +140,7 @@ class _AccordionCardState extends ConsumerState<AccordionCard> {
                 if (hasExamples)
                   DpdSectionContainer(
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 7),
+                      padding: const EdgeInsets.all(16.0),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [

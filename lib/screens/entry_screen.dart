@@ -106,7 +106,7 @@ class _EntryView extends ConsumerWidget {
                 // Examples section - always visible like webapp
                 if (hasExamples)
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 7),
+                    padding: const EdgeInsets.all(16.0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
