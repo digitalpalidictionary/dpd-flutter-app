@@ -87,7 +87,7 @@ class EntryExampleBlock extends StatelessWidget {
           Text(
             [source, sutta].whereType<String>().join(' · '),
             style: theme.textTheme.bodySmall?.copyWith(
-              color: theme.colorScheme.outline,
+              color: DpdColors.primaryText,
               fontStyle: FontStyle.italic,
             ),
           ),
