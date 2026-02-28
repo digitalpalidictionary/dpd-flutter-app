@@ -59,7 +59,7 @@
   - [x] Replace current raw Html inflection rendering with new InflectionSection
   - [x] Update ExpansionTile title to "Declension"/"Conjugation"
 
-- [ ] Task: Add DpdFooter to inflection section
-  - [ ] Feedback link matching grammar/examples footer pattern
+- [x] Task: Add DpdFooter to inflection section [1fc9741]
+  - [x] Feedback link matching grammar/examples footer pattern
 
 - [ ] Task: Conductor - User Manual Verification 'Phase 2: Widget & Integration' (Protocol in workflow.md)
