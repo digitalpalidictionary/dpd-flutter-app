@@ -78,7 +78,7 @@ class _AccordionCardState extends ConsumerState<AccordionCard> {
             children: [
               // Header
               Padding(
-                padding: const EdgeInsets.fromLTRB(7, 3, 7, 0),
+                padding: const EdgeInsets.fromLTRB(7, 3, 7, 2),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.baseline,
                   textBaseline: TextBaseline.alphabetic,
@@ -104,7 +104,7 @@ class _AccordionCardState extends ConsumerState<AccordionCard> {
 
               // Meaning (compact: truncated, expanded: full)
               Padding(
-                padding: const EdgeInsets.fromLTRB(7, 4, 7, 0),
+                padding: const EdgeInsets.fromLTRB(7, 2, 7, 2),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -119,7 +119,7 @@ class _AccordionCardState extends ConsumerState<AccordionCard> {
                       ),
                     if (isExpanded) ...[
                       if (h.meaningLit != null && h.meaningLit!.isNotEmpty) ...[
-                        const SizedBox(height: 4),
+                        const SizedBox(height: 2),
                         Text(
                           'lit. ${h.meaningLit}',
                           style: theme.textTheme.bodySmall?.copyWith(
@@ -130,7 +130,7 @@ class _AccordionCardState extends ConsumerState<AccordionCard> {
                       ],
                       if (h.construction != null &&
                           h.construction!.isNotEmpty) ...[
-                        const SizedBox(height: 4),
+                        const SizedBox(height: 2),
                         Text(
                           h.construction!,
                           style: theme.textTheme.bodySmall?.copyWith(
@@ -305,7 +305,7 @@ class _SectionContent extends StatelessWidget {
           context,
         ).colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
       ),
-      padding: const EdgeInsets.symmetric(vertical: 8),
+      padding: const EdgeInsets.symmetric(vertical: 4),
       child: child,
     );
   }
