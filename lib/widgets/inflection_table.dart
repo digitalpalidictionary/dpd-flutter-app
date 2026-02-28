@@ -5,11 +5,13 @@ import '../theme/dpd_colors.dart';
 
 /// Renders a native Flutter inflection/conjugation table matching webapp styling.
 ///
-/// Layout mirrors the webapp CSS:
-/// - `border-collapse: separate` → each cell has its own BoxDecoration border + radius
-/// - `th`: primary border, header background, bold text
-/// - `td`: gray border, centered text
-/// - Table fills available width; scrolls horizontally when wider than parent
+/// Row height strategy:
+///   - Data cells use [TableCellVerticalAlignment.middle] → they determine row height.
+///   - Row-label cell uses [TableCellVerticalAlignment.fill] → stretches to row height.
+///   - [TableRow.decoration] fills the background across the full row height.
+/// Corner strategy:
+///   - [TableBorder.all] with [borderRadius] handles rounded corners natively;
+///     no [ClipRRect] needed, avoiding the corner-gap artefact.
 class InflectionTable extends StatelessWidget {
   const InflectionTable({super.key, required this.data});
 
@@ -29,7 +31,6 @@ class InflectionTable extends StatelessWidget {
               padding: const EdgeInsets.only(bottom: 6),
               child: _buildHeading(context),
             ),
-            // Fill available width; scroll horizontally when wider
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: ConstrainedBox(
@@ -43,8 +44,8 @@ class InflectionTable extends StatelessWidget {
     );
   }
 
-  /// Renders the heading with bold lemma, pattern, and "like" word — no italics.
-  /// Matches: `<b>lemma</b> is <b>pattern</b> declension (like <b>like</b>)`
+  /// Heading: `<b>lemma</b> is <b>pattern</b> declension (like <b>like</b>)`
+  /// No italics; bold on lemma, pattern, and like word only.
   Widget _buildHeading(BuildContext context) {
     final theme = Theme.of(context);
     final base = theme.textTheme.bodySmall ?? const TextStyle();
@@ -73,7 +74,6 @@ class InflectionTable extends StatelessWidget {
 
   Widget _buildTable(BuildContext context, Color headerBg) {
     final colCount = data.headers.length;
-    // Row-label column: fixed intrinsic width; data columns: grow to fill
     final columnWidths = <int, TableColumnWidth>{
       0: const IntrinsicColumnWidth(),
       for (int i = 1; i < colCount; i++) i: const IntrinsicColumnWidth(flex: 1.0),
@@ -81,7 +81,14 @@ class InflectionTable extends StatelessWidget {
 
     return Table(
       columnWidths: columnWidths,
+      // Data cells are middle (they set the row height).
+      // Row-label cells individually override to fill.
       defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+      border: TableBorder.all(
+        color: DpdColors.primary,
+        width: 1,
+        borderRadius: BorderRadius.circular(DpdColors.borderRadiusValue),
+      ),
       children: [
         _buildHeaderRow(context, headerBg),
         for (final row in data.rows) _buildDataRow(context, row, headerBg),
@@ -92,17 +99,20 @@ class InflectionTable extends StatelessWidget {
   TableRow _buildHeaderRow(BuildContext context, Color headerBg) {
     final theme = Theme.of(context);
     return TableRow(
+      decoration: BoxDecoration(color: headerBg),
       children: data.headers.map((header) {
-        return _thCell(
-          headerBg: headerBg,
-          child: Text(
-            header,
-            textAlign: TextAlign.center,
-            style: theme.textTheme.bodySmall?.copyWith(
-              fontWeight: FontWeight.bold,
-              color: DpdColors.primaryText,
+        return TableCell(
+          child: Padding(
+            padding: const EdgeInsets.all(5),
+            child: Text(
+              header,
+              textAlign: TextAlign.center,
+              style: theme.textTheme.bodySmall?.copyWith(
+                fontWeight: FontWeight.bold,
+                color: DpdColors.primaryText,
+              ),
+              softWrap: false,
             ),
-            softWrap: false,
           ),
         );
       }).toList(),
@@ -115,77 +125,50 @@ class InflectionTable extends StatelessWidget {
     Color headerBg,
   ) {
     final theme = Theme.of(context);
+    final surfaceColor = theme.colorScheme.surface;
     final (rowLabel, cells) = row;
 
     return TableRow(
+      // Surface colour fills the full row height for data cells.
+      // The row-label cell paints over this with headerBg.
+      decoration: BoxDecoration(color: surfaceColor),
       children: [
-        // Row label: th-styled (header background + primary border)
-        _thCell(
-          headerBg: headerBg,
-          child: Text(
-            rowLabel,
-            textAlign: TextAlign.center,
-            style: theme.textTheme.bodySmall?.copyWith(
-              fontWeight: FontWeight.bold,
-              color: DpdColors.primaryText,
+        // Row label: fill alignment so it stretches to full row height,
+        // with headerBg painted over the row's surface background.
+        TableCell(
+          verticalAlignment: TableCellVerticalAlignment.fill,
+          child: Container(
+            color: headerBg,
+            padding: const EdgeInsets.all(5),
+            alignment: Alignment.center,
+            child: Text(
+              rowLabel,
+              textAlign: TextAlign.center,
+              style: theme.textTheme.bodySmall?.copyWith(
+                fontWeight: FontWeight.bold,
+                color: DpdColors.primaryText,
+              ),
+              softWrap: false,
             ),
-            softWrap: false,
           ),
         ),
-        // Data cells: td-styled (gray border)
+        // Data cells: middle alignment (default); they set the row height.
+        // Background comes from TableRow.decoration (surfaceColor).
         for (final cell in cells)
-          _tdCell(
-            child: cell.isEmpty
-                ? const SizedBox.shrink()
-                : Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: cell.forms
-                        .map((form) => _buildFormText(context, form))
-                        .toList(),
-                  ),
+          TableCell(
+            child: Padding(
+              padding: const EdgeInsets.all(5),
+              child: cell.isEmpty
+                  ? const SizedBox.shrink()
+                  : Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: cell.forms
+                          .map((form) => _buildFormText(context, form))
+                          .toList(),
+                    ),
+            ),
           ),
       ],
-    );
-  }
-
-  /// Header cell: primary border, header background, centered content.
-  /// Matches CSS `table.inflection th`.
-  Widget _thCell({required Color headerBg, required Widget child}) {
-    return TableCell(
-      verticalAlignment: TableCellVerticalAlignment.fill,
-      child: Padding(
-        padding: const EdgeInsets.all(1),
-        child: Container(
-          decoration: BoxDecoration(
-            color: headerBg,
-            border: Border.all(color: DpdColors.primary, width: 1),
-            borderRadius: BorderRadius.circular(7),
-          ),
-          padding: const EdgeInsets.all(5),
-          alignment: Alignment.center,
-          child: child,
-        ),
-      ),
-    );
-  }
-
-  /// Data cell: gray border, centered content.
-  /// Matches CSS `table.inflection td`.
-  Widget _tdCell({required Widget child}) {
-    return TableCell(
-      verticalAlignment: TableCellVerticalAlignment.fill,
-      child: Padding(
-        padding: const EdgeInsets.all(1),
-        child: Container(
-          decoration: BoxDecoration(
-            border: Border.all(color: DpdColors.gray, width: 1),
-            borderRadius: BorderRadius.circular(7),
-          ),
-          padding: const EdgeInsets.all(5),
-          alignment: Alignment.center,
-          child: child,
-        ),
-      ),
     );
   }
 
