@@ -19,7 +19,7 @@
 ## Phase 3: Tables & Dark Mode
 
 - [~] Task: Style inflection tables matching webapp (7px corner radius, 1px gray cell borders, primary header borders, centered text, 5px cell padding)
-- [ ] Task: Style frequency heatmap tables with 10-level cyan gradient colors matching webapp
+- [~] Task: Style frequency heatmap tables with 10-level cyan gradient colors matching webapp
 - [ ] Task: Style grammar/sutta-info tables (no borders, primary-text header color, bold headers, nowrap)
 - [ ] Task: Implement dark mode with exact webapp colors (dark background, light text, gray-transparent borders, primary accent unchanged)
 - [ ] Task: Conductor - User Manual Verification 'Tables & Dark Mode' (Protocol in workflow.md)
