@@ -4,7 +4,7 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-## [~] Track: Family Tables (Root, Word, Compound, Idiom, Set)
+## [x] Track: Family Tables (Root, Word, Compound, Idiom, Set)
 *Link: [./conductor/tracks/family_tables_20260228/](./conductor/tracks/family_tables_20260228/)*
 
 ---

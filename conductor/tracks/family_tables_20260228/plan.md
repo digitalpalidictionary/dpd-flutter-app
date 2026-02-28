@@ -76,28 +76,33 @@
   - [x] Load family data from DAO when section is opened (lazy load)
   - [x] Parse JSON data and pass to `FamilyTableWidget`
 
-## Phase 4: User Verification & Fix-up
+## Phase 4: User Verification & Fix-up [checkpoint: 0257228]
 
-- [~] Task 4.1: User visual verification of root family section
-  - [ ] User tests root family button and section on multiple entries
-  - [ ] Fix any layout, data, or styling issues found
+Pre-verification fixes applied (0257228):
+- Family buttons now appear in the SAME Wrap as Grammar/Examples/Inflections/Notes
+- Header text uses default theme color (removed DpdColors.primaryText blue)
+- Completion column uses DpdColors.gray (removed DpdColors.primaryText blue)
+- Set delimiter fixed: split('; ') not split(' ')
+- Created FamilyStateMixin — shared logic across all 4 card/sheet widgets
+- FamilyToggleSection refactored to use the mixin
 
-- [ ] Task 4.2: User visual verification of word family section
-  - [ ] User tests word family button and section on multiple entries
-  - [ ] Fix any layout, data, or styling issues found
+- [x] Task 4.1: User visual verification of root family section (0257228)
+  - [x] Fix family buttons on own row → now in unified row with all other buttons
+  - [x] Fix header color → default theme text color, not blue
+  - [x] Fix completion column color → gray
 
-- [ ] Task 4.3: User visual verification of compound family section
-  - [ ] User tests single compound family entries
-  - [ ] User tests multiple compound families with jump-to navigation
-  - [ ] Fix any layout, data, or styling issues found
+- [x] Task 4.2: User visual verification of word family section (0257228)
+  - [x] Fix same issues as 4.1
 
-- [ ] Task 4.4: User visual verification of idioms section
-  - [ ] User tests idioms button and section on multiple entries
-  - [ ] Fix any layout, data, or styling issues found
+- [x] Task 4.3: User visual verification of compound family section (0257228)
+  - [x] Fix same issues as 4.1
 
-- [ ] Task 4.5: User visual verification of sets section
-  - [ ] User tests single set entries
-  - [ ] User tests multiple sets with jump-to navigation
-  - [ ] Fix any layout, data, or styling issues found
+- [x] Task 4.4: User visual verification of idioms section (0257228)
+  - [x] Idiom key splitting confirmed correct (space-separated, each token is a PK)
+  - [x] Fix same styling issues as 4.1
 
-- [ ] Task: Conductor - User Manual Verification 'Phase 4: User Verification & Fix-up' (Protocol in workflow.md)
+- [x] Task 4.5: User visual verification of sets section (0257228)
+  - [x] Fix set key delimiter: split('; ') — was the root cause of sets malfunction
+  - [x] Fix same styling issues as 4.1
+
+- [x] Task: Conductor - User Manual Verification 'Phase 4: User Verification & Fix-up' (Protocol in workflow.md)
