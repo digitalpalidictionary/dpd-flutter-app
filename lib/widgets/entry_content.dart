@@ -128,14 +128,10 @@ class EntrySummaryBox extends StatelessWidget {
     final theme = Theme.of(context);
 
     return Container(
+      width: double.infinity,
       margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
       decoration: BoxDecoration(
-        border: Border.all(
-          color: theme.brightness == Brightness.light
-              ? DpdColors.primary
-              : DpdColors.grayTransparent,
-          width: 2,
-        ),
+        border: Border.all(color: theme.colorScheme.outline, width: 2),
         borderRadius: DpdColors.borderRadius,
       ),
       padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
@@ -182,12 +178,7 @@ class DpdSectionContainer extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
       decoration: BoxDecoration(
         color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
-        border: Border.all(
-          color: theme.brightness == Brightness.light
-              ? DpdColors.primary
-              : DpdColors.grayTransparent,
-          width: 2,
-        ),
+        border: Border.all(color: theme.colorScheme.outline, width: 2),
         borderRadius: DpdColors.borderRadius,
       ),
       padding: const EdgeInsets.symmetric(vertical: 4),
