@@ -112,3 +112,66 @@ class DbInfo extends Table {
   @override
   Set<Column> get primaryKey => {key};
 }
+
+class FamilyRoot extends Table {
+  @override
+  String get tableName => 'family_root';
+
+  TextColumn get rootFamilyKey => text().named('root_family_key')();
+  TextColumn get rootKey => text().named('root_key')();
+  TextColumn get rootFamily => text().named('root_family')();
+  TextColumn get rootMeaning => text().named('root_meaning')();
+  TextColumn get data => text()();
+  IntColumn get count => integer()();
+
+  @override
+  Set<Column> get primaryKey => {rootFamilyKey};
+}
+
+class FamilyWord extends Table {
+  @override
+  String get tableName => 'family_word';
+
+  TextColumn get wordFamily => text().named('word_family')();
+  TextColumn get data => text()();
+  IntColumn get count => integer()();
+
+  @override
+  Set<Column> get primaryKey => {wordFamily};
+}
+
+class FamilyCompound extends Table {
+  @override
+  String get tableName => 'family_compound';
+
+  TextColumn get compoundFamily => text().named('compound_family')();
+  TextColumn get data => text()();
+  IntColumn get count => integer()();
+
+  @override
+  Set<Column> get primaryKey => {compoundFamily};
+}
+
+class FamilyIdiom extends Table {
+  @override
+  String get tableName => 'family_idiom';
+
+  TextColumn get idiom => text()();
+  TextColumn get data => text()();
+  IntColumn get count => integer()();
+
+  @override
+  Set<Column> get primaryKey => {idiom};
+}
+
+class FamilySet extends Table {
+  @override
+  String get tableName => 'family_set';
+
+  TextColumn get set_ => text().named('set')();
+  TextColumn get data => text()();
+  IntColumn get count => integer()();
+
+  @override
+  Set<Column> get primaryKey => {set_};
+}

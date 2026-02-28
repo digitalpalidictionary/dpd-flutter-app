@@ -4337,6 +4337,1484 @@ class InflectionTemplatesCompanion extends UpdateCompanion<InflectionTemplate> {
   }
 }
 
+class $FamilyRootTable extends FamilyRoot
+    with TableInfo<$FamilyRootTable, FamilyRootData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $FamilyRootTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _rootFamilyKeyMeta = const VerificationMeta(
+    'rootFamilyKey',
+  );
+  @override
+  late final GeneratedColumn<String> rootFamilyKey = GeneratedColumn<String>(
+    'root_family_key',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _rootKeyMeta = const VerificationMeta(
+    'rootKey',
+  );
+  @override
+  late final GeneratedColumn<String> rootKey = GeneratedColumn<String>(
+    'root_key',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _rootFamilyMeta = const VerificationMeta(
+    'rootFamily',
+  );
+  @override
+  late final GeneratedColumn<String> rootFamily = GeneratedColumn<String>(
+    'root_family',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _rootMeaningMeta = const VerificationMeta(
+    'rootMeaning',
+  );
+  @override
+  late final GeneratedColumn<String> rootMeaning = GeneratedColumn<String>(
+    'root_meaning',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _dataMeta = const VerificationMeta('data');
+  @override
+  late final GeneratedColumn<String> data = GeneratedColumn<String>(
+    'data',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _countMeta = const VerificationMeta('count');
+  @override
+  late final GeneratedColumn<int> count = GeneratedColumn<int>(
+    'count',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    rootFamilyKey,
+    rootKey,
+    rootFamily,
+    rootMeaning,
+    data,
+    count,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'family_root';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<FamilyRootData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('root_family_key')) {
+      context.handle(
+        _rootFamilyKeyMeta,
+        rootFamilyKey.isAcceptableOrUnknown(
+          data['root_family_key']!,
+          _rootFamilyKeyMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_rootFamilyKeyMeta);
+    }
+    if (data.containsKey('root_key')) {
+      context.handle(
+        _rootKeyMeta,
+        rootKey.isAcceptableOrUnknown(data['root_key']!, _rootKeyMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_rootKeyMeta);
+    }
+    if (data.containsKey('root_family')) {
+      context.handle(
+        _rootFamilyMeta,
+        rootFamily.isAcceptableOrUnknown(data['root_family']!, _rootFamilyMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_rootFamilyMeta);
+    }
+    if (data.containsKey('root_meaning')) {
+      context.handle(
+        _rootMeaningMeta,
+        rootMeaning.isAcceptableOrUnknown(
+          data['root_meaning']!,
+          _rootMeaningMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_rootMeaningMeta);
+    }
+    if (data.containsKey('data')) {
+      context.handle(
+        _dataMeta,
+        this.data.isAcceptableOrUnknown(data['data']!, _dataMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_dataMeta);
+    }
+    if (data.containsKey('count')) {
+      context.handle(
+        _countMeta,
+        count.isAcceptableOrUnknown(data['count']!, _countMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_countMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {rootFamilyKey};
+  @override
+  FamilyRootData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return FamilyRootData(
+      rootFamilyKey: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}root_family_key'],
+      )!,
+      rootKey: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}root_key'],
+      )!,
+      rootFamily: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}root_family'],
+      )!,
+      rootMeaning: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}root_meaning'],
+      )!,
+      data: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}data'],
+      )!,
+      count: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}count'],
+      )!,
+    );
+  }
+
+  @override
+  $FamilyRootTable createAlias(String alias) {
+    return $FamilyRootTable(attachedDatabase, alias);
+  }
+}
+
+class FamilyRootData extends DataClass implements Insertable<FamilyRootData> {
+  final String rootFamilyKey;
+  final String rootKey;
+  final String rootFamily;
+  final String rootMeaning;
+  final String data;
+  final int count;
+  const FamilyRootData({
+    required this.rootFamilyKey,
+    required this.rootKey,
+    required this.rootFamily,
+    required this.rootMeaning,
+    required this.data,
+    required this.count,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['root_family_key'] = Variable<String>(rootFamilyKey);
+    map['root_key'] = Variable<String>(rootKey);
+    map['root_family'] = Variable<String>(rootFamily);
+    map['root_meaning'] = Variable<String>(rootMeaning);
+    map['data'] = Variable<String>(data);
+    map['count'] = Variable<int>(count);
+    return map;
+  }
+
+  FamilyRootCompanion toCompanion(bool nullToAbsent) {
+    return FamilyRootCompanion(
+      rootFamilyKey: Value(rootFamilyKey),
+      rootKey: Value(rootKey),
+      rootFamily: Value(rootFamily),
+      rootMeaning: Value(rootMeaning),
+      data: Value(data),
+      count: Value(count),
+    );
+  }
+
+  factory FamilyRootData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return FamilyRootData(
+      rootFamilyKey: serializer.fromJson<String>(json['rootFamilyKey']),
+      rootKey: serializer.fromJson<String>(json['rootKey']),
+      rootFamily: serializer.fromJson<String>(json['rootFamily']),
+      rootMeaning: serializer.fromJson<String>(json['rootMeaning']),
+      data: serializer.fromJson<String>(json['data']),
+      count: serializer.fromJson<int>(json['count']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'rootFamilyKey': serializer.toJson<String>(rootFamilyKey),
+      'rootKey': serializer.toJson<String>(rootKey),
+      'rootFamily': serializer.toJson<String>(rootFamily),
+      'rootMeaning': serializer.toJson<String>(rootMeaning),
+      'data': serializer.toJson<String>(data),
+      'count': serializer.toJson<int>(count),
+    };
+  }
+
+  FamilyRootData copyWith({
+    String? rootFamilyKey,
+    String? rootKey,
+    String? rootFamily,
+    String? rootMeaning,
+    String? data,
+    int? count,
+  }) => FamilyRootData(
+    rootFamilyKey: rootFamilyKey ?? this.rootFamilyKey,
+    rootKey: rootKey ?? this.rootKey,
+    rootFamily: rootFamily ?? this.rootFamily,
+    rootMeaning: rootMeaning ?? this.rootMeaning,
+    data: data ?? this.data,
+    count: count ?? this.count,
+  );
+  FamilyRootData copyWithCompanion(FamilyRootCompanion data) {
+    return FamilyRootData(
+      rootFamilyKey: data.rootFamilyKey.present
+          ? data.rootFamilyKey.value
+          : this.rootFamilyKey,
+      rootKey: data.rootKey.present ? data.rootKey.value : this.rootKey,
+      rootFamily: data.rootFamily.present
+          ? data.rootFamily.value
+          : this.rootFamily,
+      rootMeaning: data.rootMeaning.present
+          ? data.rootMeaning.value
+          : this.rootMeaning,
+      data: data.data.present ? data.data.value : this.data,
+      count: data.count.present ? data.count.value : this.count,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('FamilyRootData(')
+          ..write('rootFamilyKey: $rootFamilyKey, ')
+          ..write('rootKey: $rootKey, ')
+          ..write('rootFamily: $rootFamily, ')
+          ..write('rootMeaning: $rootMeaning, ')
+          ..write('data: $data, ')
+          ..write('count: $count')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(rootFamilyKey, rootKey, rootFamily, rootMeaning, data, count);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is FamilyRootData &&
+          other.rootFamilyKey == this.rootFamilyKey &&
+          other.rootKey == this.rootKey &&
+          other.rootFamily == this.rootFamily &&
+          other.rootMeaning == this.rootMeaning &&
+          other.data == this.data &&
+          other.count == this.count);
+}
+
+class FamilyRootCompanion extends UpdateCompanion<FamilyRootData> {
+  final Value<String> rootFamilyKey;
+  final Value<String> rootKey;
+  final Value<String> rootFamily;
+  final Value<String> rootMeaning;
+  final Value<String> data;
+  final Value<int> count;
+  final Value<int> rowid;
+  const FamilyRootCompanion({
+    this.rootFamilyKey = const Value.absent(),
+    this.rootKey = const Value.absent(),
+    this.rootFamily = const Value.absent(),
+    this.rootMeaning = const Value.absent(),
+    this.data = const Value.absent(),
+    this.count = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  FamilyRootCompanion.insert({
+    required String rootFamilyKey,
+    required String rootKey,
+    required String rootFamily,
+    required String rootMeaning,
+    required String data,
+    required int count,
+    this.rowid = const Value.absent(),
+  }) : rootFamilyKey = Value(rootFamilyKey),
+       rootKey = Value(rootKey),
+       rootFamily = Value(rootFamily),
+       rootMeaning = Value(rootMeaning),
+       data = Value(data),
+       count = Value(count);
+  static Insertable<FamilyRootData> custom({
+    Expression<String>? rootFamilyKey,
+    Expression<String>? rootKey,
+    Expression<String>? rootFamily,
+    Expression<String>? rootMeaning,
+    Expression<String>? data,
+    Expression<int>? count,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (rootFamilyKey != null) 'root_family_key': rootFamilyKey,
+      if (rootKey != null) 'root_key': rootKey,
+      if (rootFamily != null) 'root_family': rootFamily,
+      if (rootMeaning != null) 'root_meaning': rootMeaning,
+      if (data != null) 'data': data,
+      if (count != null) 'count': count,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  FamilyRootCompanion copyWith({
+    Value<String>? rootFamilyKey,
+    Value<String>? rootKey,
+    Value<String>? rootFamily,
+    Value<String>? rootMeaning,
+    Value<String>? data,
+    Value<int>? count,
+    Value<int>? rowid,
+  }) {
+    return FamilyRootCompanion(
+      rootFamilyKey: rootFamilyKey ?? this.rootFamilyKey,
+      rootKey: rootKey ?? this.rootKey,
+      rootFamily: rootFamily ?? this.rootFamily,
+      rootMeaning: rootMeaning ?? this.rootMeaning,
+      data: data ?? this.data,
+      count: count ?? this.count,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (rootFamilyKey.present) {
+      map['root_family_key'] = Variable<String>(rootFamilyKey.value);
+    }
+    if (rootKey.present) {
+      map['root_key'] = Variable<String>(rootKey.value);
+    }
+    if (rootFamily.present) {
+      map['root_family'] = Variable<String>(rootFamily.value);
+    }
+    if (rootMeaning.present) {
+      map['root_meaning'] = Variable<String>(rootMeaning.value);
+    }
+    if (data.present) {
+      map['data'] = Variable<String>(data.value);
+    }
+    if (count.present) {
+      map['count'] = Variable<int>(count.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('FamilyRootCompanion(')
+          ..write('rootFamilyKey: $rootFamilyKey, ')
+          ..write('rootKey: $rootKey, ')
+          ..write('rootFamily: $rootFamily, ')
+          ..write('rootMeaning: $rootMeaning, ')
+          ..write('data: $data, ')
+          ..write('count: $count, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $FamilyWordTable extends FamilyWord
+    with TableInfo<$FamilyWordTable, FamilyWordData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $FamilyWordTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _wordFamilyMeta = const VerificationMeta(
+    'wordFamily',
+  );
+  @override
+  late final GeneratedColumn<String> wordFamily = GeneratedColumn<String>(
+    'word_family',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _dataMeta = const VerificationMeta('data');
+  @override
+  late final GeneratedColumn<String> data = GeneratedColumn<String>(
+    'data',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _countMeta = const VerificationMeta('count');
+  @override
+  late final GeneratedColumn<int> count = GeneratedColumn<int>(
+    'count',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [wordFamily, data, count];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'family_word';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<FamilyWordData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('word_family')) {
+      context.handle(
+        _wordFamilyMeta,
+        wordFamily.isAcceptableOrUnknown(data['word_family']!, _wordFamilyMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_wordFamilyMeta);
+    }
+    if (data.containsKey('data')) {
+      context.handle(
+        _dataMeta,
+        this.data.isAcceptableOrUnknown(data['data']!, _dataMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_dataMeta);
+    }
+    if (data.containsKey('count')) {
+      context.handle(
+        _countMeta,
+        count.isAcceptableOrUnknown(data['count']!, _countMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_countMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {wordFamily};
+  @override
+  FamilyWordData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return FamilyWordData(
+      wordFamily: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}word_family'],
+      )!,
+      data: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}data'],
+      )!,
+      count: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}count'],
+      )!,
+    );
+  }
+
+  @override
+  $FamilyWordTable createAlias(String alias) {
+    return $FamilyWordTable(attachedDatabase, alias);
+  }
+}
+
+class FamilyWordData extends DataClass implements Insertable<FamilyWordData> {
+  final String wordFamily;
+  final String data;
+  final int count;
+  const FamilyWordData({
+    required this.wordFamily,
+    required this.data,
+    required this.count,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['word_family'] = Variable<String>(wordFamily);
+    map['data'] = Variable<String>(data);
+    map['count'] = Variable<int>(count);
+    return map;
+  }
+
+  FamilyWordCompanion toCompanion(bool nullToAbsent) {
+    return FamilyWordCompanion(
+      wordFamily: Value(wordFamily),
+      data: Value(data),
+      count: Value(count),
+    );
+  }
+
+  factory FamilyWordData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return FamilyWordData(
+      wordFamily: serializer.fromJson<String>(json['wordFamily']),
+      data: serializer.fromJson<String>(json['data']),
+      count: serializer.fromJson<int>(json['count']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'wordFamily': serializer.toJson<String>(wordFamily),
+      'data': serializer.toJson<String>(data),
+      'count': serializer.toJson<int>(count),
+    };
+  }
+
+  FamilyWordData copyWith({String? wordFamily, String? data, int? count}) =>
+      FamilyWordData(
+        wordFamily: wordFamily ?? this.wordFamily,
+        data: data ?? this.data,
+        count: count ?? this.count,
+      );
+  FamilyWordData copyWithCompanion(FamilyWordCompanion data) {
+    return FamilyWordData(
+      wordFamily: data.wordFamily.present
+          ? data.wordFamily.value
+          : this.wordFamily,
+      data: data.data.present ? data.data.value : this.data,
+      count: data.count.present ? data.count.value : this.count,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('FamilyWordData(')
+          ..write('wordFamily: $wordFamily, ')
+          ..write('data: $data, ')
+          ..write('count: $count')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(wordFamily, data, count);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is FamilyWordData &&
+          other.wordFamily == this.wordFamily &&
+          other.data == this.data &&
+          other.count == this.count);
+}
+
+class FamilyWordCompanion extends UpdateCompanion<FamilyWordData> {
+  final Value<String> wordFamily;
+  final Value<String> data;
+  final Value<int> count;
+  final Value<int> rowid;
+  const FamilyWordCompanion({
+    this.wordFamily = const Value.absent(),
+    this.data = const Value.absent(),
+    this.count = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  FamilyWordCompanion.insert({
+    required String wordFamily,
+    required String data,
+    required int count,
+    this.rowid = const Value.absent(),
+  }) : wordFamily = Value(wordFamily),
+       data = Value(data),
+       count = Value(count);
+  static Insertable<FamilyWordData> custom({
+    Expression<String>? wordFamily,
+    Expression<String>? data,
+    Expression<int>? count,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (wordFamily != null) 'word_family': wordFamily,
+      if (data != null) 'data': data,
+      if (count != null) 'count': count,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  FamilyWordCompanion copyWith({
+    Value<String>? wordFamily,
+    Value<String>? data,
+    Value<int>? count,
+    Value<int>? rowid,
+  }) {
+    return FamilyWordCompanion(
+      wordFamily: wordFamily ?? this.wordFamily,
+      data: data ?? this.data,
+      count: count ?? this.count,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (wordFamily.present) {
+      map['word_family'] = Variable<String>(wordFamily.value);
+    }
+    if (data.present) {
+      map['data'] = Variable<String>(data.value);
+    }
+    if (count.present) {
+      map['count'] = Variable<int>(count.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('FamilyWordCompanion(')
+          ..write('wordFamily: $wordFamily, ')
+          ..write('data: $data, ')
+          ..write('count: $count, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $FamilyCompoundTable extends FamilyCompound
+    with TableInfo<$FamilyCompoundTable, FamilyCompoundData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $FamilyCompoundTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _compoundFamilyMeta = const VerificationMeta(
+    'compoundFamily',
+  );
+  @override
+  late final GeneratedColumn<String> compoundFamily = GeneratedColumn<String>(
+    'compound_family',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _dataMeta = const VerificationMeta('data');
+  @override
+  late final GeneratedColumn<String> data = GeneratedColumn<String>(
+    'data',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _countMeta = const VerificationMeta('count');
+  @override
+  late final GeneratedColumn<int> count = GeneratedColumn<int>(
+    'count',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [compoundFamily, data, count];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'family_compound';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<FamilyCompoundData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('compound_family')) {
+      context.handle(
+        _compoundFamilyMeta,
+        compoundFamily.isAcceptableOrUnknown(
+          data['compound_family']!,
+          _compoundFamilyMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_compoundFamilyMeta);
+    }
+    if (data.containsKey('data')) {
+      context.handle(
+        _dataMeta,
+        this.data.isAcceptableOrUnknown(data['data']!, _dataMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_dataMeta);
+    }
+    if (data.containsKey('count')) {
+      context.handle(
+        _countMeta,
+        count.isAcceptableOrUnknown(data['count']!, _countMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_countMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {compoundFamily};
+  @override
+  FamilyCompoundData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return FamilyCompoundData(
+      compoundFamily: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}compound_family'],
+      )!,
+      data: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}data'],
+      )!,
+      count: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}count'],
+      )!,
+    );
+  }
+
+  @override
+  $FamilyCompoundTable createAlias(String alias) {
+    return $FamilyCompoundTable(attachedDatabase, alias);
+  }
+}
+
+class FamilyCompoundData extends DataClass
+    implements Insertable<FamilyCompoundData> {
+  final String compoundFamily;
+  final String data;
+  final int count;
+  const FamilyCompoundData({
+    required this.compoundFamily,
+    required this.data,
+    required this.count,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['compound_family'] = Variable<String>(compoundFamily);
+    map['data'] = Variable<String>(data);
+    map['count'] = Variable<int>(count);
+    return map;
+  }
+
+  FamilyCompoundCompanion toCompanion(bool nullToAbsent) {
+    return FamilyCompoundCompanion(
+      compoundFamily: Value(compoundFamily),
+      data: Value(data),
+      count: Value(count),
+    );
+  }
+
+  factory FamilyCompoundData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return FamilyCompoundData(
+      compoundFamily: serializer.fromJson<String>(json['compoundFamily']),
+      data: serializer.fromJson<String>(json['data']),
+      count: serializer.fromJson<int>(json['count']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'compoundFamily': serializer.toJson<String>(compoundFamily),
+      'data': serializer.toJson<String>(data),
+      'count': serializer.toJson<int>(count),
+    };
+  }
+
+  FamilyCompoundData copyWith({
+    String? compoundFamily,
+    String? data,
+    int? count,
+  }) => FamilyCompoundData(
+    compoundFamily: compoundFamily ?? this.compoundFamily,
+    data: data ?? this.data,
+    count: count ?? this.count,
+  );
+  FamilyCompoundData copyWithCompanion(FamilyCompoundCompanion data) {
+    return FamilyCompoundData(
+      compoundFamily: data.compoundFamily.present
+          ? data.compoundFamily.value
+          : this.compoundFamily,
+      data: data.data.present ? data.data.value : this.data,
+      count: data.count.present ? data.count.value : this.count,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('FamilyCompoundData(')
+          ..write('compoundFamily: $compoundFamily, ')
+          ..write('data: $data, ')
+          ..write('count: $count')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(compoundFamily, data, count);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is FamilyCompoundData &&
+          other.compoundFamily == this.compoundFamily &&
+          other.data == this.data &&
+          other.count == this.count);
+}
+
+class FamilyCompoundCompanion extends UpdateCompanion<FamilyCompoundData> {
+  final Value<String> compoundFamily;
+  final Value<String> data;
+  final Value<int> count;
+  final Value<int> rowid;
+  const FamilyCompoundCompanion({
+    this.compoundFamily = const Value.absent(),
+    this.data = const Value.absent(),
+    this.count = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  FamilyCompoundCompanion.insert({
+    required String compoundFamily,
+    required String data,
+    required int count,
+    this.rowid = const Value.absent(),
+  }) : compoundFamily = Value(compoundFamily),
+       data = Value(data),
+       count = Value(count);
+  static Insertable<FamilyCompoundData> custom({
+    Expression<String>? compoundFamily,
+    Expression<String>? data,
+    Expression<int>? count,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (compoundFamily != null) 'compound_family': compoundFamily,
+      if (data != null) 'data': data,
+      if (count != null) 'count': count,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  FamilyCompoundCompanion copyWith({
+    Value<String>? compoundFamily,
+    Value<String>? data,
+    Value<int>? count,
+    Value<int>? rowid,
+  }) {
+    return FamilyCompoundCompanion(
+      compoundFamily: compoundFamily ?? this.compoundFamily,
+      data: data ?? this.data,
+      count: count ?? this.count,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (compoundFamily.present) {
+      map['compound_family'] = Variable<String>(compoundFamily.value);
+    }
+    if (data.present) {
+      map['data'] = Variable<String>(data.value);
+    }
+    if (count.present) {
+      map['count'] = Variable<int>(count.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('FamilyCompoundCompanion(')
+          ..write('compoundFamily: $compoundFamily, ')
+          ..write('data: $data, ')
+          ..write('count: $count, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $FamilyIdiomTable extends FamilyIdiom
+    with TableInfo<$FamilyIdiomTable, FamilyIdiomData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $FamilyIdiomTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idiomMeta = const VerificationMeta('idiom');
+  @override
+  late final GeneratedColumn<String> idiom = GeneratedColumn<String>(
+    'idiom',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _dataMeta = const VerificationMeta('data');
+  @override
+  late final GeneratedColumn<String> data = GeneratedColumn<String>(
+    'data',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _countMeta = const VerificationMeta('count');
+  @override
+  late final GeneratedColumn<int> count = GeneratedColumn<int>(
+    'count',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [idiom, data, count];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'family_idiom';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<FamilyIdiomData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('idiom')) {
+      context.handle(
+        _idiomMeta,
+        idiom.isAcceptableOrUnknown(data['idiom']!, _idiomMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_idiomMeta);
+    }
+    if (data.containsKey('data')) {
+      context.handle(
+        _dataMeta,
+        this.data.isAcceptableOrUnknown(data['data']!, _dataMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_dataMeta);
+    }
+    if (data.containsKey('count')) {
+      context.handle(
+        _countMeta,
+        count.isAcceptableOrUnknown(data['count']!, _countMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_countMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {idiom};
+  @override
+  FamilyIdiomData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return FamilyIdiomData(
+      idiom: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}idiom'],
+      )!,
+      data: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}data'],
+      )!,
+      count: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}count'],
+      )!,
+    );
+  }
+
+  @override
+  $FamilyIdiomTable createAlias(String alias) {
+    return $FamilyIdiomTable(attachedDatabase, alias);
+  }
+}
+
+class FamilyIdiomData extends DataClass implements Insertable<FamilyIdiomData> {
+  final String idiom;
+  final String data;
+  final int count;
+  const FamilyIdiomData({
+    required this.idiom,
+    required this.data,
+    required this.count,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['idiom'] = Variable<String>(idiom);
+    map['data'] = Variable<String>(data);
+    map['count'] = Variable<int>(count);
+    return map;
+  }
+
+  FamilyIdiomCompanion toCompanion(bool nullToAbsent) {
+    return FamilyIdiomCompanion(
+      idiom: Value(idiom),
+      data: Value(data),
+      count: Value(count),
+    );
+  }
+
+  factory FamilyIdiomData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return FamilyIdiomData(
+      idiom: serializer.fromJson<String>(json['idiom']),
+      data: serializer.fromJson<String>(json['data']),
+      count: serializer.fromJson<int>(json['count']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'idiom': serializer.toJson<String>(idiom),
+      'data': serializer.toJson<String>(data),
+      'count': serializer.toJson<int>(count),
+    };
+  }
+
+  FamilyIdiomData copyWith({String? idiom, String? data, int? count}) =>
+      FamilyIdiomData(
+        idiom: idiom ?? this.idiom,
+        data: data ?? this.data,
+        count: count ?? this.count,
+      );
+  FamilyIdiomData copyWithCompanion(FamilyIdiomCompanion data) {
+    return FamilyIdiomData(
+      idiom: data.idiom.present ? data.idiom.value : this.idiom,
+      data: data.data.present ? data.data.value : this.data,
+      count: data.count.present ? data.count.value : this.count,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('FamilyIdiomData(')
+          ..write('idiom: $idiom, ')
+          ..write('data: $data, ')
+          ..write('count: $count')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(idiom, data, count);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is FamilyIdiomData &&
+          other.idiom == this.idiom &&
+          other.data == this.data &&
+          other.count == this.count);
+}
+
+class FamilyIdiomCompanion extends UpdateCompanion<FamilyIdiomData> {
+  final Value<String> idiom;
+  final Value<String> data;
+  final Value<int> count;
+  final Value<int> rowid;
+  const FamilyIdiomCompanion({
+    this.idiom = const Value.absent(),
+    this.data = const Value.absent(),
+    this.count = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  FamilyIdiomCompanion.insert({
+    required String idiom,
+    required String data,
+    required int count,
+    this.rowid = const Value.absent(),
+  }) : idiom = Value(idiom),
+       data = Value(data),
+       count = Value(count);
+  static Insertable<FamilyIdiomData> custom({
+    Expression<String>? idiom,
+    Expression<String>? data,
+    Expression<int>? count,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (idiom != null) 'idiom': idiom,
+      if (data != null) 'data': data,
+      if (count != null) 'count': count,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  FamilyIdiomCompanion copyWith({
+    Value<String>? idiom,
+    Value<String>? data,
+    Value<int>? count,
+    Value<int>? rowid,
+  }) {
+    return FamilyIdiomCompanion(
+      idiom: idiom ?? this.idiom,
+      data: data ?? this.data,
+      count: count ?? this.count,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (idiom.present) {
+      map['idiom'] = Variable<String>(idiom.value);
+    }
+    if (data.present) {
+      map['data'] = Variable<String>(data.value);
+    }
+    if (count.present) {
+      map['count'] = Variable<int>(count.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('FamilyIdiomCompanion(')
+          ..write('idiom: $idiom, ')
+          ..write('data: $data, ')
+          ..write('count: $count, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $FamilySetTable extends FamilySet
+    with TableInfo<$FamilySetTable, FamilySetData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $FamilySetTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _set_Meta = const VerificationMeta('set_');
+  @override
+  late final GeneratedColumn<String> set_ = GeneratedColumn<String>(
+    'set',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _dataMeta = const VerificationMeta('data');
+  @override
+  late final GeneratedColumn<String> data = GeneratedColumn<String>(
+    'data',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _countMeta = const VerificationMeta('count');
+  @override
+  late final GeneratedColumn<int> count = GeneratedColumn<int>(
+    'count',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [set_, data, count];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'family_set';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<FamilySetData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('set')) {
+      context.handle(
+        _set_Meta,
+        set_.isAcceptableOrUnknown(data['set']!, _set_Meta),
+      );
+    } else if (isInserting) {
+      context.missing(_set_Meta);
+    }
+    if (data.containsKey('data')) {
+      context.handle(
+        _dataMeta,
+        this.data.isAcceptableOrUnknown(data['data']!, _dataMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_dataMeta);
+    }
+    if (data.containsKey('count')) {
+      context.handle(
+        _countMeta,
+        count.isAcceptableOrUnknown(data['count']!, _countMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_countMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {set_};
+  @override
+  FamilySetData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return FamilySetData(
+      set_: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}set'],
+      )!,
+      data: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}data'],
+      )!,
+      count: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}count'],
+      )!,
+    );
+  }
+
+  @override
+  $FamilySetTable createAlias(String alias) {
+    return $FamilySetTable(attachedDatabase, alias);
+  }
+}
+
+class FamilySetData extends DataClass implements Insertable<FamilySetData> {
+  final String set_;
+  final String data;
+  final int count;
+  const FamilySetData({
+    required this.set_,
+    required this.data,
+    required this.count,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['set'] = Variable<String>(set_);
+    map['data'] = Variable<String>(data);
+    map['count'] = Variable<int>(count);
+    return map;
+  }
+
+  FamilySetCompanion toCompanion(bool nullToAbsent) {
+    return FamilySetCompanion(
+      set_: Value(set_),
+      data: Value(data),
+      count: Value(count),
+    );
+  }
+
+  factory FamilySetData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return FamilySetData(
+      set_: serializer.fromJson<String>(json['set_']),
+      data: serializer.fromJson<String>(json['data']),
+      count: serializer.fromJson<int>(json['count']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'set_': serializer.toJson<String>(set_),
+      'data': serializer.toJson<String>(data),
+      'count': serializer.toJson<int>(count),
+    };
+  }
+
+  FamilySetData copyWith({String? set_, String? data, int? count}) =>
+      FamilySetData(
+        set_: set_ ?? this.set_,
+        data: data ?? this.data,
+        count: count ?? this.count,
+      );
+  FamilySetData copyWithCompanion(FamilySetCompanion data) {
+    return FamilySetData(
+      set_: data.set_.present ? data.set_.value : this.set_,
+      data: data.data.present ? data.data.value : this.data,
+      count: data.count.present ? data.count.value : this.count,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('FamilySetData(')
+          ..write('set_: $set_, ')
+          ..write('data: $data, ')
+          ..write('count: $count')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(set_, data, count);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is FamilySetData &&
+          other.set_ == this.set_ &&
+          other.data == this.data &&
+          other.count == this.count);
+}
+
+class FamilySetCompanion extends UpdateCompanion<FamilySetData> {
+  final Value<String> set_;
+  final Value<String> data;
+  final Value<int> count;
+  final Value<int> rowid;
+  const FamilySetCompanion({
+    this.set_ = const Value.absent(),
+    this.data = const Value.absent(),
+    this.count = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  FamilySetCompanion.insert({
+    required String set_,
+    required String data,
+    required int count,
+    this.rowid = const Value.absent(),
+  }) : set_ = Value(set_),
+       data = Value(data),
+       count = Value(count);
+  static Insertable<FamilySetData> custom({
+    Expression<String>? set_,
+    Expression<String>? data,
+    Expression<int>? count,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (set_ != null) 'set': set_,
+      if (data != null) 'data': data,
+      if (count != null) 'count': count,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  FamilySetCompanion copyWith({
+    Value<String>? set_,
+    Value<String>? data,
+    Value<int>? count,
+    Value<int>? rowid,
+  }) {
+    return FamilySetCompanion(
+      set_: set_ ?? this.set_,
+      data: data ?? this.data,
+      count: count ?? this.count,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (set_.present) {
+      map['set'] = Variable<String>(set_.value);
+    }
+    if (data.present) {
+      map['data'] = Variable<String>(data.value);
+    }
+    if (count.present) {
+      map['count'] = Variable<int>(count.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('FamilySetCompanion(')
+          ..write('set_: $set_, ')
+          ..write('data: $data, ')
+          ..write('count: $count, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -4346,6 +5824,11 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $DbInfoTable dbInfo = $DbInfoTable(this);
   late final $InflectionTemplatesTable inflectionTemplates =
       $InflectionTemplatesTable(this);
+  late final $FamilyRootTable familyRoot = $FamilyRootTable(this);
+  late final $FamilyWordTable familyWord = $FamilyWordTable(this);
+  late final $FamilyCompoundTable familyCompound = $FamilyCompoundTable(this);
+  late final $FamilyIdiomTable familyIdiom = $FamilyIdiomTable(this);
+  late final $FamilySetTable familySet = $FamilySetTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -4356,6 +5839,11 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     lookup,
     dbInfo,
     inflectionTemplates,
+    familyRoot,
+    familyWord,
+    familyCompound,
+    familyIdiom,
+    familySet,
   ];
 }
 
@@ -6561,6 +8049,889 @@ typedef $$InflectionTemplatesTableProcessedTableManager =
       InflectionTemplate,
       PrefetchHooks Function()
     >;
+typedef $$FamilyRootTableCreateCompanionBuilder =
+    FamilyRootCompanion Function({
+      required String rootFamilyKey,
+      required String rootKey,
+      required String rootFamily,
+      required String rootMeaning,
+      required String data,
+      required int count,
+      Value<int> rowid,
+    });
+typedef $$FamilyRootTableUpdateCompanionBuilder =
+    FamilyRootCompanion Function({
+      Value<String> rootFamilyKey,
+      Value<String> rootKey,
+      Value<String> rootFamily,
+      Value<String> rootMeaning,
+      Value<String> data,
+      Value<int> count,
+      Value<int> rowid,
+    });
+
+class $$FamilyRootTableFilterComposer
+    extends Composer<_$AppDatabase, $FamilyRootTable> {
+  $$FamilyRootTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get rootFamilyKey => $composableBuilder(
+    column: $table.rootFamilyKey,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get rootKey => $composableBuilder(
+    column: $table.rootKey,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get rootFamily => $composableBuilder(
+    column: $table.rootFamily,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get rootMeaning => $composableBuilder(
+    column: $table.rootMeaning,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get data => $composableBuilder(
+    column: $table.data,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get count => $composableBuilder(
+    column: $table.count,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$FamilyRootTableOrderingComposer
+    extends Composer<_$AppDatabase, $FamilyRootTable> {
+  $$FamilyRootTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get rootFamilyKey => $composableBuilder(
+    column: $table.rootFamilyKey,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get rootKey => $composableBuilder(
+    column: $table.rootKey,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get rootFamily => $composableBuilder(
+    column: $table.rootFamily,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get rootMeaning => $composableBuilder(
+    column: $table.rootMeaning,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get data => $composableBuilder(
+    column: $table.data,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get count => $composableBuilder(
+    column: $table.count,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$FamilyRootTableAnnotationComposer
+    extends Composer<_$AppDatabase, $FamilyRootTable> {
+  $$FamilyRootTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get rootFamilyKey => $composableBuilder(
+    column: $table.rootFamilyKey,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get rootKey =>
+      $composableBuilder(column: $table.rootKey, builder: (column) => column);
+
+  GeneratedColumn<String> get rootFamily => $composableBuilder(
+    column: $table.rootFamily,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get rootMeaning => $composableBuilder(
+    column: $table.rootMeaning,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get data =>
+      $composableBuilder(column: $table.data, builder: (column) => column);
+
+  GeneratedColumn<int> get count =>
+      $composableBuilder(column: $table.count, builder: (column) => column);
+}
+
+class $$FamilyRootTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $FamilyRootTable,
+          FamilyRootData,
+          $$FamilyRootTableFilterComposer,
+          $$FamilyRootTableOrderingComposer,
+          $$FamilyRootTableAnnotationComposer,
+          $$FamilyRootTableCreateCompanionBuilder,
+          $$FamilyRootTableUpdateCompanionBuilder,
+          (
+            FamilyRootData,
+            BaseReferences<_$AppDatabase, $FamilyRootTable, FamilyRootData>,
+          ),
+          FamilyRootData,
+          PrefetchHooks Function()
+        > {
+  $$FamilyRootTableTableManager(_$AppDatabase db, $FamilyRootTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$FamilyRootTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$FamilyRootTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$FamilyRootTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> rootFamilyKey = const Value.absent(),
+                Value<String> rootKey = const Value.absent(),
+                Value<String> rootFamily = const Value.absent(),
+                Value<String> rootMeaning = const Value.absent(),
+                Value<String> data = const Value.absent(),
+                Value<int> count = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => FamilyRootCompanion(
+                rootFamilyKey: rootFamilyKey,
+                rootKey: rootKey,
+                rootFamily: rootFamily,
+                rootMeaning: rootMeaning,
+                data: data,
+                count: count,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String rootFamilyKey,
+                required String rootKey,
+                required String rootFamily,
+                required String rootMeaning,
+                required String data,
+                required int count,
+                Value<int> rowid = const Value.absent(),
+              }) => FamilyRootCompanion.insert(
+                rootFamilyKey: rootFamilyKey,
+                rootKey: rootKey,
+                rootFamily: rootFamily,
+                rootMeaning: rootMeaning,
+                data: data,
+                count: count,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$FamilyRootTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $FamilyRootTable,
+      FamilyRootData,
+      $$FamilyRootTableFilterComposer,
+      $$FamilyRootTableOrderingComposer,
+      $$FamilyRootTableAnnotationComposer,
+      $$FamilyRootTableCreateCompanionBuilder,
+      $$FamilyRootTableUpdateCompanionBuilder,
+      (
+        FamilyRootData,
+        BaseReferences<_$AppDatabase, $FamilyRootTable, FamilyRootData>,
+      ),
+      FamilyRootData,
+      PrefetchHooks Function()
+    >;
+typedef $$FamilyWordTableCreateCompanionBuilder =
+    FamilyWordCompanion Function({
+      required String wordFamily,
+      required String data,
+      required int count,
+      Value<int> rowid,
+    });
+typedef $$FamilyWordTableUpdateCompanionBuilder =
+    FamilyWordCompanion Function({
+      Value<String> wordFamily,
+      Value<String> data,
+      Value<int> count,
+      Value<int> rowid,
+    });
+
+class $$FamilyWordTableFilterComposer
+    extends Composer<_$AppDatabase, $FamilyWordTable> {
+  $$FamilyWordTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get wordFamily => $composableBuilder(
+    column: $table.wordFamily,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get data => $composableBuilder(
+    column: $table.data,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get count => $composableBuilder(
+    column: $table.count,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$FamilyWordTableOrderingComposer
+    extends Composer<_$AppDatabase, $FamilyWordTable> {
+  $$FamilyWordTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get wordFamily => $composableBuilder(
+    column: $table.wordFamily,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get data => $composableBuilder(
+    column: $table.data,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get count => $composableBuilder(
+    column: $table.count,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$FamilyWordTableAnnotationComposer
+    extends Composer<_$AppDatabase, $FamilyWordTable> {
+  $$FamilyWordTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get wordFamily => $composableBuilder(
+    column: $table.wordFamily,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get data =>
+      $composableBuilder(column: $table.data, builder: (column) => column);
+
+  GeneratedColumn<int> get count =>
+      $composableBuilder(column: $table.count, builder: (column) => column);
+}
+
+class $$FamilyWordTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $FamilyWordTable,
+          FamilyWordData,
+          $$FamilyWordTableFilterComposer,
+          $$FamilyWordTableOrderingComposer,
+          $$FamilyWordTableAnnotationComposer,
+          $$FamilyWordTableCreateCompanionBuilder,
+          $$FamilyWordTableUpdateCompanionBuilder,
+          (
+            FamilyWordData,
+            BaseReferences<_$AppDatabase, $FamilyWordTable, FamilyWordData>,
+          ),
+          FamilyWordData,
+          PrefetchHooks Function()
+        > {
+  $$FamilyWordTableTableManager(_$AppDatabase db, $FamilyWordTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$FamilyWordTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$FamilyWordTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$FamilyWordTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> wordFamily = const Value.absent(),
+                Value<String> data = const Value.absent(),
+                Value<int> count = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => FamilyWordCompanion(
+                wordFamily: wordFamily,
+                data: data,
+                count: count,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String wordFamily,
+                required String data,
+                required int count,
+                Value<int> rowid = const Value.absent(),
+              }) => FamilyWordCompanion.insert(
+                wordFamily: wordFamily,
+                data: data,
+                count: count,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$FamilyWordTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $FamilyWordTable,
+      FamilyWordData,
+      $$FamilyWordTableFilterComposer,
+      $$FamilyWordTableOrderingComposer,
+      $$FamilyWordTableAnnotationComposer,
+      $$FamilyWordTableCreateCompanionBuilder,
+      $$FamilyWordTableUpdateCompanionBuilder,
+      (
+        FamilyWordData,
+        BaseReferences<_$AppDatabase, $FamilyWordTable, FamilyWordData>,
+      ),
+      FamilyWordData,
+      PrefetchHooks Function()
+    >;
+typedef $$FamilyCompoundTableCreateCompanionBuilder =
+    FamilyCompoundCompanion Function({
+      required String compoundFamily,
+      required String data,
+      required int count,
+      Value<int> rowid,
+    });
+typedef $$FamilyCompoundTableUpdateCompanionBuilder =
+    FamilyCompoundCompanion Function({
+      Value<String> compoundFamily,
+      Value<String> data,
+      Value<int> count,
+      Value<int> rowid,
+    });
+
+class $$FamilyCompoundTableFilterComposer
+    extends Composer<_$AppDatabase, $FamilyCompoundTable> {
+  $$FamilyCompoundTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get compoundFamily => $composableBuilder(
+    column: $table.compoundFamily,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get data => $composableBuilder(
+    column: $table.data,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get count => $composableBuilder(
+    column: $table.count,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$FamilyCompoundTableOrderingComposer
+    extends Composer<_$AppDatabase, $FamilyCompoundTable> {
+  $$FamilyCompoundTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get compoundFamily => $composableBuilder(
+    column: $table.compoundFamily,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get data => $composableBuilder(
+    column: $table.data,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get count => $composableBuilder(
+    column: $table.count,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$FamilyCompoundTableAnnotationComposer
+    extends Composer<_$AppDatabase, $FamilyCompoundTable> {
+  $$FamilyCompoundTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get compoundFamily => $composableBuilder(
+    column: $table.compoundFamily,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get data =>
+      $composableBuilder(column: $table.data, builder: (column) => column);
+
+  GeneratedColumn<int> get count =>
+      $composableBuilder(column: $table.count, builder: (column) => column);
+}
+
+class $$FamilyCompoundTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $FamilyCompoundTable,
+          FamilyCompoundData,
+          $$FamilyCompoundTableFilterComposer,
+          $$FamilyCompoundTableOrderingComposer,
+          $$FamilyCompoundTableAnnotationComposer,
+          $$FamilyCompoundTableCreateCompanionBuilder,
+          $$FamilyCompoundTableUpdateCompanionBuilder,
+          (
+            FamilyCompoundData,
+            BaseReferences<
+              _$AppDatabase,
+              $FamilyCompoundTable,
+              FamilyCompoundData
+            >,
+          ),
+          FamilyCompoundData,
+          PrefetchHooks Function()
+        > {
+  $$FamilyCompoundTableTableManager(
+    _$AppDatabase db,
+    $FamilyCompoundTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$FamilyCompoundTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$FamilyCompoundTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$FamilyCompoundTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> compoundFamily = const Value.absent(),
+                Value<String> data = const Value.absent(),
+                Value<int> count = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => FamilyCompoundCompanion(
+                compoundFamily: compoundFamily,
+                data: data,
+                count: count,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String compoundFamily,
+                required String data,
+                required int count,
+                Value<int> rowid = const Value.absent(),
+              }) => FamilyCompoundCompanion.insert(
+                compoundFamily: compoundFamily,
+                data: data,
+                count: count,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$FamilyCompoundTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $FamilyCompoundTable,
+      FamilyCompoundData,
+      $$FamilyCompoundTableFilterComposer,
+      $$FamilyCompoundTableOrderingComposer,
+      $$FamilyCompoundTableAnnotationComposer,
+      $$FamilyCompoundTableCreateCompanionBuilder,
+      $$FamilyCompoundTableUpdateCompanionBuilder,
+      (
+        FamilyCompoundData,
+        BaseReferences<_$AppDatabase, $FamilyCompoundTable, FamilyCompoundData>,
+      ),
+      FamilyCompoundData,
+      PrefetchHooks Function()
+    >;
+typedef $$FamilyIdiomTableCreateCompanionBuilder =
+    FamilyIdiomCompanion Function({
+      required String idiom,
+      required String data,
+      required int count,
+      Value<int> rowid,
+    });
+typedef $$FamilyIdiomTableUpdateCompanionBuilder =
+    FamilyIdiomCompanion Function({
+      Value<String> idiom,
+      Value<String> data,
+      Value<int> count,
+      Value<int> rowid,
+    });
+
+class $$FamilyIdiomTableFilterComposer
+    extends Composer<_$AppDatabase, $FamilyIdiomTable> {
+  $$FamilyIdiomTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get idiom => $composableBuilder(
+    column: $table.idiom,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get data => $composableBuilder(
+    column: $table.data,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get count => $composableBuilder(
+    column: $table.count,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$FamilyIdiomTableOrderingComposer
+    extends Composer<_$AppDatabase, $FamilyIdiomTable> {
+  $$FamilyIdiomTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get idiom => $composableBuilder(
+    column: $table.idiom,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get data => $composableBuilder(
+    column: $table.data,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get count => $composableBuilder(
+    column: $table.count,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$FamilyIdiomTableAnnotationComposer
+    extends Composer<_$AppDatabase, $FamilyIdiomTable> {
+  $$FamilyIdiomTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get idiom =>
+      $composableBuilder(column: $table.idiom, builder: (column) => column);
+
+  GeneratedColumn<String> get data =>
+      $composableBuilder(column: $table.data, builder: (column) => column);
+
+  GeneratedColumn<int> get count =>
+      $composableBuilder(column: $table.count, builder: (column) => column);
+}
+
+class $$FamilyIdiomTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $FamilyIdiomTable,
+          FamilyIdiomData,
+          $$FamilyIdiomTableFilterComposer,
+          $$FamilyIdiomTableOrderingComposer,
+          $$FamilyIdiomTableAnnotationComposer,
+          $$FamilyIdiomTableCreateCompanionBuilder,
+          $$FamilyIdiomTableUpdateCompanionBuilder,
+          (
+            FamilyIdiomData,
+            BaseReferences<_$AppDatabase, $FamilyIdiomTable, FamilyIdiomData>,
+          ),
+          FamilyIdiomData,
+          PrefetchHooks Function()
+        > {
+  $$FamilyIdiomTableTableManager(_$AppDatabase db, $FamilyIdiomTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$FamilyIdiomTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$FamilyIdiomTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$FamilyIdiomTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> idiom = const Value.absent(),
+                Value<String> data = const Value.absent(),
+                Value<int> count = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => FamilyIdiomCompanion(
+                idiom: idiom,
+                data: data,
+                count: count,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String idiom,
+                required String data,
+                required int count,
+                Value<int> rowid = const Value.absent(),
+              }) => FamilyIdiomCompanion.insert(
+                idiom: idiom,
+                data: data,
+                count: count,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$FamilyIdiomTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $FamilyIdiomTable,
+      FamilyIdiomData,
+      $$FamilyIdiomTableFilterComposer,
+      $$FamilyIdiomTableOrderingComposer,
+      $$FamilyIdiomTableAnnotationComposer,
+      $$FamilyIdiomTableCreateCompanionBuilder,
+      $$FamilyIdiomTableUpdateCompanionBuilder,
+      (
+        FamilyIdiomData,
+        BaseReferences<_$AppDatabase, $FamilyIdiomTable, FamilyIdiomData>,
+      ),
+      FamilyIdiomData,
+      PrefetchHooks Function()
+    >;
+typedef $$FamilySetTableCreateCompanionBuilder =
+    FamilySetCompanion Function({
+      required String set_,
+      required String data,
+      required int count,
+      Value<int> rowid,
+    });
+typedef $$FamilySetTableUpdateCompanionBuilder =
+    FamilySetCompanion Function({
+      Value<String> set_,
+      Value<String> data,
+      Value<int> count,
+      Value<int> rowid,
+    });
+
+class $$FamilySetTableFilterComposer
+    extends Composer<_$AppDatabase, $FamilySetTable> {
+  $$FamilySetTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get set_ => $composableBuilder(
+    column: $table.set_,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get data => $composableBuilder(
+    column: $table.data,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get count => $composableBuilder(
+    column: $table.count,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$FamilySetTableOrderingComposer
+    extends Composer<_$AppDatabase, $FamilySetTable> {
+  $$FamilySetTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get set_ => $composableBuilder(
+    column: $table.set_,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get data => $composableBuilder(
+    column: $table.data,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get count => $composableBuilder(
+    column: $table.count,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$FamilySetTableAnnotationComposer
+    extends Composer<_$AppDatabase, $FamilySetTable> {
+  $$FamilySetTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get set_ =>
+      $composableBuilder(column: $table.set_, builder: (column) => column);
+
+  GeneratedColumn<String> get data =>
+      $composableBuilder(column: $table.data, builder: (column) => column);
+
+  GeneratedColumn<int> get count =>
+      $composableBuilder(column: $table.count, builder: (column) => column);
+}
+
+class $$FamilySetTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $FamilySetTable,
+          FamilySetData,
+          $$FamilySetTableFilterComposer,
+          $$FamilySetTableOrderingComposer,
+          $$FamilySetTableAnnotationComposer,
+          $$FamilySetTableCreateCompanionBuilder,
+          $$FamilySetTableUpdateCompanionBuilder,
+          (
+            FamilySetData,
+            BaseReferences<_$AppDatabase, $FamilySetTable, FamilySetData>,
+          ),
+          FamilySetData,
+          PrefetchHooks Function()
+        > {
+  $$FamilySetTableTableManager(_$AppDatabase db, $FamilySetTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$FamilySetTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$FamilySetTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$FamilySetTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> set_ = const Value.absent(),
+                Value<String> data = const Value.absent(),
+                Value<int> count = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => FamilySetCompanion(
+                set_: set_,
+                data: data,
+                count: count,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String set_,
+                required String data,
+                required int count,
+                Value<int> rowid = const Value.absent(),
+              }) => FamilySetCompanion.insert(
+                set_: set_,
+                data: data,
+                count: count,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$FamilySetTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $FamilySetTable,
+      FamilySetData,
+      $$FamilySetTableFilterComposer,
+      $$FamilySetTableOrderingComposer,
+      $$FamilySetTableAnnotationComposer,
+      $$FamilySetTableCreateCompanionBuilder,
+      $$FamilySetTableUpdateCompanionBuilder,
+      (
+        FamilySetData,
+        BaseReferences<_$AppDatabase, $FamilySetTable, FamilySetData>,
+      ),
+      FamilySetData,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -6575,4 +8946,14 @@ class $AppDatabaseManager {
       $$DbInfoTableTableManager(_db, _db.dbInfo);
   $$InflectionTemplatesTableTableManager get inflectionTemplates =>
       $$InflectionTemplatesTableTableManager(_db, _db.inflectionTemplates);
+  $$FamilyRootTableTableManager get familyRoot =>
+      $$FamilyRootTableTableManager(_db, _db.familyRoot);
+  $$FamilyWordTableTableManager get familyWord =>
+      $$FamilyWordTableTableManager(_db, _db.familyWord);
+  $$FamilyCompoundTableTableManager get familyCompound =>
+      $$FamilyCompoundTableTableManager(_db, _db.familyCompound);
+  $$FamilyIdiomTableTableManager get familyIdiom =>
+      $$FamilyIdiomTableTableManager(_db, _db.familyIdiom);
+  $$FamilySetTableTableManager get familySet =>
+      $$FamilySetTableTableManager(_db, _db.familySet);
 }

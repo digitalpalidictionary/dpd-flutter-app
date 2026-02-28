@@ -10,7 +10,18 @@ export 'dao.dart';
 
 part 'database.g.dart';
 
-@DriftDatabase(tables: [DpdHeadwords, Lookup, DpdRoots, DbInfo, InflectionTemplates])
+@DriftDatabase(tables: [
+  DpdHeadwords,
+  Lookup,
+  DpdRoots,
+  DbInfo,
+  InflectionTemplates,
+  FamilyRoot,
+  FamilyWord,
+  FamilyCompound,
+  FamilyIdiom,
+  FamilySet,
+])
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
