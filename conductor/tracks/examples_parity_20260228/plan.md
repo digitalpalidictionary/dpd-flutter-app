@@ -63,12 +63,12 @@
         launch via `launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication)`
   - [x] Commit: `feat: add EntryExampleFooter widget`
 
-- [ ] Task: Integrate footer in all display contexts — UI
-  - [ ] In `accordion_card.dart`: add `EntryExampleFooter(headwordId: h.id, lemma1: h.lemma1)`
+- [x] Task: Integrate footer in all display contexts — UI [3891129]
+  - [x] In `accordion_card.dart`: add `EntryExampleFooter(headwordId: h.id, lemma1: h.lemma1)`
         as the last child inside the examples `DpdSectionContainer` column
-  - [ ] Apply the same addition in `entry_bottom_sheet.dart`
-  - [ ] Apply the same addition in `entry_screen.dart`
-  - [ ] Commit: `feat: integrate examples feedback footer in all entry contexts`
+  - [x] Apply the same addition in `entry_bottom_sheet.dart`
+  - [x] Apply the same addition in `entry_screen.dart`
+  - [x] Commit: `feat: integrate examples feedback footer in all entry contexts`
 
 ---
 
