@@ -33,12 +33,12 @@
 
 ## Phase 3: Container Spacing Parity
 
-- [ ] Task: Fix container horizontal padding — UI
-  - [ ] In `accordion_card.dart`: change examples `Padding(horizontal: 16)` to
+- [x] Task: Fix container horizontal padding — UI [10134cd]
+  - [x] In `accordion_card.dart`: change examples `Padding(horizontal: 16)` to
         `Padding(horizontal: 7)`
-  - [ ] Apply the same change in `entry_bottom_sheet.dart`
-  - [ ] Apply the same change in `entry_screen.dart`
-  - [ ] Commit: `fix: examples container horizontal padding 7px matches webapp`
+  - [x] Apply the same change in `entry_bottom_sheet.dart`
+  - [x] Apply the same change in `entry_screen.dart`
+  - [x] Commit: `fix: examples container horizontal padding 7px matches webapp`
 
 - [ ] Task: Remove inter-example spacer — UI
   - [ ] In `accordion_card.dart`: remove `SizedBox(height: 16)` between example blocks
