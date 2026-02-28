@@ -6,10 +6,10 @@
   - [x] Define table with `pattern` (text PK), `like` (text), `data` (text/JSON)
   - [x] Regenerate Drift code with `build_runner`
 
-- [ ] Task: Create inflection data model
-  - [ ] Define `InflectionTableData` class: headers, rows, heading text, button label
-  - [ ] Define `InflectionCell` class: list of forms, grammar tooltip
-  - [ ] Define `InflectionForm` class: stem, ending, full word
+- [x] Task: Create inflection data model [a999031]
+  - [x] Define `InflectionTableData` class: headers, rows, heading text, button label
+  - [x] Define `InflectionCell` class: list of forms, grammar tooltip
+  - [x] Define `InflectionForm` class: stem, ending, full word
 
 - [ ] Task: Write tests for inflection table builder logic
   - [ ] Test standard declension (e.g., `a masc` pattern with known stem)
