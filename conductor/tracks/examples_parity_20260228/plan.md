@@ -18,9 +18,9 @@
         `theme.colorScheme.outline` to `DpdColors.primaryText`
   - [x] Commit: `fix: sutta text colour matches webapp primary-text`
 
-- [ ] Task: Fix source/sutta separator — UI
-  - [ ] In `EntryExampleBlock`: change the join separator from `' · '` to `' '`
-  - [ ] Commit: `fix: sutta separator is single space matching webapp`
+- [x] Task: Fix source/sutta separator — UI [89b6441]
+  - [x] In `EntryExampleBlock`: change the join separator from `' · '` to `' '`
+  - [x] Commit: `fix: sutta separator is single space matching webapp`
 
 - [ ] Task: Render sutta/source line as HTML — UI
   - [ ] Replace the `Text()` source+sutta rendering in `EntryExampleBlock` with an
