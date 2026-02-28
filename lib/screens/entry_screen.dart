@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../database/database.dart';
 import '../providers/database_provider.dart';
+import '../providers/search_provider.dart';
 import '../providers/settings_provider.dart';
 import '../providers/template_cache_provider.dart';
 import '../widgets/entry_content.dart';
@@ -139,6 +140,7 @@ class _EntryView extends ConsumerWidget {
                       InflectionSection(
                         headword: headword,
                         templateCache: templateCache,
+                        lookupKey: ref.watch(searchQueryProvider),
                       ),
                     ],
                   ),

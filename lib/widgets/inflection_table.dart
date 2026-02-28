@@ -13,9 +13,14 @@ import '../theme/dpd_colors.dart';
 ///   - [TableBorder.all] with [borderRadius] handles rounded corners natively;
 ///     no [ClipRRect] needed, avoiding the corner-gap artefact.
 class InflectionTable extends StatelessWidget {
-  const InflectionTable({super.key, required this.data});
+  const InflectionTable({super.key, required this.data, this.lookupKey});
 
   final InflectionTableData data;
+
+  /// When non-null and non-empty, any form whose [InflectionForm.word] exactly
+  /// matches [lookupKey] is rendered with a yellow highlight — matching the
+  /// webapp's `.inflection-highlight` style.
+  final String? lookupKey;
 
   @override
   Widget build(BuildContext context) {
@@ -91,7 +96,7 @@ class InflectionTable extends StatelessWidget {
       ),
       children: [
         _buildHeaderRow(context, headerBg),
-        for (final row in data.rows) _buildDataRow(context, row, headerBg),
+        for (final row in data.rows) _buildDataRow(context, row, headerBg, lookupKey),
       ],
     );
   }
@@ -123,6 +128,7 @@ class InflectionTable extends StatelessWidget {
     BuildContext context,
     (String, List<InflectionCell>) row,
     Color headerBg,
+    String? lookupKey,
   ) {
     final theme = Theme.of(context);
     final surfaceColor = theme.colorScheme.surface;
@@ -163,7 +169,7 @@ class InflectionTable extends StatelessWidget {
                   : Column(
                       mainAxisSize: MainAxisSize.min,
                       children: cell.forms
-                          .map((form) => _buildFormText(context, form))
+                          .map((form) => _buildFormText(context, form, lookupKey))
                           .toList(),
                     ),
             ),
@@ -172,15 +178,18 @@ class InflectionTable extends StatelessWidget {
     );
   }
 
-  Widget _buildFormText(BuildContext context, InflectionForm form) {
+  Widget _buildFormText(BuildContext context, InflectionForm form, String? lookupKey) {
     if (form.ending.isEmpty) return const SizedBox.shrink();
 
     final base = Theme.of(context).textTheme.bodySmall ?? const TextStyle();
+    final isMatch =
+        lookupKey != null && lookupKey.isNotEmpty && form.word == lookupKey.trim();
 
-    return RichText(
+    final richText = RichText(
       textAlign: TextAlign.center,
       text: TextSpan(
-        style: base,
+        // Highlighted forms use dark text on yellow; normal forms use default.
+        style: isMatch ? base.copyWith(color: DpdColors.dark) : base,
         children: [
           if (form.stem.isNotEmpty) TextSpan(text: form.stem),
           TextSpan(
@@ -189,6 +198,19 @@ class InflectionTable extends StatelessWidget {
           ),
         ],
       ),
+    );
+
+    if (!isMatch) return richText;
+
+    // Wrap in yellow highlight matching webapp `.inflection-highlight`:
+    // background-color: yellow; border-radius: 3px; padding: 0 2px
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.yellow,
+        borderRadius: BorderRadius.circular(3),
+      ),
+      padding: const EdgeInsets.symmetric(horizontal: 2),
+      child: richText,
     );
   }
 }

@@ -14,10 +14,15 @@ class InflectionSection extends StatelessWidget {
     super.key,
     required this.headword,
     required this.templateCache,
+    this.lookupKey,
   });
 
   final DpdHeadwordWithRoot headword;
   final Map<String, InflectionTemplate> templateCache;
+
+  /// The exact search term to highlight in the table. Passed through to
+  /// [InflectionTable]; null or empty means no highlight.
+  final String? lookupKey;
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +47,7 @@ class InflectionSection extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           if (tableData != null) ...[
-            InflectionTable(data: tableData),
+            InflectionTable(data: tableData, lookupKey: lookupKey),
             const SizedBox(height: 12),
           ],
           _InflectionFooter(headwordId: h.id, lemma1: h.lemma1),

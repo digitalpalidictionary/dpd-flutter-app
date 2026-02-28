@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../database/database.dart';
+import '../providers/search_provider.dart';
 import '../providers/settings_provider.dart';
 import '../providers/template_cache_provider.dart';
 import '../theme/dpd_colors.dart';
@@ -168,6 +169,7 @@ class _EntryBottomSheetState extends ConsumerState<EntryBottomSheet> {
               child: InflectionSection(
                 headword: h,
                 templateCache: templateCache,
+                lookupKey: ref.watch(searchQueryProvider),
               ),
             ),
 
