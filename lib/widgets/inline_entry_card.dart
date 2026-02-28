@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../database/database.dart';
 import '../providers/settings_provider.dart';
-import '../theme/dpd_colors.dart';
 import 'dpd_html_table.dart';
 import 'entry_content.dart';
 
@@ -46,78 +45,26 @@ class _InlineEntryCardState extends ConsumerState<InlineEntryCard> {
     final hasExamples = hasEx1 || hasEx2;
     final hasNotes = h.notes != null && h.notes!.isNotEmpty;
 
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      decoration: BoxDecoration(
-        border: Border.all(
-          color: theme.brightness == Brightness.light
-              ? theme.colorScheme.primary
-              : theme.colorScheme.outline,
-          width: 2,
-        ),
-        borderRadius: DpdColors.borderRadius,
-      ),
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Header row
+          // Header (Lemma) - above the box
           Padding(
-            padding: const EdgeInsets.fromLTRB(7, 3, 7, 2),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.baseline,
-              textBaseline: TextBaseline.alphabetic,
-              children: [
-                Expanded(
-                  child: Text(
-                    h.lemma1,
-                    style: theme.textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-                if (h.pos != null && h.pos!.isNotEmpty)
-                  Text(
-                    h.pos!,
-                    style: theme.textTheme.labelSmall?.copyWith(
-                      color: theme.colorScheme.primary,
-                    ),
-                  ),
-              ],
+            padding: const EdgeInsets.fromLTRB(12, 4, 12, 1),
+            child: Text(
+              h.lemma1,
+              style: theme.textTheme.titleLarge?.copyWith(
+                fontWeight: FontWeight.w700,
+              ),
             ),
           ),
 
-          // Summary content
-          Padding(
-            padding: const EdgeInsets.fromLTRB(7, 2, 7, 2),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                if (h.meaning1 != null && h.meaning1!.isNotEmpty)
-                  Text(h.meaning1!, style: theme.textTheme.bodyMedium),
-                if (h.meaningLit != null && h.meaningLit!.isNotEmpty) ...[
-                  const SizedBox(height: 2),
-                  Text(
-                    'lit. ${h.meaningLit}',
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      fontStyle: FontStyle.italic,
-                      color: theme.colorScheme.onSurfaceVariant,
-                    ),
-                  ),
-                ],
-                if (h.construction != null && h.construction!.isNotEmpty) ...[
-                  const SizedBox(height: 2),
-                  Text(
-                    h.construction!,
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      color: theme.colorScheme.outline,
-                    ),
-                  ),
-                ],
-              ],
-            ),
-          ),
+          // Summary Box (Bordered)
+          EntrySummaryBox(headword: h),
 
-          // Toggle buttons row
+          // Toggle buttons row (Sibling)
           Padding(
             padding: const EdgeInsets.fromLTRB(7, 2, 7, 3),
             child: Wrap(
@@ -161,7 +108,7 @@ class _InlineEntryCardState extends ConsumerState<InlineEntryCard> {
 
           // Grammar section content
           if (_grammarOpen && grammarRows.isNotEmpty)
-            _SectionContent(
+            DpdSectionContainer(
               child: Column(
                 children: grammarRows
                     .map((r) => EntryLabelValue(label: r.$1, value: r.$2))
@@ -171,7 +118,7 @@ class _InlineEntryCardState extends ConsumerState<InlineEntryCard> {
 
           // Examples section content
           if (_examplesOpen && hasExamples)
-            _SectionContent(
+            DpdSectionContainer(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Column(
@@ -197,7 +144,7 @@ class _InlineEntryCardState extends ConsumerState<InlineEntryCard> {
 
           // Inflections section content
           if (_inflectionsOpen && hasInflections)
-            _SectionContent(
+            DpdSectionContainer(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -229,7 +176,7 @@ class _InlineEntryCardState extends ConsumerState<InlineEntryCard> {
 
           // Families section content
           if (_familiesOpen && familyRows.isNotEmpty)
-            _SectionContent(
+            DpdSectionContainer(
               child: Column(
                 children: familyRows
                     .map((r) => EntryLabelValue(label: r.$1, value: r.$2))
@@ -239,7 +186,7 @@ class _InlineEntryCardState extends ConsumerState<InlineEntryCard> {
 
           // Notes section content
           if (_notesOpen && hasNotes)
-            _SectionContent(
+            DpdSectionContainer(
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
                 child: Text(h.notes!),
@@ -249,26 +196,6 @@ class _InlineEntryCardState extends ConsumerState<InlineEntryCard> {
           const SizedBox(height: 4),
         ],
       ),
-    );
-  }
-}
-
-class _SectionContent extends StatelessWidget {
-  const _SectionContent({required this.child});
-
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      decoration: BoxDecoration(
-        color: Theme.of(
-          context,
-        ).colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
-      ),
-      padding: const EdgeInsets.symmetric(vertical: 4),
-      child: child,
     );
   }
 }

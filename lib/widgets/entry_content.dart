@@ -128,7 +128,7 @@ class EntrySummaryBox extends StatelessWidget {
     final theme = Theme.of(context);
 
     return Container(
-      margin: const EdgeInsets.fromLTRB(8, 8, 8, 4),
+      margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
       decoration: BoxDecoration(
         border: Border.all(
           color: theme.brightness == Brightness.light
@@ -142,34 +142,64 @@ class EntrySummaryBox extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (headword.pos != null && headword.pos!.isNotEmpty)
-            Text(
-              '${headword.pos}${headword.meaning1 != null && headword.meaning1!.isNotEmpty ? ' (${headword.meaning1})' : ''}',
-              style: theme.textTheme.bodyLarge,
+          RichText(
+            text: TextSpan(
+              style: theme.textTheme.bodyMedium,
+              children: [
+                if (headword.pos != null)
+                  TextSpan(
+                    text: '${headword.pos}. ',
+                    style: const TextStyle(fontStyle: FontStyle.italic),
+                  ),
+                if (headword.plusCase != null)
+                  TextSpan(text: '(${headword.plusCase}) '),
+                if (headword.meaning1 != null)
+                  TextSpan(text: headword.meaning1),
+              ],
             ),
+          ),
           if (headword.meaningLit != null &&
               headword.meaningLit!.isNotEmpty) ...[
-            const SizedBox(height: 6),
+            const SizedBox(height: 2),
             Text(
               'lit. ${headword.meaningLit}',
-              style: theme.textTheme.bodyMedium?.copyWith(
+              style: theme.textTheme.bodySmall?.copyWith(
                 fontStyle: FontStyle.italic,
                 color: theme.colorScheme.onSurfaceVariant,
               ),
             ),
           ],
-          if (headword.construction != null &&
-              headword.construction!.isNotEmpty) ...[
-            const SizedBox(height: 6),
-            Text(
-              headword.construction!,
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: theme.colorScheme.outline,
-              ),
-            ),
-          ],
         ],
       ),
+    );
+  }
+}
+
+/// A bordered container for entry section content, matching .dpd.content CSS.
+class DpdSectionContainer extends StatelessWidget {
+  const DpdSectionContainer({super.key, required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Container(
+      width: double.infinity,
+      margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
+        border: Border.all(
+          color: theme.brightness == Brightness.light
+              ? theme.colorScheme.primary
+              : theme.colorScheme.outline,
+          width: 2,
+        ),
+        borderRadius: DpdColors.borderRadius,
+      ),
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: child,
     );
   }
 }
