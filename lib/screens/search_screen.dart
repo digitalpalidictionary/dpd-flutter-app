@@ -66,14 +66,18 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
             enabledBorder: OutlineInputBorder(
               borderRadius: DpdColors.borderRadius,
               borderSide: BorderSide(
-                color: theme.colorScheme.primary,
+                color: theme.brightness == Brightness.light
+                    ? theme.colorScheme.primary
+                    : theme.colorScheme.outline,
                 width: 1.5,
               ),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: DpdColors.borderRadius,
               borderSide: BorderSide(
-                color: theme.colorScheme.primary,
+                color: theme.brightness == Brightness.light
+                    ? theme.colorScheme.primary
+                    : theme.colorScheme.outline,
                 width: 2,
               ),
             ),
