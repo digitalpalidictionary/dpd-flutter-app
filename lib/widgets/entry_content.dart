@@ -60,7 +60,7 @@ class EntryLabelValue extends StatelessWidget {
     final theme = Theme.of(context);
 
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+      padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 16),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -69,8 +69,11 @@ class EntryLabelValue extends StatelessWidget {
             child: Text(
               label,
               style: theme.textTheme.bodySmall?.copyWith(
-                color: theme.colorScheme.outline,
+                color: DpdColors.primaryText,
+                fontWeight: FontWeight.w700,
               ),
+              maxLines: 1,
+              softWrap: false,
             ),
           ),
           Expanded(child: Text(value, style: theme.textTheme.bodyMedium)),
