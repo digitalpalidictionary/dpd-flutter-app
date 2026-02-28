@@ -4,13 +4,12 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../database/database.dart';
 import '../database/dpd_headword_extensions.dart';
+import '../theme/dpd_colors.dart';
 
 class GrammarTable extends StatelessWidget {
   final DpdHeadwordWithRoot headword;
 
   const GrammarTable({super.key, required this.headword});
-
-  static const Color _labelColor = Color(0xFF0895D7);
 
   @override
   Widget build(BuildContext context) {
@@ -56,8 +55,8 @@ class GrammarTable extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.only(top: 5.0),
       padding: const EdgeInsets.only(top: 5.0),
-      decoration: const BoxDecoration(
-        border: Border(top: BorderSide(color: _labelColor, width: 1)),
+      decoration: BoxDecoration(
+        border: Border(top: BorderSide(color: DpdColors.primary, width: 1)),
       ),
       child: Align(
         alignment: Alignment.centerLeft,
@@ -66,12 +65,12 @@ class GrammarTable extends StatelessWidget {
           child: RichText(
             text: TextSpan(
               style: const TextStyle(fontSize: 12.8, color: Colors.grey),
-              children: const [
-                TextSpan(text: 'Did you spot a mistake? '),
+              children: [
+                const TextSpan(text: 'Did you spot a mistake? '),
                 TextSpan(
                   text: 'Correct it here',
                   style: TextStyle(
-                    color: _labelColor,
+                    color: DpdColors.primaryText,
                     decoration: TextDecoration.underline,
                   ),
                 ),
@@ -102,9 +101,9 @@ class GrammarTable extends StatelessWidget {
           padding: const EdgeInsets.only(right: 5.0, bottom: 2.0),
           child: Text(
             label,
-            style: const TextStyle(
+            style: TextStyle(
               fontWeight: FontWeight.bold,
-              color: _labelColor,
+              color: DpdColors.primaryText,
             ),
           ),
         ),
