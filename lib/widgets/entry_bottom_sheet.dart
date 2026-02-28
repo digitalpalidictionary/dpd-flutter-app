@@ -140,7 +140,7 @@ class _EntryBottomSheetState extends ConsumerState<EntryBottomSheet> {
           if (_examplesOpen && hasExamples)
             DpdSectionContainer(
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
+                padding: const EdgeInsets.symmetric(horizontal: 7),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [

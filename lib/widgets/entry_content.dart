@@ -82,13 +82,19 @@ class EntryExampleBlock extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Html(data: example),
+        Html(
+          data: example,
+          style: {
+            'body': Style(margin: Margins.zero, padding: HtmlPaddings.zero),
+            'p': Style(margin: Margins.zero),
+          },
+        ),
         if (sutta != null || source != null) ...[
-          const SizedBox(height: 4),
           Html(
             data:
                 '<p class="sutta">${[source, sutta].whereType<String>().join(' ')}</p>',
             style: {
+              'body': Style(margin: Margins.zero, padding: HtmlPaddings.zero),
               'p.sutta': Style(
                 color: DpdColors.primaryText,
                 fontStyle: FontStyle.italic,
@@ -96,7 +102,7 @@ class EntryExampleBlock extends StatelessWidget {
                   theme.textTheme.bodySmall?.fontSize ?? 12.0,
                 ),
                 margin: Margins.zero,
-                padding: HtmlPaddings.zero,
+                padding: HtmlPaddings.only(bottom: 3),
               ),
               'a.sutta_link': Style(
                 color: DpdColors.primaryText,
