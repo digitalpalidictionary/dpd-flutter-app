@@ -22,12 +22,12 @@
   - [x] In `EntryExampleBlock`: change the join separator from `' · '` to `' '`
   - [x] Commit: `fix: sutta separator is single space matching webapp`
 
-- [ ] Task: Render sutta/source line as HTML — UI
-  - [ ] Replace the `Text()` source+sutta rendering in `EntryExampleBlock` with an
+- [x] Task: Render sutta/source line as HTML — UI [54a9183]
+  - [x] Replace the `Text()` source+sutta rendering in `EntryExampleBlock` with an
         `Html()` widget rendering `'$source $sutta'`
-  - [ ] Apply a custom stylesheet in the `Html` widget matching `p.sutta` and
+  - [x] Apply a custom stylesheet in the `Html` widget matching `p.sutta` and
         `a.sutta_link` CSS: italic, `DpdColors.primaryText` colour, bold links, no underline
-  - [ ] Commit: `feat: render sutta field as HTML for link support`
+  - [x] Commit: `feat: render sutta field as HTML for link support`
 
 ---
 
