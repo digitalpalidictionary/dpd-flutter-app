@@ -1,5 +1,10 @@
 import 'package:drift/drift.dart';
 
+// Database computed fields (added at build time, not in source DB):
+// - DpdRoots.rootCount: COUNT of headwords with each root (for webapp parity)
+// - DpdHeadwords.lemmaIpa: IPA transcription via Aksharamukha (IASTPali -> IPA)
+//   Implementation: transliterate.process("IASTPali", "IPA", lemma_clean)
+
 class DpdHeadwords extends Table {
   IntColumn get id => integer()();
   TextColumn get lemma1 => text().named('lemma_1')();

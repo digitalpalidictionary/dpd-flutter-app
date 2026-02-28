@@ -98,6 +98,8 @@ extension DpdHeadwordGrammar on DpdHeadword {
     return lemmaClean;
   }
 
-  /// Placeholder for Python-dependent conversion
+  /// IPA transcription - PLACEHOLDER until added to DB
+  /// When building DB: use Aksharamukha transliterate.process("IASTPali", "IPA", lemma_clean)
+  /// See tables.dart for DB computed field note
   String get lemmaIpa => '';
 }
