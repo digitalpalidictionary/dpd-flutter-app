@@ -38,12 +38,12 @@
 
 ## Phase 2: Widget & Integration [checkpoint: ]
 
-- [ ] Task: Create InflectionTable widget
-  - [ ] Render heading text (pattern, like/irregular)
-  - [ ] Render native Flutter Table with headers, row labels, and cells
-  - [ ] Style to match webapp: borders, bold endings, centered cells, rounded corners, nowrap headers
-  - [ ] Handle multiple forms per cell (line breaks)
-  - [ ] Handle empty cells
+- [x] Task: Create InflectionTable widget [239f80d]
+  - [x] Render heading text (pattern, like/irregular)
+  - [x] Render native Flutter Table with headers, row labels, and cells
+  - [x] Style to match webapp: borders, bold endings, centered cells, rounded corners, nowrap headers
+  - [x] Handle multiple forms per cell (line breaks)
+  - [x] Handle empty cells
 
 - [ ] Task: Extract reusable InflectionSection widget
   - [ ] Wraps InflectionTable + frequency sub-section + DpdFooter
