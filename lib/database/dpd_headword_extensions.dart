@@ -67,8 +67,36 @@ extension DpdHeadwordGrammar on DpdHeadword {
     return g;
   }
 
-  /// Placeholder for Python-dependent conversion
-  String get lemmaTradClean => '';
+  /// Traditional lemma endings map - ported from dpd-db/tools/lemma_traditional.py
+  static const Map<String, String> _lemmaTradDict = {
+    'ant adj': 'antu',
+    'ant masc': 'antu',
+    'ar fem': 'u',
+    'ar masc': 'u',
+    'ar2 masc': 'u',
+    'arahant masc': 'arahanta',
+    'as masc': 'a',
+    'bhavant masc': 'bhavantu',
+    'mātar fem': 'mātu',
+  };
+
+  /// Traditional lemma - ported from dpd-db/tools/lemma_traditional.py
+  String get lemmaTradClean {
+    final p = pattern;
+    final s = stem;
+
+    // Only process lemmas, not inflected forms (! in stem indicates inflected)
+    if (p != null &&
+        s != null &&
+        !s.contains('!') &&
+        _lemmaTradDict.containsKey(p)) {
+      final ending = _lemmaTradDict[p]!;
+      final trad = '$s$ending'.replaceAll('!', '').replaceAll('*', '');
+      return trad;
+    }
+
+    return lemmaClean;
+  }
 
   /// Placeholder for Python-dependent conversion
   String get lemmaIpa => '';

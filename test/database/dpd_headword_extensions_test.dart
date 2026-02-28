@@ -67,8 +67,49 @@ void main() {
 
     test('placeholders return empty string or specific placeholder', () {
       final hw = const DpdHeadword(id: 1, lemma1: 'test');
-      expect(hw.lemmaTradClean, isEmpty);
       expect(hw.lemmaIpa, isEmpty);
+    });
+
+    test('lemmaTradClean applies traditional endings from pattern', () {
+      // Test 'ant adj' pattern
+      final hw1 = const DpdHeadword(
+        id: 1,
+        lemma1: 'sīlavant',
+        stem: 'sīlav',
+        pattern: 'ant adj',
+      );
+      expect(hw1.lemmaTradClean, 'sīlavantu');
+
+      // Test 'ar masc' pattern
+      final hw2 = const DpdHeadword(
+        id: 2,
+        lemma1: 'satthar',
+        stem: 'satth',
+        pattern: 'ar masc',
+      );
+      expect(hw2.lemmaTradClean, 'satthu');
+
+      // Test unknown pattern returns lemmaClean
+      final hw3 = const DpdHeadword(
+        id: 3,
+        lemma1: 'buddha',
+        stem: 'buddh',
+        pattern: 'unknown',
+      );
+      expect(hw3.lemmaTradClean, 'buddha');
+
+      // Test stem with ! returns lemmaClean (inflected form)
+      final hw4 = const DpdHeadword(
+        id: 4,
+        lemma1: 'buddhā',
+        stem: 'buddh!',
+        pattern: 'ar masc',
+      );
+      expect(hw4.lemmaTradClean, 'buddhā');
+
+      // Test null pattern returns lemmaClean
+      final hw5 = const DpdHeadword(id: 5, lemma1: 'gacchati', stem: 'gam');
+      expect(hw5.lemmaTradClean, 'gacchati');
     });
   });
 }
