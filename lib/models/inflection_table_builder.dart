@@ -96,21 +96,21 @@ InflectionTableData? buildInflectionTable({
       : 'Declension';
 
   final lemmaBase = lemma1.split(' ').first;
-  final String headingText;
-  if (isIrregular) {
-    headingText = '$lemmaBase — irregular';
-  } else if (templateLike != null && templateLike.isNotEmpty) {
-    final label = buttonLabel == 'Conjugation' ? 'conjugation' : 'declension';
-    headingText = '$lemmaBase is $pattern $label (like $templateLike)';
-  } else {
-    final label = buttonLabel == 'Conjugation' ? 'conjugation' : 'declension';
-    headingText = '$lemmaBase is $pattern $label';
-  }
+  final declLabel = buttonLabel == 'Conjugation' ? 'conjugation' : 'declension';
+  final isLikeIrregular =
+      isIrregular ||
+      templateLike == null ||
+      templateLike.isEmpty ||
+      templateLike == 'irreg';
 
   return InflectionTableData(
     headers: headers,
     rows: rows,
-    headingText: headingText,
     buttonLabel: buttonLabel,
+    headingLemma: lemmaBase,
+    headingPattern: pattern ?? '',
+    headingDeclLabel: declLabel,
+    headingLike: isLikeIrregular ? null : templateLike,
+    headingIsIrregular: isLikeIrregular,
   );
 }

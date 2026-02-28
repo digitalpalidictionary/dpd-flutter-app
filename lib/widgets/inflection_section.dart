@@ -2,12 +2,10 @@ import 'package:flutter/material.dart';
 
 import '../database/database.dart';
 import '../models/inflection_table_builder.dart';
-import '../theme/dpd_colors.dart';
-import '../widgets/dpd_html_table.dart';
 import '../widgets/entry_content.dart';
 import 'inflection_table.dart';
 
-/// Renders the complete inflection section: dynamic table + frequency + footer.
+/// Renders the complete inflection section: dynamic table + footer.
 ///
 /// Pass [templateCache] from [templateCacheProvider]. If the template is not
 /// found or the stem is indeclinable, the table part is omitted gracefully.
@@ -38,8 +36,6 @@ class InflectionSection extends StatelessWidget {
           )
         : null;
 
-    final hasFreq = h.freqHtml != null && h.freqHtml!.isNotEmpty;
-
     return Padding(
       padding: const EdgeInsets.all(16),
       child: Column(
@@ -48,15 +44,6 @@ class InflectionSection extends StatelessWidget {
           if (tableData != null) ...[
             InflectionTable(data: tableData),
             const SizedBox(height: 12),
-          ],
-          if (hasFreq) ...[
-            Text(
-              'Frequency',
-              style: Theme.of(context).textTheme.titleSmall,
-            ),
-            const SizedBox(height: 4),
-            DpdHtmlTable(data: h.freqHtml!),
-            const SizedBox(height: 8),
           ],
           _InflectionFooter(headwordId: h.id, lemma1: h.lemma1),
         ],
@@ -91,8 +78,7 @@ class _InflectionFooter extends StatelessWidget {
 /// Indeclinables (stem == '-') never get an inflection button.
 bool hasInflectionContent(DpdHeadwordWithRoot h) {
   if (h.stem == '-') return false;
-  return (h.stem != null && h.pattern != null && h.pattern!.isNotEmpty) ||
-      (h.freqHtml != null && h.freqHtml!.isNotEmpty);
+  return h.stem != null && h.pattern != null && h.pattern!.isNotEmpty;
 }
 
 /// Returns the button label based on the headword's pos.
