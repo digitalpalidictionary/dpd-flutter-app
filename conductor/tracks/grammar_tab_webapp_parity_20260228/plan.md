@@ -67,16 +67,16 @@
 ## Phase 3: Testing & Polish
 
 ### Phase 3.1: Comprehensive Testing
-- [ ] Task: Test with various headword types (nouns, verbs, compounds).
-- [ ] Task: Verify all conditional displays work correctly via extension methods.
-- [ ] Task: Check edge cases like empty HTML fields rendering cleanly.
+- [x] Task: Test with various headword types (nouns, verbs, compounds).
+- [x] Task: Verify all conditional displays work correctly via extension methods.
+- [x] Task: Check edge cases like empty HTML fields rendering cleanly.
 
 ### Phase 3.2: Visual Verification
-- [ ] Task: Compare side-by-side with webapp for exact visual parity.
-- [ ] Task: Verify Table sizing, borders, colors, spacing match existing `.dpd` CSS classes.
-- [ ] Task: Verify dark mode compatibility.
+- [x] Task: Compare side-by-side with webapp for exact visual parity.
+- [x] Task: Verify Table sizing, borders, colors, spacing match existing `.dpd` CSS classes.
+- [x] Task: Verify dark mode compatibility.
 
-- [ ] Task: Conductor - User Manual Verification 'Phase 3: Testing & Polish' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 3: Testing & Polish' (Protocol in workflow.md)
 
 ## Success Metrics
 
