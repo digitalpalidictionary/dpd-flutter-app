@@ -10,6 +10,8 @@ class GrammarTable extends StatelessWidget {
 
   const GrammarTable({super.key, required this.headword});
 
+  static const Color _labelColor = Color(0xFF0895D7);
+
   @override
   Widget build(BuildContext context) {
     final rows = [
@@ -19,6 +21,8 @@ class GrammarTable extends StatelessWidget {
       _buildGrammarRow(headword),
       _buildFamilyRootRow(headword),
       _buildRootDetailsRow(headword),
+      _buildRootInCompsRow(headword),
+      _buildBaseRow(headword),
       _buildConstructionRow(headword),
       _buildDerivativeRow(headword),
       _buildPhoneticRow(headword),
@@ -49,16 +53,29 @@ class GrammarTable extends StatelessWidget {
   }
 
   Widget _buildFooter(BuildContext context, DpdHeadwordWithRoot headword) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 8.0, bottom: 16.0),
-      child: Center(
+    return Container(
+      margin: const EdgeInsets.only(top: 5.0),
+      padding: const EdgeInsets.only(top: 5.0),
+      decoration: const BoxDecoration(
+        border: Border(top: BorderSide(color: _labelColor, width: 1)),
+      ),
+      child: Align(
+        alignment: Alignment.centerLeft,
         child: InkWell(
           onTap: () => _launchMistakeForm(headword.lemma1),
-          child: const Text(
-            'Did you spot a mistake?',
-            style: TextStyle(
-              color: Colors.blue,
-              decoration: TextDecoration.underline,
+          child: RichText(
+            text: TextSpan(
+              style: const TextStyle(fontSize: 12.8, color: Colors.grey),
+              children: const [
+                TextSpan(text: 'Did you spot a mistake? '),
+                TextSpan(
+                  text: 'Correct it here',
+                  style: TextStyle(
+                    color: _labelColor,
+                    decoration: TextDecoration.underline,
+                  ),
+                ),
+              ],
             ),
           ),
         ),
@@ -69,12 +86,12 @@ class GrammarTable extends StatelessWidget {
   Future<void> _launchMistakeForm(String lemma) async {
     final encodedLemma = Uri.encodeComponent(lemma);
     final url = Uri.parse(
-      'https://docs.google.com/forms/d/e/1FAIpQLSf9boBe7k5tCwq7LdWgBHRhqXPoaHNxgCE-jCpCGKsqISI761/viewform?usp=pp_url&entry.438735500=$encodedLemma',
+      'https://docs.google.com/forms/d/e/1FAIpQLSf9boBe7k5tCwq7LdWgBHHGIPVc4ROO5yjVDo1X5LDAxkmGWQ/viewform?usp=pp_url&entry.438735500=$encodedLemma&entry.326955045=Grammar',
     );
-    if (await canLaunchUrl(url)) {
-      await launchUrl(url);
-    } else {
-      debugPrint('Could not launch $url');
+    try {
+      await launchUrl(url, mode: LaunchMode.platformDefault);
+    } catch (e) {
+      debugPrint('Could not launch $url: $e');
     }
   }
 
@@ -82,16 +99,16 @@ class GrammarTable extends StatelessWidget {
     return TableRow(
       children: [
         Padding(
-          padding: const EdgeInsets.only(right: 16.0, bottom: 4.0),
+          padding: const EdgeInsets.only(right: 5.0, bottom: 2.0),
           child: Text(
             label,
             style: const TextStyle(
               fontWeight: FontWeight.bold,
-              color: Colors.grey,
+              color: _labelColor,
             ),
           ),
         ),
-        Padding(padding: const EdgeInsets.only(bottom: 4.0), child: content),
+        Padding(padding: const EdgeInsets.only(bottom: 2.0), child: content),
       ],
     );
   }
@@ -118,25 +135,33 @@ class GrammarTable extends StatelessWidget {
   TableRow? _buildLemmaRow(DpdHeadwordWithRoot headword) {
     final lemma = headword.headword.lemmaClean;
     if (lemma.isEmpty) return null;
-    return _buildTextRow('lemma', lemma);
+    return _buildTextRow('Lemma', lemma);
   }
 
   TableRow? _buildLemmaTradRow(DpdHeadwordWithRoot headword) {
     final lemmaTrad = headword.headword.lemmaTradClean;
     if (lemmaTrad.isEmpty) return null;
-    return _buildTextRow('traditional lemma', lemmaTrad);
+    return _buildTextRow('Traditional Lemma', lemmaTrad);
   }
 
   TableRow? _buildLemmaIpaRow(DpdHeadwordWithRoot headword) {
-    final ipa = headword.headword.lemmaIpa;
-    if (ipa.isEmpty) return null;
+    // PLACEHOLDER: awaiting IPA conversion implementation
+    const ipa = '';
     return _buildRow(
-      'ipa',
+      'IPA',
       Row(
         children: [
-          Text('/$ipa/'),
+          Text(ipa.isEmpty ? '—' : '/$ipa/'),
           const SizedBox(width: 8),
-          const Icon(Icons.volume_up, size: 16, color: Colors.grey),
+          Container(
+            width: 16,
+            height: 16,
+            decoration: BoxDecoration(
+              color: Colors.grey[400],
+              shape: BoxShape.circle,
+            ),
+            child: const Icon(Icons.play_arrow, size: 10, color: Colors.white),
+          ),
         ],
       ),
     );
@@ -145,18 +170,18 @@ class GrammarTable extends StatelessWidget {
   TableRow? _buildGrammarRow(DpdHeadwordWithRoot headword) {
     final grammar = headword.headword.grammarLine;
     if (grammar.isEmpty) return null;
-    return _buildTextRow('grammar', grammar);
+    return _buildTextRow('Grammar', grammar);
   }
 
   TableRow? _buildFamilyRootRow(DpdHeadwordWithRoot headword) {
-    return _buildTextRow('family root', headword.familyRoot);
+    return _buildTextRow('Root Family', headword.familyRoot);
   }
 
   TableRow? _buildRootDetailsRow(DpdHeadwordWithRoot headword) {
     final root = headword.root;
     if (root == null) return null;
     final parts = [
-      if (root.root.isNotEmpty) '√ ${root.root}',
+      if (root.root.isNotEmpty) root.root,
       if (root.rootGroup != null) root.rootGroup.toString(),
       if (root.rootSign != null && root.rootSign!.isNotEmpty) root.rootSign,
       if (root.rootMeaning != null && root.rootMeaning!.isNotEmpty)
@@ -164,11 +189,23 @@ class GrammarTable extends StatelessWidget {
     ];
     final details = parts.join(' ').trim();
     if (details.isEmpty) return null;
-    return _buildTextRow('root', details);
+    return _buildTextRow('Root', details);
+  }
+
+  TableRow? _buildRootInCompsRow(DpdHeadwordWithRoot headword) {
+    final root = headword.root;
+    if (root == null) return null;
+    final inComps = root.rootInComps;
+    if (inComps == null || inComps.isEmpty) return null;
+    return _buildTextRow('√ In Sandhi', inComps);
+  }
+
+  TableRow? _buildBaseRow(DpdHeadwordWithRoot headword) {
+    return _buildTextRow('Base', headword.rootBase);
   }
 
   TableRow? _buildConstructionRow(DpdHeadwordWithRoot headword) {
-    return _buildHtmlRow('construction', headword.headword.cleanConstruction());
+    return _buildHtmlRow('Construction', headword.headword.cleanConstruction());
   }
 
   TableRow? _buildDerivativeRow(DpdHeadwordWithRoot headword) {
@@ -182,11 +219,11 @@ class GrammarTable extends StatelessWidget {
       if (derivative != null && derivative.isNotEmpty) derivative,
       if (suffix != null && suffix.isNotEmpty) '($suffix)',
     ].join(' ').trim();
-    return _buildTextRow('derivative', text);
+    return _buildTextRow('Derivative', text);
   }
 
   TableRow? _buildPhoneticRow(DpdHeadwordWithRoot headword) {
-    return _buildHtmlRow('phonetic', headword.phonetic);
+    return _buildHtmlRow('Phonetic Change', headword.phonetic);
   }
 
   TableRow? _buildCompoundRow(DpdHeadwordWithRoot headword) {
@@ -196,55 +233,78 @@ class GrammarTable extends StatelessWidget {
         (construction == null || construction.isEmpty)) {
       return null;
     }
+    if (type != null && type.contains('?')) return null;
     final text = [
       if (type != null && type.isNotEmpty) type,
       if (construction != null && construction.isNotEmpty) '($construction)',
     ].join(' ').trim();
-    return _buildHtmlRow('compound', text);
+    return _buildHtmlRow('Compound', text);
   }
 
   TableRow? _buildAntonymRow(DpdHeadwordWithRoot headword) {
-    return _buildTextRow('antonym', headword.antonym);
+    return _buildTextRow('Antonym', headword.antonym);
   }
 
   TableRow? _buildSynonymRow(DpdHeadwordWithRoot headword) {
-    return _buildTextRow('synonym', headword.synonym);
+    return _buildTextRow('Synonym', headword.synonym);
   }
 
   TableRow? _buildVariantRow(DpdHeadwordWithRoot headword) {
-    return _buildTextRow('variant', headword.variant);
+    return _buildTextRow('Variant', headword.variant);
   }
 
   TableRow? _buildCommentaryRow(DpdHeadwordWithRoot headword) {
-    return _buildHtmlRow('commentary', headword.commentary);
+    final commentary = headword.commentary;
+    if (commentary == null || commentary.isEmpty || commentary == '-')
+      return null;
+    return _buildHtmlRow('Commentary', commentary);
   }
 
   TableRow? _buildNotesRow(DpdHeadwordWithRoot headword) {
-    return _buildHtmlRow('notes', headword.notes);
+    return _buildHtmlRow('Notes', headword.notes);
   }
 
   TableRow? _buildCognateRow(DpdHeadwordWithRoot headword) {
-    return _buildTextRow('cognate', headword.cognate);
+    return _buildTextRow('English Cognate', headword.cognate);
   }
 
   TableRow? _buildLinkRow(DpdHeadwordWithRoot headword) {
-    return _buildTextRow('link', headword.link);
+    final link = headword.link;
+    if (link == null || link.isEmpty) return null;
+    return _buildRow(
+      'Web Link',
+      Html(
+        data: '<a href="$link" target="_blank">$link</a>',
+        style: {
+          "a": Style(
+            color: Colors.blue,
+            textDecoration: TextDecoration.underline,
+          ),
+        },
+      ),
+    );
   }
 
   TableRow? _buildNonIaRow(DpdHeadwordWithRoot headword) {
-    return _buildTextRow('non ia', headword.nonIa);
+    return _buildTextRow('Non IA', headword.nonIa);
   }
 
   TableRow? _buildSanskritRow(DpdHeadwordWithRoot headword) {
-    return _buildTextRow('sanskrit', headword.sanskrit);
+    final sanskrit = headword.sanskrit;
+    if (sanskrit == null || sanskrit.isEmpty) return null;
+    return _buildRow(
+      'Sanskrit',
+      Text(sanskrit, style: const TextStyle(fontStyle: FontStyle.italic)),
+    );
   }
 
   TableRow? _buildSanskritRootDetailsRow(DpdHeadwordWithRoot headword) {
     final root = headword.root;
     if (root == null) return null;
+    final sr = root.sanskritRoot;
+    if (sr == null || sr.isEmpty || sr == '-') return null;
     final parts = [
-      if (root.sanskritRoot != null && root.sanskritRoot!.isNotEmpty)
-        '√ ${root.sanskritRoot}',
+      sr,
       if (root.sanskritRootClass != null && root.sanskritRootClass!.isNotEmpty)
         root.sanskritRootClass,
       if (root.sanskritRootMeaning != null &&
@@ -253,6 +313,9 @@ class GrammarTable extends StatelessWidget {
     ];
     final details = parts.join(' ').trim();
     if (details.isEmpty) return null;
-    return _buildTextRow('sanskrit root', details);
+    return _buildRow(
+      'Sanskrit Root',
+      Text(details, style: const TextStyle(fontStyle: FontStyle.italic)),
+    );
   }
 }

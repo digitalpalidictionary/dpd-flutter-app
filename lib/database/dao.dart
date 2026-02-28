@@ -10,6 +10,7 @@ part 'dao.g.dart';
 class DpdHeadwordWithRoot {
   final DpdHeadword headword;
   final DpdRoot? root;
+  int? rootCount;
 
   DpdHeadwordWithRoot(this.headword, this.root);
 }
@@ -45,23 +46,53 @@ class DpdDao extends DatabaseAccessor<AppDatabase> with _$DpdDaoMixin {
 
     if (idSet.isEmpty) return [];
 
-    final rows = await (select(dpdHeadwords).join([
-      leftOuterJoin(dpdRoots, dpdRoots.root.equalsExp(dpdHeadwords.rootKey)),
-    ])..where(dpdHeadwords.id.isIn(idSet))).get();
+    try {
+      final rows = await (select(dpdHeadwords).join([
+        leftOuterJoin(dpdRoots, dpdRoots.root.equalsExp(dpdHeadwords.rootKey)),
+      ])..where(dpdHeadwords.id.isIn(idSet))).get();
 
-    final results = rows.map((row) {
-      return DpdHeadwordWithRoot(
-        row.readTable(dpdHeadwords),
-        row.readTableOrNull(dpdRoots),
+      // Calculate rootCount for each unique root
+      final uniqueRoots = rows
+          .map((row) => row.readTableOrNull(dpdRoots)?.root)
+          .whereType<String>()
+          .toSet();
+
+      final rootCounts = <String, int>{};
+      if (uniqueRoots.isNotEmpty) {
+        final countQuery =
+            await (selectOnly(dpdHeadwords)
+                  ..addColumns([dpdHeadwords.rootKey, dpdHeadwords.id.count()])
+                  ..where(dpdHeadwords.rootKey.isIn(uniqueRoots))
+                  ..groupBy([dpdHeadwords.rootKey]))
+                .get();
+        for (final row in countQuery) {
+          final root = row.read(dpdHeadwords.rootKey);
+          final count = row.read(dpdHeadwords.id.count());
+          if (root != null) rootCounts[root] = count ?? 0;
+        }
+      }
+
+      final results = rows.map((row) {
+        final hw = DpdHeadwordWithRoot(
+          row.readTable(dpdHeadwords),
+          row.readTableOrNull(dpdRoots),
+        );
+        final rootKey = hw.root?.root;
+        if (rootKey != null) {
+          hw.rootCount = rootCounts[rootKey];
+        }
+        return hw;
+      }).toList();
+
+      results.sort(
+        (a, b) => paliSortKey(
+          a.headword.lemma1,
+        ).compareTo(paliSortKey(b.headword.lemma1)),
       );
-    }).toList();
-
-    results.sort(
-      (a, b) => paliSortKey(
-        a.headword.lemma1,
-      ).compareTo(paliSortKey(b.headword.lemma1)),
-    );
-    return results;
+      return results;
+    } catch (e) {
+      rethrow;
+    }
   }
 
   // ── Single entry ──────────────────────────────────────────────────────────
@@ -73,10 +104,23 @@ class DpdDao extends DatabaseAccessor<AppDatabase> with _$DpdDaoMixin {
 
     if (row == null) return null;
 
-    return DpdHeadwordWithRoot(
+    final hw = DpdHeadwordWithRoot(
       row.readTable(dpdHeadwords),
       row.readTableOrNull(dpdRoots),
     );
+
+    // Calculate rootCount
+    final rootKey = hw.root?.root;
+    if (rootKey != null) {
+      final countQuery =
+          await (selectOnly(dpdHeadwords)
+                ..addColumns([dpdHeadwords.id.count()])
+                ..where(dpdHeadwords.rootKey.equals(rootKey)))
+              .getSingle();
+      hw.rootCount = countQuery.read(dpdHeadwords.id.count()) ?? 0;
+    }
+
+    return hw;
   }
 
   Future<DpdRoot?> getRoot(String rootKey) {
@@ -182,6 +226,7 @@ extension DpdHeadwordGetters on DpdHeadwordWithRoot {
   String? get meaningLit => headword.meaningLit;
   String? get meaning2 => headword.meaning2;
   String? get rootKey => headword.rootKey;
+  int? get rootCount => this.rootCount;
   String? get rootSign => headword.rootSign;
   String? get rootBase => headword.rootBase;
   String? get familyRoot => headword.familyRoot;

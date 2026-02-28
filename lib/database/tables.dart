@@ -76,19 +76,16 @@ class Lookup extends Table {
 
 class DpdRoots extends Table {
   TextColumn get root => text()();
-  TextColumn get rootInComps => text().named('root_in_comps').nullable()();
-  TextColumn get rootHasVerb => text().named('root_has_verb').nullable()();
-  IntColumn get rootGroup => integer().named('root_group').nullable()();
-  TextColumn get rootSign => text().named('root_sign').nullable()();
-  TextColumn get rootMeaning => text().named('root_meaning').nullable()();
-  IntColumn get rootCount => integer().named('root_count').nullable()();
-  TextColumn get rootExample => text().named('root_example').nullable()();
-  TextColumn get sanskritRoot => text().named('sanskrit_root').nullable()();
-  TextColumn get sanskritRootMeaning =>
-      text().named('sanskrit_root_meaning').nullable()();
-  TextColumn get sanskritRootClass =>
-      text().named('sanskrit_root_class').nullable()();
-  TextColumn get rootInfo => text().named('root_info').nullable()();
+  TextColumn get rootInComps => text().named('root_in_comps')();
+  TextColumn get rootHasVerb => text().named('root_has_verb')();
+  IntColumn get rootGroup => integer().named('root_group')();
+  TextColumn get rootSign => text().named('root_sign')();
+  TextColumn get rootMeaning => text().named('root_meaning')();
+  TextColumn get sanskritRoot => text().named('sanskrit_root')();
+  TextColumn get sanskritRootMeaning => text().named('sanskrit_root_meaning')();
+  TextColumn get sanskritRootClass => text().named('sanskrit_root_class')();
+  TextColumn get rootExample => text().named('root_example')();
+  TextColumn get rootInfo => text().named('root_info')();
 
   @override
   Set<Column> get primaryKey => {root};

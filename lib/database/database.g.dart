@@ -24,9 +24,9 @@ class $DpdRootsTable extends DpdRoots with TableInfo<$DpdRootsTable, DpdRoot> {
   late final GeneratedColumn<String> rootInComps = GeneratedColumn<String>(
     'root_in_comps',
     aliasedName,
-    true,
+    false,
     type: DriftSqlType.string,
-    requiredDuringInsert: false,
+    requiredDuringInsert: true,
   );
   static const VerificationMeta _rootHasVerbMeta = const VerificationMeta(
     'rootHasVerb',
@@ -35,9 +35,9 @@ class $DpdRootsTable extends DpdRoots with TableInfo<$DpdRootsTable, DpdRoot> {
   late final GeneratedColumn<String> rootHasVerb = GeneratedColumn<String>(
     'root_has_verb',
     aliasedName,
-    true,
+    false,
     type: DriftSqlType.string,
-    requiredDuringInsert: false,
+    requiredDuringInsert: true,
   );
   static const VerificationMeta _rootGroupMeta = const VerificationMeta(
     'rootGroup',
@@ -46,9 +46,9 @@ class $DpdRootsTable extends DpdRoots with TableInfo<$DpdRootsTable, DpdRoot> {
   late final GeneratedColumn<int> rootGroup = GeneratedColumn<int>(
     'root_group',
     aliasedName,
-    true,
+    false,
     type: DriftSqlType.int,
-    requiredDuringInsert: false,
+    requiredDuringInsert: true,
   );
   static const VerificationMeta _rootSignMeta = const VerificationMeta(
     'rootSign',
@@ -57,9 +57,9 @@ class $DpdRootsTable extends DpdRoots with TableInfo<$DpdRootsTable, DpdRoot> {
   late final GeneratedColumn<String> rootSign = GeneratedColumn<String>(
     'root_sign',
     aliasedName,
-    true,
+    false,
     type: DriftSqlType.string,
-    requiredDuringInsert: false,
+    requiredDuringInsert: true,
   );
   static const VerificationMeta _rootMeaningMeta = const VerificationMeta(
     'rootMeaning',
@@ -68,31 +68,9 @@ class $DpdRootsTable extends DpdRoots with TableInfo<$DpdRootsTable, DpdRoot> {
   late final GeneratedColumn<String> rootMeaning = GeneratedColumn<String>(
     'root_meaning',
     aliasedName,
-    true,
+    false,
     type: DriftSqlType.string,
-    requiredDuringInsert: false,
-  );
-  static const VerificationMeta _rootCountMeta = const VerificationMeta(
-    'rootCount',
-  );
-  @override
-  late final GeneratedColumn<int> rootCount = GeneratedColumn<int>(
-    'root_count',
-    aliasedName,
-    true,
-    type: DriftSqlType.int,
-    requiredDuringInsert: false,
-  );
-  static const VerificationMeta _rootExampleMeta = const VerificationMeta(
-    'rootExample',
-  );
-  @override
-  late final GeneratedColumn<String> rootExample = GeneratedColumn<String>(
-    'root_example',
-    aliasedName,
-    true,
-    type: DriftSqlType.string,
-    requiredDuringInsert: false,
+    requiredDuringInsert: true,
   );
   static const VerificationMeta _sanskritRootMeta = const VerificationMeta(
     'sanskritRoot',
@@ -101,9 +79,9 @@ class $DpdRootsTable extends DpdRoots with TableInfo<$DpdRootsTable, DpdRoot> {
   late final GeneratedColumn<String> sanskritRoot = GeneratedColumn<String>(
     'sanskrit_root',
     aliasedName,
-    true,
+    false,
     type: DriftSqlType.string,
-    requiredDuringInsert: false,
+    requiredDuringInsert: true,
   );
   static const VerificationMeta _sanskritRootMeaningMeta =
       const VerificationMeta('sanskritRootMeaning');
@@ -112,9 +90,9 @@ class $DpdRootsTable extends DpdRoots with TableInfo<$DpdRootsTable, DpdRoot> {
       GeneratedColumn<String>(
         'sanskrit_root_meaning',
         aliasedName,
-        true,
+        false,
         type: DriftSqlType.string,
-        requiredDuringInsert: false,
+        requiredDuringInsert: true,
       );
   static const VerificationMeta _sanskritRootClassMeta = const VerificationMeta(
     'sanskritRootClass',
@@ -124,10 +102,21 @@ class $DpdRootsTable extends DpdRoots with TableInfo<$DpdRootsTable, DpdRoot> {
       GeneratedColumn<String>(
         'sanskrit_root_class',
         aliasedName,
-        true,
+        false,
         type: DriftSqlType.string,
-        requiredDuringInsert: false,
+        requiredDuringInsert: true,
       );
+  static const VerificationMeta _rootExampleMeta = const VerificationMeta(
+    'rootExample',
+  );
+  @override
+  late final GeneratedColumn<String> rootExample = GeneratedColumn<String>(
+    'root_example',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
   static const VerificationMeta _rootInfoMeta = const VerificationMeta(
     'rootInfo',
   );
@@ -135,9 +124,9 @@ class $DpdRootsTable extends DpdRoots with TableInfo<$DpdRootsTable, DpdRoot> {
   late final GeneratedColumn<String> rootInfo = GeneratedColumn<String>(
     'root_info',
     aliasedName,
-    true,
+    false,
     type: DriftSqlType.string,
-    requiredDuringInsert: false,
+    requiredDuringInsert: true,
   );
   @override
   List<GeneratedColumn> get $columns => [
@@ -147,11 +136,10 @@ class $DpdRootsTable extends DpdRoots with TableInfo<$DpdRootsTable, DpdRoot> {
     rootGroup,
     rootSign,
     rootMeaning,
-    rootCount,
-    rootExample,
     sanskritRoot,
     sanskritRootMeaning,
     sanskritRootClass,
+    rootExample,
     rootInfo,
   ];
   @override
@@ -182,6 +170,8 @@ class $DpdRootsTable extends DpdRoots with TableInfo<$DpdRootsTable, DpdRoot> {
           _rootInCompsMeta,
         ),
       );
+    } else if (isInserting) {
+      context.missing(_rootInCompsMeta);
     }
     if (data.containsKey('root_has_verb')) {
       context.handle(
@@ -191,18 +181,24 @@ class $DpdRootsTable extends DpdRoots with TableInfo<$DpdRootsTable, DpdRoot> {
           _rootHasVerbMeta,
         ),
       );
+    } else if (isInserting) {
+      context.missing(_rootHasVerbMeta);
     }
     if (data.containsKey('root_group')) {
       context.handle(
         _rootGroupMeta,
         rootGroup.isAcceptableOrUnknown(data['root_group']!, _rootGroupMeta),
       );
+    } else if (isInserting) {
+      context.missing(_rootGroupMeta);
     }
     if (data.containsKey('root_sign')) {
       context.handle(
         _rootSignMeta,
         rootSign.isAcceptableOrUnknown(data['root_sign']!, _rootSignMeta),
       );
+    } else if (isInserting) {
+      context.missing(_rootSignMeta);
     }
     if (data.containsKey('root_meaning')) {
       context.handle(
@@ -212,21 +208,8 @@ class $DpdRootsTable extends DpdRoots with TableInfo<$DpdRootsTable, DpdRoot> {
           _rootMeaningMeta,
         ),
       );
-    }
-    if (data.containsKey('root_count')) {
-      context.handle(
-        _rootCountMeta,
-        rootCount.isAcceptableOrUnknown(data['root_count']!, _rootCountMeta),
-      );
-    }
-    if (data.containsKey('root_example')) {
-      context.handle(
-        _rootExampleMeta,
-        rootExample.isAcceptableOrUnknown(
-          data['root_example']!,
-          _rootExampleMeta,
-        ),
-      );
+    } else if (isInserting) {
+      context.missing(_rootMeaningMeta);
     }
     if (data.containsKey('sanskrit_root')) {
       context.handle(
@@ -236,6 +219,8 @@ class $DpdRootsTable extends DpdRoots with TableInfo<$DpdRootsTable, DpdRoot> {
           _sanskritRootMeta,
         ),
       );
+    } else if (isInserting) {
+      context.missing(_sanskritRootMeta);
     }
     if (data.containsKey('sanskrit_root_meaning')) {
       context.handle(
@@ -245,6 +230,8 @@ class $DpdRootsTable extends DpdRoots with TableInfo<$DpdRootsTable, DpdRoot> {
           _sanskritRootMeaningMeta,
         ),
       );
+    } else if (isInserting) {
+      context.missing(_sanskritRootMeaningMeta);
     }
     if (data.containsKey('sanskrit_root_class')) {
       context.handle(
@@ -254,12 +241,27 @@ class $DpdRootsTable extends DpdRoots with TableInfo<$DpdRootsTable, DpdRoot> {
           _sanskritRootClassMeta,
         ),
       );
+    } else if (isInserting) {
+      context.missing(_sanskritRootClassMeta);
+    }
+    if (data.containsKey('root_example')) {
+      context.handle(
+        _rootExampleMeta,
+        rootExample.isAcceptableOrUnknown(
+          data['root_example']!,
+          _rootExampleMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_rootExampleMeta);
     }
     if (data.containsKey('root_info')) {
       context.handle(
         _rootInfoMeta,
         rootInfo.isAcceptableOrUnknown(data['root_info']!, _rootInfoMeta),
       );
+    } else if (isInserting) {
+      context.missing(_rootInfoMeta);
     }
     return context;
   }
@@ -277,47 +279,43 @@ class $DpdRootsTable extends DpdRoots with TableInfo<$DpdRootsTable, DpdRoot> {
       rootInComps: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}root_in_comps'],
-      ),
+      )!,
       rootHasVerb: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}root_has_verb'],
-      ),
+      )!,
       rootGroup: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}root_group'],
-      ),
+      )!,
       rootSign: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}root_sign'],
-      ),
+      )!,
       rootMeaning: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}root_meaning'],
-      ),
-      rootCount: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}root_count'],
-      ),
-      rootExample: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}root_example'],
-      ),
+      )!,
       sanskritRoot: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}sanskrit_root'],
-      ),
+      )!,
       sanskritRootMeaning: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}sanskrit_root_meaning'],
-      ),
+      )!,
       sanskritRootClass: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}sanskrit_root_class'],
-      ),
+      )!,
+      rootExample: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}root_example'],
+      )!,
       rootInfo: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}root_info'],
-      ),
+      )!,
     );
   }
 
@@ -329,107 +327,59 @@ class $DpdRootsTable extends DpdRoots with TableInfo<$DpdRootsTable, DpdRoot> {
 
 class DpdRoot extends DataClass implements Insertable<DpdRoot> {
   final String root;
-  final String? rootInComps;
-  final String? rootHasVerb;
-  final int? rootGroup;
-  final String? rootSign;
-  final String? rootMeaning;
-  final int? rootCount;
-  final String? rootExample;
-  final String? sanskritRoot;
-  final String? sanskritRootMeaning;
-  final String? sanskritRootClass;
-  final String? rootInfo;
+  final String rootInComps;
+  final String rootHasVerb;
+  final int rootGroup;
+  final String rootSign;
+  final String rootMeaning;
+  final String sanskritRoot;
+  final String sanskritRootMeaning;
+  final String sanskritRootClass;
+  final String rootExample;
+  final String rootInfo;
   const DpdRoot({
     required this.root,
-    this.rootInComps,
-    this.rootHasVerb,
-    this.rootGroup,
-    this.rootSign,
-    this.rootMeaning,
-    this.rootCount,
-    this.rootExample,
-    this.sanskritRoot,
-    this.sanskritRootMeaning,
-    this.sanskritRootClass,
-    this.rootInfo,
+    required this.rootInComps,
+    required this.rootHasVerb,
+    required this.rootGroup,
+    required this.rootSign,
+    required this.rootMeaning,
+    required this.sanskritRoot,
+    required this.sanskritRootMeaning,
+    required this.sanskritRootClass,
+    required this.rootExample,
+    required this.rootInfo,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['root'] = Variable<String>(root);
-    if (!nullToAbsent || rootInComps != null) {
-      map['root_in_comps'] = Variable<String>(rootInComps);
-    }
-    if (!nullToAbsent || rootHasVerb != null) {
-      map['root_has_verb'] = Variable<String>(rootHasVerb);
-    }
-    if (!nullToAbsent || rootGroup != null) {
-      map['root_group'] = Variable<int>(rootGroup);
-    }
-    if (!nullToAbsent || rootSign != null) {
-      map['root_sign'] = Variable<String>(rootSign);
-    }
-    if (!nullToAbsent || rootMeaning != null) {
-      map['root_meaning'] = Variable<String>(rootMeaning);
-    }
-    if (!nullToAbsent || rootCount != null) {
-      map['root_count'] = Variable<int>(rootCount);
-    }
-    if (!nullToAbsent || rootExample != null) {
-      map['root_example'] = Variable<String>(rootExample);
-    }
-    if (!nullToAbsent || sanskritRoot != null) {
-      map['sanskrit_root'] = Variable<String>(sanskritRoot);
-    }
-    if (!nullToAbsent || sanskritRootMeaning != null) {
-      map['sanskrit_root_meaning'] = Variable<String>(sanskritRootMeaning);
-    }
-    if (!nullToAbsent || sanskritRootClass != null) {
-      map['sanskrit_root_class'] = Variable<String>(sanskritRootClass);
-    }
-    if (!nullToAbsent || rootInfo != null) {
-      map['root_info'] = Variable<String>(rootInfo);
-    }
+    map['root_in_comps'] = Variable<String>(rootInComps);
+    map['root_has_verb'] = Variable<String>(rootHasVerb);
+    map['root_group'] = Variable<int>(rootGroup);
+    map['root_sign'] = Variable<String>(rootSign);
+    map['root_meaning'] = Variable<String>(rootMeaning);
+    map['sanskrit_root'] = Variable<String>(sanskritRoot);
+    map['sanskrit_root_meaning'] = Variable<String>(sanskritRootMeaning);
+    map['sanskrit_root_class'] = Variable<String>(sanskritRootClass);
+    map['root_example'] = Variable<String>(rootExample);
+    map['root_info'] = Variable<String>(rootInfo);
     return map;
   }
 
   DpdRootsCompanion toCompanion(bool nullToAbsent) {
     return DpdRootsCompanion(
       root: Value(root),
-      rootInComps: rootInComps == null && nullToAbsent
-          ? const Value.absent()
-          : Value(rootInComps),
-      rootHasVerb: rootHasVerb == null && nullToAbsent
-          ? const Value.absent()
-          : Value(rootHasVerb),
-      rootGroup: rootGroup == null && nullToAbsent
-          ? const Value.absent()
-          : Value(rootGroup),
-      rootSign: rootSign == null && nullToAbsent
-          ? const Value.absent()
-          : Value(rootSign),
-      rootMeaning: rootMeaning == null && nullToAbsent
-          ? const Value.absent()
-          : Value(rootMeaning),
-      rootCount: rootCount == null && nullToAbsent
-          ? const Value.absent()
-          : Value(rootCount),
-      rootExample: rootExample == null && nullToAbsent
-          ? const Value.absent()
-          : Value(rootExample),
-      sanskritRoot: sanskritRoot == null && nullToAbsent
-          ? const Value.absent()
-          : Value(sanskritRoot),
-      sanskritRootMeaning: sanskritRootMeaning == null && nullToAbsent
-          ? const Value.absent()
-          : Value(sanskritRootMeaning),
-      sanskritRootClass: sanskritRootClass == null && nullToAbsent
-          ? const Value.absent()
-          : Value(sanskritRootClass),
-      rootInfo: rootInfo == null && nullToAbsent
-          ? const Value.absent()
-          : Value(rootInfo),
+      rootInComps: Value(rootInComps),
+      rootHasVerb: Value(rootHasVerb),
+      rootGroup: Value(rootGroup),
+      rootSign: Value(rootSign),
+      rootMeaning: Value(rootMeaning),
+      sanskritRoot: Value(sanskritRoot),
+      sanskritRootMeaning: Value(sanskritRootMeaning),
+      sanskritRootClass: Value(sanskritRootClass),
+      rootExample: Value(rootExample),
+      rootInfo: Value(rootInfo),
     );
   }
 
@@ -440,21 +390,18 @@ class DpdRoot extends DataClass implements Insertable<DpdRoot> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return DpdRoot(
       root: serializer.fromJson<String>(json['root']),
-      rootInComps: serializer.fromJson<String?>(json['rootInComps']),
-      rootHasVerb: serializer.fromJson<String?>(json['rootHasVerb']),
-      rootGroup: serializer.fromJson<int?>(json['rootGroup']),
-      rootSign: serializer.fromJson<String?>(json['rootSign']),
-      rootMeaning: serializer.fromJson<String?>(json['rootMeaning']),
-      rootCount: serializer.fromJson<int?>(json['rootCount']),
-      rootExample: serializer.fromJson<String?>(json['rootExample']),
-      sanskritRoot: serializer.fromJson<String?>(json['sanskritRoot']),
-      sanskritRootMeaning: serializer.fromJson<String?>(
+      rootInComps: serializer.fromJson<String>(json['rootInComps']),
+      rootHasVerb: serializer.fromJson<String>(json['rootHasVerb']),
+      rootGroup: serializer.fromJson<int>(json['rootGroup']),
+      rootSign: serializer.fromJson<String>(json['rootSign']),
+      rootMeaning: serializer.fromJson<String>(json['rootMeaning']),
+      sanskritRoot: serializer.fromJson<String>(json['sanskritRoot']),
+      sanskritRootMeaning: serializer.fromJson<String>(
         json['sanskritRootMeaning'],
       ),
-      sanskritRootClass: serializer.fromJson<String?>(
-        json['sanskritRootClass'],
-      ),
-      rootInfo: serializer.fromJson<String?>(json['rootInfo']),
+      sanskritRootClass: serializer.fromJson<String>(json['sanskritRootClass']),
+      rootExample: serializer.fromJson<String>(json['rootExample']),
+      rootInfo: serializer.fromJson<String>(json['rootInfo']),
     );
   }
   @override
@@ -462,50 +409,43 @@ class DpdRoot extends DataClass implements Insertable<DpdRoot> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'root': serializer.toJson<String>(root),
-      'rootInComps': serializer.toJson<String?>(rootInComps),
-      'rootHasVerb': serializer.toJson<String?>(rootHasVerb),
-      'rootGroup': serializer.toJson<int?>(rootGroup),
-      'rootSign': serializer.toJson<String?>(rootSign),
-      'rootMeaning': serializer.toJson<String?>(rootMeaning),
-      'rootCount': serializer.toJson<int?>(rootCount),
-      'rootExample': serializer.toJson<String?>(rootExample),
-      'sanskritRoot': serializer.toJson<String?>(sanskritRoot),
-      'sanskritRootMeaning': serializer.toJson<String?>(sanskritRootMeaning),
-      'sanskritRootClass': serializer.toJson<String?>(sanskritRootClass),
-      'rootInfo': serializer.toJson<String?>(rootInfo),
+      'rootInComps': serializer.toJson<String>(rootInComps),
+      'rootHasVerb': serializer.toJson<String>(rootHasVerb),
+      'rootGroup': serializer.toJson<int>(rootGroup),
+      'rootSign': serializer.toJson<String>(rootSign),
+      'rootMeaning': serializer.toJson<String>(rootMeaning),
+      'sanskritRoot': serializer.toJson<String>(sanskritRoot),
+      'sanskritRootMeaning': serializer.toJson<String>(sanskritRootMeaning),
+      'sanskritRootClass': serializer.toJson<String>(sanskritRootClass),
+      'rootExample': serializer.toJson<String>(rootExample),
+      'rootInfo': serializer.toJson<String>(rootInfo),
     };
   }
 
   DpdRoot copyWith({
     String? root,
-    Value<String?> rootInComps = const Value.absent(),
-    Value<String?> rootHasVerb = const Value.absent(),
-    Value<int?> rootGroup = const Value.absent(),
-    Value<String?> rootSign = const Value.absent(),
-    Value<String?> rootMeaning = const Value.absent(),
-    Value<int?> rootCount = const Value.absent(),
-    Value<String?> rootExample = const Value.absent(),
-    Value<String?> sanskritRoot = const Value.absent(),
-    Value<String?> sanskritRootMeaning = const Value.absent(),
-    Value<String?> sanskritRootClass = const Value.absent(),
-    Value<String?> rootInfo = const Value.absent(),
+    String? rootInComps,
+    String? rootHasVerb,
+    int? rootGroup,
+    String? rootSign,
+    String? rootMeaning,
+    String? sanskritRoot,
+    String? sanskritRootMeaning,
+    String? sanskritRootClass,
+    String? rootExample,
+    String? rootInfo,
   }) => DpdRoot(
     root: root ?? this.root,
-    rootInComps: rootInComps.present ? rootInComps.value : this.rootInComps,
-    rootHasVerb: rootHasVerb.present ? rootHasVerb.value : this.rootHasVerb,
-    rootGroup: rootGroup.present ? rootGroup.value : this.rootGroup,
-    rootSign: rootSign.present ? rootSign.value : this.rootSign,
-    rootMeaning: rootMeaning.present ? rootMeaning.value : this.rootMeaning,
-    rootCount: rootCount.present ? rootCount.value : this.rootCount,
-    rootExample: rootExample.present ? rootExample.value : this.rootExample,
-    sanskritRoot: sanskritRoot.present ? sanskritRoot.value : this.sanskritRoot,
-    sanskritRootMeaning: sanskritRootMeaning.present
-        ? sanskritRootMeaning.value
-        : this.sanskritRootMeaning,
-    sanskritRootClass: sanskritRootClass.present
-        ? sanskritRootClass.value
-        : this.sanskritRootClass,
-    rootInfo: rootInfo.present ? rootInfo.value : this.rootInfo,
+    rootInComps: rootInComps ?? this.rootInComps,
+    rootHasVerb: rootHasVerb ?? this.rootHasVerb,
+    rootGroup: rootGroup ?? this.rootGroup,
+    rootSign: rootSign ?? this.rootSign,
+    rootMeaning: rootMeaning ?? this.rootMeaning,
+    sanskritRoot: sanskritRoot ?? this.sanskritRoot,
+    sanskritRootMeaning: sanskritRootMeaning ?? this.sanskritRootMeaning,
+    sanskritRootClass: sanskritRootClass ?? this.sanskritRootClass,
+    rootExample: rootExample ?? this.rootExample,
+    rootInfo: rootInfo ?? this.rootInfo,
   );
   DpdRoot copyWithCompanion(DpdRootsCompanion data) {
     return DpdRoot(
@@ -521,10 +461,6 @@ class DpdRoot extends DataClass implements Insertable<DpdRoot> {
       rootMeaning: data.rootMeaning.present
           ? data.rootMeaning.value
           : this.rootMeaning,
-      rootCount: data.rootCount.present ? data.rootCount.value : this.rootCount,
-      rootExample: data.rootExample.present
-          ? data.rootExample.value
-          : this.rootExample,
       sanskritRoot: data.sanskritRoot.present
           ? data.sanskritRoot.value
           : this.sanskritRoot,
@@ -534,6 +470,9 @@ class DpdRoot extends DataClass implements Insertable<DpdRoot> {
       sanskritRootClass: data.sanskritRootClass.present
           ? data.sanskritRootClass.value
           : this.sanskritRootClass,
+      rootExample: data.rootExample.present
+          ? data.rootExample.value
+          : this.rootExample,
       rootInfo: data.rootInfo.present ? data.rootInfo.value : this.rootInfo,
     );
   }
@@ -547,11 +486,10 @@ class DpdRoot extends DataClass implements Insertable<DpdRoot> {
           ..write('rootGroup: $rootGroup, ')
           ..write('rootSign: $rootSign, ')
           ..write('rootMeaning: $rootMeaning, ')
-          ..write('rootCount: $rootCount, ')
-          ..write('rootExample: $rootExample, ')
           ..write('sanskritRoot: $sanskritRoot, ')
           ..write('sanskritRootMeaning: $sanskritRootMeaning, ')
           ..write('sanskritRootClass: $sanskritRootClass, ')
+          ..write('rootExample: $rootExample, ')
           ..write('rootInfo: $rootInfo')
           ..write(')'))
         .toString();
@@ -565,11 +503,10 @@ class DpdRoot extends DataClass implements Insertable<DpdRoot> {
     rootGroup,
     rootSign,
     rootMeaning,
-    rootCount,
-    rootExample,
     sanskritRoot,
     sanskritRootMeaning,
     sanskritRootClass,
+    rootExample,
     rootInfo,
   );
   @override
@@ -582,27 +519,25 @@ class DpdRoot extends DataClass implements Insertable<DpdRoot> {
           other.rootGroup == this.rootGroup &&
           other.rootSign == this.rootSign &&
           other.rootMeaning == this.rootMeaning &&
-          other.rootCount == this.rootCount &&
-          other.rootExample == this.rootExample &&
           other.sanskritRoot == this.sanskritRoot &&
           other.sanskritRootMeaning == this.sanskritRootMeaning &&
           other.sanskritRootClass == this.sanskritRootClass &&
+          other.rootExample == this.rootExample &&
           other.rootInfo == this.rootInfo);
 }
 
 class DpdRootsCompanion extends UpdateCompanion<DpdRoot> {
   final Value<String> root;
-  final Value<String?> rootInComps;
-  final Value<String?> rootHasVerb;
-  final Value<int?> rootGroup;
-  final Value<String?> rootSign;
-  final Value<String?> rootMeaning;
-  final Value<int?> rootCount;
-  final Value<String?> rootExample;
-  final Value<String?> sanskritRoot;
-  final Value<String?> sanskritRootMeaning;
-  final Value<String?> sanskritRootClass;
-  final Value<String?> rootInfo;
+  final Value<String> rootInComps;
+  final Value<String> rootHasVerb;
+  final Value<int> rootGroup;
+  final Value<String> rootSign;
+  final Value<String> rootMeaning;
+  final Value<String> sanskritRoot;
+  final Value<String> sanskritRootMeaning;
+  final Value<String> sanskritRootClass;
+  final Value<String> rootExample;
+  final Value<String> rootInfo;
   final Value<int> rowid;
   const DpdRootsCompanion({
     this.root = const Value.absent(),
@@ -611,29 +546,37 @@ class DpdRootsCompanion extends UpdateCompanion<DpdRoot> {
     this.rootGroup = const Value.absent(),
     this.rootSign = const Value.absent(),
     this.rootMeaning = const Value.absent(),
-    this.rootCount = const Value.absent(),
-    this.rootExample = const Value.absent(),
     this.sanskritRoot = const Value.absent(),
     this.sanskritRootMeaning = const Value.absent(),
     this.sanskritRootClass = const Value.absent(),
+    this.rootExample = const Value.absent(),
     this.rootInfo = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   DpdRootsCompanion.insert({
     required String root,
-    this.rootInComps = const Value.absent(),
-    this.rootHasVerb = const Value.absent(),
-    this.rootGroup = const Value.absent(),
-    this.rootSign = const Value.absent(),
-    this.rootMeaning = const Value.absent(),
-    this.rootCount = const Value.absent(),
-    this.rootExample = const Value.absent(),
-    this.sanskritRoot = const Value.absent(),
-    this.sanskritRootMeaning = const Value.absent(),
-    this.sanskritRootClass = const Value.absent(),
-    this.rootInfo = const Value.absent(),
+    required String rootInComps,
+    required String rootHasVerb,
+    required int rootGroup,
+    required String rootSign,
+    required String rootMeaning,
+    required String sanskritRoot,
+    required String sanskritRootMeaning,
+    required String sanskritRootClass,
+    required String rootExample,
+    required String rootInfo,
     this.rowid = const Value.absent(),
-  }) : root = Value(root);
+  }) : root = Value(root),
+       rootInComps = Value(rootInComps),
+       rootHasVerb = Value(rootHasVerb),
+       rootGroup = Value(rootGroup),
+       rootSign = Value(rootSign),
+       rootMeaning = Value(rootMeaning),
+       sanskritRoot = Value(sanskritRoot),
+       sanskritRootMeaning = Value(sanskritRootMeaning),
+       sanskritRootClass = Value(sanskritRootClass),
+       rootExample = Value(rootExample),
+       rootInfo = Value(rootInfo);
   static Insertable<DpdRoot> custom({
     Expression<String>? root,
     Expression<String>? rootInComps,
@@ -641,11 +584,10 @@ class DpdRootsCompanion extends UpdateCompanion<DpdRoot> {
     Expression<int>? rootGroup,
     Expression<String>? rootSign,
     Expression<String>? rootMeaning,
-    Expression<int>? rootCount,
-    Expression<String>? rootExample,
     Expression<String>? sanskritRoot,
     Expression<String>? sanskritRootMeaning,
     Expression<String>? sanskritRootClass,
+    Expression<String>? rootExample,
     Expression<String>? rootInfo,
     Expression<int>? rowid,
   }) {
@@ -656,12 +598,11 @@ class DpdRootsCompanion extends UpdateCompanion<DpdRoot> {
       if (rootGroup != null) 'root_group': rootGroup,
       if (rootSign != null) 'root_sign': rootSign,
       if (rootMeaning != null) 'root_meaning': rootMeaning,
-      if (rootCount != null) 'root_count': rootCount,
-      if (rootExample != null) 'root_example': rootExample,
       if (sanskritRoot != null) 'sanskrit_root': sanskritRoot,
       if (sanskritRootMeaning != null)
         'sanskrit_root_meaning': sanskritRootMeaning,
       if (sanskritRootClass != null) 'sanskrit_root_class': sanskritRootClass,
+      if (rootExample != null) 'root_example': rootExample,
       if (rootInfo != null) 'root_info': rootInfo,
       if (rowid != null) 'rowid': rowid,
     });
@@ -669,17 +610,16 @@ class DpdRootsCompanion extends UpdateCompanion<DpdRoot> {
 
   DpdRootsCompanion copyWith({
     Value<String>? root,
-    Value<String?>? rootInComps,
-    Value<String?>? rootHasVerb,
-    Value<int?>? rootGroup,
-    Value<String?>? rootSign,
-    Value<String?>? rootMeaning,
-    Value<int?>? rootCount,
-    Value<String?>? rootExample,
-    Value<String?>? sanskritRoot,
-    Value<String?>? sanskritRootMeaning,
-    Value<String?>? sanskritRootClass,
-    Value<String?>? rootInfo,
+    Value<String>? rootInComps,
+    Value<String>? rootHasVerb,
+    Value<int>? rootGroup,
+    Value<String>? rootSign,
+    Value<String>? rootMeaning,
+    Value<String>? sanskritRoot,
+    Value<String>? sanskritRootMeaning,
+    Value<String>? sanskritRootClass,
+    Value<String>? rootExample,
+    Value<String>? rootInfo,
     Value<int>? rowid,
   }) {
     return DpdRootsCompanion(
@@ -689,11 +629,10 @@ class DpdRootsCompanion extends UpdateCompanion<DpdRoot> {
       rootGroup: rootGroup ?? this.rootGroup,
       rootSign: rootSign ?? this.rootSign,
       rootMeaning: rootMeaning ?? this.rootMeaning,
-      rootCount: rootCount ?? this.rootCount,
-      rootExample: rootExample ?? this.rootExample,
       sanskritRoot: sanskritRoot ?? this.sanskritRoot,
       sanskritRootMeaning: sanskritRootMeaning ?? this.sanskritRootMeaning,
       sanskritRootClass: sanskritRootClass ?? this.sanskritRootClass,
+      rootExample: rootExample ?? this.rootExample,
       rootInfo: rootInfo ?? this.rootInfo,
       rowid: rowid ?? this.rowid,
     );
@@ -720,12 +659,6 @@ class DpdRootsCompanion extends UpdateCompanion<DpdRoot> {
     if (rootMeaning.present) {
       map['root_meaning'] = Variable<String>(rootMeaning.value);
     }
-    if (rootCount.present) {
-      map['root_count'] = Variable<int>(rootCount.value);
-    }
-    if (rootExample.present) {
-      map['root_example'] = Variable<String>(rootExample.value);
-    }
     if (sanskritRoot.present) {
       map['sanskrit_root'] = Variable<String>(sanskritRoot.value);
     }
@@ -736,6 +669,9 @@ class DpdRootsCompanion extends UpdateCompanion<DpdRoot> {
     }
     if (sanskritRootClass.present) {
       map['sanskrit_root_class'] = Variable<String>(sanskritRootClass.value);
+    }
+    if (rootExample.present) {
+      map['root_example'] = Variable<String>(rootExample.value);
     }
     if (rootInfo.present) {
       map['root_info'] = Variable<String>(rootInfo.value);
@@ -755,11 +691,10 @@ class DpdRootsCompanion extends UpdateCompanion<DpdRoot> {
           ..write('rootGroup: $rootGroup, ')
           ..write('rootSign: $rootSign, ')
           ..write('rootMeaning: $rootMeaning, ')
-          ..write('rootCount: $rootCount, ')
-          ..write('rootExample: $rootExample, ')
           ..write('sanskritRoot: $sanskritRoot, ')
           ..write('sanskritRootMeaning: $sanskritRootMeaning, ')
           ..write('sanskritRootClass: $sanskritRootClass, ')
+          ..write('rootExample: $rootExample, ')
           ..write('rootInfo: $rootInfo, ')
           ..write('rowid: $rowid')
           ..write(')'))
@@ -4153,33 +4088,31 @@ abstract class _$AppDatabase extends GeneratedDatabase {
 typedef $$DpdRootsTableCreateCompanionBuilder =
     DpdRootsCompanion Function({
       required String root,
-      Value<String?> rootInComps,
-      Value<String?> rootHasVerb,
-      Value<int?> rootGroup,
-      Value<String?> rootSign,
-      Value<String?> rootMeaning,
-      Value<int?> rootCount,
-      Value<String?> rootExample,
-      Value<String?> sanskritRoot,
-      Value<String?> sanskritRootMeaning,
-      Value<String?> sanskritRootClass,
-      Value<String?> rootInfo,
+      required String rootInComps,
+      required String rootHasVerb,
+      required int rootGroup,
+      required String rootSign,
+      required String rootMeaning,
+      required String sanskritRoot,
+      required String sanskritRootMeaning,
+      required String sanskritRootClass,
+      required String rootExample,
+      required String rootInfo,
       Value<int> rowid,
     });
 typedef $$DpdRootsTableUpdateCompanionBuilder =
     DpdRootsCompanion Function({
       Value<String> root,
-      Value<String?> rootInComps,
-      Value<String?> rootHasVerb,
-      Value<int?> rootGroup,
-      Value<String?> rootSign,
-      Value<String?> rootMeaning,
-      Value<int?> rootCount,
-      Value<String?> rootExample,
-      Value<String?> sanskritRoot,
-      Value<String?> sanskritRootMeaning,
-      Value<String?> sanskritRootClass,
-      Value<String?> rootInfo,
+      Value<String> rootInComps,
+      Value<String> rootHasVerb,
+      Value<int> rootGroup,
+      Value<String> rootSign,
+      Value<String> rootMeaning,
+      Value<String> sanskritRoot,
+      Value<String> sanskritRootMeaning,
+      Value<String> sanskritRootClass,
+      Value<String> rootExample,
+      Value<String> rootInfo,
       Value<int> rowid,
     });
 
@@ -4245,16 +4178,6 @@ class $$DpdRootsTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<int> get rootCount => $composableBuilder(
-    column: $table.rootCount,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<String> get rootExample => $composableBuilder(
-    column: $table.rootExample,
-    builder: (column) => ColumnFilters(column),
-  );
-
   ColumnFilters<String> get sanskritRoot => $composableBuilder(
     column: $table.sanskritRoot,
     builder: (column) => ColumnFilters(column),
@@ -4267,6 +4190,11 @@ class $$DpdRootsTableFilterComposer
 
   ColumnFilters<String> get sanskritRootClass => $composableBuilder(
     column: $table.sanskritRootClass,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get rootExample => $composableBuilder(
+    column: $table.rootExample,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -4340,16 +4268,6 @@ class $$DpdRootsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<int> get rootCount => $composableBuilder(
-    column: $table.rootCount,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<String> get rootExample => $composableBuilder(
-    column: $table.rootExample,
-    builder: (column) => ColumnOrderings(column),
-  );
-
   ColumnOrderings<String> get sanskritRoot => $composableBuilder(
     column: $table.sanskritRoot,
     builder: (column) => ColumnOrderings(column),
@@ -4362,6 +4280,11 @@ class $$DpdRootsTableOrderingComposer
 
   ColumnOrderings<String> get sanskritRootClass => $composableBuilder(
     column: $table.sanskritRootClass,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get rootExample => $composableBuilder(
+    column: $table.rootExample,
     builder: (column) => ColumnOrderings(column),
   );
 
@@ -4404,14 +4327,6 @@ class $$DpdRootsTableAnnotationComposer
     builder: (column) => column,
   );
 
-  GeneratedColumn<int> get rootCount =>
-      $composableBuilder(column: $table.rootCount, builder: (column) => column);
-
-  GeneratedColumn<String> get rootExample => $composableBuilder(
-    column: $table.rootExample,
-    builder: (column) => column,
-  );
-
   GeneratedColumn<String> get sanskritRoot => $composableBuilder(
     column: $table.sanskritRoot,
     builder: (column) => column,
@@ -4424,6 +4339,11 @@ class $$DpdRootsTableAnnotationComposer
 
   GeneratedColumn<String> get sanskritRootClass => $composableBuilder(
     column: $table.sanskritRootClass,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get rootExample => $composableBuilder(
+    column: $table.rootExample,
     builder: (column) => column,
   );
 
@@ -4485,17 +4405,16 @@ class $$DpdRootsTableTableManager
           updateCompanionCallback:
               ({
                 Value<String> root = const Value.absent(),
-                Value<String?> rootInComps = const Value.absent(),
-                Value<String?> rootHasVerb = const Value.absent(),
-                Value<int?> rootGroup = const Value.absent(),
-                Value<String?> rootSign = const Value.absent(),
-                Value<String?> rootMeaning = const Value.absent(),
-                Value<int?> rootCount = const Value.absent(),
-                Value<String?> rootExample = const Value.absent(),
-                Value<String?> sanskritRoot = const Value.absent(),
-                Value<String?> sanskritRootMeaning = const Value.absent(),
-                Value<String?> sanskritRootClass = const Value.absent(),
-                Value<String?> rootInfo = const Value.absent(),
+                Value<String> rootInComps = const Value.absent(),
+                Value<String> rootHasVerb = const Value.absent(),
+                Value<int> rootGroup = const Value.absent(),
+                Value<String> rootSign = const Value.absent(),
+                Value<String> rootMeaning = const Value.absent(),
+                Value<String> sanskritRoot = const Value.absent(),
+                Value<String> sanskritRootMeaning = const Value.absent(),
+                Value<String> sanskritRootClass = const Value.absent(),
+                Value<String> rootExample = const Value.absent(),
+                Value<String> rootInfo = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => DpdRootsCompanion(
                 root: root,
@@ -4504,28 +4423,26 @@ class $$DpdRootsTableTableManager
                 rootGroup: rootGroup,
                 rootSign: rootSign,
                 rootMeaning: rootMeaning,
-                rootCount: rootCount,
-                rootExample: rootExample,
                 sanskritRoot: sanskritRoot,
                 sanskritRootMeaning: sanskritRootMeaning,
                 sanskritRootClass: sanskritRootClass,
+                rootExample: rootExample,
                 rootInfo: rootInfo,
                 rowid: rowid,
               ),
           createCompanionCallback:
               ({
                 required String root,
-                Value<String?> rootInComps = const Value.absent(),
-                Value<String?> rootHasVerb = const Value.absent(),
-                Value<int?> rootGroup = const Value.absent(),
-                Value<String?> rootSign = const Value.absent(),
-                Value<String?> rootMeaning = const Value.absent(),
-                Value<int?> rootCount = const Value.absent(),
-                Value<String?> rootExample = const Value.absent(),
-                Value<String?> sanskritRoot = const Value.absent(),
-                Value<String?> sanskritRootMeaning = const Value.absent(),
-                Value<String?> sanskritRootClass = const Value.absent(),
-                Value<String?> rootInfo = const Value.absent(),
+                required String rootInComps,
+                required String rootHasVerb,
+                required int rootGroup,
+                required String rootSign,
+                required String rootMeaning,
+                required String sanskritRoot,
+                required String sanskritRootMeaning,
+                required String sanskritRootClass,
+                required String rootExample,
+                required String rootInfo,
                 Value<int> rowid = const Value.absent(),
               }) => DpdRootsCompanion.insert(
                 root: root,
@@ -4534,11 +4451,10 @@ class $$DpdRootsTableTableManager
                 rootGroup: rootGroup,
                 rootSign: rootSign,
                 rootMeaning: rootMeaning,
-                rootCount: rootCount,
-                rootExample: rootExample,
                 sanskritRoot: sanskritRoot,
                 sanskritRootMeaning: sanskritRootMeaning,
                 sanskritRootClass: sanskritRootClass,
+                rootExample: rootExample,
                 rootInfo: rootInfo,
                 rowid: rowid,
               ),

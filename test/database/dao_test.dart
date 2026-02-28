@@ -23,8 +23,15 @@ void main() {
           DpdRoot(
             root: 'kam',
             rootHasVerb: 'has_verb',
+            rootInComps: '',
             rootGroup: 1,
+            rootSign: '',
             rootMeaning: 'to love',
+            sanskritRoot: '',
+            sanskritRootMeaning: '',
+            sanskritRootClass: '',
+            rootExample: '',
+            rootInfo: '',
           ),
         );
 
@@ -55,7 +62,19 @@ void main() {
     await dao
         .into(dao.dpdRoots)
         .insert(
-          DpdRoot(root: 'gam', rootHasVerb: 'has_verb', rootMeaning: 'to go'),
+          DpdRoot(
+            root: 'gam',
+            rootHasVerb: 'has_verb',
+            rootInComps: '',
+            rootGroup: 1,
+            rootSign: '',
+            rootMeaning: 'to go',
+            sanskritRoot: '',
+            sanskritRootMeaning: '',
+            sanskritRootClass: '',
+            rootExample: '',
+            rootInfo: '',
+          ),
         );
 
     // Insert a headword linking to the root

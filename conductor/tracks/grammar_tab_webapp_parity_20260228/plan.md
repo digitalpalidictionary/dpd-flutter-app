@@ -59,10 +59,10 @@
 - [x] Task: Use `Uri.encodeComponent` on variables like lemma inserted into the Google form URL. [614e351]
 
 ### Phase 2.4: Integrate Grammar Table
-- [~] Task: Replace all calls to `buildGrammarRows()` in existing components (`entry_content.dart`, `entry_bottom_sheet.dart`, `inline_entry_card.dart`, `accordion_card.dart`, `entry_screen.dart`) with the new `GrammarTable` widget.
-- [ ] Task: Remove old `buildGrammarRows()` and related deprecated list-based row generation code.
+- [x] Task: Replace all calls to `buildGrammarRows()` in existing components (`entry_content.dart`, `entry_bottom_sheet.dart`, `inline_entry_card.dart`, `accordion_card.dart`, `entry_screen.dart`) with the new `GrammarTable` widget. [b8165db]
+- [x] Task: Remove old `buildGrammarRows()` and related deprecated list-based row generation code. [b8165db]
 
-- [ ] Task: Conductor - User Manual Verification 'Phase 2: Grammar Table UI Implementation' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 2: Grammar Table UI Implementation' (Protocol in workflow.md) [b8165db]
 
 ## Phase 3: Testing & Polish
 
