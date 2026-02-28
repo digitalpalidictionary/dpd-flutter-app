@@ -60,7 +60,6 @@ class _EntryView extends ConsumerWidget {
     final hasEx1 = headword.example1 != null && headword.example1!.isNotEmpty;
     final hasEx2 = headword.example2 != null && headword.example2!.isNotEmpty;
     final hasExamples = hasEx1 || hasEx2;
-    final hasTwoExamples = hasEx1 && hasEx2;
 
     return Scaffold(
       body: CustomScrollView(
@@ -104,37 +103,31 @@ class _EntryView extends ConsumerWidget {
                   ],
                 ),
 
-                // Examples section
+                // Examples section - always visible like webapp
                 if (hasExamples)
-                  ExpansionTile(
-                    title: Text(hasTwoExamples ? 'examples' : 'example'),
-                    initiallyExpanded: settings.examplesOpen,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 7),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            if (hasEx1)
-                              EntryExampleBlock(
-                                example: headword.example1!,
-                                sutta: headword.sutta1,
-                                source: headword.source1,
-                              ),
-                            if (hasEx2)
-                              EntryExampleBlock(
-                                example: headword.example2!,
-                                sutta: headword.sutta2,
-                                source: headword.source2,
-                              ),
-                            EntryExampleFooter(
-                              headwordId: headword.id,
-                              lemma1: headword.lemma1,
-                            ),
-                          ],
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 7),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        if (hasEx1)
+                          EntryExampleBlock(
+                            example: headword.example1!,
+                            sutta: headword.sutta1,
+                            source: headword.source1,
+                          ),
+                        if (hasEx2)
+                          EntryExampleBlock(
+                            example: headword.example2!,
+                            sutta: headword.sutta2,
+                            source: headword.source2,
+                          ),
+                        EntryExampleFooter(
+                          headwordId: headword.id,
+                          lemma1: headword.lemma1,
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
 
                 // Inflections section

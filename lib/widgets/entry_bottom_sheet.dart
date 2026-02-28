@@ -137,7 +137,7 @@ class _EntryBottomSheetState extends ConsumerState<EntryBottomSheet> {
               ),
             ),
 
-          if (_examplesOpen && hasExamples)
+          if (hasExamples)
             DpdSectionContainer(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 7),
@@ -156,10 +156,7 @@ class _EntryBottomSheetState extends ConsumerState<EntryBottomSheet> {
                         sutta: h.sutta2,
                         source: h.source2,
                       ),
-                    EntryExampleFooter(
-                      headwordId: h.id,
-                      lemma1: h.lemma1,
-                    ),
+                    EntryExampleFooter(headwordId: h.id, lemma1: h.lemma1),
                   ],
                 ),
               ),

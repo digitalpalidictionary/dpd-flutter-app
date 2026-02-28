@@ -137,7 +137,7 @@ class _AccordionCardState extends ConsumerState<AccordionCard> {
                     ),
                   ),
 
-                if (_examplesOpen && hasExamples)
+                if (hasExamples)
                   DpdSectionContainer(
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 7),
