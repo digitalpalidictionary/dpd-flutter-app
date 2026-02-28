@@ -30,9 +30,9 @@
   - [x] Generate heading text with pattern, like, and lemma
   - [x] Handle all special stem cases
 
-- [ ] Task: Create template cache provider
-  - [ ] Riverpod provider that loads all 153 templates into memory on first access
-  - [ ] Keyed by pattern string for O(1) lookup
+- [x] Task: Create template cache provider [dd49454]
+  - [x] Riverpod provider that loads all 153 templates into memory on first access
+  - [x] Keyed by pattern string for O(1) lookup
 
 - [ ] Task: Conductor - User Manual Verification 'Phase 1: Database & Data Model' (Protocol in workflow.md)
 
