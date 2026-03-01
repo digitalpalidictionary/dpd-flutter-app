@@ -49,7 +49,8 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final query = ref.watch(searchQueryProvider);
-    final results = ref.watch(searchResultsProvider(query));
+    final exactAsync = ref.watch(exactResultsProvider(query));
+    final partialAsync = ref.watch(partialResultsProvider(query));
 
     return Scaffold(
       appBar: AppBar(
@@ -98,83 +99,114 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
           ),
         ],
       ),
-      body: results.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (e, _) => Center(child: Text('Error: $e')),
-        data: (headwords) => _buildResults(context, query, headwords),
-      ),
+      body: _buildBody(context, query, exactAsync, partialAsync),
     );
   }
 
-  Widget _buildResults(
+  Widget _buildBody(
     BuildContext context,
     String query,
-    List<DpdHeadwordWithRoot> headwords,
+    AsyncValue<List<DpdHeadwordWithRoot>> exactAsync,
+    AsyncValue<List<DpdHeadwordWithRoot>> partialAsync,
   ) {
-    if (query.isEmpty) {
-      return const _EmptyPrompt();
+    if (query.isEmpty) return const _EmptyPrompt();
+
+    final exact = exactAsync.valueOrNull ?? [];
+    final exactIds = exact.map((e) => e.headword.id).toSet();
+    final partial = (partialAsync.valueOrNull ?? [])
+        .where((e) => !exactIds.contains(e.headword.id))
+        .toList();
+    final exactLoading = exactAsync.isLoading;
+    final partialLoading = partialAsync.isLoading;
+
+    if (exactLoading && exact.isEmpty) {
+      return const Center(child: CircularProgressIndicator());
     }
-    if (headwords.isEmpty) {
+
+    if (exactAsync.hasError && exact.isEmpty) {
+      return Center(child: Text('Error: ${exactAsync.error}'));
+    }
+
+    if (exact.isEmpty && partial.isEmpty && !partialLoading) {
       return _NoResults(query: query);
     }
 
     final mode = ref.watch(settingsProvider).displayMode;
+    return _SplitResultsList(
+      exact: exact,
+      partial: partial,
+      partialLoading: partialLoading,
+      mode: mode,
+    );
+  }
+}
+
+class _SplitResultsList extends StatelessWidget {
+  const _SplitResultsList({
+    required this.exact,
+    required this.partial,
+    required this.partialLoading,
+    required this.mode,
+  });
+
+  final List<DpdHeadwordWithRoot> exact;
+  final List<DpdHeadwordWithRoot> partial;
+  final bool partialLoading;
+  final DisplayMode mode;
+
+  @override
+  Widget build(BuildContext context) {
+    final hasExact = exact.isNotEmpty;
+    final hasPartial = partial.isNotEmpty;
+    final showDivider = hasExact && (hasPartial || partialLoading);
+
+    final itemCount = exact.length +
+        (showDivider ? 1 : 0) +
+        partial.length +
+        (partialLoading ? 1 : 0);
+
+    return ListView.separated(
+      keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+      itemCount: itemCount,
+      separatorBuilder: (_, _) => const SizedBox.shrink(),
+      itemBuilder: (context, index) {
+        if (index < exact.length) {
+          return _buildItem(context, exact[index]);
+        }
+        index -= exact.length;
+
+        if (showDivider && index == 0) {
+          return const _MoreResultsDivider();
+        }
+        if (showDivider) index -= 1;
+
+        if (index < partial.length) {
+          return _buildItem(context, partial[index]);
+        }
+
+        return const Padding(
+          padding: EdgeInsets.symmetric(vertical: 16),
+          child: Center(
+            child: SizedBox(
+              width: 20,
+              height: 20,
+              child: CircularProgressIndicator(strokeWidth: 2),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildItem(BuildContext context, DpdHeadwordWithRoot hw) {
     return switch (mode) {
-      DisplayMode.inline => _InlineList(headwords: headwords),
-      DisplayMode.accordion => _AccordionList(headwords: headwords),
-      DisplayMode.bottomSheet => _BottomSheetList(headwords: headwords),
+      DisplayMode.inline => InlineEntryCard(headword: hw),
+      DisplayMode.accordion => AccordionCard(headword: hw),
+      DisplayMode.bottomSheet => WordCard(
+          headword: hw,
+          onTap: () => _showBottomSheet(context, hw),
+        ),
     };
-  }
-}
-
-class _InlineList extends StatelessWidget {
-  const _InlineList({required this.headwords});
-
-  final List<DpdHeadwordWithRoot> headwords;
-
-  @override
-  Widget build(BuildContext context) {
-    return ListView.separated(
-      keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-      itemCount: headwords.length,
-      separatorBuilder: (_, _) => const Divider(height: 1),
-      itemBuilder: (_, i) => InlineEntryCard(headword: headwords[i]),
-    );
-  }
-}
-
-class _AccordionList extends StatelessWidget {
-  const _AccordionList({required this.headwords});
-
-  final List<DpdHeadwordWithRoot> headwords;
-
-  @override
-  Widget build(BuildContext context) {
-    return ListView.separated(
-      keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-      itemCount: headwords.length,
-      separatorBuilder: (_, _) => const Divider(height: 1),
-      itemBuilder: (_, i) => AccordionCard(headword: headwords[i]),
-    );
-  }
-}
-
-class _BottomSheetList extends StatelessWidget {
-  const _BottomSheetList({required this.headwords});
-
-  final List<DpdHeadwordWithRoot> headwords;
-
-  @override
-  Widget build(BuildContext context) {
-    return ListView.separated(
-      keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-      itemCount: headwords.length,
-      separatorBuilder: (_, _) => const Divider(height: 1),
-      itemBuilder: (_, i) => WordCard(
-        headword: headwords[i],
-        onTap: () => _showBottomSheet(context, headwords[i]),
-      ),
-    );
   }
 
   void _showBottomSheet(BuildContext context, DpdHeadwordWithRoot headword) {
@@ -188,6 +220,23 @@ class _BottomSheetList extends StatelessWidget {
         maxChildSize: 0.95,
         builder: (_, controller) =>
             EntryBottomSheet(headword: headword, scrollController: controller),
+      ),
+    );
+  }
+}
+
+class _MoreResultsDivider extends StatelessWidget {
+  const _MoreResultsDivider();
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+      child: Text(
+        'more results',
+        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+          color: Theme.of(context).colorScheme.onSurfaceVariant,
+        ),
       ),
     );
   }

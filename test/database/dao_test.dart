@@ -46,7 +46,7 @@ void main() {
         .insert(LookupData(lookupKey: 'kāma', headwords: '[1]'));
 
     // Perform search
-    final results = await dao.search('kāma');
+    final results = await dao.searchExact('kāma');
 
     expect(results.length, 1);
     final result = results.first;

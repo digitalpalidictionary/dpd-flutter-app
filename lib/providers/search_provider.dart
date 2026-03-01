@@ -5,9 +5,16 @@ import 'database_provider.dart';
 
 final searchQueryProvider = StateProvider<String>((ref) => '');
 
-final searchResultsProvider = FutureProvider.autoDispose
+final exactResultsProvider = FutureProvider.autoDispose
     .family<List<DpdHeadwordWithRoot>, String>((ref, query) async {
   if (query.isEmpty) return [];
   final dao = ref.watch(daoProvider);
-  return dao.search(query);
+  return dao.searchExact(query);
+});
+
+final partialResultsProvider = FutureProvider.autoDispose
+    .family<List<DpdHeadwordWithRoot>, String>((ref, query) async {
+  if (query.isEmpty) return [];
+  final dao = ref.watch(daoProvider);
+  return dao.searchPartial(query);
 });
