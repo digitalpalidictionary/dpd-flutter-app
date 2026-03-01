@@ -12,7 +12,7 @@
 
 ## Phase 2: Frequency Table Widget
 
-- [ ] Task: Create `FrequencyTable` widget (`lib/widgets/frequency_table.dart`)
+- [x] Task: Create `FrequencyTable` widget (`lib/widgets/frequency_table.dart`) 6bfd97d
   - Build native Flutter Table from FrequencyData
   - Implement complete row/cell/index mapping per `webapp_reference.md` Section 6
   - Implement all rowspans per `webapp_reference.md` Section 7
@@ -21,7 +21,7 @@
   - Implement vertical text category labels (Vinaya, Sutta, Abhidhamma, Aññā)
   - Implement header rows (corpus names with tooltips, M/A/Ṭ sub-columns)
   - Wrap table in SingleChildScrollView for horizontal scrolling
-- [ ] Task: Create `FrequencySection` widget (`lib/widgets/frequency_section.dart`)
+- [x] Task: Create `FrequencySection` widget (`lib/widgets/frequency_section.dart`) 697bc65
   - Heading with bold word from FreqHeading
   - FrequencyTable
   - Corpus legend (CST, BJT, SYA, MST full names)
@@ -29,7 +29,7 @@
   - DpdFooter with feedback link
   - Empty state handling
   - Wrap in DpdSectionContainer with standard padding
-- [ ] Task: Conductor - User Manual Verification 'Phase 2: Frequency Table Widget' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 2: Frequency Table Widget' (Protocol in workflow.md) — deferred to end
 
 ## Phase 3: Button Integration
 
