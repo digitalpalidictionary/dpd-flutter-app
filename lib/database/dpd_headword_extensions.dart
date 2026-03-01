@@ -98,6 +98,86 @@ extension DpdHeadwordGrammar on DpdHeadword {
     return lemmaClean;
   }
 
+  /// Ported from dpd-db tools/meaning_construction.py summarize_construction()
+  String get constructionSummary {
+    var c = (construction ?? '').replaceAll('<b>', '').replaceAll('</b>', '');
+
+    // if no meaning then show root, word family or nothing
+    if ((meaning1 == null || meaning1!.isEmpty) &&
+        origin != 'pass1' &&
+        origin != 'pass2') {
+      if (rootKey != null && rootKey!.isNotEmpty) {
+        return (familyRoot ?? '').replaceAll(' ', ' + ');
+      } else if (familyWord != null && familyWord!.isNotEmpty) {
+        return familyWord!;
+      } else {
+        return '';
+      }
+    }
+
+    if ((meaning1 != null && meaning1!.isNotEmpty) ||
+        ((meaning1 == null || meaning1!.isEmpty) &&
+            (origin == 'pass1' || origin == 'pass2'))) {
+      if (construction == null || construction!.isEmpty) return '';
+
+      // remove line2
+      c = c.replaceAll(RegExp(r'\n.+$', unicode: true), '');
+      // remove phonetic changes
+      c = c.replaceAll(RegExp(r'> .[^ ]*? ', unicode: true), '');
+      // remove phonetic changes at end
+      c = c.replaceAll(RegExp(r' > .[^ ]*?$', unicode: true), '');
+      // remove brackets
+      c = c.replaceAll('(', '').replaceAll(')', '');
+      // remove [insertions]
+      c = c.replaceAll(
+        RegExp(r'^\[.*\] \+| \[.*\] \+| \+ \[.*\]$', unicode: true),
+        '',
+      );
+
+      if (rootBase == null || rootBase!.isEmpty) {
+        return c.isEmpty ? '' : c;
+      }
+
+      // cleanup the base and base_construction
+      final baseClean =
+          rootBase!.replaceAll(RegExp(r' \(.+\)$', unicode: true), '');
+      final base = baseClean.replaceAllMapped(
+        RegExp(r'(.+ )(.+?$)', unicode: true),
+        (m) => m.group(2)!,
+      );
+      var baseConstruction = baseClean.replaceAllMapped(
+        RegExp(r'(.+)( > .+?$)', unicode: true),
+        (m) => m.group(1)!,
+      );
+      baseConstruction =
+          baseConstruction.replaceAll(RegExp(r' >.*', unicode: true), '');
+
+      if (pos != 'fut') {
+        final rootSignPlus = (rootSign ?? '').replaceAll(' ', ' + ');
+        final rootPlusSign = '$rootClean + $rootSignPlus';
+        c = c.replaceAll(base, rootPlusSign);
+      } else {
+        c = c.replaceAll(base, baseConstruction);
+      }
+      return c;
+    }
+
+    return '';
+  }
+
+  /// Ported from dpd-db tools/degree_of_completion.py
+  String get degreeOfCompletion {
+    if (meaning1 != null && meaning1!.isNotEmpty) {
+      if (source1 != null && source1!.isNotEmpty) {
+        return '✔';
+      } else {
+        return '◑';
+      }
+    } else {
+      return '✘';
+    }
+  }
+
   /// IPA transcription - PLACEHOLDER until added to DB
   /// When building DB: use Aksharamukha transliterate.process("IASTPali", "IPA", lemma_clean)
   /// See tables.dart for DB computed field note

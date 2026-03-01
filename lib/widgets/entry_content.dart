@@ -3,6 +3,7 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../database/database.dart';
+import '../database/dpd_headword_extensions.dart';
 import '../theme/dpd_colors.dart';
 
 class DpdFooter extends StatelessWidget {
@@ -183,6 +184,15 @@ class EntrySummaryBox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final h = headword.headword;
+    final baseStyle = theme.textTheme.bodyMedium?.copyWith(height: 1.5);
+    final boldStyle = baseStyle?.copyWith(fontWeight: FontWeight.w700);
+    final grayStyle = baseStyle?.copyWith(
+      color: Colors.grey,
+    );
+
+    final hasMeaning1 = h.meaning1 != null && h.meaning1!.isNotEmpty;
+    final summary = h.constructionSummary;
 
     return Container(
       width: double.infinity,
@@ -194,21 +204,26 @@ class EntrySummaryBox extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
       child: RichText(
         text: TextSpan(
-          style: theme.textTheme.bodyMedium?.copyWith(height: 1.5),
+          style: baseStyle,
           children: [
-            if (headword.pos != null && headword.pos!.isNotEmpty)
-              TextSpan(text: '${headword.pos}. '),
-            if (headword.plusCase != null && headword.plusCase!.isNotEmpty)
-              TextSpan(text: '(${headword.plusCase}) '),
-            if (headword.meaning1 != null && headword.meaning1!.isNotEmpty)
-              TextSpan(text: '${headword.meaning1} '),
-            if (headword.meaningLit != null && headword.meaningLit!.isNotEmpty)
-              TextSpan(
-                text: 'lit. ${headword.meaningLit} ',
-                style: theme.textTheme.bodySmall?.copyWith(
-                  color: theme.colorScheme.onSurfaceVariant,
-                ),
-              ),
+            if (h.pos != null && h.pos!.isNotEmpty)
+              TextSpan(text: '${h.pos}. '),
+            if (h.plusCase != null && h.plusCase!.isNotEmpty)
+              TextSpan(text: '(${h.plusCase}) '),
+            if (hasMeaning1) ...[
+              TextSpan(text: h.meaning1!, style: boldStyle),
+              if (h.meaningLit != null && h.meaningLit!.isNotEmpty)
+                TextSpan(text: '; lit. ${h.meaningLit}'),
+            ] else if (h.meaning2 != null && h.meaning2!.isNotEmpty) ...[
+              if (h.meaning2!.contains('; lit.'))
+                TextSpan(text: h.meaning2!)
+              else if (h.meaningLit != null && h.meaningLit!.isNotEmpty)
+                TextSpan(text: '${h.meaning2}; lit. ${h.meaningLit}')
+              else
+                TextSpan(text: h.meaning2!),
+            ],
+            if (summary.isNotEmpty) TextSpan(text: ' [$summary]'),
+            TextSpan(text: ' ${h.degreeOfCompletion}', style: grayStyle),
           ],
         ),
       ),
