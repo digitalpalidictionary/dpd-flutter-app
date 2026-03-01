@@ -38,7 +38,7 @@ class InflectionTable extends StatelessWidget {
               scrollDirection: Axis.horizontal,
               child: ConstrainedBox(
                 constraints: BoxConstraints(minWidth: constraints.maxWidth),
-                child: _buildTable(context, headerBg),
+                child: _buildTable(context, headerBg, constraints.maxWidth),
               ),
             ),
           ],
@@ -75,12 +75,26 @@ class InflectionTable extends StatelessWidget {
     return RichText(text: TextSpan(children: spans));
   }
 
-  Widget _buildTable(BuildContext context, Color headerBg) {
-    // Fixed widths for columns to allow scrolling and intrinsic height rows
-    const double labelWidth = 80.0;
-    const double dataWidth = 100.0;
-    
+  Widget _buildTable(
+    BuildContext context,
+    Color headerBg,
+    double availableWidth,
+  ) {
+    // Minimum widths
+    const double minLabelWidth = 80.0;
+    const double minDataWidth = 100.0;
+
     final int colCount = data.headers.length;
+    // total min width = label + (data columns)
+    final double minTotalWidth =
+        minLabelWidth + ((colCount - 1) * minDataWidth);
+
+    // If available width is greater, scale up proportionally
+    final double scale =
+        availableWidth > minTotalWidth ? availableWidth / minTotalWidth : 1.0;
+
+    final double labelWidth = minLabelWidth * scale;
+    final double dataWidth = minDataWidth * scale;
     final double totalWidth = labelWidth + ((colCount - 1) * dataWidth);
 
     return SizedBox(
@@ -90,7 +104,14 @@ class InflectionTable extends StatelessWidget {
         children: [
           _buildHeaderRow(context, headerBg, labelWidth, dataWidth),
           for (final row in data.rows)
-            _buildDataRow(context, row, headerBg, lookupKey, labelWidth, dataWidth),
+            _buildDataRow(
+              context,
+              row,
+              headerBg,
+              lookupKey,
+              labelWidth,
+              dataWidth,
+            ),
         ],
       ),
     );
