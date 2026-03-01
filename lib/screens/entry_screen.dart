@@ -6,6 +6,7 @@ import '../providers/database_provider.dart';
 import '../providers/search_provider.dart';
 import '../providers/settings_provider.dart';
 import '../providers/template_cache_provider.dart';
+import '../widgets/double_tap_search_wrapper.dart';
 import '../widgets/entry_content.dart';
 import '../widgets/family_toggle_section.dart';
 import '../widgets/grammar_table.dart';
@@ -69,7 +70,12 @@ class _EntryViewState extends ConsumerState<_EntryView> {
   Future<void> _loadSuttaInfo() async {
     final info =
         await ref.read(daoProvider).getSuttaInfo(widget.headword.lemma1);
-    if (mounted) setState(() { _suttaInfo = info; _suttaLoaded = true; });
+    if (mounted) {
+      setState(() {
+        _suttaInfo = info;
+        _suttaLoaded = true;
+      });
+    }
   }
 
   @override
@@ -85,125 +91,128 @@ class _EntryViewState extends ConsumerState<_EntryView> {
     final hasExamples = hasEx1 || hasEx2;
 
     return Scaffold(
-      body: CustomScrollView(
-        slivers: [
-          SliverAppBar(
-            pinned: true,
-            title: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  h.lemma1,
-                  style: theme.textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                if (h.pos != null)
+      body: DoubleTapSearchWrapper(
+        shouldPop: true,
+        child: CustomScrollView(
+          slivers: [
+            SliverAppBar(
+              pinned: true,
+              title: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
                   Text(
-                    posGrammarLine(h),
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
+                    h.lemma1,
+                    style: theme.textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
-              ],
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                EntrySummaryBox(headword: h),
-
-                // Sutta info section
-                if (_suttaLoaded && _suttaInfo != null)
-                  ExpansionTile(
-                    title: const Text('Sutta'),
-                    initiallyExpanded: _suttaOpen,
-                    onExpansionChanged: (v) =>
-                        setState(() => _suttaOpen = v),
-                    children: [
-                      SuttaInfoSection(
-                        suttaInfo: _suttaInfo!,
-                        headwordId: h.id,
-                        lemma1: h.lemma1,
+                  if (h.pos != null)
+                    Text(
+                      posGrammarLine(h),
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
                       ),
-                    ],
-                  ),
-
-                // Grammar section
-                ExpansionTile(
-                  title: const Text('Grammar'),
-                  initiallyExpanded: settings.grammarOpen,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: GrammarTable(headword: h),
                     ),
-                  ],
-                ),
+                ],
+              ),
+            ),
+            SliverToBoxAdapter(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  EntrySummaryBox(headword: h),
 
-                // Examples section
-                if (hasExamples)
-                  Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                  // Sutta info section
+                  if (_suttaLoaded && _suttaInfo != null)
+                    ExpansionTile(
+                      title: const Text('Sutta'),
+                      initiallyExpanded: _suttaOpen,
+                      onExpansionChanged: (v) =>
+                          setState(() => _suttaOpen = v),
                       children: [
-                        if (hasEx1)
-                          EntryExampleBlock(
-                            example: h.example1!,
-                            sutta: h.sutta1,
-                            source: h.source1,
-                          ),
-                        if (hasEx2)
-                          EntryExampleBlock(
-                            example: h.example2!,
-                            sutta: h.sutta2,
-                            source: h.source2,
-                          ),
-                        EntryExampleFooter(
+                        SuttaInfoSection(
+                          suttaInfo: _suttaInfo!,
                           headwordId: h.id,
                           lemma1: h.lemma1,
                         ),
                       ],
                     ),
-                  ),
 
-                // Inflections section
-                if (hasInflections)
+                  // Grammar section
                   ExpansionTile(
-                    title: Text(inflectionButtonLabel(h.pos)),
-                    initiallyExpanded: false,
-                    children: [
-                      InflectionSection(
-                        headword: h,
-                        templateCache: templateCache,
-                        lookupKey: ref.watch(searchQueryProvider),
-                      ),
-                    ],
-                  ),
-
-                // Family buttons and sections (one button per family type)
-                FamilyToggleSection(headword: h),
-
-                // Notes section
-                if (h.notes != null && h.notes!.isNotEmpty)
-                  ExpansionTile(
-                    title: const Text('Notes'),
-                    initiallyExpanded: false,
+                    title: const Text('Grammar'),
+                    initiallyExpanded: settings.grammarOpen,
                     children: [
                       Padding(
-                        padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-                        child: Text(h.notes!),
+                        padding: const EdgeInsets.all(16.0),
+                        child: GrammarTable(headword: h),
                       ),
                     ],
                   ),
 
-                const SizedBox(height: 24),
-              ],
+                  // Examples section
+                  if (hasExamples)
+                    Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          if (hasEx1)
+                            EntryExampleBlock(
+                              example: h.example1!,
+                              sutta: h.sutta1,
+                              source: h.source1,
+                            ),
+                          if (hasEx2)
+                            EntryExampleBlock(
+                              example: h.example2!,
+                              sutta: h.sutta2,
+                              source: h.source2,
+                            ),
+                          EntryExampleFooter(
+                            headwordId: h.id,
+                            lemma1: h.lemma1,
+                          ),
+                        ],
+                      ),
+                    ),
+
+                  // Inflections section
+                  if (hasInflections)
+                    ExpansionTile(
+                      title: Text(inflectionButtonLabel(h.pos)),
+                      initiallyExpanded: false,
+                      children: [
+                        InflectionSection(
+                          headword: h,
+                          templateCache: templateCache,
+                          lookupKey: ref.watch(searchQueryProvider),
+                        ),
+                      ],
+                    ),
+
+                  // Family buttons and sections (one button per family type)
+                  FamilyToggleSection(headword: h),
+
+                  // Notes section
+                  if (h.notes != null && h.notes!.isNotEmpty)
+                    ExpansionTile(
+                      title: const Text('Notes'),
+                      initiallyExpanded: false,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                          child: Text(h.notes!),
+                        ),
+                      ],
+                    ),
+
+                  const SizedBox(height: 24),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

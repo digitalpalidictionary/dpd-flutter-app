@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../database/database.dart';
-
 import '../theme/dpd_colors.dart';
 
 class WordCard extends StatelessWidget {

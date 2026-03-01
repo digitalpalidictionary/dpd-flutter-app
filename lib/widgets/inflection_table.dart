@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../models/inflection_table_data.dart';
 import '../theme/dpd_colors.dart';
+import 'double_tap_search_wrapper.dart';
 
 /// Renders a native Flutter inflection/conjugation table matching webapp styling.
 ///
@@ -34,11 +35,19 @@ class InflectionTable extends StatelessWidget {
           children: [
             _buildHeading(context),
             const SizedBox(height: 8),
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: ConstrainedBox(
-                constraints: BoxConstraints(minWidth: constraints.maxWidth),
-                child: _buildTable(context, headerBg, constraints.maxWidth),
+            // Use SelectionContainer.disabled on the scrollable to prevent the root
+            // SelectionArea from crashing on nested scrollables.
+            // Then wrap the internal content in another DoubleTapSearchWrapper to
+            // keep the table searchable.
+            SelectionContainer.disabled(
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: DoubleTapSearchWrapper(
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(minWidth: constraints.maxWidth),
+                    child: _buildTable(context, headerBg, constraints.maxWidth),
+                  ),
+                ),
               ),
             ),
           ],

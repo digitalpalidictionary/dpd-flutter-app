@@ -35,8 +35,8 @@ class DpdFooter extends StatelessWidget {
               mode: LaunchMode.platformDefault,
             );
           },
-          child: RichText(
-            text: TextSpan(
+          child: Text.rich(
+            TextSpan(
               style: const TextStyle(fontSize: 12.8, color: Colors.grey),
               children: [
                 TextSpan(text: '$messagePrefix '),
@@ -136,6 +136,7 @@ class EntryExampleBlock extends StatelessWidget {
       children: [
         Html(
           data: example,
+          shrinkWrap: true,
           style: {
             'body': Style(margin: Margins.zero, padding: HtmlPaddings.zero),
             'p': Style(margin: Margins.zero),
@@ -202,8 +203,8 @@ class EntrySummaryBox extends StatelessWidget {
         borderRadius: DpdColors.borderRadius,
       ),
       padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
-      child: RichText(
-        text: TextSpan(
+      child: Text.rich(
+        TextSpan(
           style: baseStyle,
           children: [
             if (h.pos != null && h.pos!.isNotEmpty)

@@ -12,6 +12,7 @@ import '../theme/dpd_colors.dart';
 import '../utils/velthuis.dart';
 import '../widgets/accordion_card.dart';
 import '../widgets/autocomplete_dropdown.dart';
+import '../widgets/double_tap_search_wrapper.dart';
 import '../widgets/entry_bottom_sheet.dart';
 import '../widgets/inline_entry_card.dart';
 import '../widgets/word_card.dart';
@@ -144,6 +145,15 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     final exactAsync = ref.watch(exactResultsProvider(query));
     final partialAsync = ref.watch(partialResultsProvider(query));
 
+    // Sync the controller with the provider ONLY when the provider actually changes
+    // (e.g. via double-tap search). This avoids fighting with active typing.
+    ref.listen<String>(searchQueryProvider, (previous, next) {
+      if (next != _controller.text) {
+        _controller.text = next;
+        _controller.selection = TextSelection.collapsed(offset: next.length);
+      }
+    });
+
     return Scaffold(
       body: SafeArea(
         child: Column(
@@ -240,7 +250,9 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
 
             // Results
             Expanded(
-              child: _buildBody(context, query, exactAsync, partialAsync),
+              child: DoubleTapSearchWrapper(
+                child: _buildBody(context, query, exactAsync, partialAsync),
+              ),
             ),
           ],
         ),

@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../database/database.dart';
 import '../providers/settings_provider.dart';
 import '../theme/dpd_colors.dart';
+import 'double_tap_search_wrapper.dart';
 import 'entry_content.dart';
 import 'family_state_mixin.dart';
 import 'feedback_section.dart';
@@ -55,9 +56,15 @@ class _EntryBottomSheetState extends ConsumerState<EntryBottomSheet>
   }
 
   Future<void> _loadSuttaInfo() async {
-    final info =
-        await ref.read(daoProvider).getSuttaInfo(widget.headword.lemma1);
-    if (mounted) setState(() { _suttaInfo = info; _suttaLoaded = true; });
+    final info = await ref
+        .read(daoProvider)
+        .getSuttaInfo(widget.headword.lemma1);
+    if (mounted) {
+      setState(() {
+        _suttaInfo = info;
+        _suttaLoaded = true;
+      });
+    }
   }
 
   @override
@@ -65,8 +72,7 @@ class _EntryBottomSheetState extends ConsumerState<EntryBottomSheet>
     final theme = Theme.of(context);
     final h = widget.headword;
 
-    final templateCache =
-        ref.watch(templateCacheProvider).valueOrNull ?? {};
+    final templateCache = ref.watch(templateCacheProvider).valueOrNull ?? {};
     final hasInflections = hasInflectionContent(h);
     final hasEx1 = h.example1 != null && h.example1!.isNotEmpty;
     final hasEx2 = h.example2 != null && h.example2!.isNotEmpty;
@@ -79,150 +85,152 @@ class _EntryBottomSheetState extends ConsumerState<EntryBottomSheet>
       borderRadius: BorderRadius.vertical(
         top: Radius.circular(DpdColors.borderRadiusValue),
       ),
-      child: ListView(
-        controller: widget.scrollController,
-        children: [
-          // Drag handle
-          Center(
-            child: Container(
-              margin: const EdgeInsets.symmetric(vertical: 12),
-              width: 40,
-              height: 4,
-              decoration: BoxDecoration(
-                color: theme.colorScheme.outlineVariant,
-                borderRadius: BorderRadius.circular(2),
-              ),
-            ),
-          ),
-
-          // Pinned header (Lemma)
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-            child: Text(
-              h.lemma1,
-              style: theme.textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-
-          // Summary box
-          EntrySummaryBox(headword: h),
-
-          // Unified button row (Grammar + Examples + Inflections + Family + Notes)
-          Padding(
-            padding: const EdgeInsets.fromLTRB(7, 2, 7, 3),
-            child: Wrap(
-              spacing: 0,
-              runSpacing: 0,
-              children: [
-                if (_suttaLoaded && _suttaInfo != null)
-                  DpdSectionButton(
-                    label: 'Sutta',
-                    isActive: _suttaOpen,
-                    onTap: () => setState(() => _suttaOpen = !_suttaOpen),
-                  ),
-                DpdSectionButton(
-                  label: 'Grammar',
-                  isActive: _grammarOpen,
-                  onTap: () => setState(() => _grammarOpen = !_grammarOpen),
-                ),
-                if (hasExamples)
-                  DpdSectionButton(
-                    label: hasTwoExamples ? 'Examples' : 'Example',
-                    isActive: _examplesOpen,
-                    onTap: () =>
-                        setState(() => _examplesOpen = !_examplesOpen),
-                  ),
-                if (hasInflections)
-                  DpdSectionButton(
-                    label: inflectionButtonLabel(h.pos),
-                    isActive: _inflectionsOpen,
-                    onTap: () =>
-                        setState(() => _inflectionsOpen = !_inflectionsOpen),
-                  ),
-                ...buildFamilyButtons(),
-                if (hasFrequency)
-                  DpdSectionButton(
-                    label: 'Frequency',
-                    isActive: _frequencyOpen,
-                    onTap: () =>
-                        setState(() => _frequencyOpen = !_frequencyOpen),
-                  ),
-                DpdSectionButton(
-                  label: 'Feedback',
-                  isActive: _feedbackOpen,
-                  onTap: () =>
-                      setState(() => _feedbackOpen = !_feedbackOpen),
-                ),
-              ],
-            ),
-          ),
-
-          // Sections
-          if (_suttaOpen && _suttaInfo != null)
-            SuttaInfoSection(
-              suttaInfo: _suttaInfo!,
-              headwordId: h.id,
-              lemma1: h.lemma1,
-            ),
-
-          if (_grammarOpen)
-            DpdSectionContainer(
-              child: Padding(
-                padding: DpdColors.sectionPadding,
-                child: GrammarTable(headword: h),
-              ),
-            ),
-
-          if (_examplesOpen && hasExamples)
-            DpdSectionContainer(
-              child: Padding(
-                padding: DpdColors.sectionPadding,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    if (hasEx1)
-                      EntryExampleBlock(
-                        example: h.example1!,
-                        sutta: h.sutta1,
-                        source: h.source1,
-                      ),
-                    if (hasEx2)
-                      EntryExampleBlock(
-                        example: h.example2!,
-                        sutta: h.sutta2,
-                        source: h.source2,
-                      ),
-                    EntryExampleFooter(headwordId: h.id, lemma1: h.lemma1),
-                  ],
+      child: DoubleTapSearchWrapper(
+        shouldPop: true,
+        child: ListView(
+          controller: widget.scrollController,
+          children: [
+            // Drag handle
+            Center(
+              child: Container(
+                margin: const EdgeInsets.symmetric(vertical: 12),
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: theme.colorScheme.outlineVariant,
+                  borderRadius: BorderRadius.circular(2),
                 ),
               ),
             ),
 
-          if (_inflectionsOpen && hasInflections)
-            DpdSectionContainer(
-              child: InflectionSection(
-                headword: h,
-                templateCache: templateCache,
-                lookupKey: ref.watch(searchQueryProvider),
+            // Pinned header (Lemma)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+              child: Text(
+                h.lemma1,
+                style: theme.textTheme.titleLarge?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
 
-          ...buildFamilySections(),
+            // Summary box
+            EntrySummaryBox(headword: h),
 
-          if (_frequencyOpen && hasFrequency)
-            FrequencySection(
-              data: parseFrequencyData(h.freqData)!,
-              headwordId: h.id,
-              lemma1: h.lemma1,
+            // Unified button row (Grammar + Examples + Inflections + Family + Notes)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(7, 2, 7, 3),
+              child: Wrap(
+                spacing: 0,
+                runSpacing: 0,
+                children: [
+                  if (_suttaLoaded && _suttaInfo != null)
+                    DpdSectionButton(
+                      label: 'sutta',
+                      isActive: _suttaOpen,
+                      onTap: () => setState(() => _suttaOpen = !_suttaOpen),
+                    ),
+                  DpdSectionButton(
+                    label: 'grammar',
+                    isActive: _grammarOpen,
+                    onTap: () => setState(() => _grammarOpen = !_grammarOpen),
+                  ),
+                  if (hasExamples)
+                    DpdSectionButton(
+                      label: hasTwoExamples ? 'examples' : 'example',
+                      isActive: _examplesOpen,
+                      onTap: () =>
+                          setState(() => _examplesOpen = !_examplesOpen),
+                    ),
+                  if (hasInflections)
+                    DpdSectionButton(
+                      label: inflectionButtonLabel(h.pos),
+                      isActive: _inflectionsOpen,
+                      onTap: () =>
+                          setState(() => _inflectionsOpen = !_inflectionsOpen),
+                    ),
+                  ...buildFamilyButtons(),
+                  if (hasFrequency)
+                    DpdSectionButton(
+                      label: 'frequency',
+                      isActive: _frequencyOpen,
+                      onTap: () =>
+                          setState(() => _frequencyOpen = !_frequencyOpen),
+                    ),
+                  DpdSectionButton(
+                    label: 'feedback',
+                    isActive: _feedbackOpen,
+                    onTap: () => setState(() => _feedbackOpen = !_feedbackOpen),
+                  ),
+                ],
+              ),
             ),
 
-          if (_feedbackOpen)
-            FeedbackSection(headwordId: h.id, lemma1: h.lemma1),
+            // Sections
+            if (_suttaOpen && _suttaInfo != null)
+              SuttaInfoSection(
+                suttaInfo: _suttaInfo!,
+                headwordId: h.id,
+                lemma1: h.lemma1,
+              ),
 
-          const SizedBox(height: 32),
-        ],
+            if (_grammarOpen)
+              DpdSectionContainer(
+                child: Padding(
+                  padding: DpdColors.sectionPadding,
+                  child: GrammarTable(headword: h),
+                ),
+              ),
+
+            if (_examplesOpen && hasExamples)
+              DpdSectionContainer(
+                child: Padding(
+                  padding: DpdColors.sectionPadding,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (hasEx1)
+                        EntryExampleBlock(
+                          example: h.example1!,
+                          sutta: h.sutta1,
+                          source: h.source1,
+                        ),
+                      if (hasEx2)
+                        EntryExampleBlock(
+                          example: h.example2!,
+                          sutta: h.sutta2,
+                          source: h.source2,
+                        ),
+                      EntryExampleFooter(headwordId: h.id, lemma1: h.lemma1),
+                    ],
+                  ),
+                ),
+              ),
+
+            if (_inflectionsOpen && hasInflections)
+              DpdSectionContainer(
+                child: InflectionSection(
+                  headword: h,
+                  templateCache: templateCache,
+                  lookupKey: ref.watch(searchQueryProvider),
+                ),
+              ),
+
+            ...buildFamilySections(),
+
+            if (_frequencyOpen && hasFrequency)
+              FrequencySection(
+                data: parseFrequencyData(h.freqData)!,
+                headwordId: h.id,
+                lemma1: h.lemma1,
+              ),
+
+            if (_feedbackOpen)
+              FeedbackSection(headwordId: h.id, lemma1: h.lemma1),
+
+            const SizedBox(height: 32),
+          ],
+        ),
       ),
     );
   }
