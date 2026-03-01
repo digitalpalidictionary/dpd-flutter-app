@@ -50,7 +50,9 @@ class FeedbackSection extends StatelessWidget {
           children: [
             RichText(
               text: TextSpan(
-                style: const TextStyle(fontSize: 13, color: Colors.white),
+                style: DefaultTextStyle.of(
+                  context,
+                ).style.copyWith(fontSize: 13),
                 children: [
                   const TextSpan(text: 'ID '),
                   TextSpan(
@@ -120,9 +122,10 @@ class _FeedbackLink extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final style = DefaultTextStyle.of(context).style.copyWith(fontSize: 13);
     return RichText(
       text: TextSpan(
-        style: const TextStyle(fontSize: 13, color: Colors.white),
+        style: style,
         children: [
           WidgetSpan(
             alignment: PlaceholderAlignment.baseline,
