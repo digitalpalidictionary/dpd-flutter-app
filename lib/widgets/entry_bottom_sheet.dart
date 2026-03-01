@@ -6,8 +6,10 @@ import '../providers/settings_provider.dart';
 import '../theme/dpd_colors.dart';
 import 'entry_content.dart';
 import 'family_state_mixin.dart';
+import 'frequency_section.dart';
 import 'grammar_table.dart';
 import 'inflection_section.dart';
+import '../models/frequency_data.dart';
 import '../providers/search_provider.dart';
 import '../providers/template_cache_provider.dart';
 
@@ -30,6 +32,7 @@ class _EntryBottomSheetState extends ConsumerState<EntryBottomSheet>
   bool _grammarOpen = false;
   bool _examplesOpen = false;
   bool _inflectionsOpen = false;
+  bool _frequencyOpen = false;
   bool _notesOpen = false;
 
   @override
@@ -55,6 +58,7 @@ class _EntryBottomSheetState extends ConsumerState<EntryBottomSheet>
     final hasEx2 = h.example2 != null && h.example2!.isNotEmpty;
     final hasExamples = hasEx1 || hasEx2;
     final hasTwoExamples = hasEx1 && hasEx2;
+    final hasFrequency = h.freqData != null && h.freqData!.isNotEmpty;
     final hasNotes = h.notes != null && h.notes!.isNotEmpty;
 
     return Material(
@@ -119,6 +123,13 @@ class _EntryBottomSheetState extends ConsumerState<EntryBottomSheet>
                         setState(() => _inflectionsOpen = !_inflectionsOpen),
                   ),
                 ...buildFamilyButtons(),
+                if (hasFrequency)
+                  DpdSectionButton(
+                    label: 'Frequency',
+                    isActive: _frequencyOpen,
+                    onTap: () =>
+                        setState(() => _frequencyOpen = !_frequencyOpen),
+                  ),
                 if (hasNotes)
                   DpdSectionButton(
                     label: 'Notes',
@@ -173,6 +184,13 @@ class _EntryBottomSheetState extends ConsumerState<EntryBottomSheet>
             ),
 
           ...buildFamilySections(),
+
+          if (_frequencyOpen && hasFrequency)
+            FrequencySection(
+              data: parseFrequencyData(h.freqData)!,
+              headwordId: h.id,
+              lemma1: h.lemma1,
+            ),
 
           if (_notesOpen && hasNotes)
             DpdSectionContainer(

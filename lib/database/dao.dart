@@ -315,6 +315,7 @@ extension DpdHeadwordGetters on DpdHeadwordWithRoot {
   String? get suffix => headword.suffix;
   String? get inflectionsHtml => headword.inflectionsHtml;
   String? get freqHtml => headword.freqHtml;
+  String? get freqData => headword.freqData;
   int? get ebtCount => headword.ebtCount;
   String? get nonIa => headword.nonIa;
   String? get sanskrit => headword.sanskrit;
