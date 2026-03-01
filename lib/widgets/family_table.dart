@@ -39,11 +39,11 @@ class FamilyTableWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return DpdSectionContainer(
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: DpdColors.sectionPadding,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _HeadingUnderlined(child: header),
+            HeadingUnderlined(child: header),
             const SizedBox(height: 8),
             if (entries.isNotEmpty) _FamilyTable(entries: entries),
             const SizedBox(height: 4),
@@ -60,8 +60,8 @@ class FamilyTableWidget extends StatelessWidget {
 }
 
 /// "heading underlined" style — bold text with a bottom border.
-class _HeadingUnderlined extends StatelessWidget {
-  const _HeadingUnderlined({required this.child});
+class HeadingUnderlined extends StatelessWidget {
+  const HeadingUnderlined({super.key, required this.child});
 
   final Widget child;
 
@@ -75,10 +75,7 @@ class _HeadingUnderlined extends StatelessWidget {
           bottom: BorderSide(color: DpdColors.primary, width: 1),
         ),
       ),
-      child: DefaultTextStyle.merge(
-        style: const TextStyle(fontWeight: FontWeight.bold),
-        child: child,
-      ),
+      child: child,
     );
   }
 }
@@ -91,6 +88,10 @@ class _FamilyTable extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final lemmaStyle = theme.textTheme.bodyMedium?.copyWith(
+      fontWeight: FontWeight.bold,
+      color: DpdColors.primaryText,
+    );
     final boldStyle = theme.textTheme.bodyMedium?.copyWith(
       fontWeight: FontWeight.bold,
     );
@@ -103,19 +104,20 @@ class _FamilyTable extends StatelessWidget {
         2: FlexColumnWidth(),
         3: IntrinsicColumnWidth(),
       },
+      defaultVerticalAlignment: TableCellVerticalAlignment.top,
       children: entries.map((entry) {
         return TableRow(
           children: [
             Padding(
-              padding: const EdgeInsets.only(right: 8, bottom: 2),
-              child: Text(entry.lemma, style: boldStyle),
+              padding: const EdgeInsets.only(right: 7, bottom: 2),
+              child: Text(entry.lemma, style: lemmaStyle),
             ),
             Padding(
-              padding: const EdgeInsets.only(right: 8, bottom: 2),
+              padding: const EdgeInsets.only(right: 7, bottom: 2),
               child: Text(entry.pos, style: boldStyle),
             ),
             Padding(
-              padding: const EdgeInsets.only(right: 8, bottom: 2),
+              padding: const EdgeInsets.only(right: 7, bottom: 2),
               child: Text(entry.meaning, style: regularStyle),
             ),
             Padding(

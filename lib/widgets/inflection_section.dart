@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../database/database.dart';
 import '../models/inflection_table_builder.dart';
+import '../theme/dpd_colors.dart';
 import '../widgets/entry_content.dart';
 import 'inflection_table.dart';
 
@@ -42,7 +43,7 @@ class InflectionSection extends StatelessWidget {
         : null;
 
     return Padding(
-      padding: const EdgeInsets.all(16),
+      padding: DpdColors.sectionPadding,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

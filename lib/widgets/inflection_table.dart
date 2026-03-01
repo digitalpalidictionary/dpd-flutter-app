@@ -32,10 +32,8 @@ class InflectionTable extends StatelessWidget {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Padding(
-              padding: const EdgeInsets.only(bottom: 6),
-              child: _buildHeading(context),
-            ),
+            _buildHeading(context),
+            const SizedBox(height: 8),
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: ConstrainedBox(
@@ -53,7 +51,7 @@ class InflectionTable extends StatelessWidget {
   /// No italics; bold on lemma, pattern, and like word only.
   Widget _buildHeading(BuildContext context) {
     final theme = Theme.of(context);
-    final base = theme.textTheme.bodySmall ?? const TextStyle();
+    final base = theme.textTheme.bodyMedium ?? const TextStyle();
     final bold = base.copyWith(fontWeight: FontWeight.bold);
     final d = data;
 

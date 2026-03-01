@@ -35,16 +35,22 @@ mixin FamilyStateMixin<T extends ConsumerStatefulWidget> on ConsumerState<T> {
   List<String> get _setKeys =>
       (_fh.familySet ?? '').split('; ').where((s) => s.isNotEmpty).toList();
 
-  bool get familyHasRoot =>
-      _fh.familyRoot != null && _fh.familyRoot!.isNotEmpty && _fh.rootKey != null;
+  bool get familyHasRoot => _fh.familyRoot != null && _fh.familyRoot!.isNotEmpty;
 
   bool get familyHasWord => _fh.familyWord != null && _fh.familyWord!.isNotEmpty;
 
-  bool get familyHasCompound => _compoundKeys.isNotEmpty;
+  bool get familyHasCompound =>
+      (_fh.meaning1?.isNotEmpty ?? false) &&
+      _compoundKeys.isNotEmpty &&
+      !(_fh.pos?.contains('sandhi') ?? false) &&
+      !(_fh.pos?.contains('idiom') ?? false) &&
+      !(_fh.compoundType?.contains('?') ?? false);
 
-  bool get familyHasIdioms => _idiomKeys.isNotEmpty;
+  bool get familyHasIdioms =>
+      (_fh.meaning1?.isNotEmpty ?? false) && _idiomKeys.isNotEmpty;
 
-  bool get familyHasSets => _setKeys.isNotEmpty;
+  bool get familyHasSets =>
+      (_fh.meaning1?.isNotEmpty ?? false) && _setKeys.isNotEmpty;
 
   bool get familyHasAny =>
       familyHasRoot ||
@@ -52,11 +58,6 @@ mixin FamilyStateMixin<T extends ConsumerStatefulWidget> on ConsumerState<T> {
       familyHasCompound ||
       familyHasIdioms ||
       familyHasSets;
-
-  String get _compoundButtonLabel =>
-      _compoundKeys.length > 1 ? 'compound families' : 'compound family';
-
-  String get _setsButtonLabel => _setKeys.length > 1 ? 'sets' : 'set';
 
   Future<void> _loadRootFamily() async {
     if (_rootFamilyData != null) return;
@@ -117,34 +118,37 @@ mixin FamilyStateMixin<T extends ConsumerStatefulWidget> on ConsumerState<T> {
   }
 
   List<Widget> buildFamilyButtons() {
+    final isCompoundPlural = (_fh.familyCompound ?? '').contains(' ');
+    final isSetsPlural = _setKeys.length > 1;
+
     return [
       if (familyHasRoot)
         DpdSectionButton(
-          label: 'root family',
+          label: 'Root family',
           isActive: _showRootFamily,
           onTap: familyToggleRoot,
         ),
       if (familyHasWord)
         DpdSectionButton(
-          label: 'word family',
+          label: 'Word family',
           isActive: _showWordFamily,
           onTap: familyToggleWord,
         ),
       if (familyHasCompound)
         DpdSectionButton(
-          label: _compoundButtonLabel,
+          label: isCompoundPlural ? 'Compound families' : 'Compound family',
           isActive: _showCompoundFamilies,
           onTap: familyToggleCompound,
         ),
       if (familyHasIdioms)
         DpdSectionButton(
-          label: 'idioms',
+          label: 'Idioms',
           isActive: _showIdioms,
           onTap: familyToggleIdioms,
         ),
       if (familyHasSets)
         DpdSectionButton(
-          label: _setsButtonLabel,
+          label: isSetsPlural ? 'Sets' : 'Set',
           isActive: _showSets,
           onTap: familyToggleSets,
         ),
@@ -163,9 +167,9 @@ mixin FamilyStateMixin<T extends ConsumerStatefulWidget> on ConsumerState<T> {
 
   Widget _buildRootSection() {
     final data = _rootFamilyData;
-    if (data == null) return const FamilyLoadingSpinner();
+    if (data == null) return const SizedBox.shrink();
     return FamilyTableWidget(
-      header: buildRootFamilyHeader(data),
+      header: buildRootFamilyHeader(context, data),
       entries: parseFamilyData(data.data),
       footerConfig: buildRootFamilyFooter(_fh.id, _fh.lemma1),
     );
@@ -173,9 +177,9 @@ mixin FamilyStateMixin<T extends ConsumerStatefulWidget> on ConsumerState<T> {
 
   Widget _buildWordSection() {
     final data = _wordFamilyData;
-    if (data == null) return const FamilyLoadingSpinner();
+    if (data == null) return const SizedBox.shrink();
     return FamilyTableWidget(
-      header: buildWordFamilyHeader(data),
+      header: buildWordFamilyHeader(context, data),
       entries: parseFamilyData(data.data),
       footerConfig: buildWordFamilyFooter(_fh.id, _fh.lemma1),
     );
@@ -183,14 +187,14 @@ mixin FamilyStateMixin<T extends ConsumerStatefulWidget> on ConsumerState<T> {
 
   Widget _buildCompoundSection() {
     final data = _compoundData;
-    if (data == null) return const FamilyLoadingSpinner();
+    if (data == null) return const SizedBox.shrink();
     if (data.isEmpty) return const SizedBox.shrink();
     return MultiFamilySection(
       subSections: data
           .map(
             (row) => FamilySubSection(
               key: row.compoundFamily,
-              header: buildCompoundFamilyHeader(row),
+              header: buildCompoundFamilyHeader(context, row),
               entries: parseFamilyData(row.data),
               footerConfig: buildCompoundFamilyFooter(_fh.id, _fh.lemma1),
             ),
@@ -201,14 +205,20 @@ mixin FamilyStateMixin<T extends ConsumerStatefulWidget> on ConsumerState<T> {
 
   Widget _buildIdiomsSection() {
     final data = _idiomData;
-    if (data == null) return const FamilyLoadingSpinner();
-    if (data.isEmpty) return const SizedBox.shrink();
+    if (data == null) return const SizedBox.shrink();
+    if (data.isEmpty) {
+      return FamilyTableWidget(
+        header: const Text('Idioms'),
+        entries: const [],
+        footerConfig: buildIdiomFooter(_fh.id, _fh.lemma1),
+      );
+    }
     return MultiFamilySection(
       subSections: data
           .map(
             (row) => FamilySubSection(
               key: row.idiom,
-              header: buildIdiomHeader(row),
+              header: buildIdiomHeader(context, row),
               entries: parseFamilyData(row.data),
               footerConfig: buildIdiomFooter(_fh.id, _fh.lemma1),
             ),
@@ -219,14 +229,20 @@ mixin FamilyStateMixin<T extends ConsumerStatefulWidget> on ConsumerState<T> {
 
   Widget _buildSetsSection() {
     final data = _setsData;
-    if (data == null) return const FamilyLoadingSpinner();
-    if (data.isEmpty) return const SizedBox.shrink();
+    if (data == null) return const SizedBox.shrink();
+    if (data.isEmpty) {
+      return FamilyTableWidget(
+        header: const Text('Sets'),
+        entries: const [],
+        footerConfig: buildSetFooter(_fh.id, _fh.lemma1),
+      );
+    }
     return MultiFamilySection(
       subSections: data
           .map(
             (row) => FamilySubSection(
               key: row.set_,
-              header: buildSetHeader(row, _fh.lemma1),
+              header: buildSetHeader(context, row, _fh.lemma1),
               entries: parseFamilyData(row.data),
               footerConfig: buildSetFooter(_fh.id, _fh.lemma1),
             ),
@@ -236,14 +252,3 @@ mixin FamilyStateMixin<T extends ConsumerStatefulWidget> on ConsumerState<T> {
   }
 }
 
-class FamilyLoadingSpinner extends StatelessWidget {
-  const FamilyLoadingSpinner({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Padding(
-      padding: EdgeInsets.symmetric(vertical: 16),
-      child: Center(child: CircularProgressIndicator()),
-    );
-  }
-}

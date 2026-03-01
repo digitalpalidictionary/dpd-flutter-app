@@ -5,6 +5,7 @@ import '../database/database.dart';
 import '../providers/search_provider.dart';
 import '../providers/settings_provider.dart';
 import '../providers/template_cache_provider.dart';
+import '../theme/dpd_colors.dart';
 import 'entry_content.dart';
 import 'family_state_mixin.dart';
 import 'grammar_table.dart';
@@ -110,7 +111,7 @@ class _InlineEntryCardState extends ConsumerState<InlineEntryCard>
           if (_grammarOpen)
             DpdSectionContainer(
               child: Padding(
-                padding: const EdgeInsets.all(16.0),
+                padding: DpdColors.sectionPadding,
                 child: GrammarTable(headword: h),
               ),
             ),
@@ -119,7 +120,7 @@ class _InlineEntryCardState extends ConsumerState<InlineEntryCard>
           if (_examplesOpen && hasExamples)
             DpdSectionContainer(
               child: Padding(
-                padding: const EdgeInsets.all(16.0),
+                padding: DpdColors.sectionPadding,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -157,7 +158,7 @@ class _InlineEntryCardState extends ConsumerState<InlineEntryCard>
           if (_notesOpen && hasNotes)
             DpdSectionContainer(
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+                padding: DpdColors.sectionPadding,
                 child: Text(h.notes!),
               ),
             ),

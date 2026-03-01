@@ -22,9 +22,10 @@ class FamilySubSection {
 
 /// Renders multiple sub-families (for compound families or sets).
 ///
-/// When there is more than one sub-family, shows a "jump to" navigation
-/// header listing all family keys, then renders each sub-family with an
-/// overline divider and a ⤴ back-to-top link.
+/// Single sub-family: delegates to [FamilyTableWidget].
+/// Multiple sub-families: one [DpdSectionContainer] with a "jump to" nav at
+/// the top, all sub-family tables inside, then ONE back-to-top and ONE footer
+/// at the very bottom — matching the webapp layout.
 class MultiFamilySection extends StatefulWidget {
   const MultiFamilySection({super.key, required this.subSections});
 
@@ -35,7 +36,7 @@ class MultiFamilySection extends StatefulWidget {
 }
 
 class _MultiFamilySectionState extends State<MultiFamilySection> {
-  final _scrollKey = GlobalKey();
+  final _topKey = GlobalKey();
   final List<GlobalKey> _sectionKeys = [];
 
   @override
@@ -54,7 +55,7 @@ class _MultiFamilySectionState extends State<MultiFamilySection> {
   }
 
   void _scrollToTop() {
-    final ctx = _scrollKey.currentContext;
+    final ctx = _topKey.currentContext;
     if (ctx != null) {
       Scrollable.ensureVisible(ctx, duration: const Duration(milliseconds: 300));
     }
@@ -71,25 +72,92 @@ class _MultiFamilySectionState extends State<MultiFamilySection> {
       );
     }
 
-    return Column(
-      key: _scrollKey,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _JumpToNav(
-          keys: widget.subSections.map((s) => s.key).toList(),
-          onTap: _scrollToSection,
+    return DpdSectionContainer(
+      child: Padding(
+        padding: DpdColors.sectionPadding,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Jump-to nav — scroll target for back-to-top
+            KeyedSubtree(
+              key: _topKey,
+              child: _JumpToNav(
+                keys: widget.subSections.map((s) => s.key).toList(),
+                onTap: _scrollToSection,
+              ),
+            ),
+            const SizedBox(height: 8),
+
+            // Sub-family sections — headers + tables only, no footer between them
+            for (int i = 0; i < widget.subSections.length; i++) ...[
+              Container(
+                key: _sectionKeys[i],
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _HeadingDoublelined(
+                      child: i > 0
+                          ? (widget.subSections[i].header is RichText
+                              ? _cloneWithJump(
+                                  context,
+                                  widget.subSections[i].header as RichText,
+                                  _scrollToTop,
+                                )
+                              : widget.subSections[i].header)
+                          : widget.subSections[i].header,
+                    ),
+                    const SizedBox(height: 8),
+                    if (widget.subSections[i].entries.isNotEmpty)
+                      _FamilySubTable(entries: widget.subSections[i].entries),
+                  ],
+                ),
+              ),
+              if (i < widget.subSections.length - 1)
+                const SizedBox(height: 16),
+            ],
+
+            // Single back-to-top + single footer at the very bottom
+            const SizedBox(height: 8),
+            _BackToTopLink(onTap: _scrollToTop),
+            const SizedBox(height: 4),
+            DpdFooter(
+              messagePrefix: widget.subSections.first.footerConfig.messagePrefix,
+              linkText: widget.subSections.first.footerConfig.linkText,
+              urlBuilder: widget.subSections.first.footerConfig.urlBuilder,
+            ),
+          ],
         ),
-        for (int i = 0; i < widget.subSections.length; i++) ...[
-          _SubFamilyBlock(
-            key: _sectionKeys[i],
-            subSection: widget.subSections[i],
-            onBackToTop: _scrollToTop,
-            showBackLink: i > 0,
-          ),
-        ],
-      ],
+      ),
     );
   }
+}
+
+/// Helper to add the jump link to an existing RichText header
+Widget _cloneWithJump(BuildContext context, RichText header, VoidCallback onJump) {
+  final oldSpan = header.text as TextSpan;
+  final color = Theme.of(context).colorScheme.primary;
+  return RichText(
+    text: TextSpan(
+      style: oldSpan.style,
+      children: [
+        ...oldSpan.children!,
+        WidgetSpan(
+          alignment: PlaceholderAlignment.middle,
+          child: GestureDetector(
+            onTap: onJump,
+            child: Padding(
+              padding: const EdgeInsets.only(left: 4),
+              child: Icon(
+                Icons.keyboard_double_arrow_up,
+                size: 14,
+                color: color,
+              ),
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
 }
 
 class _JumpToNav extends StatelessWidget {
@@ -100,83 +168,34 @@ class _JumpToNav extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-      child: Wrap(
-        spacing: 4,
-        crossAxisAlignment: WrapCrossAlignment.center,
-        children: [
-          Text(
-            'jump to:',
-            style: TextStyle(
-              fontSize: 12,
-              color: DpdColors.primaryText,
-              fontStyle: FontStyle.italic,
-            ),
-          ),
-          for (int i = 0; i < keys.length; i++)
-            GestureDetector(
-              onTap: () => onTap(i),
-              child: Text(
-                keys[i],
-                style: TextStyle(
-                  fontSize: 12,
-                  color: DpdColors.primaryText,
-                  decoration: TextDecoration.underline,
-                ),
+    return Wrap(
+      spacing: 4,
+      crossAxisAlignment: WrapCrossAlignment.center,
+      children: [
+        const Text(
+          'jump to: ',
+          style: TextStyle(fontSize: 12, color: Colors.white),
+        ),
+        for (int i = 0; i < keys.length; i++)
+          GestureDetector(
+            onTap: () => onTap(i),
+            child: Text(
+              i < keys.length - 1 ? '${keys[i]}, ' : keys[i],
+              style: TextStyle(
+                fontSize: 12,
+                color: DpdColors.primaryText,
+                fontWeight: FontWeight.w700,
+                decoration: TextDecoration.none,
               ),
             ),
-        ],
-      ),
-    );
-  }
-}
-
-class _SubFamilyBlock extends StatelessWidget {
-  const _SubFamilyBlock({
-    super.key,
-    required this.subSection,
-    required this.onBackToTop,
-    required this.showBackLink,
-  });
-
-  final FamilySubSection subSection;
-  final VoidCallback onBackToTop;
-  final bool showBackLink;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        if (showBackLink) _BackToTopLink(onTap: onBackToTop),
-        DpdSectionContainer(
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _OverlineHeading(child: subSection.header),
-                const SizedBox(height: 8),
-                if (subSection.entries.isNotEmpty)
-                  _FamilySubTable(entries: subSection.entries),
-                const SizedBox(height: 4),
-                DpdFooter(
-                  messagePrefix: subSection.footerConfig.messagePrefix,
-                  linkText: subSection.footerConfig.linkText,
-                  urlBuilder: subSection.footerConfig.urlBuilder,
-                ),
-              ],
-            ),
           ),
-        ),
       ],
     );
   }
 }
 
-class _OverlineHeading extends StatelessWidget {
-  const _OverlineHeading({required this.child});
+class _HeadingDoublelined extends StatelessWidget {
+  const _HeadingDoublelined({required this.child});
 
   final Widget child;
 
@@ -184,17 +203,14 @@ class _OverlineHeading extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.only(top: 4, bottom: 4),
+      padding: const EdgeInsets.symmetric(vertical: 4),
       decoration: BoxDecoration(
         border: Border(
           top: BorderSide(color: DpdColors.primary, width: 1),
           bottom: BorderSide(color: DpdColors.primary, width: 1),
         ),
       ),
-      child: DefaultTextStyle.merge(
-        style: const TextStyle(fontWeight: FontWeight.bold),
-        child: child,
-      ),
+      child: child,
     );
   }
 }
@@ -206,18 +222,23 @@ class _BackToTopLink extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-      child: GestureDetector(
-        onTap: onTap,
-        child: Text(
-          '⤴ back to top',
-          style: TextStyle(
-            fontSize: 12,
-            color: DpdColors.primaryText,
-            decoration: TextDecoration.underline,
+    final color = Theme.of(context).colorScheme.primary;
+    return GestureDetector(
+      onTap: onTap,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(Icons.keyboard_double_arrow_up, size: 14, color: color),
+          const SizedBox(width: 4),
+          Text(
+            'back to top',
+            style: TextStyle(
+              fontSize: 12,
+              color: color,
+              fontWeight: FontWeight.w700,
+            ),
           ),
-        ),
+        ],
       ),
     );
   }
@@ -231,6 +252,10 @@ class _FamilySubTable extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final lemmaStyle = theme.textTheme.bodyMedium?.copyWith(
+      fontWeight: FontWeight.bold,
+      color: DpdColors.primaryText,
+    );
     final boldStyle = theme.textTheme.bodyMedium?.copyWith(
       fontWeight: FontWeight.bold,
     );
@@ -243,19 +268,20 @@ class _FamilySubTable extends StatelessWidget {
         2: FlexColumnWidth(),
         3: IntrinsicColumnWidth(),
       },
+      defaultVerticalAlignment: TableCellVerticalAlignment.top,
       children: entries.map((entry) {
         return TableRow(
           children: [
             Padding(
-              padding: const EdgeInsets.only(right: 8, bottom: 2),
-              child: Text(entry.lemma, style: boldStyle),
+              padding: const EdgeInsets.only(right: 7, bottom: 2),
+              child: Text(entry.lemma, style: lemmaStyle),
             ),
             Padding(
-              padding: const EdgeInsets.only(right: 8, bottom: 2),
+              padding: const EdgeInsets.only(right: 7, bottom: 2),
               child: Text(entry.pos, style: boldStyle),
             ),
             Padding(
-              padding: const EdgeInsets.only(right: 8, bottom: 2),
+              padding: const EdgeInsets.only(right: 7, bottom: 2),
               child: Text(entry.meaning, style: regularStyle),
             ),
             Padding(

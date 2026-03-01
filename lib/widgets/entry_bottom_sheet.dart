@@ -106,7 +106,7 @@ class _EntryBottomSheetState extends ConsumerState<EntryBottomSheet>
                 ),
                 if (hasExamples)
                   DpdSectionButton(
-                    label: hasTwoExamples ? 'examples' : 'example',
+                    label: hasTwoExamples ? 'Examples' : 'Example',
                     isActive: _examplesOpen,
                     onTap: () =>
                         setState(() => _examplesOpen = !_examplesOpen),
@@ -133,7 +133,7 @@ class _EntryBottomSheetState extends ConsumerState<EntryBottomSheet>
           if (_grammarOpen)
             DpdSectionContainer(
               child: Padding(
-                padding: const EdgeInsets.all(16.0),
+                padding: DpdColors.sectionPadding,
                 child: GrammarTable(headword: h),
               ),
             ),
@@ -141,7 +141,7 @@ class _EntryBottomSheetState extends ConsumerState<EntryBottomSheet>
           if (_examplesOpen && hasExamples)
             DpdSectionContainer(
               child: Padding(
-                padding: const EdgeInsets.all(16.0),
+                padding: DpdColors.sectionPadding,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -177,7 +177,7 @@ class _EntryBottomSheetState extends ConsumerState<EntryBottomSheet>
           if (_notesOpen && hasNotes)
             DpdSectionContainer(
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+                padding: DpdColors.sectionPadding,
                 child: Text(h.notes!),
               ),
             ),

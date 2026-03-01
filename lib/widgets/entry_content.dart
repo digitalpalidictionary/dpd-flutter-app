@@ -43,7 +43,8 @@ class DpdFooter extends StatelessWidget {
                   text: linkText,
                   style: TextStyle(
                     color: DpdColors.primaryText,
-                    decoration: TextDecoration.underline,
+                    fontWeight: FontWeight.w700,
+                    decoration: TextDecoration.none,
                   ),
                 ),
               ],
@@ -227,9 +228,8 @@ class DpdSectionContainer extends StatelessWidget {
 
     return Container(
       width: double.infinity,
-      margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+      margin: const EdgeInsets.symmetric(vertical: 2),
       decoration: BoxDecoration(
-        color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
         border: Border.all(color: theme.colorScheme.primary, width: 2),
         borderRadius: DpdColors.borderRadius,
       ),
