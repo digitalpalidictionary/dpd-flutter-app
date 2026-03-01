@@ -4,11 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../database/database.dart';
+import '../providers/autocomplete_provider.dart';
 import '../providers/search_provider.dart';
 import '../providers/settings_provider.dart';
 import '../theme/dpd_colors.dart';
 import '../utils/velthuis.dart';
 import '../widgets/accordion_card.dart';
+import '../widgets/autocomplete_dropdown.dart';
 import '../widgets/entry_bottom_sheet.dart';
 import '../widgets/inline_entry_card.dart';
 import '../widgets/word_card.dart';
@@ -22,12 +24,17 @@ class SearchScreen extends ConsumerStatefulWidget {
 
 class _SearchScreenState extends ConsumerState<SearchScreen> {
   final _controller = TextEditingController();
+  final _layerLink = LayerLink();
   Timer? _debounce;
+  Timer? _autocompleteDebounce;
+  OverlayEntry? _overlayEntry;
 
   @override
   void dispose() {
+    _removeOverlay();
     _controller.dispose();
     _debounce?.cancel();
+    _autocompleteDebounce?.cancel();
     super.dispose();
   }
 
@@ -39,10 +46,73 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
         selection: TextSelection.collapsed(offset: converted.length),
       );
     }
+
+    _autocompleteDebounce?.cancel();
+    _autocompleteDebounce = Timer(const Duration(milliseconds: 150), () {
+      _updateAutocomplete(converted.trim());
+    });
+
     _debounce?.cancel();
     _debounce = Timer(const Duration(milliseconds: 300), () {
       ref.read(searchQueryProvider.notifier).state = converted.trim();
     });
+  }
+
+  void _updateAutocomplete(String query) {
+    if (query.length < 2) {
+      _removeOverlay();
+      return;
+    }
+    final suggestions = ref.read(autocompleteSuggestionsProvider(query));
+    if (suggestions.isEmpty) {
+      _removeOverlay();
+      return;
+    }
+    _showOverlay(suggestions);
+  }
+
+  void _showOverlay(List<String> suggestions) {
+    _removeOverlay();
+    final overlay = Overlay.of(context);
+    final renderBox = context.findRenderObject() as RenderBox;
+    final width = renderBox.size.width;
+
+    _overlayEntry = OverlayEntry(
+      builder: (_) => Stack(
+        children: [
+          GestureDetector(
+            behavior: HitTestBehavior.translucent,
+            onTap: _removeOverlay,
+          ),
+          Positioned(
+            width: width,
+            child: AutocompleteDropdown(
+              suggestions: suggestions,
+              onSelected: _onSuggestionSelected,
+              layerLink: _layerLink,
+              width: width - 24,
+            ),
+          ),
+        ],
+      ),
+    );
+    overlay.insert(_overlayEntry!);
+  }
+
+  void _onSuggestionSelected(String term) {
+    _controller.text = term;
+    _controller.selection =
+        TextSelection.collapsed(offset: term.length);
+    _removeOverlay();
+    _autocompleteDebounce?.cancel();
+    _debounce?.cancel();
+    ref.read(searchQueryProvider.notifier).state = term;
+  }
+
+  void _removeOverlay() {
+    _overlayEntry?.remove();
+    _overlayEntry?.dispose();
+    _overlayEntry = null;
   }
 
   @override
@@ -54,33 +124,36 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: TextField(
-          controller: _controller,
-          autofocus: false,
-          onChanged: _onChanged,
-          style: theme.textTheme.titleMedium,
-          decoration: InputDecoration(
-            hintText: 'Search Pāḷi...',
-            hintStyle: theme.textTheme.titleMedium?.copyWith(
-              color: theme.colorScheme.onSurface.withValues(alpha: 0.4),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: DpdColors.borderRadius,
-              borderSide: BorderSide(
-                color: theme.colorScheme.primary,
-                width: 1.5,
+        title: CompositedTransformTarget(
+          link: _layerLink,
+          child: TextField(
+            controller: _controller,
+            autofocus: false,
+            onChanged: _onChanged,
+            style: theme.textTheme.titleMedium,
+            decoration: InputDecoration(
+              hintText: 'Search Pāḷi...',
+              hintStyle: theme.textTheme.titleMedium?.copyWith(
+                color: theme.colorScheme.onSurface.withValues(alpha: 0.4),
               ),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: DpdColors.borderRadius,
-              borderSide: BorderSide(
-                color: theme.colorScheme.primary,
-                width: 2,
+              enabledBorder: OutlineInputBorder(
+                borderRadius: DpdColors.borderRadius,
+                borderSide: BorderSide(
+                  color: theme.colorScheme.primary,
+                  width: 1.5,
+                ),
               ),
-            ),
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: 12,
-              vertical: 10,
+              focusedBorder: OutlineInputBorder(
+                borderRadius: DpdColors.borderRadius,
+                borderSide: BorderSide(
+                  color: theme.colorScheme.primary,
+                  width: 2,
+                ),
+              ),
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 12,
+                vertical: 10,
+              ),
             ),
           ),
         ),
@@ -90,6 +163,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
               icon: const Icon(Icons.clear),
               onPressed: () {
                 _controller.clear();
+                _removeOverlay();
                 ref.read(searchQueryProvider.notifier).state = '';
               },
             ),

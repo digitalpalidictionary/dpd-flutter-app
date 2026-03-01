@@ -230,6 +230,29 @@ class DpdDao extends DatabaseAccessor<AppDatabase> with _$DpdDaoMixin {
     return row?.value;
   }
 
+  // ── Autocomplete index ───────────────────────────────────────────────────
+
+  Future<List<String>> getAllLemmas() async {
+    final rows = await (selectOnly(dpdHeadwords, distinct: true)
+          ..addColumns([dpdHeadwords.lemma1]))
+        .get();
+    return rows.map((r) => r.read(dpdHeadwords.lemma1)!).toList();
+  }
+
+  Future<List<String>> getAllRoots() async {
+    final rows = await (selectOnly(dpdRoots, distinct: true)
+          ..addColumns([dpdRoots.root]))
+        .get();
+    return rows.map((r) => r.read(dpdRoots.root)!).toList();
+  }
+
+  Future<List<String>> getAllRootFamilies() async {
+    final rows = await (selectOnly(familyRoot, distinct: true)
+          ..addColumns([familyRoot.rootFamily]))
+        .get();
+    return rows.map((r) => r.read(familyRoot.rootFamily)!).toList();
+  }
+
   // ── Helpers ───────────────────────────────────────────────────────────────
 
   String _normalizeQuery(String input) {
