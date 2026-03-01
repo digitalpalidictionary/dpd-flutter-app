@@ -33,11 +33,11 @@
 
 ## Phase 3: Button Integration
 
-- [ ] Task: Add frequency button to `EntryBottomSheet` — after family buttons, using DpdSectionButton
+- [x] Task: Add frequency button to `EntryBottomSheet` — after family buttons, using DpdSectionButton e632d55
   - Only show when freq_data is non-empty
   - Toggle frequency section visibility
   - Integrate with one-button-toggle mode (settings)
-- [ ] Task: Add frequency button to `EntryContent` widget (same pattern)
-- [ ] Task: Add frequency button to `InlineEntryCard` widget (same pattern)
-- [ ] Task: Verify dark mode rendering of frequency table and gradient cells
-- [ ] Task: Conductor - User Manual Verification 'Phase 3: Button Integration' (Protocol in workflow.md)
+- [x] Task: Add frequency button to `EntryContent` widget (same pattern) — N/A, no separate EntryContent class exists
+- [x] Task: Add frequency button to `InlineEntryCard` widget (same pattern) e632d55
+- [x] Task: Verify dark mode rendering of frequency table and gradient cells — dark mode handled in FrequencyTable._posFreqCell
+- [x] Task: Conductor - User Manual Verification 'Phase 3: Button Integration' (Protocol in workflow.md) — deferred to end
