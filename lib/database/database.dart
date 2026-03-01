@@ -21,6 +21,7 @@ part 'database.g.dart';
   FamilyCompound,
   FamilyIdiom,
   FamilySet,
+  SuttaInfo,
 ])
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());

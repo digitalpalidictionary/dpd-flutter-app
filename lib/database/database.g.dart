@@ -5864,6 +5864,3404 @@ class FamilySetCompanion extends UpdateCompanion<FamilySetData> {
   }
 }
 
+class $SuttaInfoTable extends SuttaInfo
+    with TableInfo<$SuttaInfoTable, SuttaInfoData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $SuttaInfoTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _bookMeta = const VerificationMeta('book');
+  @override
+  late final GeneratedColumn<String> book = GeneratedColumn<String>(
+    'book',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _bookCodeMeta = const VerificationMeta(
+    'bookCode',
+  );
+  @override
+  late final GeneratedColumn<String> bookCode = GeneratedColumn<String>(
+    'book_code',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _dpdCodeMeta = const VerificationMeta(
+    'dpdCode',
+  );
+  @override
+  late final GeneratedColumn<String> dpdCode = GeneratedColumn<String>(
+    'dpd_code',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _dpdSuttaMeta = const VerificationMeta(
+    'dpdSutta',
+  );
+  @override
+  late final GeneratedColumn<String> dpdSutta = GeneratedColumn<String>(
+    'dpd_sutta',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _dpdSuttaVarMeta = const VerificationMeta(
+    'dpdSuttaVar',
+  );
+  @override
+  late final GeneratedColumn<String> dpdSuttaVar = GeneratedColumn<String>(
+    'dpd_sutta_var',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _cstCodeMeta = const VerificationMeta(
+    'cstCode',
+  );
+  @override
+  late final GeneratedColumn<String> cstCode = GeneratedColumn<String>(
+    'cst_code',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _cstNikayaMeta = const VerificationMeta(
+    'cstNikaya',
+  );
+  @override
+  late final GeneratedColumn<String> cstNikaya = GeneratedColumn<String>(
+    'cst_nikaya',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _cstBookMeta = const VerificationMeta(
+    'cstBook',
+  );
+  @override
+  late final GeneratedColumn<String> cstBook = GeneratedColumn<String>(
+    'cst_book',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _cstSectionMeta = const VerificationMeta(
+    'cstSection',
+  );
+  @override
+  late final GeneratedColumn<String> cstSection = GeneratedColumn<String>(
+    'cst_section',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _cstVaggaMeta = const VerificationMeta(
+    'cstVagga',
+  );
+  @override
+  late final GeneratedColumn<String> cstVagga = GeneratedColumn<String>(
+    'cst_vagga',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _cstSuttaMeta = const VerificationMeta(
+    'cstSutta',
+  );
+  @override
+  late final GeneratedColumn<String> cstSutta = GeneratedColumn<String>(
+    'cst_sutta',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _cstParanumMeta = const VerificationMeta(
+    'cstParanum',
+  );
+  @override
+  late final GeneratedColumn<String> cstParanum = GeneratedColumn<String>(
+    'cst_paranum',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _cstMPageMeta = const VerificationMeta(
+    'cstMPage',
+  );
+  @override
+  late final GeneratedColumn<String> cstMPage = GeneratedColumn<String>(
+    'cst_m_page',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _cstVPageMeta = const VerificationMeta(
+    'cstVPage',
+  );
+  @override
+  late final GeneratedColumn<String> cstVPage = GeneratedColumn<String>(
+    'cst_v_page',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _cstPPageMeta = const VerificationMeta(
+    'cstPPage',
+  );
+  @override
+  late final GeneratedColumn<String> cstPPage = GeneratedColumn<String>(
+    'cst_p_page',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _cstTPageMeta = const VerificationMeta(
+    'cstTPage',
+  );
+  @override
+  late final GeneratedColumn<String> cstTPage = GeneratedColumn<String>(
+    'cst_t_page',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _cstFileMeta = const VerificationMeta(
+    'cstFile',
+  );
+  @override
+  late final GeneratedColumn<String> cstFile = GeneratedColumn<String>(
+    'cst_file',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _scCodeMeta = const VerificationMeta('scCode');
+  @override
+  late final GeneratedColumn<String> scCode = GeneratedColumn<String>(
+    'sc_code',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _scBookMeta = const VerificationMeta('scBook');
+  @override
+  late final GeneratedColumn<String> scBook = GeneratedColumn<String>(
+    'sc_book',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _scVaggaMeta = const VerificationMeta(
+    'scVagga',
+  );
+  @override
+  late final GeneratedColumn<String> scVagga = GeneratedColumn<String>(
+    'sc_vagga',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _scSuttaMeta = const VerificationMeta(
+    'scSutta',
+  );
+  @override
+  late final GeneratedColumn<String> scSutta = GeneratedColumn<String>(
+    'sc_sutta',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _scEngSuttaMeta = const VerificationMeta(
+    'scEngSutta',
+  );
+  @override
+  late final GeneratedColumn<String> scEngSutta = GeneratedColumn<String>(
+    'sc_eng_sutta',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _scBlurbMeta = const VerificationMeta(
+    'scBlurb',
+  );
+  @override
+  late final GeneratedColumn<String> scBlurb = GeneratedColumn<String>(
+    'sc_blurb',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _scFilePathMeta = const VerificationMeta(
+    'scFilePath',
+  );
+  @override
+  late final GeneratedColumn<String> scFilePath = GeneratedColumn<String>(
+    'sc_file_path',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _dprCodeMeta = const VerificationMeta(
+    'dprCode',
+  );
+  @override
+  late final GeneratedColumn<String> dprCode = GeneratedColumn<String>(
+    'dpr_code',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _dprLinkMeta = const VerificationMeta(
+    'dprLink',
+  );
+  @override
+  late final GeneratedColumn<String> dprLink = GeneratedColumn<String>(
+    'dpr_link',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _bjtSuttaCodeMeta = const VerificationMeta(
+    'bjtSuttaCode',
+  );
+  @override
+  late final GeneratedColumn<String> bjtSuttaCode = GeneratedColumn<String>(
+    'bjt_sutta_code',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _bjtWebCodeMeta = const VerificationMeta(
+    'bjtWebCode',
+  );
+  @override
+  late final GeneratedColumn<String> bjtWebCode = GeneratedColumn<String>(
+    'bjt_web_code',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _bjtFilenameMeta = const VerificationMeta(
+    'bjtFilename',
+  );
+  @override
+  late final GeneratedColumn<String> bjtFilename = GeneratedColumn<String>(
+    'bjt_filename',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _bjtBookIdMeta = const VerificationMeta(
+    'bjtBookId',
+  );
+  @override
+  late final GeneratedColumn<String> bjtBookId = GeneratedColumn<String>(
+    'bjt_book_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _bjtPageNumMeta = const VerificationMeta(
+    'bjtPageNum',
+  );
+  @override
+  late final GeneratedColumn<String> bjtPageNum = GeneratedColumn<String>(
+    'bjt_page_num',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _bjtPageOffsetMeta = const VerificationMeta(
+    'bjtPageOffset',
+  );
+  @override
+  late final GeneratedColumn<String> bjtPageOffset = GeneratedColumn<String>(
+    'bjt_page_offset',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _bjtPitakaMeta = const VerificationMeta(
+    'bjtPitaka',
+  );
+  @override
+  late final GeneratedColumn<String> bjtPitaka = GeneratedColumn<String>(
+    'bjt_piṭaka',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _bjtNikayaMeta = const VerificationMeta(
+    'bjtNikaya',
+  );
+  @override
+  late final GeneratedColumn<String> bjtNikaya = GeneratedColumn<String>(
+    'bjt_nikāya',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _bjtMajorSectionMeta = const VerificationMeta(
+    'bjtMajorSection',
+  );
+  @override
+  late final GeneratedColumn<String> bjtMajorSection = GeneratedColumn<String>(
+    'bjt_major_section',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _bjtBookMeta = const VerificationMeta(
+    'bjtBook',
+  );
+  @override
+  late final GeneratedColumn<String> bjtBook = GeneratedColumn<String>(
+    'bjt_book',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _bjtMinorSectionMeta = const VerificationMeta(
+    'bjtMinorSection',
+  );
+  @override
+  late final GeneratedColumn<String> bjtMinorSection = GeneratedColumn<String>(
+    'bjt_minor_section',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _bjtVaggaMeta = const VerificationMeta(
+    'bjtVagga',
+  );
+  @override
+  late final GeneratedColumn<String> bjtVagga = GeneratedColumn<String>(
+    'bjt_vagga',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _bjtSuttaMeta = const VerificationMeta(
+    'bjtSutta',
+  );
+  @override
+  late final GeneratedColumn<String> bjtSutta = GeneratedColumn<String>(
+    'bjt_sutta',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _dvPtsMeta = const VerificationMeta('dvPts');
+  @override
+  late final GeneratedColumn<String> dvPts = GeneratedColumn<String>(
+    'dv_pts',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _dvMainThemeMeta = const VerificationMeta(
+    'dvMainTheme',
+  );
+  @override
+  late final GeneratedColumn<String> dvMainTheme = GeneratedColumn<String>(
+    'dv_main_theme',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _dvSubtopicMeta = const VerificationMeta(
+    'dvSubtopic',
+  );
+  @override
+  late final GeneratedColumn<String> dvSubtopic = GeneratedColumn<String>(
+    'dv_subtopic',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _dvSummaryMeta = const VerificationMeta(
+    'dvSummary',
+  );
+  @override
+  late final GeneratedColumn<String> dvSummary = GeneratedColumn<String>(
+    'dv_summary',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _dvSimilesMeta = const VerificationMeta(
+    'dvSimiles',
+  );
+  @override
+  late final GeneratedColumn<String> dvSimiles = GeneratedColumn<String>(
+    'dv_similes',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _dvKeyExcerpt1Meta = const VerificationMeta(
+    'dvKeyExcerpt1',
+  );
+  @override
+  late final GeneratedColumn<String> dvKeyExcerpt1 = GeneratedColumn<String>(
+    'dv_key_excerpt1',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _dvKeyExcerpt2Meta = const VerificationMeta(
+    'dvKeyExcerpt2',
+  );
+  @override
+  late final GeneratedColumn<String> dvKeyExcerpt2 = GeneratedColumn<String>(
+    'dv_key_excerpt2',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _dvStageMeta = const VerificationMeta(
+    'dvStage',
+  );
+  @override
+  late final GeneratedColumn<String> dvStage = GeneratedColumn<String>(
+    'dv_stage',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _dvTrainingMeta = const VerificationMeta(
+    'dvTraining',
+  );
+  @override
+  late final GeneratedColumn<String> dvTraining = GeneratedColumn<String>(
+    'dv_training',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _dvAspectMeta = const VerificationMeta(
+    'dvAspect',
+  );
+  @override
+  late final GeneratedColumn<String> dvAspect = GeneratedColumn<String>(
+    'dv_aspect',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _dvTeacherMeta = const VerificationMeta(
+    'dvTeacher',
+  );
+  @override
+  late final GeneratedColumn<String> dvTeacher = GeneratedColumn<String>(
+    'dv_teacher',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _dvAudienceMeta = const VerificationMeta(
+    'dvAudience',
+  );
+  @override
+  late final GeneratedColumn<String> dvAudience = GeneratedColumn<String>(
+    'dv_audience',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _dvMethodMeta = const VerificationMeta(
+    'dvMethod',
+  );
+  @override
+  late final GeneratedColumn<String> dvMethod = GeneratedColumn<String>(
+    'dv_method',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _dvLengthMeta = const VerificationMeta(
+    'dvLength',
+  );
+  @override
+  late final GeneratedColumn<String> dvLength = GeneratedColumn<String>(
+    'dv_length',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _dvProminenceMeta = const VerificationMeta(
+    'dvProminence',
+  );
+  @override
+  late final GeneratedColumn<String> dvProminence = GeneratedColumn<String>(
+    'dv_prominence',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _dvNikayasParallelsMeta =
+      const VerificationMeta('dvNikayasParallels');
+  @override
+  late final GeneratedColumn<String> dvNikayasParallels =
+      GeneratedColumn<String>(
+        'dv_nikayas_parallels',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _dvAgamasParallelsMeta = const VerificationMeta(
+    'dvAgamasParallels',
+  );
+  @override
+  late final GeneratedColumn<String> dvAgamasParallels =
+      GeneratedColumn<String>(
+        'dv_āgamas_parallels',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _dvTaishoParallelsMeta = const VerificationMeta(
+    'dvTaishoParallels',
+  );
+  @override
+  late final GeneratedColumn<String> dvTaishoParallels =
+      GeneratedColumn<String>(
+        'dv_taisho_parallels',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _dvSanskritParallelsMeta =
+      const VerificationMeta('dvSanskritParallels');
+  @override
+  late final GeneratedColumn<String> dvSanskritParallels =
+      GeneratedColumn<String>(
+        'dv_sanskrit_parallels',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _dvVinayaParallelsMeta = const VerificationMeta(
+    'dvVinayaParallels',
+  );
+  @override
+  late final GeneratedColumn<String> dvVinayaParallels =
+      GeneratedColumn<String>(
+        'dv_vinaya_parallels',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _dvOthersParallelsMeta = const VerificationMeta(
+    'dvOthersParallels',
+  );
+  @override
+  late final GeneratedColumn<String> dvOthersParallels =
+      GeneratedColumn<String>(
+        'dv_others_parallels',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _dvPartialParallelsNaMeta =
+      const VerificationMeta('dvPartialParallelsNa');
+  @override
+  late final GeneratedColumn<String> dvPartialParallelsNa =
+      GeneratedColumn<String>(
+        'dv_partial_parallels_nā',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _dvPartialParallelsAllMeta =
+      const VerificationMeta('dvPartialParallelsAll');
+  @override
+  late final GeneratedColumn<String> dvPartialParallelsAll =
+      GeneratedColumn<String>(
+        'dv_partial_parallels_all',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _dvSuggestedSuttasMeta = const VerificationMeta(
+    'dvSuggestedSuttas',
+  );
+  @override
+  late final GeneratedColumn<String> dvSuggestedSuttas =
+      GeneratedColumn<String>(
+        'dv_suggested_suttas',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  @override
+  List<GeneratedColumn> get $columns => [
+    book,
+    bookCode,
+    dpdCode,
+    dpdSutta,
+    dpdSuttaVar,
+    cstCode,
+    cstNikaya,
+    cstBook,
+    cstSection,
+    cstVagga,
+    cstSutta,
+    cstParanum,
+    cstMPage,
+    cstVPage,
+    cstPPage,
+    cstTPage,
+    cstFile,
+    scCode,
+    scBook,
+    scVagga,
+    scSutta,
+    scEngSutta,
+    scBlurb,
+    scFilePath,
+    dprCode,
+    dprLink,
+    bjtSuttaCode,
+    bjtWebCode,
+    bjtFilename,
+    bjtBookId,
+    bjtPageNum,
+    bjtPageOffset,
+    bjtPitaka,
+    bjtNikaya,
+    bjtMajorSection,
+    bjtBook,
+    bjtMinorSection,
+    bjtVagga,
+    bjtSutta,
+    dvPts,
+    dvMainTheme,
+    dvSubtopic,
+    dvSummary,
+    dvSimiles,
+    dvKeyExcerpt1,
+    dvKeyExcerpt2,
+    dvStage,
+    dvTraining,
+    dvAspect,
+    dvTeacher,
+    dvAudience,
+    dvMethod,
+    dvLength,
+    dvProminence,
+    dvNikayasParallels,
+    dvAgamasParallels,
+    dvTaishoParallels,
+    dvSanskritParallels,
+    dvVinayaParallels,
+    dvOthersParallels,
+    dvPartialParallelsNa,
+    dvPartialParallelsAll,
+    dvSuggestedSuttas,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'sutta_info';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<SuttaInfoData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('book')) {
+      context.handle(
+        _bookMeta,
+        book.isAcceptableOrUnknown(data['book']!, _bookMeta),
+      );
+    }
+    if (data.containsKey('book_code')) {
+      context.handle(
+        _bookCodeMeta,
+        bookCode.isAcceptableOrUnknown(data['book_code']!, _bookCodeMeta),
+      );
+    }
+    if (data.containsKey('dpd_code')) {
+      context.handle(
+        _dpdCodeMeta,
+        dpdCode.isAcceptableOrUnknown(data['dpd_code']!, _dpdCodeMeta),
+      );
+    }
+    if (data.containsKey('dpd_sutta')) {
+      context.handle(
+        _dpdSuttaMeta,
+        dpdSutta.isAcceptableOrUnknown(data['dpd_sutta']!, _dpdSuttaMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_dpdSuttaMeta);
+    }
+    if (data.containsKey('dpd_sutta_var')) {
+      context.handle(
+        _dpdSuttaVarMeta,
+        dpdSuttaVar.isAcceptableOrUnknown(
+          data['dpd_sutta_var']!,
+          _dpdSuttaVarMeta,
+        ),
+      );
+    }
+    if (data.containsKey('cst_code')) {
+      context.handle(
+        _cstCodeMeta,
+        cstCode.isAcceptableOrUnknown(data['cst_code']!, _cstCodeMeta),
+      );
+    }
+    if (data.containsKey('cst_nikaya')) {
+      context.handle(
+        _cstNikayaMeta,
+        cstNikaya.isAcceptableOrUnknown(data['cst_nikaya']!, _cstNikayaMeta),
+      );
+    }
+    if (data.containsKey('cst_book')) {
+      context.handle(
+        _cstBookMeta,
+        cstBook.isAcceptableOrUnknown(data['cst_book']!, _cstBookMeta),
+      );
+    }
+    if (data.containsKey('cst_section')) {
+      context.handle(
+        _cstSectionMeta,
+        cstSection.isAcceptableOrUnknown(data['cst_section']!, _cstSectionMeta),
+      );
+    }
+    if (data.containsKey('cst_vagga')) {
+      context.handle(
+        _cstVaggaMeta,
+        cstVagga.isAcceptableOrUnknown(data['cst_vagga']!, _cstVaggaMeta),
+      );
+    }
+    if (data.containsKey('cst_sutta')) {
+      context.handle(
+        _cstSuttaMeta,
+        cstSutta.isAcceptableOrUnknown(data['cst_sutta']!, _cstSuttaMeta),
+      );
+    }
+    if (data.containsKey('cst_paranum')) {
+      context.handle(
+        _cstParanumMeta,
+        cstParanum.isAcceptableOrUnknown(data['cst_paranum']!, _cstParanumMeta),
+      );
+    }
+    if (data.containsKey('cst_m_page')) {
+      context.handle(
+        _cstMPageMeta,
+        cstMPage.isAcceptableOrUnknown(data['cst_m_page']!, _cstMPageMeta),
+      );
+    }
+    if (data.containsKey('cst_v_page')) {
+      context.handle(
+        _cstVPageMeta,
+        cstVPage.isAcceptableOrUnknown(data['cst_v_page']!, _cstVPageMeta),
+      );
+    }
+    if (data.containsKey('cst_p_page')) {
+      context.handle(
+        _cstPPageMeta,
+        cstPPage.isAcceptableOrUnknown(data['cst_p_page']!, _cstPPageMeta),
+      );
+    }
+    if (data.containsKey('cst_t_page')) {
+      context.handle(
+        _cstTPageMeta,
+        cstTPage.isAcceptableOrUnknown(data['cst_t_page']!, _cstTPageMeta),
+      );
+    }
+    if (data.containsKey('cst_file')) {
+      context.handle(
+        _cstFileMeta,
+        cstFile.isAcceptableOrUnknown(data['cst_file']!, _cstFileMeta),
+      );
+    }
+    if (data.containsKey('sc_code')) {
+      context.handle(
+        _scCodeMeta,
+        scCode.isAcceptableOrUnknown(data['sc_code']!, _scCodeMeta),
+      );
+    }
+    if (data.containsKey('sc_book')) {
+      context.handle(
+        _scBookMeta,
+        scBook.isAcceptableOrUnknown(data['sc_book']!, _scBookMeta),
+      );
+    }
+    if (data.containsKey('sc_vagga')) {
+      context.handle(
+        _scVaggaMeta,
+        scVagga.isAcceptableOrUnknown(data['sc_vagga']!, _scVaggaMeta),
+      );
+    }
+    if (data.containsKey('sc_sutta')) {
+      context.handle(
+        _scSuttaMeta,
+        scSutta.isAcceptableOrUnknown(data['sc_sutta']!, _scSuttaMeta),
+      );
+    }
+    if (data.containsKey('sc_eng_sutta')) {
+      context.handle(
+        _scEngSuttaMeta,
+        scEngSutta.isAcceptableOrUnknown(
+          data['sc_eng_sutta']!,
+          _scEngSuttaMeta,
+        ),
+      );
+    }
+    if (data.containsKey('sc_blurb')) {
+      context.handle(
+        _scBlurbMeta,
+        scBlurb.isAcceptableOrUnknown(data['sc_blurb']!, _scBlurbMeta),
+      );
+    }
+    if (data.containsKey('sc_file_path')) {
+      context.handle(
+        _scFilePathMeta,
+        scFilePath.isAcceptableOrUnknown(
+          data['sc_file_path']!,
+          _scFilePathMeta,
+        ),
+      );
+    }
+    if (data.containsKey('dpr_code')) {
+      context.handle(
+        _dprCodeMeta,
+        dprCode.isAcceptableOrUnknown(data['dpr_code']!, _dprCodeMeta),
+      );
+    }
+    if (data.containsKey('dpr_link')) {
+      context.handle(
+        _dprLinkMeta,
+        dprLink.isAcceptableOrUnknown(data['dpr_link']!, _dprLinkMeta),
+      );
+    }
+    if (data.containsKey('bjt_sutta_code')) {
+      context.handle(
+        _bjtSuttaCodeMeta,
+        bjtSuttaCode.isAcceptableOrUnknown(
+          data['bjt_sutta_code']!,
+          _bjtSuttaCodeMeta,
+        ),
+      );
+    }
+    if (data.containsKey('bjt_web_code')) {
+      context.handle(
+        _bjtWebCodeMeta,
+        bjtWebCode.isAcceptableOrUnknown(
+          data['bjt_web_code']!,
+          _bjtWebCodeMeta,
+        ),
+      );
+    }
+    if (data.containsKey('bjt_filename')) {
+      context.handle(
+        _bjtFilenameMeta,
+        bjtFilename.isAcceptableOrUnknown(
+          data['bjt_filename']!,
+          _bjtFilenameMeta,
+        ),
+      );
+    }
+    if (data.containsKey('bjt_book_id')) {
+      context.handle(
+        _bjtBookIdMeta,
+        bjtBookId.isAcceptableOrUnknown(data['bjt_book_id']!, _bjtBookIdMeta),
+      );
+    }
+    if (data.containsKey('bjt_page_num')) {
+      context.handle(
+        _bjtPageNumMeta,
+        bjtPageNum.isAcceptableOrUnknown(
+          data['bjt_page_num']!,
+          _bjtPageNumMeta,
+        ),
+      );
+    }
+    if (data.containsKey('bjt_page_offset')) {
+      context.handle(
+        _bjtPageOffsetMeta,
+        bjtPageOffset.isAcceptableOrUnknown(
+          data['bjt_page_offset']!,
+          _bjtPageOffsetMeta,
+        ),
+      );
+    }
+    if (data.containsKey('bjt_piṭaka')) {
+      context.handle(
+        _bjtPitakaMeta,
+        bjtPitaka.isAcceptableOrUnknown(data['bjt_piṭaka']!, _bjtPitakaMeta),
+      );
+    }
+    if (data.containsKey('bjt_nikāya')) {
+      context.handle(
+        _bjtNikayaMeta,
+        bjtNikaya.isAcceptableOrUnknown(data['bjt_nikāya']!, _bjtNikayaMeta),
+      );
+    }
+    if (data.containsKey('bjt_major_section')) {
+      context.handle(
+        _bjtMajorSectionMeta,
+        bjtMajorSection.isAcceptableOrUnknown(
+          data['bjt_major_section']!,
+          _bjtMajorSectionMeta,
+        ),
+      );
+    }
+    if (data.containsKey('bjt_book')) {
+      context.handle(
+        _bjtBookMeta,
+        bjtBook.isAcceptableOrUnknown(data['bjt_book']!, _bjtBookMeta),
+      );
+    }
+    if (data.containsKey('bjt_minor_section')) {
+      context.handle(
+        _bjtMinorSectionMeta,
+        bjtMinorSection.isAcceptableOrUnknown(
+          data['bjt_minor_section']!,
+          _bjtMinorSectionMeta,
+        ),
+      );
+    }
+    if (data.containsKey('bjt_vagga')) {
+      context.handle(
+        _bjtVaggaMeta,
+        bjtVagga.isAcceptableOrUnknown(data['bjt_vagga']!, _bjtVaggaMeta),
+      );
+    }
+    if (data.containsKey('bjt_sutta')) {
+      context.handle(
+        _bjtSuttaMeta,
+        bjtSutta.isAcceptableOrUnknown(data['bjt_sutta']!, _bjtSuttaMeta),
+      );
+    }
+    if (data.containsKey('dv_pts')) {
+      context.handle(
+        _dvPtsMeta,
+        dvPts.isAcceptableOrUnknown(data['dv_pts']!, _dvPtsMeta),
+      );
+    }
+    if (data.containsKey('dv_main_theme')) {
+      context.handle(
+        _dvMainThemeMeta,
+        dvMainTheme.isAcceptableOrUnknown(
+          data['dv_main_theme']!,
+          _dvMainThemeMeta,
+        ),
+      );
+    }
+    if (data.containsKey('dv_subtopic')) {
+      context.handle(
+        _dvSubtopicMeta,
+        dvSubtopic.isAcceptableOrUnknown(data['dv_subtopic']!, _dvSubtopicMeta),
+      );
+    }
+    if (data.containsKey('dv_summary')) {
+      context.handle(
+        _dvSummaryMeta,
+        dvSummary.isAcceptableOrUnknown(data['dv_summary']!, _dvSummaryMeta),
+      );
+    }
+    if (data.containsKey('dv_similes')) {
+      context.handle(
+        _dvSimilesMeta,
+        dvSimiles.isAcceptableOrUnknown(data['dv_similes']!, _dvSimilesMeta),
+      );
+    }
+    if (data.containsKey('dv_key_excerpt1')) {
+      context.handle(
+        _dvKeyExcerpt1Meta,
+        dvKeyExcerpt1.isAcceptableOrUnknown(
+          data['dv_key_excerpt1']!,
+          _dvKeyExcerpt1Meta,
+        ),
+      );
+    }
+    if (data.containsKey('dv_key_excerpt2')) {
+      context.handle(
+        _dvKeyExcerpt2Meta,
+        dvKeyExcerpt2.isAcceptableOrUnknown(
+          data['dv_key_excerpt2']!,
+          _dvKeyExcerpt2Meta,
+        ),
+      );
+    }
+    if (data.containsKey('dv_stage')) {
+      context.handle(
+        _dvStageMeta,
+        dvStage.isAcceptableOrUnknown(data['dv_stage']!, _dvStageMeta),
+      );
+    }
+    if (data.containsKey('dv_training')) {
+      context.handle(
+        _dvTrainingMeta,
+        dvTraining.isAcceptableOrUnknown(data['dv_training']!, _dvTrainingMeta),
+      );
+    }
+    if (data.containsKey('dv_aspect')) {
+      context.handle(
+        _dvAspectMeta,
+        dvAspect.isAcceptableOrUnknown(data['dv_aspect']!, _dvAspectMeta),
+      );
+    }
+    if (data.containsKey('dv_teacher')) {
+      context.handle(
+        _dvTeacherMeta,
+        dvTeacher.isAcceptableOrUnknown(data['dv_teacher']!, _dvTeacherMeta),
+      );
+    }
+    if (data.containsKey('dv_audience')) {
+      context.handle(
+        _dvAudienceMeta,
+        dvAudience.isAcceptableOrUnknown(data['dv_audience']!, _dvAudienceMeta),
+      );
+    }
+    if (data.containsKey('dv_method')) {
+      context.handle(
+        _dvMethodMeta,
+        dvMethod.isAcceptableOrUnknown(data['dv_method']!, _dvMethodMeta),
+      );
+    }
+    if (data.containsKey('dv_length')) {
+      context.handle(
+        _dvLengthMeta,
+        dvLength.isAcceptableOrUnknown(data['dv_length']!, _dvLengthMeta),
+      );
+    }
+    if (data.containsKey('dv_prominence')) {
+      context.handle(
+        _dvProminenceMeta,
+        dvProminence.isAcceptableOrUnknown(
+          data['dv_prominence']!,
+          _dvProminenceMeta,
+        ),
+      );
+    }
+    if (data.containsKey('dv_nikayas_parallels')) {
+      context.handle(
+        _dvNikayasParallelsMeta,
+        dvNikayasParallels.isAcceptableOrUnknown(
+          data['dv_nikayas_parallels']!,
+          _dvNikayasParallelsMeta,
+        ),
+      );
+    }
+    if (data.containsKey('dv_āgamas_parallels')) {
+      context.handle(
+        _dvAgamasParallelsMeta,
+        dvAgamasParallels.isAcceptableOrUnknown(
+          data['dv_āgamas_parallels']!,
+          _dvAgamasParallelsMeta,
+        ),
+      );
+    }
+    if (data.containsKey('dv_taisho_parallels')) {
+      context.handle(
+        _dvTaishoParallelsMeta,
+        dvTaishoParallels.isAcceptableOrUnknown(
+          data['dv_taisho_parallels']!,
+          _dvTaishoParallelsMeta,
+        ),
+      );
+    }
+    if (data.containsKey('dv_sanskrit_parallels')) {
+      context.handle(
+        _dvSanskritParallelsMeta,
+        dvSanskritParallels.isAcceptableOrUnknown(
+          data['dv_sanskrit_parallels']!,
+          _dvSanskritParallelsMeta,
+        ),
+      );
+    }
+    if (data.containsKey('dv_vinaya_parallels')) {
+      context.handle(
+        _dvVinayaParallelsMeta,
+        dvVinayaParallels.isAcceptableOrUnknown(
+          data['dv_vinaya_parallels']!,
+          _dvVinayaParallelsMeta,
+        ),
+      );
+    }
+    if (data.containsKey('dv_others_parallels')) {
+      context.handle(
+        _dvOthersParallelsMeta,
+        dvOthersParallels.isAcceptableOrUnknown(
+          data['dv_others_parallels']!,
+          _dvOthersParallelsMeta,
+        ),
+      );
+    }
+    if (data.containsKey('dv_partial_parallels_nā')) {
+      context.handle(
+        _dvPartialParallelsNaMeta,
+        dvPartialParallelsNa.isAcceptableOrUnknown(
+          data['dv_partial_parallels_nā']!,
+          _dvPartialParallelsNaMeta,
+        ),
+      );
+    }
+    if (data.containsKey('dv_partial_parallels_all')) {
+      context.handle(
+        _dvPartialParallelsAllMeta,
+        dvPartialParallelsAll.isAcceptableOrUnknown(
+          data['dv_partial_parallels_all']!,
+          _dvPartialParallelsAllMeta,
+        ),
+      );
+    }
+    if (data.containsKey('dv_suggested_suttas')) {
+      context.handle(
+        _dvSuggestedSuttasMeta,
+        dvSuggestedSuttas.isAcceptableOrUnknown(
+          data['dv_suggested_suttas']!,
+          _dvSuggestedSuttasMeta,
+        ),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {dpdSutta};
+  @override
+  SuttaInfoData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return SuttaInfoData(
+      book: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}book'],
+      ),
+      bookCode: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}book_code'],
+      ),
+      dpdCode: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}dpd_code'],
+      ),
+      dpdSutta: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}dpd_sutta'],
+      )!,
+      dpdSuttaVar: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}dpd_sutta_var'],
+      ),
+      cstCode: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}cst_code'],
+      ),
+      cstNikaya: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}cst_nikaya'],
+      ),
+      cstBook: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}cst_book'],
+      ),
+      cstSection: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}cst_section'],
+      ),
+      cstVagga: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}cst_vagga'],
+      ),
+      cstSutta: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}cst_sutta'],
+      ),
+      cstParanum: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}cst_paranum'],
+      ),
+      cstMPage: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}cst_m_page'],
+      ),
+      cstVPage: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}cst_v_page'],
+      ),
+      cstPPage: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}cst_p_page'],
+      ),
+      cstTPage: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}cst_t_page'],
+      ),
+      cstFile: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}cst_file'],
+      ),
+      scCode: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}sc_code'],
+      ),
+      scBook: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}sc_book'],
+      ),
+      scVagga: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}sc_vagga'],
+      ),
+      scSutta: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}sc_sutta'],
+      ),
+      scEngSutta: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}sc_eng_sutta'],
+      ),
+      scBlurb: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}sc_blurb'],
+      ),
+      scFilePath: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}sc_file_path'],
+      ),
+      dprCode: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}dpr_code'],
+      ),
+      dprLink: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}dpr_link'],
+      ),
+      bjtSuttaCode: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}bjt_sutta_code'],
+      ),
+      bjtWebCode: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}bjt_web_code'],
+      ),
+      bjtFilename: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}bjt_filename'],
+      ),
+      bjtBookId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}bjt_book_id'],
+      ),
+      bjtPageNum: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}bjt_page_num'],
+      ),
+      bjtPageOffset: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}bjt_page_offset'],
+      ),
+      bjtPitaka: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}bjt_piṭaka'],
+      ),
+      bjtNikaya: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}bjt_nikāya'],
+      ),
+      bjtMajorSection: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}bjt_major_section'],
+      ),
+      bjtBook: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}bjt_book'],
+      ),
+      bjtMinorSection: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}bjt_minor_section'],
+      ),
+      bjtVagga: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}bjt_vagga'],
+      ),
+      bjtSutta: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}bjt_sutta'],
+      ),
+      dvPts: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}dv_pts'],
+      ),
+      dvMainTheme: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}dv_main_theme'],
+      ),
+      dvSubtopic: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}dv_subtopic'],
+      ),
+      dvSummary: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}dv_summary'],
+      ),
+      dvSimiles: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}dv_similes'],
+      ),
+      dvKeyExcerpt1: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}dv_key_excerpt1'],
+      ),
+      dvKeyExcerpt2: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}dv_key_excerpt2'],
+      ),
+      dvStage: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}dv_stage'],
+      ),
+      dvTraining: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}dv_training'],
+      ),
+      dvAspect: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}dv_aspect'],
+      ),
+      dvTeacher: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}dv_teacher'],
+      ),
+      dvAudience: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}dv_audience'],
+      ),
+      dvMethod: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}dv_method'],
+      ),
+      dvLength: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}dv_length'],
+      ),
+      dvProminence: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}dv_prominence'],
+      ),
+      dvNikayasParallels: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}dv_nikayas_parallels'],
+      ),
+      dvAgamasParallels: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}dv_āgamas_parallels'],
+      ),
+      dvTaishoParallels: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}dv_taisho_parallels'],
+      ),
+      dvSanskritParallels: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}dv_sanskrit_parallels'],
+      ),
+      dvVinayaParallels: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}dv_vinaya_parallels'],
+      ),
+      dvOthersParallels: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}dv_others_parallels'],
+      ),
+      dvPartialParallelsNa: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}dv_partial_parallels_nā'],
+      ),
+      dvPartialParallelsAll: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}dv_partial_parallels_all'],
+      ),
+      dvSuggestedSuttas: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}dv_suggested_suttas'],
+      ),
+    );
+  }
+
+  @override
+  $SuttaInfoTable createAlias(String alias) {
+    return $SuttaInfoTable(attachedDatabase, alias);
+  }
+}
+
+class SuttaInfoData extends DataClass implements Insertable<SuttaInfoData> {
+  final String? book;
+  final String? bookCode;
+  final String? dpdCode;
+  final String dpdSutta;
+  final String? dpdSuttaVar;
+  final String? cstCode;
+  final String? cstNikaya;
+  final String? cstBook;
+  final String? cstSection;
+  final String? cstVagga;
+  final String? cstSutta;
+  final String? cstParanum;
+  final String? cstMPage;
+  final String? cstVPage;
+  final String? cstPPage;
+  final String? cstTPage;
+  final String? cstFile;
+  final String? scCode;
+  final String? scBook;
+  final String? scVagga;
+  final String? scSutta;
+  final String? scEngSutta;
+  final String? scBlurb;
+  final String? scFilePath;
+  final String? dprCode;
+  final String? dprLink;
+  final String? bjtSuttaCode;
+  final String? bjtWebCode;
+  final String? bjtFilename;
+  final String? bjtBookId;
+  final String? bjtPageNum;
+  final String? bjtPageOffset;
+  final String? bjtPitaka;
+  final String? bjtNikaya;
+  final String? bjtMajorSection;
+  final String? bjtBook;
+  final String? bjtMinorSection;
+  final String? bjtVagga;
+  final String? bjtSutta;
+  final String? dvPts;
+  final String? dvMainTheme;
+  final String? dvSubtopic;
+  final String? dvSummary;
+  final String? dvSimiles;
+  final String? dvKeyExcerpt1;
+  final String? dvKeyExcerpt2;
+  final String? dvStage;
+  final String? dvTraining;
+  final String? dvAspect;
+  final String? dvTeacher;
+  final String? dvAudience;
+  final String? dvMethod;
+  final String? dvLength;
+  final String? dvProminence;
+  final String? dvNikayasParallels;
+  final String? dvAgamasParallels;
+  final String? dvTaishoParallels;
+  final String? dvSanskritParallels;
+  final String? dvVinayaParallels;
+  final String? dvOthersParallels;
+  final String? dvPartialParallelsNa;
+  final String? dvPartialParallelsAll;
+  final String? dvSuggestedSuttas;
+  const SuttaInfoData({
+    this.book,
+    this.bookCode,
+    this.dpdCode,
+    required this.dpdSutta,
+    this.dpdSuttaVar,
+    this.cstCode,
+    this.cstNikaya,
+    this.cstBook,
+    this.cstSection,
+    this.cstVagga,
+    this.cstSutta,
+    this.cstParanum,
+    this.cstMPage,
+    this.cstVPage,
+    this.cstPPage,
+    this.cstTPage,
+    this.cstFile,
+    this.scCode,
+    this.scBook,
+    this.scVagga,
+    this.scSutta,
+    this.scEngSutta,
+    this.scBlurb,
+    this.scFilePath,
+    this.dprCode,
+    this.dprLink,
+    this.bjtSuttaCode,
+    this.bjtWebCode,
+    this.bjtFilename,
+    this.bjtBookId,
+    this.bjtPageNum,
+    this.bjtPageOffset,
+    this.bjtPitaka,
+    this.bjtNikaya,
+    this.bjtMajorSection,
+    this.bjtBook,
+    this.bjtMinorSection,
+    this.bjtVagga,
+    this.bjtSutta,
+    this.dvPts,
+    this.dvMainTheme,
+    this.dvSubtopic,
+    this.dvSummary,
+    this.dvSimiles,
+    this.dvKeyExcerpt1,
+    this.dvKeyExcerpt2,
+    this.dvStage,
+    this.dvTraining,
+    this.dvAspect,
+    this.dvTeacher,
+    this.dvAudience,
+    this.dvMethod,
+    this.dvLength,
+    this.dvProminence,
+    this.dvNikayasParallels,
+    this.dvAgamasParallels,
+    this.dvTaishoParallels,
+    this.dvSanskritParallels,
+    this.dvVinayaParallels,
+    this.dvOthersParallels,
+    this.dvPartialParallelsNa,
+    this.dvPartialParallelsAll,
+    this.dvSuggestedSuttas,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (!nullToAbsent || book != null) {
+      map['book'] = Variable<String>(book);
+    }
+    if (!nullToAbsent || bookCode != null) {
+      map['book_code'] = Variable<String>(bookCode);
+    }
+    if (!nullToAbsent || dpdCode != null) {
+      map['dpd_code'] = Variable<String>(dpdCode);
+    }
+    map['dpd_sutta'] = Variable<String>(dpdSutta);
+    if (!nullToAbsent || dpdSuttaVar != null) {
+      map['dpd_sutta_var'] = Variable<String>(dpdSuttaVar);
+    }
+    if (!nullToAbsent || cstCode != null) {
+      map['cst_code'] = Variable<String>(cstCode);
+    }
+    if (!nullToAbsent || cstNikaya != null) {
+      map['cst_nikaya'] = Variable<String>(cstNikaya);
+    }
+    if (!nullToAbsent || cstBook != null) {
+      map['cst_book'] = Variable<String>(cstBook);
+    }
+    if (!nullToAbsent || cstSection != null) {
+      map['cst_section'] = Variable<String>(cstSection);
+    }
+    if (!nullToAbsent || cstVagga != null) {
+      map['cst_vagga'] = Variable<String>(cstVagga);
+    }
+    if (!nullToAbsent || cstSutta != null) {
+      map['cst_sutta'] = Variable<String>(cstSutta);
+    }
+    if (!nullToAbsent || cstParanum != null) {
+      map['cst_paranum'] = Variable<String>(cstParanum);
+    }
+    if (!nullToAbsent || cstMPage != null) {
+      map['cst_m_page'] = Variable<String>(cstMPage);
+    }
+    if (!nullToAbsent || cstVPage != null) {
+      map['cst_v_page'] = Variable<String>(cstVPage);
+    }
+    if (!nullToAbsent || cstPPage != null) {
+      map['cst_p_page'] = Variable<String>(cstPPage);
+    }
+    if (!nullToAbsent || cstTPage != null) {
+      map['cst_t_page'] = Variable<String>(cstTPage);
+    }
+    if (!nullToAbsent || cstFile != null) {
+      map['cst_file'] = Variable<String>(cstFile);
+    }
+    if (!nullToAbsent || scCode != null) {
+      map['sc_code'] = Variable<String>(scCode);
+    }
+    if (!nullToAbsent || scBook != null) {
+      map['sc_book'] = Variable<String>(scBook);
+    }
+    if (!nullToAbsent || scVagga != null) {
+      map['sc_vagga'] = Variable<String>(scVagga);
+    }
+    if (!nullToAbsent || scSutta != null) {
+      map['sc_sutta'] = Variable<String>(scSutta);
+    }
+    if (!nullToAbsent || scEngSutta != null) {
+      map['sc_eng_sutta'] = Variable<String>(scEngSutta);
+    }
+    if (!nullToAbsent || scBlurb != null) {
+      map['sc_blurb'] = Variable<String>(scBlurb);
+    }
+    if (!nullToAbsent || scFilePath != null) {
+      map['sc_file_path'] = Variable<String>(scFilePath);
+    }
+    if (!nullToAbsent || dprCode != null) {
+      map['dpr_code'] = Variable<String>(dprCode);
+    }
+    if (!nullToAbsent || dprLink != null) {
+      map['dpr_link'] = Variable<String>(dprLink);
+    }
+    if (!nullToAbsent || bjtSuttaCode != null) {
+      map['bjt_sutta_code'] = Variable<String>(bjtSuttaCode);
+    }
+    if (!nullToAbsent || bjtWebCode != null) {
+      map['bjt_web_code'] = Variable<String>(bjtWebCode);
+    }
+    if (!nullToAbsent || bjtFilename != null) {
+      map['bjt_filename'] = Variable<String>(bjtFilename);
+    }
+    if (!nullToAbsent || bjtBookId != null) {
+      map['bjt_book_id'] = Variable<String>(bjtBookId);
+    }
+    if (!nullToAbsent || bjtPageNum != null) {
+      map['bjt_page_num'] = Variable<String>(bjtPageNum);
+    }
+    if (!nullToAbsent || bjtPageOffset != null) {
+      map['bjt_page_offset'] = Variable<String>(bjtPageOffset);
+    }
+    if (!nullToAbsent || bjtPitaka != null) {
+      map['bjt_piṭaka'] = Variable<String>(bjtPitaka);
+    }
+    if (!nullToAbsent || bjtNikaya != null) {
+      map['bjt_nikāya'] = Variable<String>(bjtNikaya);
+    }
+    if (!nullToAbsent || bjtMajorSection != null) {
+      map['bjt_major_section'] = Variable<String>(bjtMajorSection);
+    }
+    if (!nullToAbsent || bjtBook != null) {
+      map['bjt_book'] = Variable<String>(bjtBook);
+    }
+    if (!nullToAbsent || bjtMinorSection != null) {
+      map['bjt_minor_section'] = Variable<String>(bjtMinorSection);
+    }
+    if (!nullToAbsent || bjtVagga != null) {
+      map['bjt_vagga'] = Variable<String>(bjtVagga);
+    }
+    if (!nullToAbsent || bjtSutta != null) {
+      map['bjt_sutta'] = Variable<String>(bjtSutta);
+    }
+    if (!nullToAbsent || dvPts != null) {
+      map['dv_pts'] = Variable<String>(dvPts);
+    }
+    if (!nullToAbsent || dvMainTheme != null) {
+      map['dv_main_theme'] = Variable<String>(dvMainTheme);
+    }
+    if (!nullToAbsent || dvSubtopic != null) {
+      map['dv_subtopic'] = Variable<String>(dvSubtopic);
+    }
+    if (!nullToAbsent || dvSummary != null) {
+      map['dv_summary'] = Variable<String>(dvSummary);
+    }
+    if (!nullToAbsent || dvSimiles != null) {
+      map['dv_similes'] = Variable<String>(dvSimiles);
+    }
+    if (!nullToAbsent || dvKeyExcerpt1 != null) {
+      map['dv_key_excerpt1'] = Variable<String>(dvKeyExcerpt1);
+    }
+    if (!nullToAbsent || dvKeyExcerpt2 != null) {
+      map['dv_key_excerpt2'] = Variable<String>(dvKeyExcerpt2);
+    }
+    if (!nullToAbsent || dvStage != null) {
+      map['dv_stage'] = Variable<String>(dvStage);
+    }
+    if (!nullToAbsent || dvTraining != null) {
+      map['dv_training'] = Variable<String>(dvTraining);
+    }
+    if (!nullToAbsent || dvAspect != null) {
+      map['dv_aspect'] = Variable<String>(dvAspect);
+    }
+    if (!nullToAbsent || dvTeacher != null) {
+      map['dv_teacher'] = Variable<String>(dvTeacher);
+    }
+    if (!nullToAbsent || dvAudience != null) {
+      map['dv_audience'] = Variable<String>(dvAudience);
+    }
+    if (!nullToAbsent || dvMethod != null) {
+      map['dv_method'] = Variable<String>(dvMethod);
+    }
+    if (!nullToAbsent || dvLength != null) {
+      map['dv_length'] = Variable<String>(dvLength);
+    }
+    if (!nullToAbsent || dvProminence != null) {
+      map['dv_prominence'] = Variable<String>(dvProminence);
+    }
+    if (!nullToAbsent || dvNikayasParallels != null) {
+      map['dv_nikayas_parallels'] = Variable<String>(dvNikayasParallels);
+    }
+    if (!nullToAbsent || dvAgamasParallels != null) {
+      map['dv_āgamas_parallels'] = Variable<String>(dvAgamasParallels);
+    }
+    if (!nullToAbsent || dvTaishoParallels != null) {
+      map['dv_taisho_parallels'] = Variable<String>(dvTaishoParallels);
+    }
+    if (!nullToAbsent || dvSanskritParallels != null) {
+      map['dv_sanskrit_parallels'] = Variable<String>(dvSanskritParallels);
+    }
+    if (!nullToAbsent || dvVinayaParallels != null) {
+      map['dv_vinaya_parallels'] = Variable<String>(dvVinayaParallels);
+    }
+    if (!nullToAbsent || dvOthersParallels != null) {
+      map['dv_others_parallels'] = Variable<String>(dvOthersParallels);
+    }
+    if (!nullToAbsent || dvPartialParallelsNa != null) {
+      map['dv_partial_parallels_nā'] = Variable<String>(dvPartialParallelsNa);
+    }
+    if (!nullToAbsent || dvPartialParallelsAll != null) {
+      map['dv_partial_parallels_all'] = Variable<String>(dvPartialParallelsAll);
+    }
+    if (!nullToAbsent || dvSuggestedSuttas != null) {
+      map['dv_suggested_suttas'] = Variable<String>(dvSuggestedSuttas);
+    }
+    return map;
+  }
+
+  SuttaInfoCompanion toCompanion(bool nullToAbsent) {
+    return SuttaInfoCompanion(
+      book: book == null && nullToAbsent ? const Value.absent() : Value(book),
+      bookCode: bookCode == null && nullToAbsent
+          ? const Value.absent()
+          : Value(bookCode),
+      dpdCode: dpdCode == null && nullToAbsent
+          ? const Value.absent()
+          : Value(dpdCode),
+      dpdSutta: Value(dpdSutta),
+      dpdSuttaVar: dpdSuttaVar == null && nullToAbsent
+          ? const Value.absent()
+          : Value(dpdSuttaVar),
+      cstCode: cstCode == null && nullToAbsent
+          ? const Value.absent()
+          : Value(cstCode),
+      cstNikaya: cstNikaya == null && nullToAbsent
+          ? const Value.absent()
+          : Value(cstNikaya),
+      cstBook: cstBook == null && nullToAbsent
+          ? const Value.absent()
+          : Value(cstBook),
+      cstSection: cstSection == null && nullToAbsent
+          ? const Value.absent()
+          : Value(cstSection),
+      cstVagga: cstVagga == null && nullToAbsent
+          ? const Value.absent()
+          : Value(cstVagga),
+      cstSutta: cstSutta == null && nullToAbsent
+          ? const Value.absent()
+          : Value(cstSutta),
+      cstParanum: cstParanum == null && nullToAbsent
+          ? const Value.absent()
+          : Value(cstParanum),
+      cstMPage: cstMPage == null && nullToAbsent
+          ? const Value.absent()
+          : Value(cstMPage),
+      cstVPage: cstVPage == null && nullToAbsent
+          ? const Value.absent()
+          : Value(cstVPage),
+      cstPPage: cstPPage == null && nullToAbsent
+          ? const Value.absent()
+          : Value(cstPPage),
+      cstTPage: cstTPage == null && nullToAbsent
+          ? const Value.absent()
+          : Value(cstTPage),
+      cstFile: cstFile == null && nullToAbsent
+          ? const Value.absent()
+          : Value(cstFile),
+      scCode: scCode == null && nullToAbsent
+          ? const Value.absent()
+          : Value(scCode),
+      scBook: scBook == null && nullToAbsent
+          ? const Value.absent()
+          : Value(scBook),
+      scVagga: scVagga == null && nullToAbsent
+          ? const Value.absent()
+          : Value(scVagga),
+      scSutta: scSutta == null && nullToAbsent
+          ? const Value.absent()
+          : Value(scSutta),
+      scEngSutta: scEngSutta == null && nullToAbsent
+          ? const Value.absent()
+          : Value(scEngSutta),
+      scBlurb: scBlurb == null && nullToAbsent
+          ? const Value.absent()
+          : Value(scBlurb),
+      scFilePath: scFilePath == null && nullToAbsent
+          ? const Value.absent()
+          : Value(scFilePath),
+      dprCode: dprCode == null && nullToAbsent
+          ? const Value.absent()
+          : Value(dprCode),
+      dprLink: dprLink == null && nullToAbsent
+          ? const Value.absent()
+          : Value(dprLink),
+      bjtSuttaCode: bjtSuttaCode == null && nullToAbsent
+          ? const Value.absent()
+          : Value(bjtSuttaCode),
+      bjtWebCode: bjtWebCode == null && nullToAbsent
+          ? const Value.absent()
+          : Value(bjtWebCode),
+      bjtFilename: bjtFilename == null && nullToAbsent
+          ? const Value.absent()
+          : Value(bjtFilename),
+      bjtBookId: bjtBookId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(bjtBookId),
+      bjtPageNum: bjtPageNum == null && nullToAbsent
+          ? const Value.absent()
+          : Value(bjtPageNum),
+      bjtPageOffset: bjtPageOffset == null && nullToAbsent
+          ? const Value.absent()
+          : Value(bjtPageOffset),
+      bjtPitaka: bjtPitaka == null && nullToAbsent
+          ? const Value.absent()
+          : Value(bjtPitaka),
+      bjtNikaya: bjtNikaya == null && nullToAbsent
+          ? const Value.absent()
+          : Value(bjtNikaya),
+      bjtMajorSection: bjtMajorSection == null && nullToAbsent
+          ? const Value.absent()
+          : Value(bjtMajorSection),
+      bjtBook: bjtBook == null && nullToAbsent
+          ? const Value.absent()
+          : Value(bjtBook),
+      bjtMinorSection: bjtMinorSection == null && nullToAbsent
+          ? const Value.absent()
+          : Value(bjtMinorSection),
+      bjtVagga: bjtVagga == null && nullToAbsent
+          ? const Value.absent()
+          : Value(bjtVagga),
+      bjtSutta: bjtSutta == null && nullToAbsent
+          ? const Value.absent()
+          : Value(bjtSutta),
+      dvPts: dvPts == null && nullToAbsent
+          ? const Value.absent()
+          : Value(dvPts),
+      dvMainTheme: dvMainTheme == null && nullToAbsent
+          ? const Value.absent()
+          : Value(dvMainTheme),
+      dvSubtopic: dvSubtopic == null && nullToAbsent
+          ? const Value.absent()
+          : Value(dvSubtopic),
+      dvSummary: dvSummary == null && nullToAbsent
+          ? const Value.absent()
+          : Value(dvSummary),
+      dvSimiles: dvSimiles == null && nullToAbsent
+          ? const Value.absent()
+          : Value(dvSimiles),
+      dvKeyExcerpt1: dvKeyExcerpt1 == null && nullToAbsent
+          ? const Value.absent()
+          : Value(dvKeyExcerpt1),
+      dvKeyExcerpt2: dvKeyExcerpt2 == null && nullToAbsent
+          ? const Value.absent()
+          : Value(dvKeyExcerpt2),
+      dvStage: dvStage == null && nullToAbsent
+          ? const Value.absent()
+          : Value(dvStage),
+      dvTraining: dvTraining == null && nullToAbsent
+          ? const Value.absent()
+          : Value(dvTraining),
+      dvAspect: dvAspect == null && nullToAbsent
+          ? const Value.absent()
+          : Value(dvAspect),
+      dvTeacher: dvTeacher == null && nullToAbsent
+          ? const Value.absent()
+          : Value(dvTeacher),
+      dvAudience: dvAudience == null && nullToAbsent
+          ? const Value.absent()
+          : Value(dvAudience),
+      dvMethod: dvMethod == null && nullToAbsent
+          ? const Value.absent()
+          : Value(dvMethod),
+      dvLength: dvLength == null && nullToAbsent
+          ? const Value.absent()
+          : Value(dvLength),
+      dvProminence: dvProminence == null && nullToAbsent
+          ? const Value.absent()
+          : Value(dvProminence),
+      dvNikayasParallels: dvNikayasParallels == null && nullToAbsent
+          ? const Value.absent()
+          : Value(dvNikayasParallels),
+      dvAgamasParallels: dvAgamasParallels == null && nullToAbsent
+          ? const Value.absent()
+          : Value(dvAgamasParallels),
+      dvTaishoParallels: dvTaishoParallels == null && nullToAbsent
+          ? const Value.absent()
+          : Value(dvTaishoParallels),
+      dvSanskritParallels: dvSanskritParallels == null && nullToAbsent
+          ? const Value.absent()
+          : Value(dvSanskritParallels),
+      dvVinayaParallels: dvVinayaParallels == null && nullToAbsent
+          ? const Value.absent()
+          : Value(dvVinayaParallels),
+      dvOthersParallels: dvOthersParallels == null && nullToAbsent
+          ? const Value.absent()
+          : Value(dvOthersParallels),
+      dvPartialParallelsNa: dvPartialParallelsNa == null && nullToAbsent
+          ? const Value.absent()
+          : Value(dvPartialParallelsNa),
+      dvPartialParallelsAll: dvPartialParallelsAll == null && nullToAbsent
+          ? const Value.absent()
+          : Value(dvPartialParallelsAll),
+      dvSuggestedSuttas: dvSuggestedSuttas == null && nullToAbsent
+          ? const Value.absent()
+          : Value(dvSuggestedSuttas),
+    );
+  }
+
+  factory SuttaInfoData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return SuttaInfoData(
+      book: serializer.fromJson<String?>(json['book']),
+      bookCode: serializer.fromJson<String?>(json['bookCode']),
+      dpdCode: serializer.fromJson<String?>(json['dpdCode']),
+      dpdSutta: serializer.fromJson<String>(json['dpdSutta']),
+      dpdSuttaVar: serializer.fromJson<String?>(json['dpdSuttaVar']),
+      cstCode: serializer.fromJson<String?>(json['cstCode']),
+      cstNikaya: serializer.fromJson<String?>(json['cstNikaya']),
+      cstBook: serializer.fromJson<String?>(json['cstBook']),
+      cstSection: serializer.fromJson<String?>(json['cstSection']),
+      cstVagga: serializer.fromJson<String?>(json['cstVagga']),
+      cstSutta: serializer.fromJson<String?>(json['cstSutta']),
+      cstParanum: serializer.fromJson<String?>(json['cstParanum']),
+      cstMPage: serializer.fromJson<String?>(json['cstMPage']),
+      cstVPage: serializer.fromJson<String?>(json['cstVPage']),
+      cstPPage: serializer.fromJson<String?>(json['cstPPage']),
+      cstTPage: serializer.fromJson<String?>(json['cstTPage']),
+      cstFile: serializer.fromJson<String?>(json['cstFile']),
+      scCode: serializer.fromJson<String?>(json['scCode']),
+      scBook: serializer.fromJson<String?>(json['scBook']),
+      scVagga: serializer.fromJson<String?>(json['scVagga']),
+      scSutta: serializer.fromJson<String?>(json['scSutta']),
+      scEngSutta: serializer.fromJson<String?>(json['scEngSutta']),
+      scBlurb: serializer.fromJson<String?>(json['scBlurb']),
+      scFilePath: serializer.fromJson<String?>(json['scFilePath']),
+      dprCode: serializer.fromJson<String?>(json['dprCode']),
+      dprLink: serializer.fromJson<String?>(json['dprLink']),
+      bjtSuttaCode: serializer.fromJson<String?>(json['bjtSuttaCode']),
+      bjtWebCode: serializer.fromJson<String?>(json['bjtWebCode']),
+      bjtFilename: serializer.fromJson<String?>(json['bjtFilename']),
+      bjtBookId: serializer.fromJson<String?>(json['bjtBookId']),
+      bjtPageNum: serializer.fromJson<String?>(json['bjtPageNum']),
+      bjtPageOffset: serializer.fromJson<String?>(json['bjtPageOffset']),
+      bjtPitaka: serializer.fromJson<String?>(json['bjtPitaka']),
+      bjtNikaya: serializer.fromJson<String?>(json['bjtNikaya']),
+      bjtMajorSection: serializer.fromJson<String?>(json['bjtMajorSection']),
+      bjtBook: serializer.fromJson<String?>(json['bjtBook']),
+      bjtMinorSection: serializer.fromJson<String?>(json['bjtMinorSection']),
+      bjtVagga: serializer.fromJson<String?>(json['bjtVagga']),
+      bjtSutta: serializer.fromJson<String?>(json['bjtSutta']),
+      dvPts: serializer.fromJson<String?>(json['dvPts']),
+      dvMainTheme: serializer.fromJson<String?>(json['dvMainTheme']),
+      dvSubtopic: serializer.fromJson<String?>(json['dvSubtopic']),
+      dvSummary: serializer.fromJson<String?>(json['dvSummary']),
+      dvSimiles: serializer.fromJson<String?>(json['dvSimiles']),
+      dvKeyExcerpt1: serializer.fromJson<String?>(json['dvKeyExcerpt1']),
+      dvKeyExcerpt2: serializer.fromJson<String?>(json['dvKeyExcerpt2']),
+      dvStage: serializer.fromJson<String?>(json['dvStage']),
+      dvTraining: serializer.fromJson<String?>(json['dvTraining']),
+      dvAspect: serializer.fromJson<String?>(json['dvAspect']),
+      dvTeacher: serializer.fromJson<String?>(json['dvTeacher']),
+      dvAudience: serializer.fromJson<String?>(json['dvAudience']),
+      dvMethod: serializer.fromJson<String?>(json['dvMethod']),
+      dvLength: serializer.fromJson<String?>(json['dvLength']),
+      dvProminence: serializer.fromJson<String?>(json['dvProminence']),
+      dvNikayasParallels: serializer.fromJson<String?>(
+        json['dvNikayasParallels'],
+      ),
+      dvAgamasParallels: serializer.fromJson<String?>(
+        json['dvAgamasParallels'],
+      ),
+      dvTaishoParallels: serializer.fromJson<String?>(
+        json['dvTaishoParallels'],
+      ),
+      dvSanskritParallels: serializer.fromJson<String?>(
+        json['dvSanskritParallels'],
+      ),
+      dvVinayaParallels: serializer.fromJson<String?>(
+        json['dvVinayaParallels'],
+      ),
+      dvOthersParallels: serializer.fromJson<String?>(
+        json['dvOthersParallels'],
+      ),
+      dvPartialParallelsNa: serializer.fromJson<String?>(
+        json['dvPartialParallelsNa'],
+      ),
+      dvPartialParallelsAll: serializer.fromJson<String?>(
+        json['dvPartialParallelsAll'],
+      ),
+      dvSuggestedSuttas: serializer.fromJson<String?>(
+        json['dvSuggestedSuttas'],
+      ),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'book': serializer.toJson<String?>(book),
+      'bookCode': serializer.toJson<String?>(bookCode),
+      'dpdCode': serializer.toJson<String?>(dpdCode),
+      'dpdSutta': serializer.toJson<String>(dpdSutta),
+      'dpdSuttaVar': serializer.toJson<String?>(dpdSuttaVar),
+      'cstCode': serializer.toJson<String?>(cstCode),
+      'cstNikaya': serializer.toJson<String?>(cstNikaya),
+      'cstBook': serializer.toJson<String?>(cstBook),
+      'cstSection': serializer.toJson<String?>(cstSection),
+      'cstVagga': serializer.toJson<String?>(cstVagga),
+      'cstSutta': serializer.toJson<String?>(cstSutta),
+      'cstParanum': serializer.toJson<String?>(cstParanum),
+      'cstMPage': serializer.toJson<String?>(cstMPage),
+      'cstVPage': serializer.toJson<String?>(cstVPage),
+      'cstPPage': serializer.toJson<String?>(cstPPage),
+      'cstTPage': serializer.toJson<String?>(cstTPage),
+      'cstFile': serializer.toJson<String?>(cstFile),
+      'scCode': serializer.toJson<String?>(scCode),
+      'scBook': serializer.toJson<String?>(scBook),
+      'scVagga': serializer.toJson<String?>(scVagga),
+      'scSutta': serializer.toJson<String?>(scSutta),
+      'scEngSutta': serializer.toJson<String?>(scEngSutta),
+      'scBlurb': serializer.toJson<String?>(scBlurb),
+      'scFilePath': serializer.toJson<String?>(scFilePath),
+      'dprCode': serializer.toJson<String?>(dprCode),
+      'dprLink': serializer.toJson<String?>(dprLink),
+      'bjtSuttaCode': serializer.toJson<String?>(bjtSuttaCode),
+      'bjtWebCode': serializer.toJson<String?>(bjtWebCode),
+      'bjtFilename': serializer.toJson<String?>(bjtFilename),
+      'bjtBookId': serializer.toJson<String?>(bjtBookId),
+      'bjtPageNum': serializer.toJson<String?>(bjtPageNum),
+      'bjtPageOffset': serializer.toJson<String?>(bjtPageOffset),
+      'bjtPitaka': serializer.toJson<String?>(bjtPitaka),
+      'bjtNikaya': serializer.toJson<String?>(bjtNikaya),
+      'bjtMajorSection': serializer.toJson<String?>(bjtMajorSection),
+      'bjtBook': serializer.toJson<String?>(bjtBook),
+      'bjtMinorSection': serializer.toJson<String?>(bjtMinorSection),
+      'bjtVagga': serializer.toJson<String?>(bjtVagga),
+      'bjtSutta': serializer.toJson<String?>(bjtSutta),
+      'dvPts': serializer.toJson<String?>(dvPts),
+      'dvMainTheme': serializer.toJson<String?>(dvMainTheme),
+      'dvSubtopic': serializer.toJson<String?>(dvSubtopic),
+      'dvSummary': serializer.toJson<String?>(dvSummary),
+      'dvSimiles': serializer.toJson<String?>(dvSimiles),
+      'dvKeyExcerpt1': serializer.toJson<String?>(dvKeyExcerpt1),
+      'dvKeyExcerpt2': serializer.toJson<String?>(dvKeyExcerpt2),
+      'dvStage': serializer.toJson<String?>(dvStage),
+      'dvTraining': serializer.toJson<String?>(dvTraining),
+      'dvAspect': serializer.toJson<String?>(dvAspect),
+      'dvTeacher': serializer.toJson<String?>(dvTeacher),
+      'dvAudience': serializer.toJson<String?>(dvAudience),
+      'dvMethod': serializer.toJson<String?>(dvMethod),
+      'dvLength': serializer.toJson<String?>(dvLength),
+      'dvProminence': serializer.toJson<String?>(dvProminence),
+      'dvNikayasParallels': serializer.toJson<String?>(dvNikayasParallels),
+      'dvAgamasParallels': serializer.toJson<String?>(dvAgamasParallels),
+      'dvTaishoParallels': serializer.toJson<String?>(dvTaishoParallels),
+      'dvSanskritParallels': serializer.toJson<String?>(dvSanskritParallels),
+      'dvVinayaParallels': serializer.toJson<String?>(dvVinayaParallels),
+      'dvOthersParallels': serializer.toJson<String?>(dvOthersParallels),
+      'dvPartialParallelsNa': serializer.toJson<String?>(dvPartialParallelsNa),
+      'dvPartialParallelsAll': serializer.toJson<String?>(
+        dvPartialParallelsAll,
+      ),
+      'dvSuggestedSuttas': serializer.toJson<String?>(dvSuggestedSuttas),
+    };
+  }
+
+  SuttaInfoData copyWith({
+    Value<String?> book = const Value.absent(),
+    Value<String?> bookCode = const Value.absent(),
+    Value<String?> dpdCode = const Value.absent(),
+    String? dpdSutta,
+    Value<String?> dpdSuttaVar = const Value.absent(),
+    Value<String?> cstCode = const Value.absent(),
+    Value<String?> cstNikaya = const Value.absent(),
+    Value<String?> cstBook = const Value.absent(),
+    Value<String?> cstSection = const Value.absent(),
+    Value<String?> cstVagga = const Value.absent(),
+    Value<String?> cstSutta = const Value.absent(),
+    Value<String?> cstParanum = const Value.absent(),
+    Value<String?> cstMPage = const Value.absent(),
+    Value<String?> cstVPage = const Value.absent(),
+    Value<String?> cstPPage = const Value.absent(),
+    Value<String?> cstTPage = const Value.absent(),
+    Value<String?> cstFile = const Value.absent(),
+    Value<String?> scCode = const Value.absent(),
+    Value<String?> scBook = const Value.absent(),
+    Value<String?> scVagga = const Value.absent(),
+    Value<String?> scSutta = const Value.absent(),
+    Value<String?> scEngSutta = const Value.absent(),
+    Value<String?> scBlurb = const Value.absent(),
+    Value<String?> scFilePath = const Value.absent(),
+    Value<String?> dprCode = const Value.absent(),
+    Value<String?> dprLink = const Value.absent(),
+    Value<String?> bjtSuttaCode = const Value.absent(),
+    Value<String?> bjtWebCode = const Value.absent(),
+    Value<String?> bjtFilename = const Value.absent(),
+    Value<String?> bjtBookId = const Value.absent(),
+    Value<String?> bjtPageNum = const Value.absent(),
+    Value<String?> bjtPageOffset = const Value.absent(),
+    Value<String?> bjtPitaka = const Value.absent(),
+    Value<String?> bjtNikaya = const Value.absent(),
+    Value<String?> bjtMajorSection = const Value.absent(),
+    Value<String?> bjtBook = const Value.absent(),
+    Value<String?> bjtMinorSection = const Value.absent(),
+    Value<String?> bjtVagga = const Value.absent(),
+    Value<String?> bjtSutta = const Value.absent(),
+    Value<String?> dvPts = const Value.absent(),
+    Value<String?> dvMainTheme = const Value.absent(),
+    Value<String?> dvSubtopic = const Value.absent(),
+    Value<String?> dvSummary = const Value.absent(),
+    Value<String?> dvSimiles = const Value.absent(),
+    Value<String?> dvKeyExcerpt1 = const Value.absent(),
+    Value<String?> dvKeyExcerpt2 = const Value.absent(),
+    Value<String?> dvStage = const Value.absent(),
+    Value<String?> dvTraining = const Value.absent(),
+    Value<String?> dvAspect = const Value.absent(),
+    Value<String?> dvTeacher = const Value.absent(),
+    Value<String?> dvAudience = const Value.absent(),
+    Value<String?> dvMethod = const Value.absent(),
+    Value<String?> dvLength = const Value.absent(),
+    Value<String?> dvProminence = const Value.absent(),
+    Value<String?> dvNikayasParallels = const Value.absent(),
+    Value<String?> dvAgamasParallels = const Value.absent(),
+    Value<String?> dvTaishoParallels = const Value.absent(),
+    Value<String?> dvSanskritParallels = const Value.absent(),
+    Value<String?> dvVinayaParallels = const Value.absent(),
+    Value<String?> dvOthersParallels = const Value.absent(),
+    Value<String?> dvPartialParallelsNa = const Value.absent(),
+    Value<String?> dvPartialParallelsAll = const Value.absent(),
+    Value<String?> dvSuggestedSuttas = const Value.absent(),
+  }) => SuttaInfoData(
+    book: book.present ? book.value : this.book,
+    bookCode: bookCode.present ? bookCode.value : this.bookCode,
+    dpdCode: dpdCode.present ? dpdCode.value : this.dpdCode,
+    dpdSutta: dpdSutta ?? this.dpdSutta,
+    dpdSuttaVar: dpdSuttaVar.present ? dpdSuttaVar.value : this.dpdSuttaVar,
+    cstCode: cstCode.present ? cstCode.value : this.cstCode,
+    cstNikaya: cstNikaya.present ? cstNikaya.value : this.cstNikaya,
+    cstBook: cstBook.present ? cstBook.value : this.cstBook,
+    cstSection: cstSection.present ? cstSection.value : this.cstSection,
+    cstVagga: cstVagga.present ? cstVagga.value : this.cstVagga,
+    cstSutta: cstSutta.present ? cstSutta.value : this.cstSutta,
+    cstParanum: cstParanum.present ? cstParanum.value : this.cstParanum,
+    cstMPage: cstMPage.present ? cstMPage.value : this.cstMPage,
+    cstVPage: cstVPage.present ? cstVPage.value : this.cstVPage,
+    cstPPage: cstPPage.present ? cstPPage.value : this.cstPPage,
+    cstTPage: cstTPage.present ? cstTPage.value : this.cstTPage,
+    cstFile: cstFile.present ? cstFile.value : this.cstFile,
+    scCode: scCode.present ? scCode.value : this.scCode,
+    scBook: scBook.present ? scBook.value : this.scBook,
+    scVagga: scVagga.present ? scVagga.value : this.scVagga,
+    scSutta: scSutta.present ? scSutta.value : this.scSutta,
+    scEngSutta: scEngSutta.present ? scEngSutta.value : this.scEngSutta,
+    scBlurb: scBlurb.present ? scBlurb.value : this.scBlurb,
+    scFilePath: scFilePath.present ? scFilePath.value : this.scFilePath,
+    dprCode: dprCode.present ? dprCode.value : this.dprCode,
+    dprLink: dprLink.present ? dprLink.value : this.dprLink,
+    bjtSuttaCode: bjtSuttaCode.present ? bjtSuttaCode.value : this.bjtSuttaCode,
+    bjtWebCode: bjtWebCode.present ? bjtWebCode.value : this.bjtWebCode,
+    bjtFilename: bjtFilename.present ? bjtFilename.value : this.bjtFilename,
+    bjtBookId: bjtBookId.present ? bjtBookId.value : this.bjtBookId,
+    bjtPageNum: bjtPageNum.present ? bjtPageNum.value : this.bjtPageNum,
+    bjtPageOffset: bjtPageOffset.present
+        ? bjtPageOffset.value
+        : this.bjtPageOffset,
+    bjtPitaka: bjtPitaka.present ? bjtPitaka.value : this.bjtPitaka,
+    bjtNikaya: bjtNikaya.present ? bjtNikaya.value : this.bjtNikaya,
+    bjtMajorSection: bjtMajorSection.present
+        ? bjtMajorSection.value
+        : this.bjtMajorSection,
+    bjtBook: bjtBook.present ? bjtBook.value : this.bjtBook,
+    bjtMinorSection: bjtMinorSection.present
+        ? bjtMinorSection.value
+        : this.bjtMinorSection,
+    bjtVagga: bjtVagga.present ? bjtVagga.value : this.bjtVagga,
+    bjtSutta: bjtSutta.present ? bjtSutta.value : this.bjtSutta,
+    dvPts: dvPts.present ? dvPts.value : this.dvPts,
+    dvMainTheme: dvMainTheme.present ? dvMainTheme.value : this.dvMainTheme,
+    dvSubtopic: dvSubtopic.present ? dvSubtopic.value : this.dvSubtopic,
+    dvSummary: dvSummary.present ? dvSummary.value : this.dvSummary,
+    dvSimiles: dvSimiles.present ? dvSimiles.value : this.dvSimiles,
+    dvKeyExcerpt1: dvKeyExcerpt1.present
+        ? dvKeyExcerpt1.value
+        : this.dvKeyExcerpt1,
+    dvKeyExcerpt2: dvKeyExcerpt2.present
+        ? dvKeyExcerpt2.value
+        : this.dvKeyExcerpt2,
+    dvStage: dvStage.present ? dvStage.value : this.dvStage,
+    dvTraining: dvTraining.present ? dvTraining.value : this.dvTraining,
+    dvAspect: dvAspect.present ? dvAspect.value : this.dvAspect,
+    dvTeacher: dvTeacher.present ? dvTeacher.value : this.dvTeacher,
+    dvAudience: dvAudience.present ? dvAudience.value : this.dvAudience,
+    dvMethod: dvMethod.present ? dvMethod.value : this.dvMethod,
+    dvLength: dvLength.present ? dvLength.value : this.dvLength,
+    dvProminence: dvProminence.present ? dvProminence.value : this.dvProminence,
+    dvNikayasParallels: dvNikayasParallels.present
+        ? dvNikayasParallels.value
+        : this.dvNikayasParallels,
+    dvAgamasParallels: dvAgamasParallels.present
+        ? dvAgamasParallels.value
+        : this.dvAgamasParallels,
+    dvTaishoParallels: dvTaishoParallels.present
+        ? dvTaishoParallels.value
+        : this.dvTaishoParallels,
+    dvSanskritParallels: dvSanskritParallels.present
+        ? dvSanskritParallels.value
+        : this.dvSanskritParallels,
+    dvVinayaParallels: dvVinayaParallels.present
+        ? dvVinayaParallels.value
+        : this.dvVinayaParallels,
+    dvOthersParallels: dvOthersParallels.present
+        ? dvOthersParallels.value
+        : this.dvOthersParallels,
+    dvPartialParallelsNa: dvPartialParallelsNa.present
+        ? dvPartialParallelsNa.value
+        : this.dvPartialParallelsNa,
+    dvPartialParallelsAll: dvPartialParallelsAll.present
+        ? dvPartialParallelsAll.value
+        : this.dvPartialParallelsAll,
+    dvSuggestedSuttas: dvSuggestedSuttas.present
+        ? dvSuggestedSuttas.value
+        : this.dvSuggestedSuttas,
+  );
+  SuttaInfoData copyWithCompanion(SuttaInfoCompanion data) {
+    return SuttaInfoData(
+      book: data.book.present ? data.book.value : this.book,
+      bookCode: data.bookCode.present ? data.bookCode.value : this.bookCode,
+      dpdCode: data.dpdCode.present ? data.dpdCode.value : this.dpdCode,
+      dpdSutta: data.dpdSutta.present ? data.dpdSutta.value : this.dpdSutta,
+      dpdSuttaVar: data.dpdSuttaVar.present
+          ? data.dpdSuttaVar.value
+          : this.dpdSuttaVar,
+      cstCode: data.cstCode.present ? data.cstCode.value : this.cstCode,
+      cstNikaya: data.cstNikaya.present ? data.cstNikaya.value : this.cstNikaya,
+      cstBook: data.cstBook.present ? data.cstBook.value : this.cstBook,
+      cstSection: data.cstSection.present
+          ? data.cstSection.value
+          : this.cstSection,
+      cstVagga: data.cstVagga.present ? data.cstVagga.value : this.cstVagga,
+      cstSutta: data.cstSutta.present ? data.cstSutta.value : this.cstSutta,
+      cstParanum: data.cstParanum.present
+          ? data.cstParanum.value
+          : this.cstParanum,
+      cstMPage: data.cstMPage.present ? data.cstMPage.value : this.cstMPage,
+      cstVPage: data.cstVPage.present ? data.cstVPage.value : this.cstVPage,
+      cstPPage: data.cstPPage.present ? data.cstPPage.value : this.cstPPage,
+      cstTPage: data.cstTPage.present ? data.cstTPage.value : this.cstTPage,
+      cstFile: data.cstFile.present ? data.cstFile.value : this.cstFile,
+      scCode: data.scCode.present ? data.scCode.value : this.scCode,
+      scBook: data.scBook.present ? data.scBook.value : this.scBook,
+      scVagga: data.scVagga.present ? data.scVagga.value : this.scVagga,
+      scSutta: data.scSutta.present ? data.scSutta.value : this.scSutta,
+      scEngSutta: data.scEngSutta.present
+          ? data.scEngSutta.value
+          : this.scEngSutta,
+      scBlurb: data.scBlurb.present ? data.scBlurb.value : this.scBlurb,
+      scFilePath: data.scFilePath.present
+          ? data.scFilePath.value
+          : this.scFilePath,
+      dprCode: data.dprCode.present ? data.dprCode.value : this.dprCode,
+      dprLink: data.dprLink.present ? data.dprLink.value : this.dprLink,
+      bjtSuttaCode: data.bjtSuttaCode.present
+          ? data.bjtSuttaCode.value
+          : this.bjtSuttaCode,
+      bjtWebCode: data.bjtWebCode.present
+          ? data.bjtWebCode.value
+          : this.bjtWebCode,
+      bjtFilename: data.bjtFilename.present
+          ? data.bjtFilename.value
+          : this.bjtFilename,
+      bjtBookId: data.bjtBookId.present ? data.bjtBookId.value : this.bjtBookId,
+      bjtPageNum: data.bjtPageNum.present
+          ? data.bjtPageNum.value
+          : this.bjtPageNum,
+      bjtPageOffset: data.bjtPageOffset.present
+          ? data.bjtPageOffset.value
+          : this.bjtPageOffset,
+      bjtPitaka: data.bjtPitaka.present ? data.bjtPitaka.value : this.bjtPitaka,
+      bjtNikaya: data.bjtNikaya.present ? data.bjtNikaya.value : this.bjtNikaya,
+      bjtMajorSection: data.bjtMajorSection.present
+          ? data.bjtMajorSection.value
+          : this.bjtMajorSection,
+      bjtBook: data.bjtBook.present ? data.bjtBook.value : this.bjtBook,
+      bjtMinorSection: data.bjtMinorSection.present
+          ? data.bjtMinorSection.value
+          : this.bjtMinorSection,
+      bjtVagga: data.bjtVagga.present ? data.bjtVagga.value : this.bjtVagga,
+      bjtSutta: data.bjtSutta.present ? data.bjtSutta.value : this.bjtSutta,
+      dvPts: data.dvPts.present ? data.dvPts.value : this.dvPts,
+      dvMainTheme: data.dvMainTheme.present
+          ? data.dvMainTheme.value
+          : this.dvMainTheme,
+      dvSubtopic: data.dvSubtopic.present
+          ? data.dvSubtopic.value
+          : this.dvSubtopic,
+      dvSummary: data.dvSummary.present ? data.dvSummary.value : this.dvSummary,
+      dvSimiles: data.dvSimiles.present ? data.dvSimiles.value : this.dvSimiles,
+      dvKeyExcerpt1: data.dvKeyExcerpt1.present
+          ? data.dvKeyExcerpt1.value
+          : this.dvKeyExcerpt1,
+      dvKeyExcerpt2: data.dvKeyExcerpt2.present
+          ? data.dvKeyExcerpt2.value
+          : this.dvKeyExcerpt2,
+      dvStage: data.dvStage.present ? data.dvStage.value : this.dvStage,
+      dvTraining: data.dvTraining.present
+          ? data.dvTraining.value
+          : this.dvTraining,
+      dvAspect: data.dvAspect.present ? data.dvAspect.value : this.dvAspect,
+      dvTeacher: data.dvTeacher.present ? data.dvTeacher.value : this.dvTeacher,
+      dvAudience: data.dvAudience.present
+          ? data.dvAudience.value
+          : this.dvAudience,
+      dvMethod: data.dvMethod.present ? data.dvMethod.value : this.dvMethod,
+      dvLength: data.dvLength.present ? data.dvLength.value : this.dvLength,
+      dvProminence: data.dvProminence.present
+          ? data.dvProminence.value
+          : this.dvProminence,
+      dvNikayasParallels: data.dvNikayasParallels.present
+          ? data.dvNikayasParallels.value
+          : this.dvNikayasParallels,
+      dvAgamasParallels: data.dvAgamasParallels.present
+          ? data.dvAgamasParallels.value
+          : this.dvAgamasParallels,
+      dvTaishoParallels: data.dvTaishoParallels.present
+          ? data.dvTaishoParallels.value
+          : this.dvTaishoParallels,
+      dvSanskritParallels: data.dvSanskritParallels.present
+          ? data.dvSanskritParallels.value
+          : this.dvSanskritParallels,
+      dvVinayaParallels: data.dvVinayaParallels.present
+          ? data.dvVinayaParallels.value
+          : this.dvVinayaParallels,
+      dvOthersParallels: data.dvOthersParallels.present
+          ? data.dvOthersParallels.value
+          : this.dvOthersParallels,
+      dvPartialParallelsNa: data.dvPartialParallelsNa.present
+          ? data.dvPartialParallelsNa.value
+          : this.dvPartialParallelsNa,
+      dvPartialParallelsAll: data.dvPartialParallelsAll.present
+          ? data.dvPartialParallelsAll.value
+          : this.dvPartialParallelsAll,
+      dvSuggestedSuttas: data.dvSuggestedSuttas.present
+          ? data.dvSuggestedSuttas.value
+          : this.dvSuggestedSuttas,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SuttaInfoData(')
+          ..write('book: $book, ')
+          ..write('bookCode: $bookCode, ')
+          ..write('dpdCode: $dpdCode, ')
+          ..write('dpdSutta: $dpdSutta, ')
+          ..write('dpdSuttaVar: $dpdSuttaVar, ')
+          ..write('cstCode: $cstCode, ')
+          ..write('cstNikaya: $cstNikaya, ')
+          ..write('cstBook: $cstBook, ')
+          ..write('cstSection: $cstSection, ')
+          ..write('cstVagga: $cstVagga, ')
+          ..write('cstSutta: $cstSutta, ')
+          ..write('cstParanum: $cstParanum, ')
+          ..write('cstMPage: $cstMPage, ')
+          ..write('cstVPage: $cstVPage, ')
+          ..write('cstPPage: $cstPPage, ')
+          ..write('cstTPage: $cstTPage, ')
+          ..write('cstFile: $cstFile, ')
+          ..write('scCode: $scCode, ')
+          ..write('scBook: $scBook, ')
+          ..write('scVagga: $scVagga, ')
+          ..write('scSutta: $scSutta, ')
+          ..write('scEngSutta: $scEngSutta, ')
+          ..write('scBlurb: $scBlurb, ')
+          ..write('scFilePath: $scFilePath, ')
+          ..write('dprCode: $dprCode, ')
+          ..write('dprLink: $dprLink, ')
+          ..write('bjtSuttaCode: $bjtSuttaCode, ')
+          ..write('bjtWebCode: $bjtWebCode, ')
+          ..write('bjtFilename: $bjtFilename, ')
+          ..write('bjtBookId: $bjtBookId, ')
+          ..write('bjtPageNum: $bjtPageNum, ')
+          ..write('bjtPageOffset: $bjtPageOffset, ')
+          ..write('bjtPitaka: $bjtPitaka, ')
+          ..write('bjtNikaya: $bjtNikaya, ')
+          ..write('bjtMajorSection: $bjtMajorSection, ')
+          ..write('bjtBook: $bjtBook, ')
+          ..write('bjtMinorSection: $bjtMinorSection, ')
+          ..write('bjtVagga: $bjtVagga, ')
+          ..write('bjtSutta: $bjtSutta, ')
+          ..write('dvPts: $dvPts, ')
+          ..write('dvMainTheme: $dvMainTheme, ')
+          ..write('dvSubtopic: $dvSubtopic, ')
+          ..write('dvSummary: $dvSummary, ')
+          ..write('dvSimiles: $dvSimiles, ')
+          ..write('dvKeyExcerpt1: $dvKeyExcerpt1, ')
+          ..write('dvKeyExcerpt2: $dvKeyExcerpt2, ')
+          ..write('dvStage: $dvStage, ')
+          ..write('dvTraining: $dvTraining, ')
+          ..write('dvAspect: $dvAspect, ')
+          ..write('dvTeacher: $dvTeacher, ')
+          ..write('dvAudience: $dvAudience, ')
+          ..write('dvMethod: $dvMethod, ')
+          ..write('dvLength: $dvLength, ')
+          ..write('dvProminence: $dvProminence, ')
+          ..write('dvNikayasParallels: $dvNikayasParallels, ')
+          ..write('dvAgamasParallels: $dvAgamasParallels, ')
+          ..write('dvTaishoParallels: $dvTaishoParallels, ')
+          ..write('dvSanskritParallels: $dvSanskritParallels, ')
+          ..write('dvVinayaParallels: $dvVinayaParallels, ')
+          ..write('dvOthersParallels: $dvOthersParallels, ')
+          ..write('dvPartialParallelsNa: $dvPartialParallelsNa, ')
+          ..write('dvPartialParallelsAll: $dvPartialParallelsAll, ')
+          ..write('dvSuggestedSuttas: $dvSuggestedSuttas')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hashAll([
+    book,
+    bookCode,
+    dpdCode,
+    dpdSutta,
+    dpdSuttaVar,
+    cstCode,
+    cstNikaya,
+    cstBook,
+    cstSection,
+    cstVagga,
+    cstSutta,
+    cstParanum,
+    cstMPage,
+    cstVPage,
+    cstPPage,
+    cstTPage,
+    cstFile,
+    scCode,
+    scBook,
+    scVagga,
+    scSutta,
+    scEngSutta,
+    scBlurb,
+    scFilePath,
+    dprCode,
+    dprLink,
+    bjtSuttaCode,
+    bjtWebCode,
+    bjtFilename,
+    bjtBookId,
+    bjtPageNum,
+    bjtPageOffset,
+    bjtPitaka,
+    bjtNikaya,
+    bjtMajorSection,
+    bjtBook,
+    bjtMinorSection,
+    bjtVagga,
+    bjtSutta,
+    dvPts,
+    dvMainTheme,
+    dvSubtopic,
+    dvSummary,
+    dvSimiles,
+    dvKeyExcerpt1,
+    dvKeyExcerpt2,
+    dvStage,
+    dvTraining,
+    dvAspect,
+    dvTeacher,
+    dvAudience,
+    dvMethod,
+    dvLength,
+    dvProminence,
+    dvNikayasParallels,
+    dvAgamasParallels,
+    dvTaishoParallels,
+    dvSanskritParallels,
+    dvVinayaParallels,
+    dvOthersParallels,
+    dvPartialParallelsNa,
+    dvPartialParallelsAll,
+    dvSuggestedSuttas,
+  ]);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is SuttaInfoData &&
+          other.book == this.book &&
+          other.bookCode == this.bookCode &&
+          other.dpdCode == this.dpdCode &&
+          other.dpdSutta == this.dpdSutta &&
+          other.dpdSuttaVar == this.dpdSuttaVar &&
+          other.cstCode == this.cstCode &&
+          other.cstNikaya == this.cstNikaya &&
+          other.cstBook == this.cstBook &&
+          other.cstSection == this.cstSection &&
+          other.cstVagga == this.cstVagga &&
+          other.cstSutta == this.cstSutta &&
+          other.cstParanum == this.cstParanum &&
+          other.cstMPage == this.cstMPage &&
+          other.cstVPage == this.cstVPage &&
+          other.cstPPage == this.cstPPage &&
+          other.cstTPage == this.cstTPage &&
+          other.cstFile == this.cstFile &&
+          other.scCode == this.scCode &&
+          other.scBook == this.scBook &&
+          other.scVagga == this.scVagga &&
+          other.scSutta == this.scSutta &&
+          other.scEngSutta == this.scEngSutta &&
+          other.scBlurb == this.scBlurb &&
+          other.scFilePath == this.scFilePath &&
+          other.dprCode == this.dprCode &&
+          other.dprLink == this.dprLink &&
+          other.bjtSuttaCode == this.bjtSuttaCode &&
+          other.bjtWebCode == this.bjtWebCode &&
+          other.bjtFilename == this.bjtFilename &&
+          other.bjtBookId == this.bjtBookId &&
+          other.bjtPageNum == this.bjtPageNum &&
+          other.bjtPageOffset == this.bjtPageOffset &&
+          other.bjtPitaka == this.bjtPitaka &&
+          other.bjtNikaya == this.bjtNikaya &&
+          other.bjtMajorSection == this.bjtMajorSection &&
+          other.bjtBook == this.bjtBook &&
+          other.bjtMinorSection == this.bjtMinorSection &&
+          other.bjtVagga == this.bjtVagga &&
+          other.bjtSutta == this.bjtSutta &&
+          other.dvPts == this.dvPts &&
+          other.dvMainTheme == this.dvMainTheme &&
+          other.dvSubtopic == this.dvSubtopic &&
+          other.dvSummary == this.dvSummary &&
+          other.dvSimiles == this.dvSimiles &&
+          other.dvKeyExcerpt1 == this.dvKeyExcerpt1 &&
+          other.dvKeyExcerpt2 == this.dvKeyExcerpt2 &&
+          other.dvStage == this.dvStage &&
+          other.dvTraining == this.dvTraining &&
+          other.dvAspect == this.dvAspect &&
+          other.dvTeacher == this.dvTeacher &&
+          other.dvAudience == this.dvAudience &&
+          other.dvMethod == this.dvMethod &&
+          other.dvLength == this.dvLength &&
+          other.dvProminence == this.dvProminence &&
+          other.dvNikayasParallels == this.dvNikayasParallels &&
+          other.dvAgamasParallels == this.dvAgamasParallels &&
+          other.dvTaishoParallels == this.dvTaishoParallels &&
+          other.dvSanskritParallels == this.dvSanskritParallels &&
+          other.dvVinayaParallels == this.dvVinayaParallels &&
+          other.dvOthersParallels == this.dvOthersParallels &&
+          other.dvPartialParallelsNa == this.dvPartialParallelsNa &&
+          other.dvPartialParallelsAll == this.dvPartialParallelsAll &&
+          other.dvSuggestedSuttas == this.dvSuggestedSuttas);
+}
+
+class SuttaInfoCompanion extends UpdateCompanion<SuttaInfoData> {
+  final Value<String?> book;
+  final Value<String?> bookCode;
+  final Value<String?> dpdCode;
+  final Value<String> dpdSutta;
+  final Value<String?> dpdSuttaVar;
+  final Value<String?> cstCode;
+  final Value<String?> cstNikaya;
+  final Value<String?> cstBook;
+  final Value<String?> cstSection;
+  final Value<String?> cstVagga;
+  final Value<String?> cstSutta;
+  final Value<String?> cstParanum;
+  final Value<String?> cstMPage;
+  final Value<String?> cstVPage;
+  final Value<String?> cstPPage;
+  final Value<String?> cstTPage;
+  final Value<String?> cstFile;
+  final Value<String?> scCode;
+  final Value<String?> scBook;
+  final Value<String?> scVagga;
+  final Value<String?> scSutta;
+  final Value<String?> scEngSutta;
+  final Value<String?> scBlurb;
+  final Value<String?> scFilePath;
+  final Value<String?> dprCode;
+  final Value<String?> dprLink;
+  final Value<String?> bjtSuttaCode;
+  final Value<String?> bjtWebCode;
+  final Value<String?> bjtFilename;
+  final Value<String?> bjtBookId;
+  final Value<String?> bjtPageNum;
+  final Value<String?> bjtPageOffset;
+  final Value<String?> bjtPitaka;
+  final Value<String?> bjtNikaya;
+  final Value<String?> bjtMajorSection;
+  final Value<String?> bjtBook;
+  final Value<String?> bjtMinorSection;
+  final Value<String?> bjtVagga;
+  final Value<String?> bjtSutta;
+  final Value<String?> dvPts;
+  final Value<String?> dvMainTheme;
+  final Value<String?> dvSubtopic;
+  final Value<String?> dvSummary;
+  final Value<String?> dvSimiles;
+  final Value<String?> dvKeyExcerpt1;
+  final Value<String?> dvKeyExcerpt2;
+  final Value<String?> dvStage;
+  final Value<String?> dvTraining;
+  final Value<String?> dvAspect;
+  final Value<String?> dvTeacher;
+  final Value<String?> dvAudience;
+  final Value<String?> dvMethod;
+  final Value<String?> dvLength;
+  final Value<String?> dvProminence;
+  final Value<String?> dvNikayasParallels;
+  final Value<String?> dvAgamasParallels;
+  final Value<String?> dvTaishoParallels;
+  final Value<String?> dvSanskritParallels;
+  final Value<String?> dvVinayaParallels;
+  final Value<String?> dvOthersParallels;
+  final Value<String?> dvPartialParallelsNa;
+  final Value<String?> dvPartialParallelsAll;
+  final Value<String?> dvSuggestedSuttas;
+  final Value<int> rowid;
+  const SuttaInfoCompanion({
+    this.book = const Value.absent(),
+    this.bookCode = const Value.absent(),
+    this.dpdCode = const Value.absent(),
+    this.dpdSutta = const Value.absent(),
+    this.dpdSuttaVar = const Value.absent(),
+    this.cstCode = const Value.absent(),
+    this.cstNikaya = const Value.absent(),
+    this.cstBook = const Value.absent(),
+    this.cstSection = const Value.absent(),
+    this.cstVagga = const Value.absent(),
+    this.cstSutta = const Value.absent(),
+    this.cstParanum = const Value.absent(),
+    this.cstMPage = const Value.absent(),
+    this.cstVPage = const Value.absent(),
+    this.cstPPage = const Value.absent(),
+    this.cstTPage = const Value.absent(),
+    this.cstFile = const Value.absent(),
+    this.scCode = const Value.absent(),
+    this.scBook = const Value.absent(),
+    this.scVagga = const Value.absent(),
+    this.scSutta = const Value.absent(),
+    this.scEngSutta = const Value.absent(),
+    this.scBlurb = const Value.absent(),
+    this.scFilePath = const Value.absent(),
+    this.dprCode = const Value.absent(),
+    this.dprLink = const Value.absent(),
+    this.bjtSuttaCode = const Value.absent(),
+    this.bjtWebCode = const Value.absent(),
+    this.bjtFilename = const Value.absent(),
+    this.bjtBookId = const Value.absent(),
+    this.bjtPageNum = const Value.absent(),
+    this.bjtPageOffset = const Value.absent(),
+    this.bjtPitaka = const Value.absent(),
+    this.bjtNikaya = const Value.absent(),
+    this.bjtMajorSection = const Value.absent(),
+    this.bjtBook = const Value.absent(),
+    this.bjtMinorSection = const Value.absent(),
+    this.bjtVagga = const Value.absent(),
+    this.bjtSutta = const Value.absent(),
+    this.dvPts = const Value.absent(),
+    this.dvMainTheme = const Value.absent(),
+    this.dvSubtopic = const Value.absent(),
+    this.dvSummary = const Value.absent(),
+    this.dvSimiles = const Value.absent(),
+    this.dvKeyExcerpt1 = const Value.absent(),
+    this.dvKeyExcerpt2 = const Value.absent(),
+    this.dvStage = const Value.absent(),
+    this.dvTraining = const Value.absent(),
+    this.dvAspect = const Value.absent(),
+    this.dvTeacher = const Value.absent(),
+    this.dvAudience = const Value.absent(),
+    this.dvMethod = const Value.absent(),
+    this.dvLength = const Value.absent(),
+    this.dvProminence = const Value.absent(),
+    this.dvNikayasParallels = const Value.absent(),
+    this.dvAgamasParallels = const Value.absent(),
+    this.dvTaishoParallels = const Value.absent(),
+    this.dvSanskritParallels = const Value.absent(),
+    this.dvVinayaParallels = const Value.absent(),
+    this.dvOthersParallels = const Value.absent(),
+    this.dvPartialParallelsNa = const Value.absent(),
+    this.dvPartialParallelsAll = const Value.absent(),
+    this.dvSuggestedSuttas = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  SuttaInfoCompanion.insert({
+    this.book = const Value.absent(),
+    this.bookCode = const Value.absent(),
+    this.dpdCode = const Value.absent(),
+    required String dpdSutta,
+    this.dpdSuttaVar = const Value.absent(),
+    this.cstCode = const Value.absent(),
+    this.cstNikaya = const Value.absent(),
+    this.cstBook = const Value.absent(),
+    this.cstSection = const Value.absent(),
+    this.cstVagga = const Value.absent(),
+    this.cstSutta = const Value.absent(),
+    this.cstParanum = const Value.absent(),
+    this.cstMPage = const Value.absent(),
+    this.cstVPage = const Value.absent(),
+    this.cstPPage = const Value.absent(),
+    this.cstTPage = const Value.absent(),
+    this.cstFile = const Value.absent(),
+    this.scCode = const Value.absent(),
+    this.scBook = const Value.absent(),
+    this.scVagga = const Value.absent(),
+    this.scSutta = const Value.absent(),
+    this.scEngSutta = const Value.absent(),
+    this.scBlurb = const Value.absent(),
+    this.scFilePath = const Value.absent(),
+    this.dprCode = const Value.absent(),
+    this.dprLink = const Value.absent(),
+    this.bjtSuttaCode = const Value.absent(),
+    this.bjtWebCode = const Value.absent(),
+    this.bjtFilename = const Value.absent(),
+    this.bjtBookId = const Value.absent(),
+    this.bjtPageNum = const Value.absent(),
+    this.bjtPageOffset = const Value.absent(),
+    this.bjtPitaka = const Value.absent(),
+    this.bjtNikaya = const Value.absent(),
+    this.bjtMajorSection = const Value.absent(),
+    this.bjtBook = const Value.absent(),
+    this.bjtMinorSection = const Value.absent(),
+    this.bjtVagga = const Value.absent(),
+    this.bjtSutta = const Value.absent(),
+    this.dvPts = const Value.absent(),
+    this.dvMainTheme = const Value.absent(),
+    this.dvSubtopic = const Value.absent(),
+    this.dvSummary = const Value.absent(),
+    this.dvSimiles = const Value.absent(),
+    this.dvKeyExcerpt1 = const Value.absent(),
+    this.dvKeyExcerpt2 = const Value.absent(),
+    this.dvStage = const Value.absent(),
+    this.dvTraining = const Value.absent(),
+    this.dvAspect = const Value.absent(),
+    this.dvTeacher = const Value.absent(),
+    this.dvAudience = const Value.absent(),
+    this.dvMethod = const Value.absent(),
+    this.dvLength = const Value.absent(),
+    this.dvProminence = const Value.absent(),
+    this.dvNikayasParallels = const Value.absent(),
+    this.dvAgamasParallels = const Value.absent(),
+    this.dvTaishoParallels = const Value.absent(),
+    this.dvSanskritParallels = const Value.absent(),
+    this.dvVinayaParallels = const Value.absent(),
+    this.dvOthersParallels = const Value.absent(),
+    this.dvPartialParallelsNa = const Value.absent(),
+    this.dvPartialParallelsAll = const Value.absent(),
+    this.dvSuggestedSuttas = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : dpdSutta = Value(dpdSutta);
+  static Insertable<SuttaInfoData> custom({
+    Expression<String>? book,
+    Expression<String>? bookCode,
+    Expression<String>? dpdCode,
+    Expression<String>? dpdSutta,
+    Expression<String>? dpdSuttaVar,
+    Expression<String>? cstCode,
+    Expression<String>? cstNikaya,
+    Expression<String>? cstBook,
+    Expression<String>? cstSection,
+    Expression<String>? cstVagga,
+    Expression<String>? cstSutta,
+    Expression<String>? cstParanum,
+    Expression<String>? cstMPage,
+    Expression<String>? cstVPage,
+    Expression<String>? cstPPage,
+    Expression<String>? cstTPage,
+    Expression<String>? cstFile,
+    Expression<String>? scCode,
+    Expression<String>? scBook,
+    Expression<String>? scVagga,
+    Expression<String>? scSutta,
+    Expression<String>? scEngSutta,
+    Expression<String>? scBlurb,
+    Expression<String>? scFilePath,
+    Expression<String>? dprCode,
+    Expression<String>? dprLink,
+    Expression<String>? bjtSuttaCode,
+    Expression<String>? bjtWebCode,
+    Expression<String>? bjtFilename,
+    Expression<String>? bjtBookId,
+    Expression<String>? bjtPageNum,
+    Expression<String>? bjtPageOffset,
+    Expression<String>? bjtPitaka,
+    Expression<String>? bjtNikaya,
+    Expression<String>? bjtMajorSection,
+    Expression<String>? bjtBook,
+    Expression<String>? bjtMinorSection,
+    Expression<String>? bjtVagga,
+    Expression<String>? bjtSutta,
+    Expression<String>? dvPts,
+    Expression<String>? dvMainTheme,
+    Expression<String>? dvSubtopic,
+    Expression<String>? dvSummary,
+    Expression<String>? dvSimiles,
+    Expression<String>? dvKeyExcerpt1,
+    Expression<String>? dvKeyExcerpt2,
+    Expression<String>? dvStage,
+    Expression<String>? dvTraining,
+    Expression<String>? dvAspect,
+    Expression<String>? dvTeacher,
+    Expression<String>? dvAudience,
+    Expression<String>? dvMethod,
+    Expression<String>? dvLength,
+    Expression<String>? dvProminence,
+    Expression<String>? dvNikayasParallels,
+    Expression<String>? dvAgamasParallels,
+    Expression<String>? dvTaishoParallels,
+    Expression<String>? dvSanskritParallels,
+    Expression<String>? dvVinayaParallels,
+    Expression<String>? dvOthersParallels,
+    Expression<String>? dvPartialParallelsNa,
+    Expression<String>? dvPartialParallelsAll,
+    Expression<String>? dvSuggestedSuttas,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (book != null) 'book': book,
+      if (bookCode != null) 'book_code': bookCode,
+      if (dpdCode != null) 'dpd_code': dpdCode,
+      if (dpdSutta != null) 'dpd_sutta': dpdSutta,
+      if (dpdSuttaVar != null) 'dpd_sutta_var': dpdSuttaVar,
+      if (cstCode != null) 'cst_code': cstCode,
+      if (cstNikaya != null) 'cst_nikaya': cstNikaya,
+      if (cstBook != null) 'cst_book': cstBook,
+      if (cstSection != null) 'cst_section': cstSection,
+      if (cstVagga != null) 'cst_vagga': cstVagga,
+      if (cstSutta != null) 'cst_sutta': cstSutta,
+      if (cstParanum != null) 'cst_paranum': cstParanum,
+      if (cstMPage != null) 'cst_m_page': cstMPage,
+      if (cstVPage != null) 'cst_v_page': cstVPage,
+      if (cstPPage != null) 'cst_p_page': cstPPage,
+      if (cstTPage != null) 'cst_t_page': cstTPage,
+      if (cstFile != null) 'cst_file': cstFile,
+      if (scCode != null) 'sc_code': scCode,
+      if (scBook != null) 'sc_book': scBook,
+      if (scVagga != null) 'sc_vagga': scVagga,
+      if (scSutta != null) 'sc_sutta': scSutta,
+      if (scEngSutta != null) 'sc_eng_sutta': scEngSutta,
+      if (scBlurb != null) 'sc_blurb': scBlurb,
+      if (scFilePath != null) 'sc_file_path': scFilePath,
+      if (dprCode != null) 'dpr_code': dprCode,
+      if (dprLink != null) 'dpr_link': dprLink,
+      if (bjtSuttaCode != null) 'bjt_sutta_code': bjtSuttaCode,
+      if (bjtWebCode != null) 'bjt_web_code': bjtWebCode,
+      if (bjtFilename != null) 'bjt_filename': bjtFilename,
+      if (bjtBookId != null) 'bjt_book_id': bjtBookId,
+      if (bjtPageNum != null) 'bjt_page_num': bjtPageNum,
+      if (bjtPageOffset != null) 'bjt_page_offset': bjtPageOffset,
+      if (bjtPitaka != null) 'bjt_piṭaka': bjtPitaka,
+      if (bjtNikaya != null) 'bjt_nikāya': bjtNikaya,
+      if (bjtMajorSection != null) 'bjt_major_section': bjtMajorSection,
+      if (bjtBook != null) 'bjt_book': bjtBook,
+      if (bjtMinorSection != null) 'bjt_minor_section': bjtMinorSection,
+      if (bjtVagga != null) 'bjt_vagga': bjtVagga,
+      if (bjtSutta != null) 'bjt_sutta': bjtSutta,
+      if (dvPts != null) 'dv_pts': dvPts,
+      if (dvMainTheme != null) 'dv_main_theme': dvMainTheme,
+      if (dvSubtopic != null) 'dv_subtopic': dvSubtopic,
+      if (dvSummary != null) 'dv_summary': dvSummary,
+      if (dvSimiles != null) 'dv_similes': dvSimiles,
+      if (dvKeyExcerpt1 != null) 'dv_key_excerpt1': dvKeyExcerpt1,
+      if (dvKeyExcerpt2 != null) 'dv_key_excerpt2': dvKeyExcerpt2,
+      if (dvStage != null) 'dv_stage': dvStage,
+      if (dvTraining != null) 'dv_training': dvTraining,
+      if (dvAspect != null) 'dv_aspect': dvAspect,
+      if (dvTeacher != null) 'dv_teacher': dvTeacher,
+      if (dvAudience != null) 'dv_audience': dvAudience,
+      if (dvMethod != null) 'dv_method': dvMethod,
+      if (dvLength != null) 'dv_length': dvLength,
+      if (dvProminence != null) 'dv_prominence': dvProminence,
+      if (dvNikayasParallels != null)
+        'dv_nikayas_parallels': dvNikayasParallels,
+      if (dvAgamasParallels != null) 'dv_āgamas_parallels': dvAgamasParallels,
+      if (dvTaishoParallels != null) 'dv_taisho_parallels': dvTaishoParallels,
+      if (dvSanskritParallels != null)
+        'dv_sanskrit_parallels': dvSanskritParallels,
+      if (dvVinayaParallels != null) 'dv_vinaya_parallels': dvVinayaParallels,
+      if (dvOthersParallels != null) 'dv_others_parallels': dvOthersParallels,
+      if (dvPartialParallelsNa != null)
+        'dv_partial_parallels_nā': dvPartialParallelsNa,
+      if (dvPartialParallelsAll != null)
+        'dv_partial_parallels_all': dvPartialParallelsAll,
+      if (dvSuggestedSuttas != null) 'dv_suggested_suttas': dvSuggestedSuttas,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  SuttaInfoCompanion copyWith({
+    Value<String?>? book,
+    Value<String?>? bookCode,
+    Value<String?>? dpdCode,
+    Value<String>? dpdSutta,
+    Value<String?>? dpdSuttaVar,
+    Value<String?>? cstCode,
+    Value<String?>? cstNikaya,
+    Value<String?>? cstBook,
+    Value<String?>? cstSection,
+    Value<String?>? cstVagga,
+    Value<String?>? cstSutta,
+    Value<String?>? cstParanum,
+    Value<String?>? cstMPage,
+    Value<String?>? cstVPage,
+    Value<String?>? cstPPage,
+    Value<String?>? cstTPage,
+    Value<String?>? cstFile,
+    Value<String?>? scCode,
+    Value<String?>? scBook,
+    Value<String?>? scVagga,
+    Value<String?>? scSutta,
+    Value<String?>? scEngSutta,
+    Value<String?>? scBlurb,
+    Value<String?>? scFilePath,
+    Value<String?>? dprCode,
+    Value<String?>? dprLink,
+    Value<String?>? bjtSuttaCode,
+    Value<String?>? bjtWebCode,
+    Value<String?>? bjtFilename,
+    Value<String?>? bjtBookId,
+    Value<String?>? bjtPageNum,
+    Value<String?>? bjtPageOffset,
+    Value<String?>? bjtPitaka,
+    Value<String?>? bjtNikaya,
+    Value<String?>? bjtMajorSection,
+    Value<String?>? bjtBook,
+    Value<String?>? bjtMinorSection,
+    Value<String?>? bjtVagga,
+    Value<String?>? bjtSutta,
+    Value<String?>? dvPts,
+    Value<String?>? dvMainTheme,
+    Value<String?>? dvSubtopic,
+    Value<String?>? dvSummary,
+    Value<String?>? dvSimiles,
+    Value<String?>? dvKeyExcerpt1,
+    Value<String?>? dvKeyExcerpt2,
+    Value<String?>? dvStage,
+    Value<String?>? dvTraining,
+    Value<String?>? dvAspect,
+    Value<String?>? dvTeacher,
+    Value<String?>? dvAudience,
+    Value<String?>? dvMethod,
+    Value<String?>? dvLength,
+    Value<String?>? dvProminence,
+    Value<String?>? dvNikayasParallels,
+    Value<String?>? dvAgamasParallels,
+    Value<String?>? dvTaishoParallels,
+    Value<String?>? dvSanskritParallels,
+    Value<String?>? dvVinayaParallels,
+    Value<String?>? dvOthersParallels,
+    Value<String?>? dvPartialParallelsNa,
+    Value<String?>? dvPartialParallelsAll,
+    Value<String?>? dvSuggestedSuttas,
+    Value<int>? rowid,
+  }) {
+    return SuttaInfoCompanion(
+      book: book ?? this.book,
+      bookCode: bookCode ?? this.bookCode,
+      dpdCode: dpdCode ?? this.dpdCode,
+      dpdSutta: dpdSutta ?? this.dpdSutta,
+      dpdSuttaVar: dpdSuttaVar ?? this.dpdSuttaVar,
+      cstCode: cstCode ?? this.cstCode,
+      cstNikaya: cstNikaya ?? this.cstNikaya,
+      cstBook: cstBook ?? this.cstBook,
+      cstSection: cstSection ?? this.cstSection,
+      cstVagga: cstVagga ?? this.cstVagga,
+      cstSutta: cstSutta ?? this.cstSutta,
+      cstParanum: cstParanum ?? this.cstParanum,
+      cstMPage: cstMPage ?? this.cstMPage,
+      cstVPage: cstVPage ?? this.cstVPage,
+      cstPPage: cstPPage ?? this.cstPPage,
+      cstTPage: cstTPage ?? this.cstTPage,
+      cstFile: cstFile ?? this.cstFile,
+      scCode: scCode ?? this.scCode,
+      scBook: scBook ?? this.scBook,
+      scVagga: scVagga ?? this.scVagga,
+      scSutta: scSutta ?? this.scSutta,
+      scEngSutta: scEngSutta ?? this.scEngSutta,
+      scBlurb: scBlurb ?? this.scBlurb,
+      scFilePath: scFilePath ?? this.scFilePath,
+      dprCode: dprCode ?? this.dprCode,
+      dprLink: dprLink ?? this.dprLink,
+      bjtSuttaCode: bjtSuttaCode ?? this.bjtSuttaCode,
+      bjtWebCode: bjtWebCode ?? this.bjtWebCode,
+      bjtFilename: bjtFilename ?? this.bjtFilename,
+      bjtBookId: bjtBookId ?? this.bjtBookId,
+      bjtPageNum: bjtPageNum ?? this.bjtPageNum,
+      bjtPageOffset: bjtPageOffset ?? this.bjtPageOffset,
+      bjtPitaka: bjtPitaka ?? this.bjtPitaka,
+      bjtNikaya: bjtNikaya ?? this.bjtNikaya,
+      bjtMajorSection: bjtMajorSection ?? this.bjtMajorSection,
+      bjtBook: bjtBook ?? this.bjtBook,
+      bjtMinorSection: bjtMinorSection ?? this.bjtMinorSection,
+      bjtVagga: bjtVagga ?? this.bjtVagga,
+      bjtSutta: bjtSutta ?? this.bjtSutta,
+      dvPts: dvPts ?? this.dvPts,
+      dvMainTheme: dvMainTheme ?? this.dvMainTheme,
+      dvSubtopic: dvSubtopic ?? this.dvSubtopic,
+      dvSummary: dvSummary ?? this.dvSummary,
+      dvSimiles: dvSimiles ?? this.dvSimiles,
+      dvKeyExcerpt1: dvKeyExcerpt1 ?? this.dvKeyExcerpt1,
+      dvKeyExcerpt2: dvKeyExcerpt2 ?? this.dvKeyExcerpt2,
+      dvStage: dvStage ?? this.dvStage,
+      dvTraining: dvTraining ?? this.dvTraining,
+      dvAspect: dvAspect ?? this.dvAspect,
+      dvTeacher: dvTeacher ?? this.dvTeacher,
+      dvAudience: dvAudience ?? this.dvAudience,
+      dvMethod: dvMethod ?? this.dvMethod,
+      dvLength: dvLength ?? this.dvLength,
+      dvProminence: dvProminence ?? this.dvProminence,
+      dvNikayasParallels: dvNikayasParallels ?? this.dvNikayasParallels,
+      dvAgamasParallels: dvAgamasParallels ?? this.dvAgamasParallels,
+      dvTaishoParallels: dvTaishoParallels ?? this.dvTaishoParallels,
+      dvSanskritParallels: dvSanskritParallels ?? this.dvSanskritParallels,
+      dvVinayaParallels: dvVinayaParallels ?? this.dvVinayaParallels,
+      dvOthersParallels: dvOthersParallels ?? this.dvOthersParallels,
+      dvPartialParallelsNa: dvPartialParallelsNa ?? this.dvPartialParallelsNa,
+      dvPartialParallelsAll:
+          dvPartialParallelsAll ?? this.dvPartialParallelsAll,
+      dvSuggestedSuttas: dvSuggestedSuttas ?? this.dvSuggestedSuttas,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (book.present) {
+      map['book'] = Variable<String>(book.value);
+    }
+    if (bookCode.present) {
+      map['book_code'] = Variable<String>(bookCode.value);
+    }
+    if (dpdCode.present) {
+      map['dpd_code'] = Variable<String>(dpdCode.value);
+    }
+    if (dpdSutta.present) {
+      map['dpd_sutta'] = Variable<String>(dpdSutta.value);
+    }
+    if (dpdSuttaVar.present) {
+      map['dpd_sutta_var'] = Variable<String>(dpdSuttaVar.value);
+    }
+    if (cstCode.present) {
+      map['cst_code'] = Variable<String>(cstCode.value);
+    }
+    if (cstNikaya.present) {
+      map['cst_nikaya'] = Variable<String>(cstNikaya.value);
+    }
+    if (cstBook.present) {
+      map['cst_book'] = Variable<String>(cstBook.value);
+    }
+    if (cstSection.present) {
+      map['cst_section'] = Variable<String>(cstSection.value);
+    }
+    if (cstVagga.present) {
+      map['cst_vagga'] = Variable<String>(cstVagga.value);
+    }
+    if (cstSutta.present) {
+      map['cst_sutta'] = Variable<String>(cstSutta.value);
+    }
+    if (cstParanum.present) {
+      map['cst_paranum'] = Variable<String>(cstParanum.value);
+    }
+    if (cstMPage.present) {
+      map['cst_m_page'] = Variable<String>(cstMPage.value);
+    }
+    if (cstVPage.present) {
+      map['cst_v_page'] = Variable<String>(cstVPage.value);
+    }
+    if (cstPPage.present) {
+      map['cst_p_page'] = Variable<String>(cstPPage.value);
+    }
+    if (cstTPage.present) {
+      map['cst_t_page'] = Variable<String>(cstTPage.value);
+    }
+    if (cstFile.present) {
+      map['cst_file'] = Variable<String>(cstFile.value);
+    }
+    if (scCode.present) {
+      map['sc_code'] = Variable<String>(scCode.value);
+    }
+    if (scBook.present) {
+      map['sc_book'] = Variable<String>(scBook.value);
+    }
+    if (scVagga.present) {
+      map['sc_vagga'] = Variable<String>(scVagga.value);
+    }
+    if (scSutta.present) {
+      map['sc_sutta'] = Variable<String>(scSutta.value);
+    }
+    if (scEngSutta.present) {
+      map['sc_eng_sutta'] = Variable<String>(scEngSutta.value);
+    }
+    if (scBlurb.present) {
+      map['sc_blurb'] = Variable<String>(scBlurb.value);
+    }
+    if (scFilePath.present) {
+      map['sc_file_path'] = Variable<String>(scFilePath.value);
+    }
+    if (dprCode.present) {
+      map['dpr_code'] = Variable<String>(dprCode.value);
+    }
+    if (dprLink.present) {
+      map['dpr_link'] = Variable<String>(dprLink.value);
+    }
+    if (bjtSuttaCode.present) {
+      map['bjt_sutta_code'] = Variable<String>(bjtSuttaCode.value);
+    }
+    if (bjtWebCode.present) {
+      map['bjt_web_code'] = Variable<String>(bjtWebCode.value);
+    }
+    if (bjtFilename.present) {
+      map['bjt_filename'] = Variable<String>(bjtFilename.value);
+    }
+    if (bjtBookId.present) {
+      map['bjt_book_id'] = Variable<String>(bjtBookId.value);
+    }
+    if (bjtPageNum.present) {
+      map['bjt_page_num'] = Variable<String>(bjtPageNum.value);
+    }
+    if (bjtPageOffset.present) {
+      map['bjt_page_offset'] = Variable<String>(bjtPageOffset.value);
+    }
+    if (bjtPitaka.present) {
+      map['bjt_piṭaka'] = Variable<String>(bjtPitaka.value);
+    }
+    if (bjtNikaya.present) {
+      map['bjt_nikāya'] = Variable<String>(bjtNikaya.value);
+    }
+    if (bjtMajorSection.present) {
+      map['bjt_major_section'] = Variable<String>(bjtMajorSection.value);
+    }
+    if (bjtBook.present) {
+      map['bjt_book'] = Variable<String>(bjtBook.value);
+    }
+    if (bjtMinorSection.present) {
+      map['bjt_minor_section'] = Variable<String>(bjtMinorSection.value);
+    }
+    if (bjtVagga.present) {
+      map['bjt_vagga'] = Variable<String>(bjtVagga.value);
+    }
+    if (bjtSutta.present) {
+      map['bjt_sutta'] = Variable<String>(bjtSutta.value);
+    }
+    if (dvPts.present) {
+      map['dv_pts'] = Variable<String>(dvPts.value);
+    }
+    if (dvMainTheme.present) {
+      map['dv_main_theme'] = Variable<String>(dvMainTheme.value);
+    }
+    if (dvSubtopic.present) {
+      map['dv_subtopic'] = Variable<String>(dvSubtopic.value);
+    }
+    if (dvSummary.present) {
+      map['dv_summary'] = Variable<String>(dvSummary.value);
+    }
+    if (dvSimiles.present) {
+      map['dv_similes'] = Variable<String>(dvSimiles.value);
+    }
+    if (dvKeyExcerpt1.present) {
+      map['dv_key_excerpt1'] = Variable<String>(dvKeyExcerpt1.value);
+    }
+    if (dvKeyExcerpt2.present) {
+      map['dv_key_excerpt2'] = Variable<String>(dvKeyExcerpt2.value);
+    }
+    if (dvStage.present) {
+      map['dv_stage'] = Variable<String>(dvStage.value);
+    }
+    if (dvTraining.present) {
+      map['dv_training'] = Variable<String>(dvTraining.value);
+    }
+    if (dvAspect.present) {
+      map['dv_aspect'] = Variable<String>(dvAspect.value);
+    }
+    if (dvTeacher.present) {
+      map['dv_teacher'] = Variable<String>(dvTeacher.value);
+    }
+    if (dvAudience.present) {
+      map['dv_audience'] = Variable<String>(dvAudience.value);
+    }
+    if (dvMethod.present) {
+      map['dv_method'] = Variable<String>(dvMethod.value);
+    }
+    if (dvLength.present) {
+      map['dv_length'] = Variable<String>(dvLength.value);
+    }
+    if (dvProminence.present) {
+      map['dv_prominence'] = Variable<String>(dvProminence.value);
+    }
+    if (dvNikayasParallels.present) {
+      map['dv_nikayas_parallels'] = Variable<String>(dvNikayasParallels.value);
+    }
+    if (dvAgamasParallels.present) {
+      map['dv_āgamas_parallels'] = Variable<String>(dvAgamasParallels.value);
+    }
+    if (dvTaishoParallels.present) {
+      map['dv_taisho_parallels'] = Variable<String>(dvTaishoParallels.value);
+    }
+    if (dvSanskritParallels.present) {
+      map['dv_sanskrit_parallels'] = Variable<String>(
+        dvSanskritParallels.value,
+      );
+    }
+    if (dvVinayaParallels.present) {
+      map['dv_vinaya_parallels'] = Variable<String>(dvVinayaParallels.value);
+    }
+    if (dvOthersParallels.present) {
+      map['dv_others_parallels'] = Variable<String>(dvOthersParallels.value);
+    }
+    if (dvPartialParallelsNa.present) {
+      map['dv_partial_parallels_nā'] = Variable<String>(
+        dvPartialParallelsNa.value,
+      );
+    }
+    if (dvPartialParallelsAll.present) {
+      map['dv_partial_parallels_all'] = Variable<String>(
+        dvPartialParallelsAll.value,
+      );
+    }
+    if (dvSuggestedSuttas.present) {
+      map['dv_suggested_suttas'] = Variable<String>(dvSuggestedSuttas.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SuttaInfoCompanion(')
+          ..write('book: $book, ')
+          ..write('bookCode: $bookCode, ')
+          ..write('dpdCode: $dpdCode, ')
+          ..write('dpdSutta: $dpdSutta, ')
+          ..write('dpdSuttaVar: $dpdSuttaVar, ')
+          ..write('cstCode: $cstCode, ')
+          ..write('cstNikaya: $cstNikaya, ')
+          ..write('cstBook: $cstBook, ')
+          ..write('cstSection: $cstSection, ')
+          ..write('cstVagga: $cstVagga, ')
+          ..write('cstSutta: $cstSutta, ')
+          ..write('cstParanum: $cstParanum, ')
+          ..write('cstMPage: $cstMPage, ')
+          ..write('cstVPage: $cstVPage, ')
+          ..write('cstPPage: $cstPPage, ')
+          ..write('cstTPage: $cstTPage, ')
+          ..write('cstFile: $cstFile, ')
+          ..write('scCode: $scCode, ')
+          ..write('scBook: $scBook, ')
+          ..write('scVagga: $scVagga, ')
+          ..write('scSutta: $scSutta, ')
+          ..write('scEngSutta: $scEngSutta, ')
+          ..write('scBlurb: $scBlurb, ')
+          ..write('scFilePath: $scFilePath, ')
+          ..write('dprCode: $dprCode, ')
+          ..write('dprLink: $dprLink, ')
+          ..write('bjtSuttaCode: $bjtSuttaCode, ')
+          ..write('bjtWebCode: $bjtWebCode, ')
+          ..write('bjtFilename: $bjtFilename, ')
+          ..write('bjtBookId: $bjtBookId, ')
+          ..write('bjtPageNum: $bjtPageNum, ')
+          ..write('bjtPageOffset: $bjtPageOffset, ')
+          ..write('bjtPitaka: $bjtPitaka, ')
+          ..write('bjtNikaya: $bjtNikaya, ')
+          ..write('bjtMajorSection: $bjtMajorSection, ')
+          ..write('bjtBook: $bjtBook, ')
+          ..write('bjtMinorSection: $bjtMinorSection, ')
+          ..write('bjtVagga: $bjtVagga, ')
+          ..write('bjtSutta: $bjtSutta, ')
+          ..write('dvPts: $dvPts, ')
+          ..write('dvMainTheme: $dvMainTheme, ')
+          ..write('dvSubtopic: $dvSubtopic, ')
+          ..write('dvSummary: $dvSummary, ')
+          ..write('dvSimiles: $dvSimiles, ')
+          ..write('dvKeyExcerpt1: $dvKeyExcerpt1, ')
+          ..write('dvKeyExcerpt2: $dvKeyExcerpt2, ')
+          ..write('dvStage: $dvStage, ')
+          ..write('dvTraining: $dvTraining, ')
+          ..write('dvAspect: $dvAspect, ')
+          ..write('dvTeacher: $dvTeacher, ')
+          ..write('dvAudience: $dvAudience, ')
+          ..write('dvMethod: $dvMethod, ')
+          ..write('dvLength: $dvLength, ')
+          ..write('dvProminence: $dvProminence, ')
+          ..write('dvNikayasParallels: $dvNikayasParallels, ')
+          ..write('dvAgamasParallels: $dvAgamasParallels, ')
+          ..write('dvTaishoParallels: $dvTaishoParallels, ')
+          ..write('dvSanskritParallels: $dvSanskritParallels, ')
+          ..write('dvVinayaParallels: $dvVinayaParallels, ')
+          ..write('dvOthersParallels: $dvOthersParallels, ')
+          ..write('dvPartialParallelsNa: $dvPartialParallelsNa, ')
+          ..write('dvPartialParallelsAll: $dvPartialParallelsAll, ')
+          ..write('dvSuggestedSuttas: $dvSuggestedSuttas, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -5878,6 +9276,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $FamilyCompoundTable familyCompound = $FamilyCompoundTable(this);
   late final $FamilyIdiomTable familyIdiom = $FamilyIdiomTable(this);
   late final $FamilySetTable familySet = $FamilySetTable(this);
+  late final $SuttaInfoTable suttaInfo = $SuttaInfoTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -5893,6 +9292,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     familyCompound,
     familyIdiom,
     familySet,
+    suttaInfo,
   ];
 }
 
@@ -9000,6 +12400,1364 @@ typedef $$FamilySetTableProcessedTableManager =
       FamilySetData,
       PrefetchHooks Function()
     >;
+typedef $$SuttaInfoTableCreateCompanionBuilder =
+    SuttaInfoCompanion Function({
+      Value<String?> book,
+      Value<String?> bookCode,
+      Value<String?> dpdCode,
+      required String dpdSutta,
+      Value<String?> dpdSuttaVar,
+      Value<String?> cstCode,
+      Value<String?> cstNikaya,
+      Value<String?> cstBook,
+      Value<String?> cstSection,
+      Value<String?> cstVagga,
+      Value<String?> cstSutta,
+      Value<String?> cstParanum,
+      Value<String?> cstMPage,
+      Value<String?> cstVPage,
+      Value<String?> cstPPage,
+      Value<String?> cstTPage,
+      Value<String?> cstFile,
+      Value<String?> scCode,
+      Value<String?> scBook,
+      Value<String?> scVagga,
+      Value<String?> scSutta,
+      Value<String?> scEngSutta,
+      Value<String?> scBlurb,
+      Value<String?> scFilePath,
+      Value<String?> dprCode,
+      Value<String?> dprLink,
+      Value<String?> bjtSuttaCode,
+      Value<String?> bjtWebCode,
+      Value<String?> bjtFilename,
+      Value<String?> bjtBookId,
+      Value<String?> bjtPageNum,
+      Value<String?> bjtPageOffset,
+      Value<String?> bjtPitaka,
+      Value<String?> bjtNikaya,
+      Value<String?> bjtMajorSection,
+      Value<String?> bjtBook,
+      Value<String?> bjtMinorSection,
+      Value<String?> bjtVagga,
+      Value<String?> bjtSutta,
+      Value<String?> dvPts,
+      Value<String?> dvMainTheme,
+      Value<String?> dvSubtopic,
+      Value<String?> dvSummary,
+      Value<String?> dvSimiles,
+      Value<String?> dvKeyExcerpt1,
+      Value<String?> dvKeyExcerpt2,
+      Value<String?> dvStage,
+      Value<String?> dvTraining,
+      Value<String?> dvAspect,
+      Value<String?> dvTeacher,
+      Value<String?> dvAudience,
+      Value<String?> dvMethod,
+      Value<String?> dvLength,
+      Value<String?> dvProminence,
+      Value<String?> dvNikayasParallels,
+      Value<String?> dvAgamasParallels,
+      Value<String?> dvTaishoParallels,
+      Value<String?> dvSanskritParallels,
+      Value<String?> dvVinayaParallels,
+      Value<String?> dvOthersParallels,
+      Value<String?> dvPartialParallelsNa,
+      Value<String?> dvPartialParallelsAll,
+      Value<String?> dvSuggestedSuttas,
+      Value<int> rowid,
+    });
+typedef $$SuttaInfoTableUpdateCompanionBuilder =
+    SuttaInfoCompanion Function({
+      Value<String?> book,
+      Value<String?> bookCode,
+      Value<String?> dpdCode,
+      Value<String> dpdSutta,
+      Value<String?> dpdSuttaVar,
+      Value<String?> cstCode,
+      Value<String?> cstNikaya,
+      Value<String?> cstBook,
+      Value<String?> cstSection,
+      Value<String?> cstVagga,
+      Value<String?> cstSutta,
+      Value<String?> cstParanum,
+      Value<String?> cstMPage,
+      Value<String?> cstVPage,
+      Value<String?> cstPPage,
+      Value<String?> cstTPage,
+      Value<String?> cstFile,
+      Value<String?> scCode,
+      Value<String?> scBook,
+      Value<String?> scVagga,
+      Value<String?> scSutta,
+      Value<String?> scEngSutta,
+      Value<String?> scBlurb,
+      Value<String?> scFilePath,
+      Value<String?> dprCode,
+      Value<String?> dprLink,
+      Value<String?> bjtSuttaCode,
+      Value<String?> bjtWebCode,
+      Value<String?> bjtFilename,
+      Value<String?> bjtBookId,
+      Value<String?> bjtPageNum,
+      Value<String?> bjtPageOffset,
+      Value<String?> bjtPitaka,
+      Value<String?> bjtNikaya,
+      Value<String?> bjtMajorSection,
+      Value<String?> bjtBook,
+      Value<String?> bjtMinorSection,
+      Value<String?> bjtVagga,
+      Value<String?> bjtSutta,
+      Value<String?> dvPts,
+      Value<String?> dvMainTheme,
+      Value<String?> dvSubtopic,
+      Value<String?> dvSummary,
+      Value<String?> dvSimiles,
+      Value<String?> dvKeyExcerpt1,
+      Value<String?> dvKeyExcerpt2,
+      Value<String?> dvStage,
+      Value<String?> dvTraining,
+      Value<String?> dvAspect,
+      Value<String?> dvTeacher,
+      Value<String?> dvAudience,
+      Value<String?> dvMethod,
+      Value<String?> dvLength,
+      Value<String?> dvProminence,
+      Value<String?> dvNikayasParallels,
+      Value<String?> dvAgamasParallels,
+      Value<String?> dvTaishoParallels,
+      Value<String?> dvSanskritParallels,
+      Value<String?> dvVinayaParallels,
+      Value<String?> dvOthersParallels,
+      Value<String?> dvPartialParallelsNa,
+      Value<String?> dvPartialParallelsAll,
+      Value<String?> dvSuggestedSuttas,
+      Value<int> rowid,
+    });
+
+class $$SuttaInfoTableFilterComposer
+    extends Composer<_$AppDatabase, $SuttaInfoTable> {
+  $$SuttaInfoTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get book => $composableBuilder(
+    column: $table.book,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get bookCode => $composableBuilder(
+    column: $table.bookCode,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get dpdCode => $composableBuilder(
+    column: $table.dpdCode,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get dpdSutta => $composableBuilder(
+    column: $table.dpdSutta,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get dpdSuttaVar => $composableBuilder(
+    column: $table.dpdSuttaVar,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get cstCode => $composableBuilder(
+    column: $table.cstCode,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get cstNikaya => $composableBuilder(
+    column: $table.cstNikaya,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get cstBook => $composableBuilder(
+    column: $table.cstBook,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get cstSection => $composableBuilder(
+    column: $table.cstSection,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get cstVagga => $composableBuilder(
+    column: $table.cstVagga,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get cstSutta => $composableBuilder(
+    column: $table.cstSutta,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get cstParanum => $composableBuilder(
+    column: $table.cstParanum,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get cstMPage => $composableBuilder(
+    column: $table.cstMPage,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get cstVPage => $composableBuilder(
+    column: $table.cstVPage,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get cstPPage => $composableBuilder(
+    column: $table.cstPPage,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get cstTPage => $composableBuilder(
+    column: $table.cstTPage,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get cstFile => $composableBuilder(
+    column: $table.cstFile,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get scCode => $composableBuilder(
+    column: $table.scCode,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get scBook => $composableBuilder(
+    column: $table.scBook,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get scVagga => $composableBuilder(
+    column: $table.scVagga,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get scSutta => $composableBuilder(
+    column: $table.scSutta,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get scEngSutta => $composableBuilder(
+    column: $table.scEngSutta,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get scBlurb => $composableBuilder(
+    column: $table.scBlurb,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get scFilePath => $composableBuilder(
+    column: $table.scFilePath,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get dprCode => $composableBuilder(
+    column: $table.dprCode,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get dprLink => $composableBuilder(
+    column: $table.dprLink,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get bjtSuttaCode => $composableBuilder(
+    column: $table.bjtSuttaCode,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get bjtWebCode => $composableBuilder(
+    column: $table.bjtWebCode,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get bjtFilename => $composableBuilder(
+    column: $table.bjtFilename,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get bjtBookId => $composableBuilder(
+    column: $table.bjtBookId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get bjtPageNum => $composableBuilder(
+    column: $table.bjtPageNum,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get bjtPageOffset => $composableBuilder(
+    column: $table.bjtPageOffset,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get bjtPitaka => $composableBuilder(
+    column: $table.bjtPitaka,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get bjtNikaya => $composableBuilder(
+    column: $table.bjtNikaya,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get bjtMajorSection => $composableBuilder(
+    column: $table.bjtMajorSection,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get bjtBook => $composableBuilder(
+    column: $table.bjtBook,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get bjtMinorSection => $composableBuilder(
+    column: $table.bjtMinorSection,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get bjtVagga => $composableBuilder(
+    column: $table.bjtVagga,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get bjtSutta => $composableBuilder(
+    column: $table.bjtSutta,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get dvPts => $composableBuilder(
+    column: $table.dvPts,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get dvMainTheme => $composableBuilder(
+    column: $table.dvMainTheme,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get dvSubtopic => $composableBuilder(
+    column: $table.dvSubtopic,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get dvSummary => $composableBuilder(
+    column: $table.dvSummary,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get dvSimiles => $composableBuilder(
+    column: $table.dvSimiles,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get dvKeyExcerpt1 => $composableBuilder(
+    column: $table.dvKeyExcerpt1,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get dvKeyExcerpt2 => $composableBuilder(
+    column: $table.dvKeyExcerpt2,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get dvStage => $composableBuilder(
+    column: $table.dvStage,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get dvTraining => $composableBuilder(
+    column: $table.dvTraining,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get dvAspect => $composableBuilder(
+    column: $table.dvAspect,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get dvTeacher => $composableBuilder(
+    column: $table.dvTeacher,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get dvAudience => $composableBuilder(
+    column: $table.dvAudience,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get dvMethod => $composableBuilder(
+    column: $table.dvMethod,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get dvLength => $composableBuilder(
+    column: $table.dvLength,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get dvProminence => $composableBuilder(
+    column: $table.dvProminence,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get dvNikayasParallels => $composableBuilder(
+    column: $table.dvNikayasParallels,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get dvAgamasParallels => $composableBuilder(
+    column: $table.dvAgamasParallels,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get dvTaishoParallels => $composableBuilder(
+    column: $table.dvTaishoParallels,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get dvSanskritParallels => $composableBuilder(
+    column: $table.dvSanskritParallels,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get dvVinayaParallels => $composableBuilder(
+    column: $table.dvVinayaParallels,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get dvOthersParallels => $composableBuilder(
+    column: $table.dvOthersParallels,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get dvPartialParallelsNa => $composableBuilder(
+    column: $table.dvPartialParallelsNa,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get dvPartialParallelsAll => $composableBuilder(
+    column: $table.dvPartialParallelsAll,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get dvSuggestedSuttas => $composableBuilder(
+    column: $table.dvSuggestedSuttas,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$SuttaInfoTableOrderingComposer
+    extends Composer<_$AppDatabase, $SuttaInfoTable> {
+  $$SuttaInfoTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get book => $composableBuilder(
+    column: $table.book,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get bookCode => $composableBuilder(
+    column: $table.bookCode,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get dpdCode => $composableBuilder(
+    column: $table.dpdCode,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get dpdSutta => $composableBuilder(
+    column: $table.dpdSutta,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get dpdSuttaVar => $composableBuilder(
+    column: $table.dpdSuttaVar,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get cstCode => $composableBuilder(
+    column: $table.cstCode,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get cstNikaya => $composableBuilder(
+    column: $table.cstNikaya,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get cstBook => $composableBuilder(
+    column: $table.cstBook,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get cstSection => $composableBuilder(
+    column: $table.cstSection,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get cstVagga => $composableBuilder(
+    column: $table.cstVagga,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get cstSutta => $composableBuilder(
+    column: $table.cstSutta,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get cstParanum => $composableBuilder(
+    column: $table.cstParanum,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get cstMPage => $composableBuilder(
+    column: $table.cstMPage,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get cstVPage => $composableBuilder(
+    column: $table.cstVPage,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get cstPPage => $composableBuilder(
+    column: $table.cstPPage,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get cstTPage => $composableBuilder(
+    column: $table.cstTPage,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get cstFile => $composableBuilder(
+    column: $table.cstFile,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get scCode => $composableBuilder(
+    column: $table.scCode,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get scBook => $composableBuilder(
+    column: $table.scBook,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get scVagga => $composableBuilder(
+    column: $table.scVagga,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get scSutta => $composableBuilder(
+    column: $table.scSutta,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get scEngSutta => $composableBuilder(
+    column: $table.scEngSutta,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get scBlurb => $composableBuilder(
+    column: $table.scBlurb,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get scFilePath => $composableBuilder(
+    column: $table.scFilePath,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get dprCode => $composableBuilder(
+    column: $table.dprCode,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get dprLink => $composableBuilder(
+    column: $table.dprLink,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get bjtSuttaCode => $composableBuilder(
+    column: $table.bjtSuttaCode,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get bjtWebCode => $composableBuilder(
+    column: $table.bjtWebCode,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get bjtFilename => $composableBuilder(
+    column: $table.bjtFilename,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get bjtBookId => $composableBuilder(
+    column: $table.bjtBookId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get bjtPageNum => $composableBuilder(
+    column: $table.bjtPageNum,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get bjtPageOffset => $composableBuilder(
+    column: $table.bjtPageOffset,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get bjtPitaka => $composableBuilder(
+    column: $table.bjtPitaka,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get bjtNikaya => $composableBuilder(
+    column: $table.bjtNikaya,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get bjtMajorSection => $composableBuilder(
+    column: $table.bjtMajorSection,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get bjtBook => $composableBuilder(
+    column: $table.bjtBook,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get bjtMinorSection => $composableBuilder(
+    column: $table.bjtMinorSection,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get bjtVagga => $composableBuilder(
+    column: $table.bjtVagga,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get bjtSutta => $composableBuilder(
+    column: $table.bjtSutta,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get dvPts => $composableBuilder(
+    column: $table.dvPts,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get dvMainTheme => $composableBuilder(
+    column: $table.dvMainTheme,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get dvSubtopic => $composableBuilder(
+    column: $table.dvSubtopic,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get dvSummary => $composableBuilder(
+    column: $table.dvSummary,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get dvSimiles => $composableBuilder(
+    column: $table.dvSimiles,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get dvKeyExcerpt1 => $composableBuilder(
+    column: $table.dvKeyExcerpt1,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get dvKeyExcerpt2 => $composableBuilder(
+    column: $table.dvKeyExcerpt2,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get dvStage => $composableBuilder(
+    column: $table.dvStage,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get dvTraining => $composableBuilder(
+    column: $table.dvTraining,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get dvAspect => $composableBuilder(
+    column: $table.dvAspect,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get dvTeacher => $composableBuilder(
+    column: $table.dvTeacher,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get dvAudience => $composableBuilder(
+    column: $table.dvAudience,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get dvMethod => $composableBuilder(
+    column: $table.dvMethod,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get dvLength => $composableBuilder(
+    column: $table.dvLength,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get dvProminence => $composableBuilder(
+    column: $table.dvProminence,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get dvNikayasParallels => $composableBuilder(
+    column: $table.dvNikayasParallels,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get dvAgamasParallels => $composableBuilder(
+    column: $table.dvAgamasParallels,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get dvTaishoParallels => $composableBuilder(
+    column: $table.dvTaishoParallels,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get dvSanskritParallels => $composableBuilder(
+    column: $table.dvSanskritParallels,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get dvVinayaParallels => $composableBuilder(
+    column: $table.dvVinayaParallels,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get dvOthersParallels => $composableBuilder(
+    column: $table.dvOthersParallels,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get dvPartialParallelsNa => $composableBuilder(
+    column: $table.dvPartialParallelsNa,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get dvPartialParallelsAll => $composableBuilder(
+    column: $table.dvPartialParallelsAll,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get dvSuggestedSuttas => $composableBuilder(
+    column: $table.dvSuggestedSuttas,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$SuttaInfoTableAnnotationComposer
+    extends Composer<_$AppDatabase, $SuttaInfoTable> {
+  $$SuttaInfoTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get book =>
+      $composableBuilder(column: $table.book, builder: (column) => column);
+
+  GeneratedColumn<String> get bookCode =>
+      $composableBuilder(column: $table.bookCode, builder: (column) => column);
+
+  GeneratedColumn<String> get dpdCode =>
+      $composableBuilder(column: $table.dpdCode, builder: (column) => column);
+
+  GeneratedColumn<String> get dpdSutta =>
+      $composableBuilder(column: $table.dpdSutta, builder: (column) => column);
+
+  GeneratedColumn<String> get dpdSuttaVar => $composableBuilder(
+    column: $table.dpdSuttaVar,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get cstCode =>
+      $composableBuilder(column: $table.cstCode, builder: (column) => column);
+
+  GeneratedColumn<String> get cstNikaya =>
+      $composableBuilder(column: $table.cstNikaya, builder: (column) => column);
+
+  GeneratedColumn<String> get cstBook =>
+      $composableBuilder(column: $table.cstBook, builder: (column) => column);
+
+  GeneratedColumn<String> get cstSection => $composableBuilder(
+    column: $table.cstSection,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get cstVagga =>
+      $composableBuilder(column: $table.cstVagga, builder: (column) => column);
+
+  GeneratedColumn<String> get cstSutta =>
+      $composableBuilder(column: $table.cstSutta, builder: (column) => column);
+
+  GeneratedColumn<String> get cstParanum => $composableBuilder(
+    column: $table.cstParanum,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get cstMPage =>
+      $composableBuilder(column: $table.cstMPage, builder: (column) => column);
+
+  GeneratedColumn<String> get cstVPage =>
+      $composableBuilder(column: $table.cstVPage, builder: (column) => column);
+
+  GeneratedColumn<String> get cstPPage =>
+      $composableBuilder(column: $table.cstPPage, builder: (column) => column);
+
+  GeneratedColumn<String> get cstTPage =>
+      $composableBuilder(column: $table.cstTPage, builder: (column) => column);
+
+  GeneratedColumn<String> get cstFile =>
+      $composableBuilder(column: $table.cstFile, builder: (column) => column);
+
+  GeneratedColumn<String> get scCode =>
+      $composableBuilder(column: $table.scCode, builder: (column) => column);
+
+  GeneratedColumn<String> get scBook =>
+      $composableBuilder(column: $table.scBook, builder: (column) => column);
+
+  GeneratedColumn<String> get scVagga =>
+      $composableBuilder(column: $table.scVagga, builder: (column) => column);
+
+  GeneratedColumn<String> get scSutta =>
+      $composableBuilder(column: $table.scSutta, builder: (column) => column);
+
+  GeneratedColumn<String> get scEngSutta => $composableBuilder(
+    column: $table.scEngSutta,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get scBlurb =>
+      $composableBuilder(column: $table.scBlurb, builder: (column) => column);
+
+  GeneratedColumn<String> get scFilePath => $composableBuilder(
+    column: $table.scFilePath,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get dprCode =>
+      $composableBuilder(column: $table.dprCode, builder: (column) => column);
+
+  GeneratedColumn<String> get dprLink =>
+      $composableBuilder(column: $table.dprLink, builder: (column) => column);
+
+  GeneratedColumn<String> get bjtSuttaCode => $composableBuilder(
+    column: $table.bjtSuttaCode,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get bjtWebCode => $composableBuilder(
+    column: $table.bjtWebCode,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get bjtFilename => $composableBuilder(
+    column: $table.bjtFilename,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get bjtBookId =>
+      $composableBuilder(column: $table.bjtBookId, builder: (column) => column);
+
+  GeneratedColumn<String> get bjtPageNum => $composableBuilder(
+    column: $table.bjtPageNum,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get bjtPageOffset => $composableBuilder(
+    column: $table.bjtPageOffset,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get bjtPitaka =>
+      $composableBuilder(column: $table.bjtPitaka, builder: (column) => column);
+
+  GeneratedColumn<String> get bjtNikaya =>
+      $composableBuilder(column: $table.bjtNikaya, builder: (column) => column);
+
+  GeneratedColumn<String> get bjtMajorSection => $composableBuilder(
+    column: $table.bjtMajorSection,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get bjtBook =>
+      $composableBuilder(column: $table.bjtBook, builder: (column) => column);
+
+  GeneratedColumn<String> get bjtMinorSection => $composableBuilder(
+    column: $table.bjtMinorSection,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get bjtVagga =>
+      $composableBuilder(column: $table.bjtVagga, builder: (column) => column);
+
+  GeneratedColumn<String> get bjtSutta =>
+      $composableBuilder(column: $table.bjtSutta, builder: (column) => column);
+
+  GeneratedColumn<String> get dvPts =>
+      $composableBuilder(column: $table.dvPts, builder: (column) => column);
+
+  GeneratedColumn<String> get dvMainTheme => $composableBuilder(
+    column: $table.dvMainTheme,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get dvSubtopic => $composableBuilder(
+    column: $table.dvSubtopic,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get dvSummary =>
+      $composableBuilder(column: $table.dvSummary, builder: (column) => column);
+
+  GeneratedColumn<String> get dvSimiles =>
+      $composableBuilder(column: $table.dvSimiles, builder: (column) => column);
+
+  GeneratedColumn<String> get dvKeyExcerpt1 => $composableBuilder(
+    column: $table.dvKeyExcerpt1,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get dvKeyExcerpt2 => $composableBuilder(
+    column: $table.dvKeyExcerpt2,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get dvStage =>
+      $composableBuilder(column: $table.dvStage, builder: (column) => column);
+
+  GeneratedColumn<String> get dvTraining => $composableBuilder(
+    column: $table.dvTraining,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get dvAspect =>
+      $composableBuilder(column: $table.dvAspect, builder: (column) => column);
+
+  GeneratedColumn<String> get dvTeacher =>
+      $composableBuilder(column: $table.dvTeacher, builder: (column) => column);
+
+  GeneratedColumn<String> get dvAudience => $composableBuilder(
+    column: $table.dvAudience,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get dvMethod =>
+      $composableBuilder(column: $table.dvMethod, builder: (column) => column);
+
+  GeneratedColumn<String> get dvLength =>
+      $composableBuilder(column: $table.dvLength, builder: (column) => column);
+
+  GeneratedColumn<String> get dvProminence => $composableBuilder(
+    column: $table.dvProminence,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get dvNikayasParallels => $composableBuilder(
+    column: $table.dvNikayasParallels,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get dvAgamasParallels => $composableBuilder(
+    column: $table.dvAgamasParallels,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get dvTaishoParallels => $composableBuilder(
+    column: $table.dvTaishoParallels,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get dvSanskritParallels => $composableBuilder(
+    column: $table.dvSanskritParallels,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get dvVinayaParallels => $composableBuilder(
+    column: $table.dvVinayaParallels,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get dvOthersParallels => $composableBuilder(
+    column: $table.dvOthersParallels,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get dvPartialParallelsNa => $composableBuilder(
+    column: $table.dvPartialParallelsNa,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get dvPartialParallelsAll => $composableBuilder(
+    column: $table.dvPartialParallelsAll,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get dvSuggestedSuttas => $composableBuilder(
+    column: $table.dvSuggestedSuttas,
+    builder: (column) => column,
+  );
+}
+
+class $$SuttaInfoTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $SuttaInfoTable,
+          SuttaInfoData,
+          $$SuttaInfoTableFilterComposer,
+          $$SuttaInfoTableOrderingComposer,
+          $$SuttaInfoTableAnnotationComposer,
+          $$SuttaInfoTableCreateCompanionBuilder,
+          $$SuttaInfoTableUpdateCompanionBuilder,
+          (
+            SuttaInfoData,
+            BaseReferences<_$AppDatabase, $SuttaInfoTable, SuttaInfoData>,
+          ),
+          SuttaInfoData,
+          PrefetchHooks Function()
+        > {
+  $$SuttaInfoTableTableManager(_$AppDatabase db, $SuttaInfoTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$SuttaInfoTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$SuttaInfoTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$SuttaInfoTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String?> book = const Value.absent(),
+                Value<String?> bookCode = const Value.absent(),
+                Value<String?> dpdCode = const Value.absent(),
+                Value<String> dpdSutta = const Value.absent(),
+                Value<String?> dpdSuttaVar = const Value.absent(),
+                Value<String?> cstCode = const Value.absent(),
+                Value<String?> cstNikaya = const Value.absent(),
+                Value<String?> cstBook = const Value.absent(),
+                Value<String?> cstSection = const Value.absent(),
+                Value<String?> cstVagga = const Value.absent(),
+                Value<String?> cstSutta = const Value.absent(),
+                Value<String?> cstParanum = const Value.absent(),
+                Value<String?> cstMPage = const Value.absent(),
+                Value<String?> cstVPage = const Value.absent(),
+                Value<String?> cstPPage = const Value.absent(),
+                Value<String?> cstTPage = const Value.absent(),
+                Value<String?> cstFile = const Value.absent(),
+                Value<String?> scCode = const Value.absent(),
+                Value<String?> scBook = const Value.absent(),
+                Value<String?> scVagga = const Value.absent(),
+                Value<String?> scSutta = const Value.absent(),
+                Value<String?> scEngSutta = const Value.absent(),
+                Value<String?> scBlurb = const Value.absent(),
+                Value<String?> scFilePath = const Value.absent(),
+                Value<String?> dprCode = const Value.absent(),
+                Value<String?> dprLink = const Value.absent(),
+                Value<String?> bjtSuttaCode = const Value.absent(),
+                Value<String?> bjtWebCode = const Value.absent(),
+                Value<String?> bjtFilename = const Value.absent(),
+                Value<String?> bjtBookId = const Value.absent(),
+                Value<String?> bjtPageNum = const Value.absent(),
+                Value<String?> bjtPageOffset = const Value.absent(),
+                Value<String?> bjtPitaka = const Value.absent(),
+                Value<String?> bjtNikaya = const Value.absent(),
+                Value<String?> bjtMajorSection = const Value.absent(),
+                Value<String?> bjtBook = const Value.absent(),
+                Value<String?> bjtMinorSection = const Value.absent(),
+                Value<String?> bjtVagga = const Value.absent(),
+                Value<String?> bjtSutta = const Value.absent(),
+                Value<String?> dvPts = const Value.absent(),
+                Value<String?> dvMainTheme = const Value.absent(),
+                Value<String?> dvSubtopic = const Value.absent(),
+                Value<String?> dvSummary = const Value.absent(),
+                Value<String?> dvSimiles = const Value.absent(),
+                Value<String?> dvKeyExcerpt1 = const Value.absent(),
+                Value<String?> dvKeyExcerpt2 = const Value.absent(),
+                Value<String?> dvStage = const Value.absent(),
+                Value<String?> dvTraining = const Value.absent(),
+                Value<String?> dvAspect = const Value.absent(),
+                Value<String?> dvTeacher = const Value.absent(),
+                Value<String?> dvAudience = const Value.absent(),
+                Value<String?> dvMethod = const Value.absent(),
+                Value<String?> dvLength = const Value.absent(),
+                Value<String?> dvProminence = const Value.absent(),
+                Value<String?> dvNikayasParallels = const Value.absent(),
+                Value<String?> dvAgamasParallels = const Value.absent(),
+                Value<String?> dvTaishoParallels = const Value.absent(),
+                Value<String?> dvSanskritParallels = const Value.absent(),
+                Value<String?> dvVinayaParallels = const Value.absent(),
+                Value<String?> dvOthersParallels = const Value.absent(),
+                Value<String?> dvPartialParallelsNa = const Value.absent(),
+                Value<String?> dvPartialParallelsAll = const Value.absent(),
+                Value<String?> dvSuggestedSuttas = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => SuttaInfoCompanion(
+                book: book,
+                bookCode: bookCode,
+                dpdCode: dpdCode,
+                dpdSutta: dpdSutta,
+                dpdSuttaVar: dpdSuttaVar,
+                cstCode: cstCode,
+                cstNikaya: cstNikaya,
+                cstBook: cstBook,
+                cstSection: cstSection,
+                cstVagga: cstVagga,
+                cstSutta: cstSutta,
+                cstParanum: cstParanum,
+                cstMPage: cstMPage,
+                cstVPage: cstVPage,
+                cstPPage: cstPPage,
+                cstTPage: cstTPage,
+                cstFile: cstFile,
+                scCode: scCode,
+                scBook: scBook,
+                scVagga: scVagga,
+                scSutta: scSutta,
+                scEngSutta: scEngSutta,
+                scBlurb: scBlurb,
+                scFilePath: scFilePath,
+                dprCode: dprCode,
+                dprLink: dprLink,
+                bjtSuttaCode: bjtSuttaCode,
+                bjtWebCode: bjtWebCode,
+                bjtFilename: bjtFilename,
+                bjtBookId: bjtBookId,
+                bjtPageNum: bjtPageNum,
+                bjtPageOffset: bjtPageOffset,
+                bjtPitaka: bjtPitaka,
+                bjtNikaya: bjtNikaya,
+                bjtMajorSection: bjtMajorSection,
+                bjtBook: bjtBook,
+                bjtMinorSection: bjtMinorSection,
+                bjtVagga: bjtVagga,
+                bjtSutta: bjtSutta,
+                dvPts: dvPts,
+                dvMainTheme: dvMainTheme,
+                dvSubtopic: dvSubtopic,
+                dvSummary: dvSummary,
+                dvSimiles: dvSimiles,
+                dvKeyExcerpt1: dvKeyExcerpt1,
+                dvKeyExcerpt2: dvKeyExcerpt2,
+                dvStage: dvStage,
+                dvTraining: dvTraining,
+                dvAspect: dvAspect,
+                dvTeacher: dvTeacher,
+                dvAudience: dvAudience,
+                dvMethod: dvMethod,
+                dvLength: dvLength,
+                dvProminence: dvProminence,
+                dvNikayasParallels: dvNikayasParallels,
+                dvAgamasParallels: dvAgamasParallels,
+                dvTaishoParallels: dvTaishoParallels,
+                dvSanskritParallels: dvSanskritParallels,
+                dvVinayaParallels: dvVinayaParallels,
+                dvOthersParallels: dvOthersParallels,
+                dvPartialParallelsNa: dvPartialParallelsNa,
+                dvPartialParallelsAll: dvPartialParallelsAll,
+                dvSuggestedSuttas: dvSuggestedSuttas,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                Value<String?> book = const Value.absent(),
+                Value<String?> bookCode = const Value.absent(),
+                Value<String?> dpdCode = const Value.absent(),
+                required String dpdSutta,
+                Value<String?> dpdSuttaVar = const Value.absent(),
+                Value<String?> cstCode = const Value.absent(),
+                Value<String?> cstNikaya = const Value.absent(),
+                Value<String?> cstBook = const Value.absent(),
+                Value<String?> cstSection = const Value.absent(),
+                Value<String?> cstVagga = const Value.absent(),
+                Value<String?> cstSutta = const Value.absent(),
+                Value<String?> cstParanum = const Value.absent(),
+                Value<String?> cstMPage = const Value.absent(),
+                Value<String?> cstVPage = const Value.absent(),
+                Value<String?> cstPPage = const Value.absent(),
+                Value<String?> cstTPage = const Value.absent(),
+                Value<String?> cstFile = const Value.absent(),
+                Value<String?> scCode = const Value.absent(),
+                Value<String?> scBook = const Value.absent(),
+                Value<String?> scVagga = const Value.absent(),
+                Value<String?> scSutta = const Value.absent(),
+                Value<String?> scEngSutta = const Value.absent(),
+                Value<String?> scBlurb = const Value.absent(),
+                Value<String?> scFilePath = const Value.absent(),
+                Value<String?> dprCode = const Value.absent(),
+                Value<String?> dprLink = const Value.absent(),
+                Value<String?> bjtSuttaCode = const Value.absent(),
+                Value<String?> bjtWebCode = const Value.absent(),
+                Value<String?> bjtFilename = const Value.absent(),
+                Value<String?> bjtBookId = const Value.absent(),
+                Value<String?> bjtPageNum = const Value.absent(),
+                Value<String?> bjtPageOffset = const Value.absent(),
+                Value<String?> bjtPitaka = const Value.absent(),
+                Value<String?> bjtNikaya = const Value.absent(),
+                Value<String?> bjtMajorSection = const Value.absent(),
+                Value<String?> bjtBook = const Value.absent(),
+                Value<String?> bjtMinorSection = const Value.absent(),
+                Value<String?> bjtVagga = const Value.absent(),
+                Value<String?> bjtSutta = const Value.absent(),
+                Value<String?> dvPts = const Value.absent(),
+                Value<String?> dvMainTheme = const Value.absent(),
+                Value<String?> dvSubtopic = const Value.absent(),
+                Value<String?> dvSummary = const Value.absent(),
+                Value<String?> dvSimiles = const Value.absent(),
+                Value<String?> dvKeyExcerpt1 = const Value.absent(),
+                Value<String?> dvKeyExcerpt2 = const Value.absent(),
+                Value<String?> dvStage = const Value.absent(),
+                Value<String?> dvTraining = const Value.absent(),
+                Value<String?> dvAspect = const Value.absent(),
+                Value<String?> dvTeacher = const Value.absent(),
+                Value<String?> dvAudience = const Value.absent(),
+                Value<String?> dvMethod = const Value.absent(),
+                Value<String?> dvLength = const Value.absent(),
+                Value<String?> dvProminence = const Value.absent(),
+                Value<String?> dvNikayasParallels = const Value.absent(),
+                Value<String?> dvAgamasParallels = const Value.absent(),
+                Value<String?> dvTaishoParallels = const Value.absent(),
+                Value<String?> dvSanskritParallels = const Value.absent(),
+                Value<String?> dvVinayaParallels = const Value.absent(),
+                Value<String?> dvOthersParallels = const Value.absent(),
+                Value<String?> dvPartialParallelsNa = const Value.absent(),
+                Value<String?> dvPartialParallelsAll = const Value.absent(),
+                Value<String?> dvSuggestedSuttas = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => SuttaInfoCompanion.insert(
+                book: book,
+                bookCode: bookCode,
+                dpdCode: dpdCode,
+                dpdSutta: dpdSutta,
+                dpdSuttaVar: dpdSuttaVar,
+                cstCode: cstCode,
+                cstNikaya: cstNikaya,
+                cstBook: cstBook,
+                cstSection: cstSection,
+                cstVagga: cstVagga,
+                cstSutta: cstSutta,
+                cstParanum: cstParanum,
+                cstMPage: cstMPage,
+                cstVPage: cstVPage,
+                cstPPage: cstPPage,
+                cstTPage: cstTPage,
+                cstFile: cstFile,
+                scCode: scCode,
+                scBook: scBook,
+                scVagga: scVagga,
+                scSutta: scSutta,
+                scEngSutta: scEngSutta,
+                scBlurb: scBlurb,
+                scFilePath: scFilePath,
+                dprCode: dprCode,
+                dprLink: dprLink,
+                bjtSuttaCode: bjtSuttaCode,
+                bjtWebCode: bjtWebCode,
+                bjtFilename: bjtFilename,
+                bjtBookId: bjtBookId,
+                bjtPageNum: bjtPageNum,
+                bjtPageOffset: bjtPageOffset,
+                bjtPitaka: bjtPitaka,
+                bjtNikaya: bjtNikaya,
+                bjtMajorSection: bjtMajorSection,
+                bjtBook: bjtBook,
+                bjtMinorSection: bjtMinorSection,
+                bjtVagga: bjtVagga,
+                bjtSutta: bjtSutta,
+                dvPts: dvPts,
+                dvMainTheme: dvMainTheme,
+                dvSubtopic: dvSubtopic,
+                dvSummary: dvSummary,
+                dvSimiles: dvSimiles,
+                dvKeyExcerpt1: dvKeyExcerpt1,
+                dvKeyExcerpt2: dvKeyExcerpt2,
+                dvStage: dvStage,
+                dvTraining: dvTraining,
+                dvAspect: dvAspect,
+                dvTeacher: dvTeacher,
+                dvAudience: dvAudience,
+                dvMethod: dvMethod,
+                dvLength: dvLength,
+                dvProminence: dvProminence,
+                dvNikayasParallels: dvNikayasParallels,
+                dvAgamasParallels: dvAgamasParallels,
+                dvTaishoParallels: dvTaishoParallels,
+                dvSanskritParallels: dvSanskritParallels,
+                dvVinayaParallels: dvVinayaParallels,
+                dvOthersParallels: dvOthersParallels,
+                dvPartialParallelsNa: dvPartialParallelsNa,
+                dvPartialParallelsAll: dvPartialParallelsAll,
+                dvSuggestedSuttas: dvSuggestedSuttas,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$SuttaInfoTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $SuttaInfoTable,
+      SuttaInfoData,
+      $$SuttaInfoTableFilterComposer,
+      $$SuttaInfoTableOrderingComposer,
+      $$SuttaInfoTableAnnotationComposer,
+      $$SuttaInfoTableCreateCompanionBuilder,
+      $$SuttaInfoTableUpdateCompanionBuilder,
+      (
+        SuttaInfoData,
+        BaseReferences<_$AppDatabase, $SuttaInfoTable, SuttaInfoData>,
+      ),
+      SuttaInfoData,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -9024,4 +13782,6 @@ class $AppDatabaseManager {
       $$FamilyIdiomTableTableManager(_db, _db.familyIdiom);
   $$FamilySetTableTableManager get familySet =>
       $$FamilySetTableTableManager(_db, _db.familySet);
+  $$SuttaInfoTableTableManager get suttaInfo =>
+      $$SuttaInfoTableTableManager(_db, _db.suttaInfo);
 }

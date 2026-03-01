@@ -26,6 +26,7 @@ class DpdHeadwordWithRoot {
   FamilyCompound,
   FamilyIdiom,
   FamilySet,
+  SuttaInfo,
 ])
 class DpdDao extends DatabaseAccessor<AppDatabase> with _$DpdDaoMixin {
   DpdDao(super.db);
@@ -191,6 +192,14 @@ class DpdDao extends DatabaseAccessor<AppDatabase> with _$DpdDaoMixin {
   Future<List<FamilySetData>> getSets(List<String> sets) {
     if (sets.isEmpty) return Future.value([]);
     return (select(familySet)..where((t) => t.set_.isIn(sets))).get();
+  }
+
+  // ── Sutta info ──────────────────────────────────────────────────────────
+
+  Future<SuttaInfoData?> getSuttaInfo(String lemma1) {
+    return (select(suttaInfo)
+          ..where((t) => t.dpdSutta.equals(lemma1)))
+        .getSingleOrNull();
   }
 
   // ── DB metadata ───────────────────────────────────────────────────────────

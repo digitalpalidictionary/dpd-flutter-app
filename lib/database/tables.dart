@@ -165,6 +165,100 @@ class FamilyIdiom extends Table {
   Set<Column> get primaryKey => {idiom};
 }
 
+class SuttaInfo extends Table {
+  @override
+  String get tableName => 'sutta_info';
+
+  // DPD
+  TextColumn get book => text().nullable()();
+  TextColumn get bookCode => text().named('book_code').nullable()();
+  TextColumn get dpdCode => text().named('dpd_code').nullable()();
+  TextColumn get dpdSutta => text().named('dpd_sutta')();
+  TextColumn get dpdSuttaVar => text().named('dpd_sutta_var').nullable()();
+
+  // CST
+  TextColumn get cstCode => text().named('cst_code').nullable()();
+  TextColumn get cstNikaya => text().named('cst_nikaya').nullable()();
+  TextColumn get cstBook => text().named('cst_book').nullable()();
+  TextColumn get cstSection => text().named('cst_section').nullable()();
+  TextColumn get cstVagga => text().named('cst_vagga').nullable()();
+  TextColumn get cstSutta => text().named('cst_sutta').nullable()();
+  TextColumn get cstParanum => text().named('cst_paranum').nullable()();
+  TextColumn get cstMPage => text().named('cst_m_page').nullable()();
+  TextColumn get cstVPage => text().named('cst_v_page').nullable()();
+  TextColumn get cstPPage => text().named('cst_p_page').nullable()();
+  TextColumn get cstTPage => text().named('cst_t_page').nullable()();
+  TextColumn get cstFile => text().named('cst_file').nullable()();
+
+  // Sutta Central
+  TextColumn get scCode => text().named('sc_code').nullable()();
+  TextColumn get scBook => text().named('sc_book').nullable()();
+  TextColumn get scVagga => text().named('sc_vagga').nullable()();
+  TextColumn get scSutta => text().named('sc_sutta').nullable()();
+  TextColumn get scEngSutta => text().named('sc_eng_sutta').nullable()();
+  TextColumn get scBlurb => text().named('sc_blurb').nullable()();
+  TextColumn get scFilePath => text().named('sc_file_path').nullable()();
+  TextColumn get dprCode => text().named('dpr_code').nullable()();
+  TextColumn get dprLink => text().named('dpr_link').nullable()();
+
+  // BJT
+  TextColumn get bjtSuttaCode => text().named('bjt_sutta_code').nullable()();
+  TextColumn get bjtWebCode => text().named('bjt_web_code').nullable()();
+  TextColumn get bjtFilename => text().named('bjt_filename').nullable()();
+  TextColumn get bjtBookId => text().named('bjt_book_id').nullable()();
+  TextColumn get bjtPageNum => text().named('bjt_page_num').nullable()();
+  TextColumn get bjtPageOffset => text().named('bjt_page_offset').nullable()();
+  TextColumn get bjtPitaka => text().named('bjt_piṭaka').nullable()();
+  TextColumn get bjtNikaya => text().named('bjt_nikāya').nullable()();
+  TextColumn get bjtMajorSection =>
+      text().named('bjt_major_section').nullable()();
+  TextColumn get bjtBook => text().named('bjt_book').nullable()();
+  TextColumn get bjtMinorSection =>
+      text().named('bjt_minor_section').nullable()();
+  TextColumn get bjtVagga => text().named('bjt_vagga').nullable()();
+  TextColumn get bjtSutta => text().named('bjt_sutta').nullable()();
+
+  // Dhamma Vinaya
+  TextColumn get dvPts => text().named('dv_pts').nullable()();
+  TextColumn get dvMainTheme => text().named('dv_main_theme').nullable()();
+  TextColumn get dvSubtopic => text().named('dv_subtopic').nullable()();
+  TextColumn get dvSummary => text().named('dv_summary').nullable()();
+  TextColumn get dvSimiles => text().named('dv_similes').nullable()();
+  TextColumn get dvKeyExcerpt1 =>
+      text().named('dv_key_excerpt1').nullable()();
+  TextColumn get dvKeyExcerpt2 =>
+      text().named('dv_key_excerpt2').nullable()();
+  TextColumn get dvStage => text().named('dv_stage').nullable()();
+  TextColumn get dvTraining => text().named('dv_training').nullable()();
+  TextColumn get dvAspect => text().named('dv_aspect').nullable()();
+  TextColumn get dvTeacher => text().named('dv_teacher').nullable()();
+  TextColumn get dvAudience => text().named('dv_audience').nullable()();
+  TextColumn get dvMethod => text().named('dv_method').nullable()();
+  TextColumn get dvLength => text().named('dv_length').nullable()();
+  TextColumn get dvProminence => text().named('dv_prominence').nullable()();
+  TextColumn get dvNikayasParallels =>
+      text().named('dv_nikayas_parallels').nullable()();
+  TextColumn get dvAgamasParallels =>
+      text().named('dv_āgamas_parallels').nullable()();
+  TextColumn get dvTaishoParallels =>
+      text().named('dv_taisho_parallels').nullable()();
+  TextColumn get dvSanskritParallels =>
+      text().named('dv_sanskrit_parallels').nullable()();
+  TextColumn get dvVinayaParallels =>
+      text().named('dv_vinaya_parallels').nullable()();
+  TextColumn get dvOthersParallels =>
+      text().named('dv_others_parallels').nullable()();
+  TextColumn get dvPartialParallelsNa =>
+      text().named('dv_partial_parallels_nā').nullable()();
+  TextColumn get dvPartialParallelsAll =>
+      text().named('dv_partial_parallels_all').nullable()();
+  TextColumn get dvSuggestedSuttas =>
+      text().named('dv_suggested_suttas').nullable()();
+
+  @override
+  Set<Column> get primaryKey => {dpdSutta};
+}
+
 class FamilySet extends Table {
   @override
   String get tableName => 'family_set';
