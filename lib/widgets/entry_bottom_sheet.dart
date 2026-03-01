@@ -6,6 +6,7 @@ import '../providers/settings_provider.dart';
 import '../theme/dpd_colors.dart';
 import 'entry_content.dart';
 import 'family_state_mixin.dart';
+import 'feedback_section.dart';
 import 'frequency_section.dart';
 import 'grammar_table.dart';
 import 'inflection_section.dart';
@@ -34,6 +35,7 @@ class _EntryBottomSheetState extends ConsumerState<EntryBottomSheet>
   bool _inflectionsOpen = false;
   bool _frequencyOpen = false;
   bool _notesOpen = false;
+  bool _feedbackOpen = false;
 
   @override
   DpdHeadwordWithRoot get familyHeadword => widget.headword;
@@ -136,6 +138,12 @@ class _EntryBottomSheetState extends ConsumerState<EntryBottomSheet>
                     isActive: _notesOpen,
                     onTap: () => setState(() => _notesOpen = !_notesOpen),
                   ),
+                DpdSectionButton(
+                  label: 'Feedback',
+                  isActive: _feedbackOpen,
+                  onTap: () =>
+                      setState(() => _feedbackOpen = !_feedbackOpen),
+                ),
               ],
             ),
           ),
@@ -199,6 +207,9 @@ class _EntryBottomSheetState extends ConsumerState<EntryBottomSheet>
                 child: Text(h.notes!),
               ),
             ),
+
+          if (_feedbackOpen)
+            FeedbackSection(headwordId: h.id, lemma1: h.lemma1),
 
           const SizedBox(height: 32),
         ],
