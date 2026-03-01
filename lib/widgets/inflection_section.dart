@@ -100,5 +100,5 @@ String inflectionButtonLabel(String? pos) {
     'perf',
     'pr',
   };
-  return conjugationPos.contains(pos) ? 'Conjugation' : 'Declension';
+  return conjugationPos.contains(pos) ? 'conjugation' : 'declension';
 }

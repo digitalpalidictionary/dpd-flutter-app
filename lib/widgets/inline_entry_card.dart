@@ -50,9 +50,16 @@ class _InlineEntryCardState extends ConsumerState<InlineEntryCard>
   }
 
   Future<void> _loadSuttaInfo() async {
-    final info =
-        await ref.read(daoProvider).getSuttaInfo(widget.headword.lemma1);
-    if (mounted) setState(() { _suttaInfo = info; _suttaLoaded = true; });
+    final info = await ref
+        .read(daoProvider)
+        .getSuttaInfo(widget.headword.lemma1);
+    if (mounted) {
+      setState(() {
+        _suttaInfo = info;
+        _suttaLoaded = true;
+      });
+    }
+
   }
 
   @override
@@ -60,8 +67,7 @@ class _InlineEntryCardState extends ConsumerState<InlineEntryCard>
     final theme = Theme.of(context);
     final h = widget.headword;
 
-    final templateCache =
-        ref.watch(templateCacheProvider).valueOrNull ?? {};
+    final templateCache = ref.watch(templateCacheProvider).valueOrNull ?? {};
     final hasInflections = hasInflectionContent(h);
     final hasEx1 = h.example1 != null && h.example1!.isNotEmpty;
     final hasEx2 = h.example2 != null && h.example2!.isNotEmpty;
@@ -96,21 +102,20 @@ class _InlineEntryCardState extends ConsumerState<InlineEntryCard>
               children: [
                 if (_suttaLoaded && _suttaInfo != null)
                   DpdSectionButton(
-                    label: 'Sutta',
+                    label: 'sutta',
                     isActive: _suttaOpen,
                     onTap: () => setState(() => _suttaOpen = !_suttaOpen),
                   ),
                 DpdSectionButton(
-                  label: 'Grammar',
+                  label: 'grammar',
                   isActive: _grammarOpen,
                   onTap: () => setState(() => _grammarOpen = !_grammarOpen),
                 ),
                 if (hasExamples)
                   DpdSectionButton(
-                    label: 'Examples',
+                    label: 'examples',
                     isActive: _examplesOpen,
-                    onTap: () =>
-                        setState(() => _examplesOpen = !_examplesOpen),
+                    onTap: () => setState(() => _examplesOpen = !_examplesOpen),
                   ),
                 if (hasInflections)
                   DpdSectionButton(
@@ -122,16 +127,15 @@ class _InlineEntryCardState extends ConsumerState<InlineEntryCard>
                 ...buildFamilyButtons(),
                 if (hasFrequency)
                   DpdSectionButton(
-                    label: 'Frequency',
+                    label: 'frequency',
                     isActive: _frequencyOpen,
                     onTap: () =>
                         setState(() => _frequencyOpen = !_frequencyOpen),
                   ),
                 DpdSectionButton(
-                  label: 'Feedback',
+                  label: 'feedback',
                   isActive: _feedbackOpen,
-                  onTap: () =>
-                      setState(() => _feedbackOpen = !_feedbackOpen),
+                  onTap: () => setState(() => _feedbackOpen = !_feedbackOpen),
                 ),
               ],
             ),

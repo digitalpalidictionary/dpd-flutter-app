@@ -48,9 +48,15 @@ class _AccordionCardState extends ConsumerState<AccordionCard>
   }
 
   Future<void> _loadSuttaInfo() async {
-    final info =
-        await ref.read(daoProvider).getSuttaInfo(widget.headword.lemma1);
-    if (mounted) setState(() { _suttaInfo = info; _suttaLoaded = true; });
+    final info = await ref
+        .read(daoProvider)
+        .getSuttaInfo(widget.headword.lemma1);
+    if (mounted) {
+      setState(() {
+        _suttaInfo = info;
+        _suttaLoaded = true;
+      });
+    }
   }
 
   void _toggleCard() {
@@ -67,8 +73,7 @@ class _AccordionCardState extends ConsumerState<AccordionCard>
     final h = widget.headword;
     final isExpanded = _cardState == _CardState.buttonsVisible;
 
-    final templateCache =
-        ref.watch(templateCacheProvider).valueOrNull ?? {};
+    final templateCache = ref.watch(templateCacheProvider).valueOrNull ?? {};
     final hasInflections = hasInflectionContent(h);
     final hasEx1 = h.example1 != null && h.example1!.isNotEmpty;
     final hasEx2 = h.example2 != null && h.example2!.isNotEmpty;
@@ -109,20 +114,19 @@ class _AccordionCardState extends ConsumerState<AccordionCard>
                     children: [
                       if (_suttaLoaded && _suttaInfo != null)
                         DpdSectionButton(
-                          label: 'Sutta',
+                          label: 'sutta',
                           isActive: _suttaOpen,
-                          onTap: () =>
-                              setState(() => _suttaOpen = !_suttaOpen),
+                          onTap: () => setState(() => _suttaOpen = !_suttaOpen),
                         ),
                       DpdSectionButton(
-                        label: 'Grammar',
+                        label: 'grammar',
                         isActive: _grammarOpen,
                         onTap: () =>
                             setState(() => _grammarOpen = !_grammarOpen),
                       ),
                       if (hasExamples)
                         DpdSectionButton(
-                          label: hasTwoExamples ? 'Examples' : 'Example',
+                          label: hasTwoExamples ? 'examples' : 'example',
                           isActive: _examplesOpen,
                           onTap: () =>
                               setState(() => _examplesOpen = !_examplesOpen),
