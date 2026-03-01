@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import '../database/database.dart';
 import '../providers/autocomplete_provider.dart';
@@ -47,6 +48,8 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
       );
     }
 
+    setState(() {});
+
     _autocompleteDebounce?.cancel();
     _autocompleteDebounce = Timer(const Duration(milliseconds: 150), () {
       _updateAutocomplete(converted.trim());
@@ -56,6 +59,24 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     _debounce = Timer(const Duration(milliseconds: 300), () {
       ref.read(searchQueryProvider.notifier).state = converted.trim();
     });
+  }
+
+  void _onSearch() {
+    _removeOverlay();
+    _autocompleteDebounce?.cancel();
+    _debounce?.cancel();
+    final query = _controller.text.trim();
+    ref.read(searchQueryProvider.notifier).state = query;
+    FocusScope.of(context).unfocus();
+  }
+
+  void _onClear() {
+    _controller.clear();
+    _removeOverlay();
+    _autocompleteDebounce?.cancel();
+    _debounce?.cancel();
+    ref.read(searchQueryProvider.notifier).state = '';
+    setState(() {});
   }
 
   void _updateAutocomplete(String query) {
@@ -90,7 +111,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
               suggestions: suggestions,
               onSelected: _onSuggestionSelected,
               layerLink: _layerLink,
-              width: width - 24,
+              width: width - 16,
             ),
           ),
         ],
@@ -101,12 +122,12 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
 
   void _onSuggestionSelected(String term) {
     _controller.text = term;
-    _controller.selection =
-        TextSelection.collapsed(offset: term.length);
+    _controller.selection = TextSelection.collapsed(offset: term.length);
     _removeOverlay();
     _autocompleteDebounce?.cancel();
     _debounce?.cancel();
     ref.read(searchQueryProvider.notifier).state = term;
+    setState(() {});
   }
 
   void _removeOverlay() {
@@ -118,62 +139,112 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
     final query = ref.watch(searchQueryProvider);
     final exactAsync = ref.watch(exactResultsProvider(query));
     final partialAsync = ref.watch(partialResultsProvider(query));
 
     return Scaffold(
-      appBar: AppBar(
-        title: CompositedTransformTarget(
-          link: _layerLink,
-          child: TextField(
-            controller: _controller,
-            autofocus: false,
-            onChanged: _onChanged,
-            style: theme.textTheme.titleMedium,
-            decoration: InputDecoration(
-              hintText: 'Search Pāḷi...',
-              hintStyle: theme.textTheme.titleMedium?.copyWith(
-                color: theme.colorScheme.onSurface.withValues(alpha: 0.4),
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: DpdColors.borderRadius,
-                borderSide: BorderSide(
-                  color: theme.colorScheme.primary,
-                  width: 1.5,
-                ),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: DpdColors.borderRadius,
-                borderSide: BorderSide(
-                  color: theme.colorScheme.primary,
-                  width: 2,
-                ),
-              ),
-              contentPadding: const EdgeInsets.symmetric(
-                horizontal: 12,
-                vertical: 10,
+      body: SafeArea(
+        child: Column(
+          children: [
+            // Header: logo + title + settings
+            Padding(
+              padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
+              child: Row(
+                children: [
+                  SvgPicture.asset(
+                    isDark
+                        ? 'assets/images/dpd-logo-dark.svg'
+                        : 'assets/images/dpd-logo.svg',
+                    height: 30,
+                    width: 30,
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      'Digital Pāḷi Dictionary',
+                      style: theme.textTheme.titleLarge?.copyWith(
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.settings),
+                    onPressed: () =>
+                        Navigator.pushNamed(context, '/settings'),
+                  ),
+                ],
               ),
             ),
-          ),
+
+            const SizedBox(height: 8),
+
+            // Search bar + buttons
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: CompositedTransformTarget(
+                      link: _layerLink,
+                      child: TextField(
+                        controller: _controller,
+                        autofocus: false,
+                        onChanged: _onChanged,
+                        onSubmitted: (_) => _onSearch(),
+                        style: theme.textTheme.titleMedium,
+                        decoration: InputDecoration(
+                          hintText: 'Search Pāḷi...',
+                          hintStyle: theme.textTheme.titleMedium?.copyWith(
+                            color: theme.colorScheme.onSurface
+                                .withValues(alpha: 0.4),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: DpdColors.borderRadius,
+                            borderSide: BorderSide(
+                              color: theme.colorScheme.primary,
+                              width: 1.5,
+                            ),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: DpdColors.borderRadius,
+                            borderSide: BorderSide(
+                              color: theme.colorScheme.primary,
+                              width: 2,
+                            ),
+                          ),
+                          contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 10,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 5),
+                  _SearchButton(
+                    label: 'search',
+                    onPressed: _onSearch,
+                  ),
+                  const SizedBox(width: 5),
+                  _SearchButton(
+                    label: 'clear',
+                    onPressed: _controller.text.isEmpty ? null : _onClear,
+                  ),
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 8),
+
+            // Results
+            Expanded(
+              child: _buildBody(context, query, exactAsync, partialAsync),
+            ),
+          ],
         ),
-        actions: [
-          if (_controller.text.isNotEmpty)
-            IconButton(
-              icon: const Icon(Icons.clear),
-              onPressed: () {
-                _controller.clear();
-                _removeOverlay();
-                ref.read(searchQueryProvider.notifier).state = '';
-              },
-            ),
-          IconButton(
-            icon: const Icon(Icons.settings),
-            onPressed: () => Navigator.pushNamed(context, '/settings'),
-          ),
-        ],
       ),
-      body: _buildBody(context, query, exactAsync, partialAsync),
     );
   }
 
@@ -211,6 +282,35 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
       partial: partial,
       partialLoading: partialLoading,
       mode: mode,
+    );
+  }
+}
+
+class _SearchButton extends StatelessWidget {
+  const _SearchButton({required this.label, required this.onPressed});
+
+  final String label;
+  final VoidCallback? onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 40,
+      child: ElevatedButton(
+        onPressed: onPressed,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: DpdColors.primary,
+          foregroundColor: DpdColors.light,
+          disabledBackgroundColor: DpdColors.primary.withValues(alpha: 0.4),
+          disabledForegroundColor: DpdColors.light.withValues(alpha: 0.5),
+          shape: RoundedRectangleBorder(
+            borderRadius: DpdColors.borderRadius,
+          ),
+          padding: const EdgeInsets.symmetric(horizontal: 12),
+          elevation: 2,
+        ),
+        child: Text(label),
+      ),
     );
   }
 }
