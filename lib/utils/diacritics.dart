@@ -23,6 +23,7 @@ const _diacriticMap = <int, String>{
   0x1E41: 'm', // ṁ
   0x1E43: 'm', // ṃ
   0x1E37: 'l', // ḷ
+  0x1E3B: 'l', // ḻ
   0x1E25: 'h', // ḥ
   // Uppercase variants
   0x0100: 'A', // Ā

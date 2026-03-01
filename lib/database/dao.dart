@@ -15,19 +15,21 @@ class DpdHeadwordWithRoot {
   DpdHeadwordWithRoot(this.headword, this.root);
 }
 
-@DriftAccessor(tables: [
-  DpdHeadwords,
-  Lookup,
-  DpdRoots,
-  DbInfo,
-  InflectionTemplates,
-  FamilyRoot,
-  FamilyWord,
-  FamilyCompound,
-  FamilyIdiom,
-  FamilySet,
-  SuttaInfo,
-])
+@DriftAccessor(
+  tables: [
+    DpdHeadwords,
+    Lookup,
+    DpdRoots,
+    DbInfo,
+    InflectionTemplates,
+    FamilyRoot,
+    FamilyWord,
+    FamilyCompound,
+    FamilyIdiom,
+    FamilySet,
+    SuttaInfo,
+  ],
+)
 class DpdDao extends DatabaseAccessor<AppDatabase> with _$DpdDaoMixin {
   DpdDao(super.db);
 
@@ -37,10 +39,9 @@ class DpdDao extends DatabaseAccessor<AppDatabase> with _$DpdDaoMixin {
     if (query.isEmpty) return [];
     final normalized = _normalizeQuery(query);
 
-    final lookupRows =
-        await (select(lookup)
-              ..where((t) => t.lookupKey.equals(normalized)))
-            .get();
+    final lookupRows = await (select(
+      lookup,
+    )..where((t) => t.lookupKey.equals(normalized))).get();
 
     final idSet = _extractIds(lookupRows);
     return _fetchHeadwords(idSet);
@@ -165,9 +166,9 @@ class DpdDao extends DatabaseAccessor<AppDatabase> with _$DpdDaoMixin {
   // ── Inflection templates ──────────────────────────────────────────────────
 
   Future<InflectionTemplate?> getInflectionTemplate(String pattern) {
-    return (select(inflectionTemplates)
-          ..where((t) => t.pattern.equals(pattern)))
-        .getSingleOrNull();
+    return (select(
+      inflectionTemplates,
+    )..where((t) => t.pattern.equals(pattern))).getSingleOrNull();
   }
 
   Future<List<InflectionTemplate>> getAllInflectionTemplates() {
@@ -179,28 +180,25 @@ class DpdDao extends DatabaseAccessor<AppDatabase> with _$DpdDaoMixin {
   // ── Family tables ─────────────────────────────────────────────────────────
 
   Future<FamilyRootData?> getRootFamily(String rootKey, String familyRootVal) {
-    return (select(familyRoot)
-          ..where(
-            (t) =>
-                t.rootKey.equals(rootKey) &
-                t.rootFamily.equals(familyRootVal),
-          ))
+    return (select(familyRoot)..where(
+          (t) => t.rootKey.equals(rootKey) & t.rootFamily.equals(familyRootVal),
+        ))
         .getSingleOrNull();
   }
 
   Future<FamilyWordData?> getWordFamily(String wordFamilyKey) {
-    return (select(familyWord)
-          ..where((t) => t.wordFamily.equals(wordFamilyKey)))
-        .getSingleOrNull();
+    return (select(
+      familyWord,
+    )..where((t) => t.wordFamily.equals(wordFamilyKey))).getSingleOrNull();
   }
 
   Future<List<FamilyCompoundData>> getCompoundFamilies(
     List<String> compoundFamilies,
   ) {
     if (compoundFamilies.isEmpty) return Future.value([]);
-    return (select(familyCompound)
-          ..where((t) => t.compoundFamily.isIn(compoundFamilies)))
-        .get();
+    return (select(
+      familyCompound,
+    )..where((t) => t.compoundFamily.isIn(compoundFamilies))).get();
   }
 
   Future<List<FamilyIdiomData>> getIdioms(List<String> idioms) {
@@ -216,9 +214,9 @@ class DpdDao extends DatabaseAccessor<AppDatabase> with _$DpdDaoMixin {
   // ── Sutta info ──────────────────────────────────────────────────────────
 
   Future<SuttaInfoData?> getSuttaInfo(String lemma1) {
-    return (select(suttaInfo)
-          ..where((t) => t.dpdSutta.equals(lemma1)))
-        .getSingleOrNull();
+    return (select(
+      suttaInfo,
+    )..where((t) => t.dpdSutta.equals(lemma1))).getSingleOrNull();
   }
 
   // ── DB metadata ───────────────────────────────────────────────────────────
@@ -233,34 +231,33 @@ class DpdDao extends DatabaseAccessor<AppDatabase> with _$DpdDaoMixin {
   // ── Autocomplete index ───────────────────────────────────────────────────
 
   Future<List<String>> getAllLemmas() async {
-    final rows = await (selectOnly(dpdHeadwords, distinct: true)
-          ..addColumns([dpdHeadwords.lemma1]))
-        .get();
+    final rows = await (selectOnly(
+      dpdHeadwords,
+      distinct: true,
+    )..addColumns([dpdHeadwords.lemma1])).get();
     return rows.map((r) => r.read(dpdHeadwords.lemma1)!).toList();
   }
 
   Future<List<String>> getAllRoots() async {
-    final rows = await (selectOnly(dpdRoots, distinct: true)
-          ..addColumns([dpdRoots.root]))
-        .get();
+    final rows = await (selectOnly(
+      dpdRoots,
+      distinct: true,
+    )..addColumns([dpdRoots.root])).get();
     return rows.map((r) => r.read(dpdRoots.root)!).toList();
   }
 
   Future<List<String>> getAllRootFamilies() async {
-    final rows = await (selectOnly(familyRoot, distinct: true)
-          ..addColumns([familyRoot.rootFamily]))
-        .get();
+    final rows = await (selectOnly(
+      familyRoot,
+      distinct: true,
+    )..addColumns([familyRoot.rootFamily])).get();
     return rows.map((r) => r.read(familyRoot.rootFamily)!).toList();
   }
 
   // ── Helpers ───────────────────────────────────────────────────────────────
 
   String _normalizeQuery(String input) {
-    return input
-        .trim()
-        .toLowerCase()
-        .replaceAll("'", '')
-        .replaceAll('\u1e43', '\u1e43');
+    return input.trim().toLowerCase().replaceAll("'", '');
   }
 }
 
@@ -310,7 +307,18 @@ const Map<String, String> _paliOrder = {
   'ṃ': '41',
 };
 
-const _paliDigraphs = {'kh', 'gh', 'ch', 'jh', 'ṭh', 'ḍh', 'th', 'dh', 'ph', 'bh'};
+const _paliDigraphs = {
+  'kh',
+  'gh',
+  'ch',
+  'jh',
+  'ṭh',
+  'ḍh',
+  'th',
+  'dh',
+  'ph',
+  'bh',
+};
 
 String paliSortKey(String lemma) {
   final lower = lemma.toLowerCase();

@@ -16,8 +16,15 @@ final searchIndexProvider = FutureProvider<List<String>>((ref) async {
   final cachedVersion = await _readCachedVersion(cacheFile);
 
   if (cachedVersion == dbVersion && await cacheFile.exists()) {
-    final raw = await cacheFile.readAsString();
-    return (jsonDecode(raw) as List).cast<String>();
+    try {
+      final raw = await cacheFile.readAsString();
+      final decoded = jsonDecode(raw);
+      if (decoded is List) {
+        return decoded.cast<String>();
+      }
+    } catch (_) {
+      // Corrupted cache - rebuild
+    }
   }
 
   final terms = <String>{};
@@ -43,8 +50,10 @@ final searchIndexProvider = FutureProvider<List<String>>((ref) async {
   return index;
 });
 
-final autocompleteSuggestionsProvider =
-    Provider.family<List<String>, String>((ref, query) {
+final autocompleteSuggestionsProvider = Provider.family<List<String>, String>((
+  ref,
+  query,
+) {
   if (query.length < 2) return [];
   final indexAsync = ref.watch(searchIndexProvider);
   final index = indexAsync.valueOrNull;
