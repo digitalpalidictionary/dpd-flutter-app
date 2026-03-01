@@ -1,0 +1,369 @@
+import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+import '../database/database.dart';
+import '../database/sutta_info_extensions.dart';
+import '../theme/dpd_colors.dart';
+import 'entry_content.dart';
+
+class SuttaInfoSection extends StatelessWidget {
+  const SuttaInfoSection({
+    super.key,
+    required this.suttaInfo,
+    required this.headwordId,
+    required this.lemma1,
+  });
+
+  final SuttaInfoData suttaInfo;
+  final int headwordId;
+  final String lemma1;
+
+  bool _notEmpty(String? s) => s != null && s.isNotEmpty;
+
+  Future<void> _openUrl(String url) async {
+    await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final s = suttaInfo;
+
+    final sections = <Widget>[
+      // CST — gated on cst_code
+      if (_notEmpty(s.cstCode)) ...[
+        _heading(context, 'Chaṭṭha Saṅgāyana Tipiṭaka (CST)'),
+        _table(context, [
+          _textRow(context, 'CST Code', s.cstCode),
+          _textRow(context, 'Nikāya', s.cstNikaya),
+          _textRow(context, 'Book', s.cstBook),
+          _textRow(context, 'Section', s.cstSection),
+          _textRow(context, 'Vagga', s.cstVagga),
+          _textRow(context, 'Sutta', s.cstSutta),
+          _textRow(context, 'Paragraph', s.cstParanum),
+          _textRow(context, 'File', s.cstFile),
+          _linkRow(context, 'GitHub', s.cstGithubLink),
+        ]),
+      ],
+
+      // Apps using CST — gated on cst_code
+      if (_notEmpty(s.cstCode)) ...[
+        _heading(context, 'Apps & Websites using CST'),
+        _table(context, [
+          _linkRow(context, 'Digital Pali Reader', s.dprLink),
+          _linkRow(context, 'Tipiṭaka Pāḷi Reader', s.tprLink),
+          _linkRow(context, 'TipitakaPali.org', s.tppOrg),
+        ]),
+      ],
+
+      // CST Page Numbers — gated on cst_m_page
+      if (_notEmpty(s.cstMPage)) ...[
+        _heading(context, 'CST Page Numbers in Printed Editions'),
+        _table(context, [
+          _textRow(context, 'Myanmar', s.cstMPage),
+          _textRow(context, 'Thai', s.cstTPage),
+          _textRow(context, 'VRI', s.cstVPage),
+          _textRow(context, 'PTS', s.cstPPage),
+        ]),
+      ],
+
+      // Sutta Central — gated on sc_code
+      if (_notEmpty(s.scCode)) ...[
+        _heading(context, 'Sutta Central'),
+        _table(context, [
+          _textRow(context, 'SC Code', s.scCode),
+          _textRow(context, 'Book', s.scBook),
+          _textRow(context, 'Vagga', s.scVagga),
+          _textRow(context, 'Sutta', s.scSutta),
+          _italicRow(context, 'Title', s.scEngSutta),
+          _italicRow(context, 'Blurb', s.scBlurb),
+          _multiLinkRow(context, 'Links', [
+            ('Sutta Card', s.scCardLink),
+            ('Pāḷi Text', s.scPaliLink),
+            ('English Translation', s.scEngLink),
+          ]),
+          _textRow(context, 'File', s.scFilePath),
+          _linkRow(context, 'GitHub', s.scGithub),
+        ]),
+      ],
+
+      // Websites using SC — gated on sc_code
+      if (_notEmpty(s.scCode)) ...[
+        _heading(context, 'Websites using Sutta Central'),
+        _table(context, [
+          _linkRow(context, "The Buddha's Words", s.tbw),
+          _linkRow(context, 'TBW Legacy', s.tbwLegacy),
+          _linkRow(context, 'Dhamma.gift', s.dhammaGift),
+          _linkRow(context, 'SC Express', s.scExpressLink),
+          _linkRow(context, 'SC Voice', s.scVoiceLink),
+        ]),
+      ],
+
+      // BJT — gated on bjt_sutta_code
+      if (_notEmpty(s.bjtSuttaCode)) ...[
+        _heading(context, 'Buddha Jayanti Tipiṭaka (BJT)'),
+        _table(context, [
+          _textRow(context, 'Sutta Code', s.bjtSuttaCode),
+          _textRow(context, 'Piṭaka', s.bjtPitaka),
+          _textRow(context, 'Nikāya', s.bjtNikaya),
+          _textRow(context, 'Major Section', s.bjtMajorSection),
+          _textRow(context, 'Book', s.bjtBook),
+          _textRow(context, 'Minor Section', s.bjtMinorSection),
+          _textRow(context, 'Vagga', s.bjtVagga),
+          _textRow(context, 'Sutta', s.bjtSutta),
+          _textRow(context, 'Book ID', s.bjtBookId),
+          _textRow(context, 'Page Number', s.bjtPageNum),
+          _textRow(context, 'Filename', s.bjtFilename),
+          _linkRow(context, 'GitHub', s.bjtGithubLink),
+        ]),
+      ],
+
+      // Websites using BJT — gated on bjt_web_code
+      if (_notEmpty(s.bjtWebCode)) ...[
+        _heading(context, 'Websites using BJT'),
+        _table(context, [
+          _linkRow(context, 'tipiṭaka.lk (Sinhala)', s.bjtTipitakaLkLink),
+          _linkRow(context, 'open.tipiṭaka.lk (Roman)',
+              s.bjtOpenTipitakaLkLink),
+          _linkRow(context, 'open.tipiṭaka.lk (Devanagari)',
+              s.bjtOpenTipitakaLkDevanagariLink),
+        ]),
+      ],
+
+      // DV Sutta Catalogue — gated on dv_exists
+      if (s.dvExists) ...[
+        _heading(context, 'Dhamma Vinaya Tools: Sutta Catalogue'),
+        _table(context, [
+          _textRow(context, 'PTS', s.dvPts),
+          _textRow(context, 'General Theme', s.dvMainTheme),
+          _textRow(context, 'Particular Topic', s.dvSubtopic),
+          _textRow(context, 'Summary', s.dvSummary),
+          _textRow(context, 'Key Excerpt 1', s.dvKeyExcerpt1),
+          _textRow(context, 'Key Excerpt 2', s.dvKeyExcerpt2),
+          _textRow(context, 'Similes', s.dvSimiles),
+          _textRow(context, 'Stage of Training', s.dvStage),
+          _textRow(context, 'Training In', s.dvTraining),
+          _textRow(context, 'Type of Teaching', s.dvAspect),
+          _textRow(context, 'Teacher', s.dvTeacher),
+          _textRow(context, 'Audience', s.dvAudience),
+          _textRow(context, 'Method of Teaching', s.dvMethod),
+          _textRow(context, 'Sutta Length', s.dvLength),
+          _textRow(context, 'Prominence', s.dvProminence),
+          _textRow(context, 'Suggested Reading', s.dvSuggestedSuttas),
+          _linkRow(context, 'GitHub',
+              'https://github.com/dhammavinaya-tools/dhamma-vinaya-catalogue'),
+        ]),
+      ],
+
+      // Parallels — gated on dv_parallels_exists
+      if (s.dvParallelsExists) ...[
+        _heading(context, 'Parallels'),
+        _table(context, [
+          _textRow(context, 'Nikāyas', s.dvNikayasParallels),
+          _textRow(context, 'Āgamas', s.dvAgamasParallels),
+          _textRow(context, 'Taisho', s.dvTaishoParallels),
+          _textRow(context, 'Sanskrit', s.dvSanskritParallels),
+          _textRow(context, 'Vinaya', s.dvVinayaParallels),
+          _textRow(context, 'Others', s.dvOthersParallels),
+          _textRow(context, 'Partial (Nikāya/Āgama)', s.dvPartialParallelsNa),
+          _textRow(context, 'Partial (All)', s.dvPartialParallelsAll),
+        ]),
+      ],
+    ];
+
+    return DpdSectionContainer(
+      child: Padding(
+        padding: DpdColors.sectionPadding,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            ...sections,
+            const SizedBox(height: 16.0),
+            _buildFooter(),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // ── Section builders ────────────────────────────────────────────────────
+
+  Widget _heading(BuildContext context, String title) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.fromLTRB(5, 8, 5, 4),
+      margin: const EdgeInsets.only(top: 4),
+      color: isDark
+          ? Colors.white.withValues(alpha: 0.1)
+          : Colors.black.withValues(alpha: 0.05),
+      child: Text(
+        title,
+        style: const TextStyle(
+          fontWeight: FontWeight.bold,
+          fontSize: 13,
+        ),
+      ),
+    );
+  }
+
+  Widget _table(BuildContext context, List<TableRow?> rows) {
+    final filtered = rows.whereType<TableRow>().toList();
+    if (filtered.isEmpty) return const SizedBox.shrink();
+    return Table(
+      columnWidths: const {
+        0: FixedColumnWidth(220),
+        1: FlexColumnWidth(),
+      },
+      children: filtered,
+    );
+  }
+
+  // ── Row builders ─────────────────────────────────────────────────────────
+
+  TableRow? _textRow(BuildContext context, String label, String? value) {
+    if (!_notEmpty(value)) return null;
+    return TableRow(
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(right: 5.0, bottom: 2.0),
+          child: Text(
+            label,
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: DpdColors.primaryText,
+            ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(bottom: 2.0),
+          child: Text(value!),
+        ),
+      ],
+    );
+  }
+
+  TableRow? _italicRow(BuildContext context, String label, String? value) {
+    if (!_notEmpty(value)) return null;
+    return TableRow(
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(right: 5.0, bottom: 2.0),
+          child: Text(
+            label,
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: DpdColors.primaryText,
+            ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(bottom: 2.0),
+          child: Text(
+            value!,
+            style: const TextStyle(fontStyle: FontStyle.italic),
+          ),
+        ),
+      ],
+    );
+  }
+
+  TableRow? _linkRow(BuildContext context, String label, String? url) {
+    if (!_notEmpty(url)) return null;
+    final resolvedUrl = url!;
+    return TableRow(
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(right: 5.0, bottom: 2.0),
+          child: Text(
+            label,
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: DpdColors.primaryText,
+            ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(bottom: 2.0),
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: GestureDetector(
+              onTap: () => _openUrl(resolvedUrl),
+              child: Text(
+                resolvedUrl,
+                maxLines: 1,
+                softWrap: false,
+                style: TextStyle(
+                  color: DpdColors.primaryText,
+                  fontWeight: FontWeight.w700,
+                  decoration: TextDecoration.underline,
+                  decorationColor: DpdColors.primaryText,
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  TableRow? _multiLinkRow(
+    BuildContext context,
+    String label,
+    List<(String, String?)> links,
+  ) {
+    final validLinks = links.where((l) => _notEmpty(l.$2)).toList();
+    if (validLinks.isEmpty) return null;
+    return TableRow(
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(right: 5.0, bottom: 2.0),
+          child: Text(
+            label,
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: DpdColors.primaryText,
+            ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(bottom: 2.0),
+          child: Wrap(
+            spacing: 4,
+            children: [
+              for (var i = 0; i < validLinks.length; i++) ...[
+                GestureDetector(
+                  onTap: () => _openUrl(validLinks[i].$2!),
+                  child: Text(
+                    validLinks[i].$1,
+                    style: TextStyle(
+                      color: DpdColors.primaryText,
+                      fontWeight: FontWeight.w700,
+                      decoration: TextDecoration.underline,
+                      decorationColor: DpdColors.primaryText,
+                    ),
+                  ),
+                ),
+                if (i < validLinks.length - 1)
+                  const Text(','),
+              ],
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildFooter() {
+    final now = DateTime.now();
+    final date =
+        '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}';
+    final encodedLemma = Uri.encodeComponent(lemma1);
+
+    return DpdFooter(
+      messagePrefix: 'Did you spot a mistake?',
+      linkText: 'Correct it here.',
+      urlBuilder: () =>
+          'https://docs.google.com/forms/d/e/1FAIpQLSf9boBe7k5tCwq7LdWgBHHGIPVc4ROO5yjVDo1X5LDAxkmGWQ/viewform?usp=pp_url&entry.438735500=$headwordId%20$encodedLemma&entry.326955045=Sutta+Info&entry.1433863141=DPD+$date',
+    );
+  }
+}
