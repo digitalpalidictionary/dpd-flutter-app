@@ -146,31 +146,31 @@ mixin FamilyStateMixin<T extends ConsumerStatefulWidget> on ConsumerState<T> {
     return [
       if (familyHasRoot)
         DpdSectionButton(
-          label: 'Root family',
+          label: 'root family',
           isActive: _showRootFamily,
           onTap: familyToggleRoot,
         ),
       if (familyHasWord)
         DpdSectionButton(
-          label: 'Word family',
+          label: 'word family',
           isActive: _showWordFamily,
           onTap: familyToggleWord,
         ),
       if (familyHasCompound)
         DpdSectionButton(
-          label: isCompoundPlural ? 'Compound families' : 'Compound family',
+          label: isCompoundPlural ? 'compound families' : 'compound family',
           isActive: _showCompoundFamilies,
           onTap: familyToggleCompound,
         ),
       if (familyHasIdioms)
         DpdSectionButton(
-          label: 'Idioms',
+          label: 'idioms',
           isActive: _showIdioms,
           onTap: familyToggleIdioms,
         ),
       if (familyHasSets)
         DpdSectionButton(
-          label: isSetsPlural ? 'Sets' : 'Set',
+          label: isSetsPlural ? 'sets' : 'set',
           isActive: _showSets,
           onTap: familyToggleSets,
         ),
