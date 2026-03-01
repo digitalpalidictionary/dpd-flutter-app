@@ -11,3 +11,7 @@ final databaseProvider = Provider<AppDatabase>((ref) {
 final daoProvider = Provider<DpdDao>((ref) {
   return DpdDao(ref.watch(databaseProvider));
 });
+
+final compoundFamilyKeysProvider = FutureProvider<Set<String>>((ref) async {
+  return ref.watch(daoProvider).getAllCompoundFamilyKeys();
+});

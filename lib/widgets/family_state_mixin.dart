@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../database/database.dart';
+import '../database/dpd_headword_extensions.dart';
 import '../models/family_data.dart';
 import '../providers/database_provider.dart';
 import 'entry_content.dart';
@@ -26,6 +27,8 @@ mixin FamilyStateMixin<T extends ConsumerStatefulWidget> on ConsumerState<T> {
 
   DpdHeadwordWithRoot get _fh => familyHeadword;
 
+  String get _lemmaClean => _fh.headword.lemmaClean;
+
   List<String> get _compoundKeys =>
       (_fh.familyCompound ?? '').split(' ').where((s) => s.isNotEmpty).toList();
 
@@ -35,16 +38,22 @@ mixin FamilyStateMixin<T extends ConsumerStatefulWidget> on ConsumerState<T> {
   List<String> get _setKeys =>
       (_fh.familySet ?? '').split('; ').where((s) => s.isNotEmpty).toList();
 
-  bool get familyHasRoot => _fh.familyRoot != null && _fh.familyRoot!.isNotEmpty;
+  bool get familyHasRoot =>
+      _fh.familyRoot != null && _fh.familyRoot!.isNotEmpty;
 
-  bool get familyHasWord => _fh.familyWord != null && _fh.familyWord!.isNotEmpty;
+  bool get familyHasWord =>
+      _fh.familyWord != null && _fh.familyWord!.isNotEmpty;
 
-  bool get familyHasCompound =>
-      (_fh.meaning1?.isNotEmpty ?? false) &&
-      _compoundKeys.isNotEmpty &&
-      !(_fh.pos?.contains('sandhi') ?? false) &&
-      !(_fh.pos?.contains('idiom') ?? false) &&
-      !(_fh.compoundType?.contains('?') ?? false);
+  bool get familyHasCompound {
+    final cfSet = ref.watch(compoundFamilyKeysProvider).valueOrNull;
+    final lemmaInCfSet = cfSet?.contains(_lemmaClean) ?? false;
+
+    return (_fh.meaning1?.isNotEmpty ?? false) &&
+        (_compoundKeys.isNotEmpty || lemmaInCfSet) &&
+        !(_fh.pos?.contains('sandhi') ?? false) &&
+        !(_fh.pos?.contains('idiom') ?? false) &&
+        !(_fh.compoundType?.contains('?') ?? false);
+  }
 
   bool get familyHasIdioms =>
       (_fh.meaning1?.isNotEmpty ?? false) && _idiomKeys.isNotEmpty;
@@ -61,10 +70,9 @@ mixin FamilyStateMixin<T extends ConsumerStatefulWidget> on ConsumerState<T> {
 
   Future<void> _loadRootFamily() async {
     if (_rootFamilyData != null) return;
-    final data = await ref.read(daoProvider).getRootFamily(
-      _fh.rootKey!,
-      _fh.familyRoot!,
-    );
+    final data = await ref
+        .read(daoProvider)
+        .getRootFamily(_fh.rootKey!, _fh.familyRoot!);
     if (mounted) setState(() => _rootFamilyData = data);
   }
 
@@ -76,7 +84,21 @@ mixin FamilyStateMixin<T extends ConsumerStatefulWidget> on ConsumerState<T> {
 
   Future<void> _loadCompoundFamilies() async {
     if (_compoundData != null) return;
-    final data = await ref.read(daoProvider).getCompoundFamilies(_compoundKeys);
+
+    final cfSet = ref.watch(compoundFamilyKeysProvider).valueOrNull;
+    final lemmaInCfSet = cfSet?.contains(_lemmaClean) ?? false;
+
+    List<String> keysToLoad = _compoundKeys;
+    if (keysToLoad.isEmpty && lemmaInCfSet) {
+      keysToLoad = [_lemmaClean];
+    }
+
+    if (keysToLoad.isEmpty) {
+      if (mounted) setState(() => _compoundData = []);
+      return;
+    }
+
+    final data = await ref.read(daoProvider).getCompoundFamilies(keysToLoad);
     if (mounted) setState(() => _compoundData = data);
   }
 
@@ -251,4 +273,3 @@ mixin FamilyStateMixin<T extends ConsumerStatefulWidget> on ConsumerState<T> {
     );
   }
 }
-

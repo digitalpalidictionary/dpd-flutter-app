@@ -211,6 +211,14 @@ class DpdDao extends DatabaseAccessor<AppDatabase> with _$DpdDaoMixin {
     return (select(familySet)..where((t) => t.set_.isIn(sets))).get();
   }
 
+  Future<Set<String>> getAllCompoundFamilyKeys() async {
+    final rows = await (selectOnly(
+      familyCompound,
+      distinct: true,
+    )..addColumns([familyCompound.compoundFamily])).get();
+    return rows.map((r) => r.read(familyCompound.compoundFamily)!).toSet();
+  }
+
   // ── Sutta info ──────────────────────────────────────────────────────────
 
   Future<SuttaInfoData?> getSuttaInfo(String lemma1) {
