@@ -10,6 +10,7 @@ import '../widgets/entry_content.dart';
 import '../widgets/family_toggle_section.dart';
 import '../widgets/grammar_table.dart';
 import '../widgets/inflection_section.dart';
+import '../widgets/sutta_info_section.dart';
 
 final _entryProvider = FutureProvider.autoDispose
     .family<DpdHeadwordWithRoot?, int>((ref, id) {
@@ -45,18 +46,39 @@ class EntryScreen extends ConsumerWidget {
   }
 }
 
-class _EntryView extends ConsumerWidget {
+class _EntryView extends ConsumerStatefulWidget {
   const _EntryView({required this.headword});
 
   final DpdHeadwordWithRoot headword;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<_EntryView> createState() => _EntryViewState();
+}
+
+class _EntryViewState extends ConsumerState<_EntryView> {
+  bool _suttaOpen = false;
+  SuttaInfoData? _suttaInfo;
+  bool _suttaLoaded = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadSuttaInfo();
+  }
+
+  Future<void> _loadSuttaInfo() async {
+    final info =
+        await ref.read(daoProvider).getSuttaInfo(widget.headword.lemma1);
+    if (mounted) setState(() { _suttaInfo = info; _suttaLoaded = true; });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final settings = ref.watch(settingsProvider);
     final templateCache = ref.watch(templateCacheProvider).valueOrNull ?? {};
 
-    final h = headword;
+    final h = widget.headword;
     final hasInflections = hasInflectionContent(h);
     final hasEx1 = h.example1 != null && h.example1!.isNotEmpty;
     final hasEx2 = h.example2 != null && h.example2!.isNotEmpty;
@@ -91,6 +113,22 @@ class _EntryView extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 EntrySummaryBox(headword: h),
+
+                // Sutta info section
+                if (_suttaLoaded && _suttaInfo != null)
+                  ExpansionTile(
+                    title: const Text('Sutta'),
+                    initiallyExpanded: _suttaOpen,
+                    onExpansionChanged: (v) =>
+                        setState(() => _suttaOpen = v),
+                    children: [
+                      SuttaInfoSection(
+                        suttaInfo: _suttaInfo!,
+                        headwordId: h.id,
+                        lemma1: h.lemma1,
+                      ),
+                    ],
+                  ),
 
                 // Grammar section
                 ExpansionTile(

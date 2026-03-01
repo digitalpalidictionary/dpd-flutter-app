@@ -10,6 +10,8 @@ import 'entry_content.dart';
 import 'family_state_mixin.dart';
 import 'grammar_table.dart';
 import 'inflection_section.dart';
+import 'sutta_info_section.dart';
+import '../providers/database_provider.dart';
 
 enum _CardState { compact, buttonsVisible }
 
@@ -26,9 +28,13 @@ class _AccordionCardState extends ConsumerState<AccordionCard>
     with FamilyStateMixin<AccordionCard> {
   _CardState _cardState = _CardState.compact;
   bool _grammarOpen = false;
+  bool _suttaOpen = false;
   bool _examplesOpen = false;
   bool _inflectionsOpen = false;
   bool _notesOpen = false;
+
+  SuttaInfoData? _suttaInfo;
+  bool _suttaLoaded = false;
 
   @override
   DpdHeadwordWithRoot get familyHeadword => widget.headword;
@@ -39,6 +45,13 @@ class _AccordionCardState extends ConsumerState<AccordionCard>
     final settings = ref.read(settingsProvider);
     _grammarOpen = settings.grammarOpen;
     _examplesOpen = settings.examplesOpen;
+    _loadSuttaInfo();
+  }
+
+  Future<void> _loadSuttaInfo() async {
+    final info =
+        await ref.read(daoProvider).getSuttaInfo(widget.headword.lemma1);
+    if (mounted) setState(() { _suttaInfo = info; _suttaLoaded = true; });
   }
 
   void _toggleCard() {
@@ -96,6 +109,13 @@ class _AccordionCardState extends ConsumerState<AccordionCard>
                     spacing: 0,
                     runSpacing: 0,
                     children: [
+                      if (_suttaLoaded && _suttaInfo != null)
+                        DpdSectionButton(
+                          label: 'Sutta',
+                          isActive: _suttaOpen,
+                          onTap: () =>
+                              setState(() => _suttaOpen = !_suttaOpen),
+                        ),
                       DpdSectionButton(
                         label: 'Grammar',
                         isActive: _grammarOpen,
@@ -129,7 +149,13 @@ class _AccordionCardState extends ConsumerState<AccordionCard>
                   ),
                 ),
 
-                // Sections
+                if (_suttaOpen && _suttaInfo != null)
+                  SuttaInfoSection(
+                    suttaInfo: _suttaInfo!,
+                    headwordId: h.id,
+                    lemma1: h.lemma1,
+                  ),
+
                 if (_grammarOpen)
                   DpdSectionContainer(
                     child: Padding(

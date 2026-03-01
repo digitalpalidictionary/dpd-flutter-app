@@ -12,7 +12,9 @@ import 'feedback_section.dart';
 import 'frequency_section.dart';
 import 'grammar_table.dart';
 import 'inflection_section.dart';
+import 'sutta_info_section.dart';
 import '../models/frequency_data.dart';
+import '../providers/database_provider.dart';
 
 class InlineEntryCard extends ConsumerStatefulWidget {
   const InlineEntryCard({super.key, required this.headword});
@@ -26,11 +28,15 @@ class InlineEntryCard extends ConsumerStatefulWidget {
 class _InlineEntryCardState extends ConsumerState<InlineEntryCard>
     with FamilyStateMixin<InlineEntryCard> {
   bool _grammarOpen = false;
+  bool _suttaOpen = false;
   bool _examplesOpen = false;
   bool _inflectionsOpen = false;
   bool _frequencyOpen = false;
   bool _notesOpen = false;
   bool _feedbackOpen = false;
+
+  SuttaInfoData? _suttaInfo;
+  bool _suttaLoaded = false;
 
   @override
   DpdHeadwordWithRoot get familyHeadword => widget.headword;
@@ -41,6 +47,13 @@ class _InlineEntryCardState extends ConsumerState<InlineEntryCard>
     final settings = ref.read(settingsProvider);
     _grammarOpen = settings.grammarOpen;
     _examplesOpen = settings.examplesOpen;
+    _loadSuttaInfo();
+  }
+
+  Future<void> _loadSuttaInfo() async {
+    final info =
+        await ref.read(daoProvider).getSuttaInfo(widget.headword.lemma1);
+    if (mounted) setState(() { _suttaInfo = info; _suttaLoaded = true; });
   }
 
   @override
@@ -83,6 +96,12 @@ class _InlineEntryCardState extends ConsumerState<InlineEntryCard>
               spacing: 0,
               runSpacing: 0,
               children: [
+                if (_suttaLoaded && _suttaInfo != null)
+                  DpdSectionButton(
+                    label: 'Sutta',
+                    isActive: _suttaOpen,
+                    onTap: () => setState(() => _suttaOpen = !_suttaOpen),
+                  ),
                 DpdSectionButton(
                   label: 'Grammar',
                   isActive: _grammarOpen,
@@ -126,7 +145,13 @@ class _InlineEntryCardState extends ConsumerState<InlineEntryCard>
             ),
           ),
 
-          // Grammar section content
+          if (_suttaOpen && _suttaInfo != null)
+            SuttaInfoSection(
+              suttaInfo: _suttaInfo!,
+              headwordId: h.id,
+              lemma1: h.lemma1,
+            ),
+
           if (_grammarOpen)
             DpdSectionContainer(
               child: Padding(
