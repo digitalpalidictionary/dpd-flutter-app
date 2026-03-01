@@ -4,7 +4,7 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-## [~] Track: Frequency Heatmap Table
+## [x] Track: Frequency Heatmap Table
 *Link: [./conductor/tracks/frequency_table_20260301/](./conductor/tracks/frequency_table_20260301/)*
 
 ---
