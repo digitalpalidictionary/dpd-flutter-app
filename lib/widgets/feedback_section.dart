@@ -50,7 +50,7 @@ class FeedbackSection extends StatelessWidget {
           children: [
             RichText(
               text: TextSpan(
-                style: const TextStyle(fontSize: 13, color: Colors.grey),
+                style: const TextStyle(fontSize: 13, color: Colors.white),
                 children: [
                   const TextSpan(text: 'ID '),
                   TextSpan(
