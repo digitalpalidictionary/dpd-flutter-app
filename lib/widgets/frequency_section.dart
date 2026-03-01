@@ -58,10 +58,12 @@ class FrequencySection extends StatelessWidget {
       if (match.start > lastEnd) {
         parts.add(TextSpan(text: heading.substring(lastEnd, match.start)));
       }
-      parts.add(TextSpan(
-        text: match.group(1),
-        style: const TextStyle(fontWeight: FontWeight.bold),
-      ));
+      parts.add(
+        TextSpan(
+          text: match.group(1),
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
+      );
       lastEnd = match.end;
     }
     if (lastEnd < heading.length) {
@@ -69,11 +71,10 @@ class FrequencySection extends StatelessWidget {
     }
 
     return Container(
+      width: double.infinity,
       padding: const EdgeInsets.symmetric(vertical: 2),
       decoration: BoxDecoration(
-        border: Border(
-          bottom: BorderSide(color: DpdColors.primary, width: 1),
-        ),
+        border: Border(bottom: BorderSide(color: DpdColors.primary, width: 1)),
       ),
       margin: const EdgeInsets.only(bottom: 5),
       child: RichText(
@@ -92,20 +93,40 @@ class FrequencySection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _legendLine('CST', 'Chaṭṭha Saṅgāyana Tipiṭaka (Myanmar)',
-            style, boldStyle),
-        _legendLine('BJT', 'Buddha Jayanti Tipiṭaka (Sri Lanka)',
-            style, boldStyle),
-        _legendLine('SYA', 'Syāmaraṭṭha 1927 Royal Edition (Thailand)',
-            style, boldStyle),
-        _legendLine('MST', 'Mahāsaṅgīti Tipiṭaka (Sutta Central)',
-            style, boldStyle),
+        _legendLine(
+          'CST',
+          'Chaṭṭha Saṅgāyana Tipiṭaka (Myanmar)',
+          style,
+          boldStyle,
+        ),
+        _legendLine(
+          'BJT',
+          'Buddha Jayanti Tipiṭaka (Sri Lanka)',
+          style,
+          boldStyle,
+        ),
+        _legendLine(
+          'SYA',
+          'Syāmaraṭṭha 1927 Royal Edition (Thailand)',
+          style,
+          boldStyle,
+        ),
+        _legendLine(
+          'MST',
+          'Mahāsaṅgīti Tipiṭaka (Sutta Central)',
+          style,
+          boldStyle,
+        ),
       ],
     );
   }
 
   Widget _legendLine(
-      String abbrev, String fullName, TextStyle style, TextStyle boldStyle) {
+    String abbrev,
+    String fullName,
+    TextStyle style,
+    TextStyle boldStyle,
+  ) {
     return RichText(
       text: TextSpan(
         style: style,
@@ -133,7 +154,8 @@ class FrequencySection extends StatelessWidget {
             child: GestureDetector(
               onTap: () => launchUrl(
                 Uri.parse(
-                    'https://digitalpalidictionary.github.io/features/frequency/'),
+                  'https://digitalpalidictionary.github.io/features/frequency/',
+                ),
                 mode: LaunchMode.externalApplication,
               ),
               child: Text(
