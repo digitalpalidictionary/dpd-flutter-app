@@ -3,7 +3,7 @@
 ## Phase 1: Data Layer
 
 - [x] Task: Add `freq_data` column to DpdHeadwords Drift table definition in `lib/database/tables.dart` 9f2e2ed
-- [ ] Task: Run `dart run build_runner build --delete-conflicting-outputs` to regenerate Drift code
+- [~] Task: Run `dart run build_runner build --delete-conflicting-outputs` to regenerate Drift code
 - [ ] Task: Create `FrequencyData` model class (`lib/models/frequency_data.dart`) with JSON parsing
   - Fields: freqHeading, cstFreq/cstGrad (49), bjtFreq/bjtGrad (39), syaFreq/syaGrad (30), scFreq/scGrad (19)
   - Factory constructor `fromJson(String json)` and `isEmpty` getter

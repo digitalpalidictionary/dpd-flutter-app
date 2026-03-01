@@ -1118,6 +1118,17 @@ class $DpdHeadwordsTable extends DpdHeadwords
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _freqDataMeta = const VerificationMeta(
+    'freqData',
+  );
+  @override
+  late final GeneratedColumn<String> freqData = GeneratedColumn<String>(
+    'freq_data',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _ebtCountMeta = const VerificationMeta(
     'ebtCount',
   );
@@ -1272,6 +1283,7 @@ class $DpdHeadwordsTable extends DpdHeadwords
     suffix,
     inflectionsHtml,
     freqHtml,
+    freqData,
     ebtCount,
     nonIa,
     sanskrit,
@@ -1550,6 +1562,12 @@ class $DpdHeadwordsTable extends DpdHeadwords
         freqHtml.isAcceptableOrUnknown(data['freq_html']!, _freqHtmlMeta),
       );
     }
+    if (data.containsKey('freq_data')) {
+      context.handle(
+        _freqDataMeta,
+        freqData.isAcceptableOrUnknown(data['freq_data']!, _freqDataMeta),
+      );
+    }
     if (data.containsKey('ebt_count')) {
       context.handle(
         _ebtCountMeta,
@@ -1784,6 +1802,10 @@ class $DpdHeadwordsTable extends DpdHeadwords
         DriftSqlType.string,
         data['${effectivePrefix}freq_html'],
       ),
+      freqData: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}freq_data'],
+      ),
       ebtCount: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}ebt_count'],
@@ -1877,6 +1899,7 @@ class DpdHeadword extends DataClass implements Insertable<DpdHeadword> {
   final String? suffix;
   final String? inflectionsHtml;
   final String? freqHtml;
+  final String? freqData;
   final int? ebtCount;
   final String? nonIa;
   final String? sanskrit;
@@ -1928,6 +1951,7 @@ class DpdHeadword extends DataClass implements Insertable<DpdHeadword> {
     this.suffix,
     this.inflectionsHtml,
     this.freqHtml,
+    this.freqData,
     this.ebtCount,
     this.nonIa,
     this.sanskrit,
@@ -2055,6 +2079,9 @@ class DpdHeadword extends DataClass implements Insertable<DpdHeadword> {
     }
     if (!nullToAbsent || freqHtml != null) {
       map['freq_html'] = Variable<String>(freqHtml);
+    }
+    if (!nullToAbsent || freqData != null) {
+      map['freq_data'] = Variable<String>(freqData);
     }
     if (!nullToAbsent || ebtCount != null) {
       map['ebt_count'] = Variable<int>(ebtCount);
@@ -2199,6 +2226,9 @@ class DpdHeadword extends DataClass implements Insertable<DpdHeadword> {
       freqHtml: freqHtml == null && nullToAbsent
           ? const Value.absent()
           : Value(freqHtml),
+      freqData: freqData == null && nullToAbsent
+          ? const Value.absent()
+          : Value(freqData),
       ebtCount: ebtCount == null && nullToAbsent
           ? const Value.absent()
           : Value(ebtCount),
@@ -2280,6 +2310,7 @@ class DpdHeadword extends DataClass implements Insertable<DpdHeadword> {
       suffix: serializer.fromJson<String?>(json['suffix']),
       inflectionsHtml: serializer.fromJson<String?>(json['inflectionsHtml']),
       freqHtml: serializer.fromJson<String?>(json['freqHtml']),
+      freqData: serializer.fromJson<String?>(json['freqData']),
       ebtCount: serializer.fromJson<int?>(json['ebtCount']),
       nonIa: serializer.fromJson<String?>(json['nonIa']),
       sanskrit: serializer.fromJson<String?>(json['sanskrit']),
@@ -2336,6 +2367,7 @@ class DpdHeadword extends DataClass implements Insertable<DpdHeadword> {
       'suffix': serializer.toJson<String?>(suffix),
       'inflectionsHtml': serializer.toJson<String?>(inflectionsHtml),
       'freqHtml': serializer.toJson<String?>(freqHtml),
+      'freqData': serializer.toJson<String?>(freqData),
       'ebtCount': serializer.toJson<int?>(ebtCount),
       'nonIa': serializer.toJson<String?>(nonIa),
       'sanskrit': serializer.toJson<String?>(sanskrit),
@@ -2390,6 +2422,7 @@ class DpdHeadword extends DataClass implements Insertable<DpdHeadword> {
     Value<String?> suffix = const Value.absent(),
     Value<String?> inflectionsHtml = const Value.absent(),
     Value<String?> freqHtml = const Value.absent(),
+    Value<String?> freqData = const Value.absent(),
     Value<int?> ebtCount = const Value.absent(),
     Value<String?> nonIa = const Value.absent(),
     Value<String?> sanskrit = const Value.absent(),
@@ -2447,6 +2480,7 @@ class DpdHeadword extends DataClass implements Insertable<DpdHeadword> {
         ? inflectionsHtml.value
         : this.inflectionsHtml,
     freqHtml: freqHtml.present ? freqHtml.value : this.freqHtml,
+    freqData: freqData.present ? freqData.value : this.freqData,
     ebtCount: ebtCount.present ? ebtCount.value : this.ebtCount,
     nonIa: nonIa.present ? nonIa.value : this.nonIa,
     sanskrit: sanskrit.present ? sanskrit.value : this.sanskrit,
@@ -2522,6 +2556,7 @@ class DpdHeadword extends DataClass implements Insertable<DpdHeadword> {
           ? data.inflectionsHtml.value
           : this.inflectionsHtml,
       freqHtml: data.freqHtml.present ? data.freqHtml.value : this.freqHtml,
+      freqData: data.freqData.present ? data.freqData.value : this.freqData,
       ebtCount: data.ebtCount.present ? data.ebtCount.value : this.ebtCount,
       nonIa: data.nonIa.present ? data.nonIa.value : this.nonIa,
       sanskrit: data.sanskrit.present ? data.sanskrit.value : this.sanskrit,
@@ -2582,6 +2617,7 @@ class DpdHeadword extends DataClass implements Insertable<DpdHeadword> {
           ..write('suffix: $suffix, ')
           ..write('inflectionsHtml: $inflectionsHtml, ')
           ..write('freqHtml: $freqHtml, ')
+          ..write('freqData: $freqData, ')
           ..write('ebtCount: $ebtCount, ')
           ..write('nonIa: $nonIa, ')
           ..write('sanskrit: $sanskrit, ')
@@ -2638,6 +2674,7 @@ class DpdHeadword extends DataClass implements Insertable<DpdHeadword> {
     suffix,
     inflectionsHtml,
     freqHtml,
+    freqData,
     ebtCount,
     nonIa,
     sanskrit,
@@ -2693,6 +2730,7 @@ class DpdHeadword extends DataClass implements Insertable<DpdHeadword> {
           other.suffix == this.suffix &&
           other.inflectionsHtml == this.inflectionsHtml &&
           other.freqHtml == this.freqHtml &&
+          other.freqData == this.freqData &&
           other.ebtCount == this.ebtCount &&
           other.nonIa == this.nonIa &&
           other.sanskrit == this.sanskrit &&
@@ -2746,6 +2784,7 @@ class DpdHeadwordsCompanion extends UpdateCompanion<DpdHeadword> {
   final Value<String?> suffix;
   final Value<String?> inflectionsHtml;
   final Value<String?> freqHtml;
+  final Value<String?> freqData;
   final Value<int?> ebtCount;
   final Value<String?> nonIa;
   final Value<String?> sanskrit;
@@ -2797,6 +2836,7 @@ class DpdHeadwordsCompanion extends UpdateCompanion<DpdHeadword> {
     this.suffix = const Value.absent(),
     this.inflectionsHtml = const Value.absent(),
     this.freqHtml = const Value.absent(),
+    this.freqData = const Value.absent(),
     this.ebtCount = const Value.absent(),
     this.nonIa = const Value.absent(),
     this.sanskrit = const Value.absent(),
@@ -2849,6 +2889,7 @@ class DpdHeadwordsCompanion extends UpdateCompanion<DpdHeadword> {
     this.suffix = const Value.absent(),
     this.inflectionsHtml = const Value.absent(),
     this.freqHtml = const Value.absent(),
+    this.freqData = const Value.absent(),
     this.ebtCount = const Value.absent(),
     this.nonIa = const Value.absent(),
     this.sanskrit = const Value.absent(),
@@ -2901,6 +2942,7 @@ class DpdHeadwordsCompanion extends UpdateCompanion<DpdHeadword> {
     Expression<String>? suffix,
     Expression<String>? inflectionsHtml,
     Expression<String>? freqHtml,
+    Expression<String>? freqData,
     Expression<int>? ebtCount,
     Expression<String>? nonIa,
     Expression<String>? sanskrit,
@@ -2954,6 +2996,7 @@ class DpdHeadwordsCompanion extends UpdateCompanion<DpdHeadword> {
       if (suffix != null) 'suffix': suffix,
       if (inflectionsHtml != null) 'inflections_html': inflectionsHtml,
       if (freqHtml != null) 'freq_html': freqHtml,
+      if (freqData != null) 'freq_data': freqData,
       if (ebtCount != null) 'ebt_count': ebtCount,
       if (nonIa != null) 'non_ia': nonIa,
       if (sanskrit != null) 'sanskrit': sanskrit,
@@ -3008,6 +3051,7 @@ class DpdHeadwordsCompanion extends UpdateCompanion<DpdHeadword> {
     Value<String?>? suffix,
     Value<String?>? inflectionsHtml,
     Value<String?>? freqHtml,
+    Value<String?>? freqData,
     Value<int?>? ebtCount,
     Value<String?>? nonIa,
     Value<String?>? sanskrit,
@@ -3060,6 +3104,7 @@ class DpdHeadwordsCompanion extends UpdateCompanion<DpdHeadword> {
       suffix: suffix ?? this.suffix,
       inflectionsHtml: inflectionsHtml ?? this.inflectionsHtml,
       freqHtml: freqHtml ?? this.freqHtml,
+      freqData: freqData ?? this.freqData,
       ebtCount: ebtCount ?? this.ebtCount,
       nonIa: nonIa ?? this.nonIa,
       sanskrit: sanskrit ?? this.sanskrit,
@@ -3196,6 +3241,9 @@ class DpdHeadwordsCompanion extends UpdateCompanion<DpdHeadword> {
     if (freqHtml.present) {
       map['freq_html'] = Variable<String>(freqHtml.value);
     }
+    if (freqData.present) {
+      map['freq_data'] = Variable<String>(freqData.value);
+    }
     if (ebtCount.present) {
       map['ebt_count'] = Variable<int>(ebtCount.value);
     }
@@ -3274,6 +3322,7 @@ class DpdHeadwordsCompanion extends UpdateCompanion<DpdHeadword> {
           ..write('suffix: $suffix, ')
           ..write('inflectionsHtml: $inflectionsHtml, ')
           ..write('freqHtml: $freqHtml, ')
+          ..write('freqData: $freqData, ')
           ..write('ebtCount: $ebtCount, ')
           ..write('nonIa: $nonIa, ')
           ..write('sanskrit: $sanskrit, ')
@@ -6316,6 +6365,7 @@ typedef $$DpdHeadwordsTableCreateCompanionBuilder =
       Value<String?> suffix,
       Value<String?> inflectionsHtml,
       Value<String?> freqHtml,
+      Value<String?> freqData,
       Value<int?> ebtCount,
       Value<String?> nonIa,
       Value<String?> sanskrit,
@@ -6369,6 +6419,7 @@ typedef $$DpdHeadwordsTableUpdateCompanionBuilder =
       Value<String?> suffix,
       Value<String?> inflectionsHtml,
       Value<String?> freqHtml,
+      Value<String?> freqData,
       Value<int?> ebtCount,
       Value<String?> nonIa,
       Value<String?> sanskrit,
@@ -6602,6 +6653,11 @@ class $$DpdHeadwordsTableFilterComposer
 
   ColumnFilters<String> get freqHtml => $composableBuilder(
     column: $table.freqHtml,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get freqData => $composableBuilder(
+    column: $table.freqData,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -6883,6 +6939,11 @@ class $$DpdHeadwordsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get freqData => $composableBuilder(
+    column: $table.freqData,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<int> get ebtCount => $composableBuilder(
     column: $table.ebtCount,
     builder: (column) => ColumnOrderings(column),
@@ -7107,6 +7168,9 @@ class $$DpdHeadwordsTableAnnotationComposer
   GeneratedColumn<String> get freqHtml =>
       $composableBuilder(column: $table.freqHtml, builder: (column) => column);
 
+  GeneratedColumn<String> get freqData =>
+      $composableBuilder(column: $table.freqData, builder: (column) => column);
+
   GeneratedColumn<int> get ebtCount =>
       $composableBuilder(column: $table.ebtCount, builder: (column) => column);
 
@@ -7235,6 +7299,7 @@ class $$DpdHeadwordsTableTableManager
                 Value<String?> suffix = const Value.absent(),
                 Value<String?> inflectionsHtml = const Value.absent(),
                 Value<String?> freqHtml = const Value.absent(),
+                Value<String?> freqData = const Value.absent(),
                 Value<int?> ebtCount = const Value.absent(),
                 Value<String?> nonIa = const Value.absent(),
                 Value<String?> sanskrit = const Value.absent(),
@@ -7286,6 +7351,7 @@ class $$DpdHeadwordsTableTableManager
                 suffix: suffix,
                 inflectionsHtml: inflectionsHtml,
                 freqHtml: freqHtml,
+                freqData: freqData,
                 ebtCount: ebtCount,
                 nonIa: nonIa,
                 sanskrit: sanskrit,
@@ -7339,6 +7405,7 @@ class $$DpdHeadwordsTableTableManager
                 Value<String?> suffix = const Value.absent(),
                 Value<String?> inflectionsHtml = const Value.absent(),
                 Value<String?> freqHtml = const Value.absent(),
+                Value<String?> freqData = const Value.absent(),
                 Value<int?> ebtCount = const Value.absent(),
                 Value<String?> nonIa = const Value.absent(),
                 Value<String?> sanskrit = const Value.absent(),
@@ -7390,6 +7457,7 @@ class $$DpdHeadwordsTableTableManager
                 suffix: suffix,
                 inflectionsHtml: inflectionsHtml,
                 freqHtml: freqHtml,
+                freqData: freqData,
                 ebtCount: ebtCount,
                 nonIa: nonIa,
                 sanskrit: sanskrit,
