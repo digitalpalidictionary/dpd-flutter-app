@@ -37,7 +37,6 @@ class _EntryBottomSheetState extends ConsumerState<EntryBottomSheet>
   bool _examplesOpen = false;
   bool _inflectionsOpen = false;
   bool _frequencyOpen = false;
-  bool _notesOpen = false;
   bool _feedbackOpen = false;
 
   SuttaInfoData? _suttaInfo;
@@ -74,7 +73,6 @@ class _EntryBottomSheetState extends ConsumerState<EntryBottomSheet>
     final hasExamples = hasEx1 || hasEx2;
     final hasTwoExamples = hasEx1 && hasEx2;
     final hasFrequency = h.freqData != null && h.freqData!.isNotEmpty;
-    final hasNotes = h.notes != null && h.notes!.isNotEmpty;
 
     return Material(
       color: theme.colorScheme.surface,
@@ -151,12 +149,6 @@ class _EntryBottomSheetState extends ConsumerState<EntryBottomSheet>
                     onTap: () =>
                         setState(() => _frequencyOpen = !_frequencyOpen),
                   ),
-                if (hasNotes)
-                  DpdSectionButton(
-                    label: 'Notes',
-                    isActive: _notesOpen,
-                    onTap: () => setState(() => _notesOpen = !_notesOpen),
-                  ),
                 DpdSectionButton(
                   label: 'Feedback',
                   isActive: _feedbackOpen,
@@ -224,14 +216,6 @@ class _EntryBottomSheetState extends ConsumerState<EntryBottomSheet>
               data: parseFrequencyData(h.freqData)!,
               headwordId: h.id,
               lemma1: h.lemma1,
-            ),
-
-          if (_notesOpen && hasNotes)
-            DpdSectionContainer(
-              child: Padding(
-                padding: DpdColors.sectionPadding,
-                child: Text(h.notes!),
-              ),
             ),
 
           if (_feedbackOpen)

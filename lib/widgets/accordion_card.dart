@@ -31,7 +31,6 @@ class _AccordionCardState extends ConsumerState<AccordionCard>
   bool _suttaOpen = false;
   bool _examplesOpen = false;
   bool _inflectionsOpen = false;
-  bool _notesOpen = false;
 
   SuttaInfoData? _suttaInfo;
   bool _suttaLoaded = false;
@@ -75,7 +74,6 @@ class _AccordionCardState extends ConsumerState<AccordionCard>
     final hasEx2 = h.example2 != null && h.example2!.isNotEmpty;
     final hasExamples = hasEx1 || hasEx2;
     final hasTwoExamples = hasEx1 && hasEx2;
-    final hasNotes = h.notes != null && h.notes!.isNotEmpty;
 
     return Material(
       color: Colors.transparent,
@@ -138,13 +136,6 @@ class _AccordionCardState extends ConsumerState<AccordionCard>
                           ),
                         ),
                       ...buildFamilyButtons(),
-                      if (hasNotes)
-                        DpdSectionButton(
-                          label: 'Notes',
-                          isActive: _notesOpen,
-                          onTap: () =>
-                              setState(() => _notesOpen = !_notesOpen),
-                        ),
                     ],
                   ),
                 ),
@@ -202,14 +193,6 @@ class _AccordionCardState extends ConsumerState<AccordionCard>
                   ),
 
                 ...buildFamilySections(),
-
-                if (_notesOpen && hasNotes)
-                  DpdSectionContainer(
-                    child: Padding(
-                      padding: DpdColors.sectionPadding,
-                      child: Text(h.notes!),
-                    ),
-                  ),
               ],
             ],
           ),

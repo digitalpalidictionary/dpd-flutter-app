@@ -76,75 +76,97 @@ class InflectionTable extends StatelessWidget {
   }
 
   Widget _buildTable(BuildContext context, Color headerBg) {
-    final colCount = data.headers.length;
-    final columnWidths = <int, TableColumnWidth>{
-      0: const IntrinsicColumnWidth(),
-      for (int i = 1; i < colCount; i++) i: const IntrinsicColumnWidth(flex: 1.0),
-    };
+    // Fixed widths for columns to allow scrolling and intrinsic height rows
+    const double labelWidth = 80.0;
+    const double dataWidth = 100.0;
+    
+    final int colCount = data.headers.length;
+    final double totalWidth = labelWidth + ((colCount - 1) * dataWidth);
 
-    return Table(
-      columnWidths: columnWidths,
-      // Data cells are middle (they set the row height).
-      // Row-label cells individually override to fill.
-      defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-      border: TableBorder.all(
-        color: DpdColors.primary,
-        width: 1,
-        borderRadius: BorderRadius.circular(DpdColors.borderRadiusValue),
+    return SizedBox(
+      width: totalWidth,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildHeaderRow(context, headerBg, labelWidth, dataWidth),
+          for (final row in data.rows)
+            _buildDataRow(context, row, headerBg, lookupKey, labelWidth, dataWidth),
+        ],
       ),
-      children: [
-        _buildHeaderRow(context, headerBg),
-        for (final row in data.rows) _buildDataRow(context, row, headerBg, lookupKey),
-      ],
     );
   }
 
-  TableRow _buildHeaderRow(BuildContext context, Color headerBg) {
+  Widget _buildHeaderRow(
+    BuildContext context, 
+    Color headerBg, 
+    double labelWidth, 
+    double dataWidth,
+  ) {
     final theme = Theme.of(context);
-    return TableRow(
-      decoration: BoxDecoration(color: headerBg),
-      children: data.headers.map((header) {
-        return TableCell(
-          child: Padding(
-            padding: const EdgeInsets.all(5),
+    final headers = data.headers;
+
+    return IntrinsicHeight(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          // Row Label Column Header (usually empty or "Case")
+          _buildCellContainer(
+            context,
+            width: labelWidth,
+            color: headerBg,
+            borderColor: DpdColors.primary,
             child: Text(
-              header,
+              headers.isNotEmpty ? headers[0] : '',
               textAlign: TextAlign.center,
               style: theme.textTheme.bodySmall?.copyWith(
                 fontWeight: FontWeight.bold,
                 color: DpdColors.primaryText,
               ),
-              softWrap: false,
             ),
           ),
-        );
-      }).toList(),
+          // Data Column Headers
+          for (int i = 1; i < headers.length; i++)
+            _buildCellContainer(
+              context,
+              width: dataWidth,
+              color: headerBg,
+              borderColor: DpdColors.primary,
+              child: Text(
+                headers[i],
+                textAlign: TextAlign.center,
+                style: theme.textTheme.bodySmall?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: DpdColors.primaryText,
+                ),
+              ),
+            ),
+        ],
+      ),
     );
   }
 
-  TableRow _buildDataRow(
+  Widget _buildDataRow(
     BuildContext context,
     (String, List<InflectionCell>) row,
     Color headerBg,
     String? lookupKey,
+    double labelWidth,
+    double dataWidth,
   ) {
     final theme = Theme.of(context);
     final surfaceColor = theme.colorScheme.surface;
     final (rowLabel, cells) = row;
 
-    return TableRow(
-      // Surface colour fills the full row height for data cells.
-      // The row-label cell paints over this with headerBg.
-      decoration: BoxDecoration(color: surfaceColor),
-      children: [
-        // Row label: fill alignment so it stretches to full row height,
-        // with headerBg painted over the row's surface background.
-        TableCell(
-          verticalAlignment: TableCellVerticalAlignment.fill,
-          child: Container(
+    return IntrinsicHeight(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          // Row Label
+          _buildCellContainer(
+            context,
+            width: labelWidth,
             color: headerBg,
-            padding: const EdgeInsets.all(5),
-            alignment: Alignment.center,
+            borderColor: DpdColors.primary,
             child: Text(
               rowLabel,
               textAlign: TextAlign.center,
@@ -152,27 +174,53 @@ class InflectionTable extends StatelessWidget {
                 fontWeight: FontWeight.bold,
                 color: DpdColors.primaryText,
               ),
-              softWrap: false,
             ),
           ),
-        ),
-        // Data cells: middle alignment (default); they set the row height.
-        // Background comes from TableRow.decoration (surfaceColor).
-        for (final cell in cells)
-          TableCell(
-            child: Padding(
-              padding: const EdgeInsets.all(5),
+          // Data Cells
+          for (final cell in cells)
+            _buildCellContainer(
+              context,
+              width: dataWidth,
+              color: surfaceColor,
+              borderColor: DpdColors.grayTransparent,
               child: cell.isEmpty
                   ? const SizedBox.shrink()
                   : Column(
                       mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: cell.forms
-                          .map((form) => _buildFormText(context, form, lookupKey))
+                          .map((form) =>
+                              _buildFormText(context, form, lookupKey))
                           .toList(),
                     ),
             ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCellContainer(
+    BuildContext context, {
+    required double width,
+    required Color color,
+    required Color borderColor,
+    required Widget child,
+  }) {
+    return SizedBox(
+      width: width,
+      child: Padding(
+        padding: const EdgeInsets.all(1),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 4),
+          decoration: BoxDecoration(
+            color: color,
+            border: Border.all(color: borderColor, width: 1),
+            borderRadius: DpdColors.borderRadius,
           ),
-      ],
+          alignment: Alignment.center,
+          child: child,
+        ),
+      ),
     );
   }
 
