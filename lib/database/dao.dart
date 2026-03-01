@@ -33,20 +33,41 @@ class DpdDao extends DatabaseAccessor<AppDatabase> with _$DpdDaoMixin {
 
   // ── Search ────────────────────────────────────────────────────────────────
 
-  Future<List<DpdHeadwordWithRoot>> search(
-    String query, {
-    int limit = 20,
-  }) async {
+  Future<List<DpdHeadwordWithRoot>> searchExact(String query) async {
     if (query.isEmpty) return [];
-
     final normalized = _normalizeQuery(query);
 
     final lookupRows =
         await (select(lookup)
-              ..where((t) => t.lookupKey.like('$normalized%'))
+              ..where((t) => t.lookupKey.equals(normalized)))
+            .get();
+
+    final idSet = _extractIds(lookupRows);
+    return _fetchHeadwords(idSet);
+  }
+
+  Future<List<DpdHeadwordWithRoot>> searchPartial(
+    String query, {
+    int limit = 20,
+  }) async {
+    if (query.isEmpty) return [];
+    final normalized = _normalizeQuery(query);
+
+    final lookupRows =
+        await (select(lookup)
+              ..where(
+                (t) =>
+                    t.lookupKey.like('$normalized%') &
+                    t.lookupKey.equals(normalized).not(),
+              )
               ..limit(limit))
             .get();
 
+    final idSet = _extractIds(lookupRows);
+    return _fetchHeadwords(idSet);
+  }
+
+  Set<int> _extractIds(List<LookupData> lookupRows) {
     final idSet = <int>{};
     for (final row in lookupRows) {
       final hw = row.headwords;
@@ -55,56 +76,54 @@ class DpdDao extends DatabaseAccessor<AppDatabase> with _$DpdDaoMixin {
         idSet.addAll(ids);
       }
     }
+    return idSet;
+  }
 
+  Future<List<DpdHeadwordWithRoot>> _fetchHeadwords(Set<int> idSet) async {
     if (idSet.isEmpty) return [];
 
-    try {
-      final rows = await (select(dpdHeadwords).join([
-        leftOuterJoin(dpdRoots, dpdRoots.root.equalsExp(dpdHeadwords.rootKey)),
-      ])..where(dpdHeadwords.id.isIn(idSet))).get();
+    final rows = await (select(dpdHeadwords).join([
+      leftOuterJoin(dpdRoots, dpdRoots.root.equalsExp(dpdHeadwords.rootKey)),
+    ])..where(dpdHeadwords.id.isIn(idSet))).get();
 
-      // Calculate rootCount for each unique root
-      final uniqueRoots = rows
-          .map((row) => row.readTableOrNull(dpdRoots)?.root)
-          .whereType<String>()
-          .toSet();
+    final uniqueRoots = rows
+        .map((row) => row.readTableOrNull(dpdRoots)?.root)
+        .whereType<String>()
+        .toSet();
 
-      final rootCounts = <String, int>{};
-      if (uniqueRoots.isNotEmpty) {
-        final countQuery =
-            await (selectOnly(dpdHeadwords)
-                  ..addColumns([dpdHeadwords.rootKey, dpdHeadwords.id.count()])
-                  ..where(dpdHeadwords.rootKey.isIn(uniqueRoots))
-                  ..groupBy([dpdHeadwords.rootKey]))
-                .get();
-        for (final row in countQuery) {
-          final root = row.read(dpdHeadwords.rootKey);
-          final count = row.read(dpdHeadwords.id.count());
-          if (root != null) rootCounts[root] = count ?? 0;
-        }
+    final rootCounts = <String, int>{};
+    if (uniqueRoots.isNotEmpty) {
+      final countQuery =
+          await (selectOnly(dpdHeadwords)
+                ..addColumns([dpdHeadwords.rootKey, dpdHeadwords.id.count()])
+                ..where(dpdHeadwords.rootKey.isIn(uniqueRoots))
+                ..groupBy([dpdHeadwords.rootKey]))
+              .get();
+      for (final row in countQuery) {
+        final root = row.read(dpdHeadwords.rootKey);
+        final count = row.read(dpdHeadwords.id.count());
+        if (root != null) rootCounts[root] = count ?? 0;
       }
-
-      final results = rows.map((row) {
-        final hw = DpdHeadwordWithRoot(
-          row.readTable(dpdHeadwords),
-          row.readTableOrNull(dpdRoots),
-        );
-        final rootKey = hw.root?.root;
-        if (rootKey != null) {
-          hw.rootCount = rootCounts[rootKey];
-        }
-        return hw;
-      }).toList();
-
-      results.sort(
-        (a, b) => paliSortKey(
-          a.headword.lemma1,
-        ).compareTo(paliSortKey(b.headword.lemma1)),
-      );
-      return results;
-    } catch (e) {
-      rethrow;
     }
+
+    final results = rows.map((row) {
+      final hw = DpdHeadwordWithRoot(
+        row.readTable(dpdHeadwords),
+        row.readTableOrNull(dpdRoots),
+      );
+      final rootKey = hw.root?.root;
+      if (rootKey != null) {
+        hw.rootCount = rootCounts[rootKey];
+      }
+      return hw;
+    }).toList();
+
+    results.sort(
+      (a, b) => paliSortKey(
+        a.headword.lemma1,
+      ).compareTo(paliSortKey(b.headword.lemma1)),
+    );
+    return results;
   }
 
   // ── Single entry ──────────────────────────────────────────────────────────
@@ -222,65 +241,81 @@ class DpdDao extends DatabaseAccessor<AppDatabase> with _$DpdDaoMixin {
   }
 }
 
-// Pāḷi alphabet sort order — each character maps to a sort position.
-// Standard Pāḷi alphabet: a ā i ī u ū e o k kh g gh ṅ c ch j jh ñ ṭ ṭh ḍ ḍh ṇ t th d dh n p ph b bh m y r l ḷ v s h
-const Map<String, int> _paliOrder = {
-  'a': 0,
-  'ā': 1,
-  'i': 2,
-  'ī': 3,
-  'u': 4,
-  'ū': 5,
-  'e': 6,
-  'o': 7,
-  'k': 8,
-  'g': 10,
-  'ṅ': 12,
-  'c': 13,
-  'j': 15,
-  'ñ': 17,
-  'ṭ': 18,
-  'ḍ': 20,
-  'ṇ': 22,
-  't': 23,
-  'd': 25,
-  'n': 27,
-  'p': 28,
-  'b': 30,
-  'm': 32,
-  'y': 33,
-  'r': 34,
-  'l': 35,
-  'ḷ': 36,
-  'v': 37,
-  's': 38,
-  'h': 39,
+// Pāḷi alphabet sort order — digraphs checked before single chars.
+const Map<String, String> _paliOrder = {
+  '√': '00',
+  'a': '01',
+  'ā': '02',
+  'i': '03',
+  'ī': '04',
+  'u': '05',
+  'ū': '06',
+  'e': '07',
+  'o': '08',
+  'k': '09',
+  'kh': '10',
+  'g': '11',
+  'gh': '12',
+  'ṅ': '13',
+  'c': '14',
+  'ch': '15',
+  'j': '16',
+  'jh': '17',
+  'ñ': '18',
+  'ṭ': '19',
+  'ṭh': '20',
+  'ḍ': '21',
+  'ḍh': '22',
+  'ṇ': '23',
+  't': '24',
+  'th': '25',
+  'd': '26',
+  'dh': '27',
+  'n': '28',
+  'p': '29',
+  'ph': '30',
+  'b': '31',
+  'bh': '32',
+  'm': '33',
+  'y': '34',
+  'r': '35',
+  'l': '36',
+  'v': '37',
+  's': '38',
+  'h': '39',
+  'ḷ': '40',
+  'ṃ': '41',
 };
 
+const _paliDigraphs = {'kh', 'gh', 'ch', 'jh', 'ṭh', 'ḍh', 'th', 'dh', 'ph', 'bh'};
+
 String paliSortKey(String lemma) {
-  // Strip the numeric suffix (e.g. "dhamma 1.01" → "dhamma")
-  final base = lemma.split(' ').first.toLowerCase();
+  final lower = lemma.toLowerCase();
+  final spaceIdx = lower.indexOf(' ');
+  final base = spaceIdx == -1 ? lower : lower.substring(0, spaceIdx);
+  final suffix = spaceIdx == -1 ? '' : lower.substring(spaceIdx);
+
   final buffer = StringBuffer();
-  for (final ch in base.characters) {
+  int i = 0;
+  while (i < base.length) {
+    if (i + 1 < base.length) {
+      final digraph = base.substring(i, i + 2);
+      if (_paliDigraphs.contains(digraph)) {
+        buffer.write(_paliOrder[digraph]);
+        i += 2;
+        continue;
+      }
+    }
+    final ch = base[i];
     final order = _paliOrder[ch];
     if (order != null) {
-      buffer.write(order.toString().padLeft(3, '0'));
-    } else {
-      buffer.write(ch.codeUnitAt(0).toString().padLeft(5, '0'));
+      buffer.write(order);
     }
+    i++;
   }
-  return buffer.toString();
-}
 
-// Extension for character iteration (avoids importing characters package)
-extension on String {
-  Iterable<String> get characters sync* {
-    for (int i = 0; i < length;) {
-      final rune = runes.elementAt(i);
-      yield String.fromCharCode(rune);
-      i += rune > 0xFFFF ? 2 : 1;
-    }
-  }
+  buffer.write(suffix);
+  return buffer.toString();
 }
 
 extension DpdHeadwordGetters on DpdHeadwordWithRoot {
