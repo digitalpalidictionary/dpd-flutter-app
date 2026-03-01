@@ -4,7 +4,7 @@
 
 - [x] Task: Add `freq_data` column to DpdHeadwords Drift table definition in `lib/database/tables.dart` 9f2e2ed
 - [x] Task: Run `dart run build_runner build --delete-conflicting-outputs` to regenerate Drift code df2fdae
-- [ ] Task: Create `FrequencyData` model class (`lib/models/frequency_data.dart`) with JSON parsing
+- [x] Task: Create `FrequencyData` model class (`lib/models/frequency_data.dart`) with JSON parsing 43051c2
   - Fields: freqHeading, cstFreq/cstGrad (49), bjtFreq/bjtGrad (39), syaFreq/syaGrad (30), scFreq/scGrad (19)
   - Factory constructor `fromJson(String json)` and `isEmpty` getter
 - [ ] Task: Write tests for `FrequencyData` model — parsing, empty handling, edge cases
