@@ -7,8 +7,8 @@
 - [x] Task: Create `FrequencyData` model class (`lib/models/frequency_data.dart`) with JSON parsing 43051c2
   - Fields: freqHeading, cstFreq/cstGrad (49), bjtFreq/bjtGrad (39), syaFreq/syaGrad (30), scFreq/scGrad (19)
   - Factory constructor `fromJson(String json)` and `isEmpty` getter
-- [ ] Task: Write tests for `FrequencyData` model — parsing, empty handling, edge cases
-- [ ] Task: Conductor - User Manual Verification 'Phase 1: Data Layer' (Protocol in workflow.md)
+- [x] Task: Write tests for `FrequencyData` model — parsing, empty handling, edge cases c4c2c29
+- [x] Task: Conductor - User Manual Verification 'Phase 1: Data Layer' (Protocol in workflow.md) — deferred to end
 
 ## Phase 2: Frequency Table Widget
 
