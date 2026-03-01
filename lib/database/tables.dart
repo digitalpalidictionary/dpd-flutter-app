@@ -48,6 +48,7 @@ class DpdHeadwords extends Table {
   TextColumn get inflectionsHtml =>
       text().named('inflections_html').nullable()();
   TextColumn get freqHtml => text().named('freq_html').nullable()();
+  TextColumn get freqData => text().named('freq_data').nullable()();
   IntColumn get ebtCount => integer().named('ebt_count').nullable()();
   TextColumn get nonIa => text().named('non_ia').nullable()();
   TextColumn get sanskrit => text().nullable()();
