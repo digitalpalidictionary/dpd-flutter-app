@@ -2,17 +2,35 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import 'providers/autocomplete_provider.dart';
+import 'providers/database_provider.dart';
 import 'providers/settings_provider.dart';
 import 'screens/entry_screen.dart';
+import 'screens/root_screen.dart';
 import 'screens/search_screen.dart';
 import 'screens/settings_screen.dart';
 import 'theme/dpd_colors.dart';
 
-class DpdApp extends ConsumerWidget {
+class DpdApp extends ConsumerStatefulWidget {
   const DpdApp({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<DpdApp> createState() => _DpdAppState();
+}
+
+class _DpdAppState extends ConsumerState<DpdApp> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(databaseProvider);
+      ref.read(searchIndexProvider);
+      ref.read(compoundFamilyKeysProvider);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final settings = ref.watch(settingsProvider);
 
     final lightScheme = ColorScheme(
@@ -49,20 +67,16 @@ class DpdApp extends ConsumerWidget {
       final themed = settings.useSerifFont
           ? GoogleFonts.notoSerifTextTheme(base)
           : GoogleFonts.interTextTheme(base);
-      // Material 3 bodyMedium default is 14sp
       const baseSize = 14.0;
       return themed.copyWith(
-        // h3 equivalent — headword titles at 130%
         titleLarge: themed.titleLarge?.copyWith(
           fontSize: baseSize * 1.3,
           height: 1.3,
           fontWeight: FontWeight.w700,
         ),
-        // Default body text — line-height 150%
         bodyLarge: themed.bodyLarge?.copyWith(height: 1.5),
         bodyMedium: themed.bodyMedium?.copyWith(height: 1.5),
         bodySmall: themed.bodySmall?.copyWith(height: 1.5),
-        // Button text — 80% size
         labelSmall: themed.labelSmall?.copyWith(fontSize: baseSize * 0.8),
         labelMedium: themed.labelMedium?.copyWith(fontSize: baseSize * 0.8),
       );
@@ -100,6 +114,9 @@ class DpdApp extends ConsumerWidget {
       case '/entry':
         final id = settings.arguments as int;
         return MaterialPageRoute(builder: (_) => EntryScreen(headwordId: id));
+      case '/root':
+        final rootKey = settings.arguments as String;
+        return MaterialPageRoute(builder: (_) => RootScreen(rootKey: rootKey));
       case '/settings':
         return MaterialPageRoute(builder: (_) => const SettingsScreen());
       default:

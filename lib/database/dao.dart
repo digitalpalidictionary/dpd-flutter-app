@@ -15,6 +15,18 @@ class DpdHeadwordWithRoot {
   DpdHeadwordWithRoot(this.headword, this.root);
 }
 
+class RootWithFamilies {
+  final DpdRoot root;
+  final List<FamilyRootData> families;
+  final int count;
+
+  RootWithFamilies({
+    required this.root,
+    required this.families,
+    required this.count,
+  });
+}
+
 @DriftAccessor(
   tables: [
     DpdHeadwords,
@@ -260,6 +272,109 @@ class DpdDao extends DatabaseAccessor<AppDatabase> with _$DpdDaoMixin {
       distinct: true,
     )..addColumns([familyRoot.rootFamily])).get();
     return rows.map((r) => r.read(familyRoot.rootFamily)!).toList();
+  }
+
+  // ── Root search ─────────────────────────────────────────────────────────
+
+  Future<List<({String lemma1, String pos, String rootBase, String grammar})>>
+      getHeadwordsForRootMatrix(String rootKey) async {
+    final rows = await (selectOnly(dpdHeadwords)
+          ..addColumns([
+            dpdHeadwords.lemma1,
+            dpdHeadwords.pos,
+            dpdHeadwords.rootBase,
+            dpdHeadwords.grammar,
+          ])
+          ..where(
+            dpdHeadwords.rootKey.equals(rootKey) &
+                dpdHeadwords.rootKey.equals('').not(),
+          ))
+        .get();
+
+    return rows
+        .map((r) => (
+              lemma1: r.read(dpdHeadwords.lemma1)!,
+              pos: r.read(dpdHeadwords.pos) ?? '',
+              rootBase: r.read(dpdHeadwords.rootBase) ?? '',
+              grammar: r.read(dpdHeadwords.grammar) ?? '',
+            ))
+        .toList();
+  }
+
+  Future<List<String>> getBasesForRoot(String rootKey) async {
+    final rows = await (selectOnly(dpdHeadwords, distinct: true)
+          ..addColumns([dpdHeadwords.rootBase])
+          ..where(dpdHeadwords.rootKey.equals(rootKey)))
+        .get();
+
+    final bases = <String>{};
+    for (final row in rows) {
+      final raw = row.read(dpdHeadwords.rootBase);
+      if (raw == null || raw.isEmpty) continue;
+      final parts = raw.split(' > ');
+      final base = parts.last.trim();
+      if (base.isNotEmpty) bases.add(base);
+    }
+    final sorted = bases.toList()..sort((a, b) => a.length.compareTo(b.length));
+    return sorted;
+  }
+
+  Future<RootWithFamilies?> getRootWithFamilies(String rootKey) async {
+    final rootRow = await (select(dpdRoots)
+          ..where((t) => t.root.equals(rootKey)))
+        .getSingleOrNull();
+    if (rootRow == null) return null;
+
+    final families = await (select(familyRoot)
+          ..where((t) => t.rootKey.equals(rootKey)))
+        .get();
+    families.sort(
+      (a, b) => paliSortKey(a.rootFamily).compareTo(paliSortKey(b.rootFamily)),
+    );
+
+    final countQuery = await (selectOnly(dpdHeadwords)
+          ..addColumns([dpdHeadwords.id.count()])
+          ..where(dpdHeadwords.rootKey.equals(rootKey)))
+        .getSingle();
+    final count = countQuery.read(dpdHeadwords.id.count()) ?? 0;
+
+    return RootWithFamilies(root: rootRow, families: families, count: count);
+  }
+
+  List<String> _extractRootKeys(List<LookupData> lookupRows) {
+    final keys = <String>{};
+    for (final row in lookupRows) {
+      final r = row.roots;
+      if (r != null && r.isNotEmpty) {
+        final decoded = jsonDecode(r) as List;
+        for (final key in decoded) {
+          if (key is String && key.isNotEmpty) keys.add(key);
+        }
+      }
+    }
+    return keys.toList();
+  }
+
+  Future<List<RootWithFamilies>> searchRoots(String query) async {
+    if (query.isEmpty) return [];
+    final normalized = _normalizeQuery(query);
+
+    final lookupRows = await (select(lookup)
+          ..where((t) => t.lookupKey.equals(normalized)))
+        .get();
+
+    final rootKeys = _extractRootKeys(lookupRows);
+    if (rootKeys.isEmpty) return [];
+
+    final results = <RootWithFamilies>[];
+    for (final key in rootKeys) {
+      final rwf = await getRootWithFamilies(key);
+      if (rwf != null) results.add(rwf);
+    }
+    results.sort(
+      (a, b) => paliSortKey(a.root.root).compareTo(paliSortKey(b.root.root)),
+    );
+    return results;
   }
 
   // ── Helpers ───────────────────────────────────────────────────────────────

@@ -18,3 +18,10 @@ final partialResultsProvider = FutureProvider.autoDispose
   final dao = ref.watch(daoProvider);
   return dao.searchPartial(query);
 });
+
+final rootResultsProvider = FutureProvider.autoDispose
+    .family<List<RootWithFamilies>, String>((ref, query) async {
+  if (query.isEmpty) return [];
+  final dao = ref.watch(daoProvider);
+  return dao.searchRoots(query);
+});

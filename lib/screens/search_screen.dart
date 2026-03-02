@@ -15,6 +15,7 @@ import '../widgets/autocomplete_dropdown.dart';
 import '../widgets/double_tap_search_wrapper.dart';
 import '../widgets/entry_bottom_sheet.dart';
 import '../widgets/inline_entry_card.dart';
+import '../widgets/inline_root_card.dart';
 import '../widgets/word_card.dart';
 
 class SearchScreen extends ConsumerStatefulWidget {
@@ -181,8 +182,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                   ),
                   IconButton(
                     icon: const Icon(Icons.settings),
-                    onPressed: () =>
-                        Navigator.pushNamed(context, '/settings'),
+                    onPressed: () => Navigator.pushNamed(context, '/settings'),
                   ),
                 ],
               ),
@@ -207,8 +207,9 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                         decoration: InputDecoration(
                           hintText: 'Search Pāḷi...',
                           hintStyle: theme.textTheme.titleMedium?.copyWith(
-                            color: theme.colorScheme.onSurface
-                                .withValues(alpha: 0.4),
+                            color: theme.colorScheme.onSurface.withValues(
+                              alpha: 0.4,
+                            ),
                           ),
                           enabledBorder: OutlineInputBorder(
                             borderRadius: DpdColors.borderRadius,
@@ -233,10 +234,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                     ),
                   ),
                   const SizedBox(width: 5),
-                  _SearchButton(
-                    label: 'search',
-                    onPressed: _onSearch,
-                  ),
+                  _SearchButton(label: 'search', onPressed: _onSearch),
                   const SizedBox(width: 5),
                   _SearchButton(
                     label: 'clear',
@@ -276,6 +274,9 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     final exactLoading = exactAsync.isLoading;
     final partialLoading = partialAsync.isLoading;
 
+    final rootAsync = ref.watch(rootResultsProvider(query));
+    final roots = rootAsync.valueOrNull ?? [];
+
     if (exactLoading && exact.isEmpty) {
       return const Center(child: CircularProgressIndicator());
     }
@@ -284,7 +285,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
       return Center(child: Text('Error: ${exactAsync.error}'));
     }
 
-    if (exact.isEmpty && partial.isEmpty && !partialLoading) {
+    if (exact.isEmpty && partial.isEmpty && roots.isEmpty && !partialLoading) {
       return _NoResults(query: query);
     }
 
@@ -293,6 +294,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
       exact: exact,
       partial: partial,
       partialLoading: partialLoading,
+      roots: roots,
       mode: mode,
     );
   }
@@ -315,9 +317,7 @@ class _SearchButton extends StatelessWidget {
           foregroundColor: DpdColors.light,
           disabledBackgroundColor: DpdColors.primary.withValues(alpha: 0.4),
           disabledForegroundColor: DpdColors.light.withValues(alpha: 0.5),
-          shape: RoundedRectangleBorder(
-            borderRadius: DpdColors.borderRadius,
-          ),
+          shape: RoundedRectangleBorder(borderRadius: DpdColors.borderRadius),
           padding: const EdgeInsets.symmetric(horizontal: 12),
           elevation: 2,
         ),
@@ -332,22 +332,30 @@ class _SplitResultsList extends StatelessWidget {
     required this.exact,
     required this.partial,
     required this.partialLoading,
+    required this.roots,
     required this.mode,
   });
 
   final List<DpdHeadwordWithRoot> exact;
   final List<DpdHeadwordWithRoot> partial;
   final bool partialLoading;
+  final List<RootWithFamilies> roots;
   final DisplayMode mode;
 
   @override
   Widget build(BuildContext context) {
     final hasExact = exact.isNotEmpty;
     final hasPartial = partial.isNotEmpty;
-    final showDivider = hasExact && (hasPartial || partialLoading);
+    final hasRoots = roots.isNotEmpty;
+    final showRootDivider = hasRoots && hasExact;
+    final showPartialDivider =
+        (hasExact || hasRoots) && (hasPartial || partialLoading);
 
-    final itemCount = exact.length +
-        (showDivider ? 1 : 0) +
+    final itemCount =
+        exact.length +
+        (showRootDivider ? 1 : 0) +
+        roots.length +
+        (showPartialDivider ? 1 : 0) +
         partial.length +
         (partialLoading ? 1 : 0);
 
@@ -356,30 +364,51 @@ class _SplitResultsList extends StatelessWidget {
       itemCount: itemCount,
       separatorBuilder: (_, _) => const SizedBox.shrink(),
       itemBuilder: (context, index) {
+        // Exact headword matches first
         if (index < exact.length) {
           return _buildItem(context, exact[index]);
         }
         index -= exact.length;
 
-        if (showDivider && index == 0) {
+        // Root results divider
+        if (showRootDivider && index == 0) {
+          return const _RootResultsDivider();
+        }
+        if (showRootDivider) index -= 1;
+
+        // Root matches
+        if (index < roots.length) {
+          return _buildRootItem(context, roots[index]);
+        }
+        index -= roots.length;
+
+        // Partial matches divider
+        if (showPartialDivider && index == 0) {
           return const _MoreResultsDivider();
         }
-        if (showDivider) index -= 1;
+        if (showPartialDivider) index -= 1;
 
+        // Partial headword matches
         if (index < partial.length) {
           return _buildItem(context, partial[index]);
         }
+        index -= partial.length;
 
-        return const Padding(
-          padding: EdgeInsets.symmetric(vertical: 16),
-          child: Center(
-            child: SizedBox(
-              width: 20,
-              height: 20,
-              child: CircularProgressIndicator(strokeWidth: 2),
+        if (partialLoading && index == 0) {
+          return const Padding(
+            padding: EdgeInsets.symmetric(vertical: 16),
+            child: Center(
+              child: SizedBox(
+                width: 20,
+                height: 20,
+                child: CircularProgressIndicator(strokeWidth: 2),
+              ),
             ),
-          ),
-        );
+          );
+        }
+        if (partialLoading) index -= 1;
+
+        return const SizedBox.shrink();
       },
     );
   }
@@ -389,9 +418,16 @@ class _SplitResultsList extends StatelessWidget {
       DisplayMode.inline => InlineEntryCard(headword: hw),
       DisplayMode.accordion => AccordionCard(headword: hw),
       DisplayMode.bottomSheet => WordCard(
-          headword: hw,
-          onTap: () => _showBottomSheet(context, hw),
-        ),
+        headword: hw,
+        onTap: () => _showBottomSheet(context, hw),
+      ),
+    };
+  }
+
+  Widget _buildRootItem(BuildContext context, RootWithFamilies rwf) {
+    return switch (mode) {
+      DisplayMode.inline => InlineRootCard(rwf: rwf),
+      _ => _RootResultCard(rwf: rwf),
     };
   }
 
@@ -467,6 +503,73 @@ class _NoResults extends StatelessWidget {
         'No results for "$query"',
         style: Theme.of(context).textTheme.bodyLarge?.copyWith(
           color: Theme.of(context).colorScheme.outline,
+        ),
+      ),
+    );
+  }
+}
+
+class _RootResultsDivider extends StatelessWidget {
+  const _RootResultsDivider();
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+      child: Text(
+        'root results',
+        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+          color: Theme.of(context).colorScheme.onSurfaceVariant,
+        ),
+      ),
+    );
+  }
+}
+
+class _RootResultCard extends StatelessWidget {
+  const _RootResultCard({required this.rwf});
+
+  final RootWithFamilies rwf;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final root = rwf.root;
+    final baseStyle = theme.textTheme.bodyMedium?.copyWith(height: 1.5);
+    final boldStyle = baseStyle?.copyWith(fontWeight: FontWeight.w700);
+    final grayStyle = baseStyle?.copyWith(color: Colors.grey);
+    final rootClean = root.root.replaceAll('√', '');
+
+    return InkWell(
+      onTap: () => Navigator.pushNamed(context, '/root', arguments: root.root),
+      child: Container(
+        width: double.infinity,
+        margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+        decoration: BoxDecoration(
+          border: Border.all(color: theme.colorScheme.primary, width: 2),
+          borderRadius: DpdColors.borderRadius,
+        ),
+        padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+        child: RichText(
+          text: TextSpan(
+            style: baseStyle,
+            children: [
+              const TextSpan(text: 'root. '),
+              TextSpan(text: rootClean, style: boldStyle),
+              if (root.rootHasVerb.isNotEmpty)
+                TextSpan(
+                  text: root.rootHasVerb,
+                  style: baseStyle?.copyWith(
+                    fontSize: (baseStyle.fontSize ?? 14) * 0.7,
+                    fontFeatures: [const FontFeature.superscripts()],
+                  ),
+                ),
+              TextSpan(text: ' ${root.rootGroup} '),
+              TextSpan(text: root.rootSign),
+              TextSpan(text: ' (${root.rootMeaning})'),
+              TextSpan(text: ' ${rwf.count}', style: grayStyle),
+            ],
+          ),
         ),
       ),
     );

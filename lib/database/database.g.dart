@@ -117,12 +117,187 @@ class $DpdRootsTable extends DpdRoots with TableInfo<$DpdRootsTable, DpdRoot> {
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _dhatupathaNumMeta = const VerificationMeta(
+    'dhatupathaNum',
+  );
+  @override
+  late final GeneratedColumn<String> dhatupathaNum = GeneratedColumn<String>(
+    'dhatupatha_num',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _dhatupathaRootMeta = const VerificationMeta(
+    'dhatupathaRoot',
+  );
+  @override
+  late final GeneratedColumn<String> dhatupathaRoot = GeneratedColumn<String>(
+    'dhatupatha_root',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _dhatupathaPaliMeta = const VerificationMeta(
+    'dhatupathaPali',
+  );
+  @override
+  late final GeneratedColumn<String> dhatupathaPali = GeneratedColumn<String>(
+    'dhatupatha_pali',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _dhatupathaEnglishMeta = const VerificationMeta(
+    'dhatupathaEnglish',
+  );
+  @override
+  late final GeneratedColumn<String> dhatupathaEnglish =
+      GeneratedColumn<String>(
+        'dhatupatha_english',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: true,
+      );
+  static const VerificationMeta _dhatumanjusaNumMeta = const VerificationMeta(
+    'dhatumanjusaNum',
+  );
+  @override
+  late final GeneratedColumn<String> dhatumanjusaNum = GeneratedColumn<String>(
+    'dhatumanjusa_num',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _dhatumanjusaRootMeta = const VerificationMeta(
+    'dhatumanjusaRoot',
+  );
+  @override
+  late final GeneratedColumn<String> dhatumanjusaRoot = GeneratedColumn<String>(
+    'dhatumanjusa_root',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _dhatumanjusaPaliMeta = const VerificationMeta(
+    'dhatumanjusaPali',
+  );
+  @override
+  late final GeneratedColumn<String> dhatumanjusaPali = GeneratedColumn<String>(
+    'dhatumanjusa_pali',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _dhatumanjusaEnglishMeta =
+      const VerificationMeta('dhatumanjusaEnglish');
+  @override
+  late final GeneratedColumn<String> dhatumanjusaEnglish =
+      GeneratedColumn<String>(
+        'dhatumanjusa_english',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: true,
+      );
+  static const VerificationMeta _dhatumalaRootMeta = const VerificationMeta(
+    'dhatumalaRoot',
+  );
+  @override
+  late final GeneratedColumn<String> dhatumalaRoot = GeneratedColumn<String>(
+    'dhatumala_root',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _dhatamalaPaliMeta = const VerificationMeta(
+    'dhatamalaPali',
+  );
+  @override
+  late final GeneratedColumn<String> dhatamalaPali = GeneratedColumn<String>(
+    'dhatumala_pali',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _dhatumalaEnglishMeta = const VerificationMeta(
+    'dhatumalaEnglish',
+  );
+  @override
+  late final GeneratedColumn<String> dhatumalaEnglish = GeneratedColumn<String>(
+    'dhatumala_english',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _paniniRootMeta = const VerificationMeta(
+    'paniniRoot',
+  );
+  @override
+  late final GeneratedColumn<String> paniniRoot = GeneratedColumn<String>(
+    'panini_root',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _paniniSanskritMeta = const VerificationMeta(
+    'paniniSanskrit',
+  );
+  @override
+  late final GeneratedColumn<String> paniniSanskrit = GeneratedColumn<String>(
+    'panini_sanskrit',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _paniniEnglishMeta = const VerificationMeta(
+    'paniniEnglish',
+  );
+  @override
+  late final GeneratedColumn<String> paniniEnglish = GeneratedColumn<String>(
+    'panini_english',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _noteMeta = const VerificationMeta('note');
+  @override
+  late final GeneratedColumn<String> note = GeneratedColumn<String>(
+    'note',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
   static const VerificationMeta _rootInfoMeta = const VerificationMeta(
     'rootInfo',
   );
   @override
   late final GeneratedColumn<String> rootInfo = GeneratedColumn<String>(
     'root_info',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _rootMatrixMeta = const VerificationMeta(
+    'rootMatrix',
+  );
+  @override
+  late final GeneratedColumn<String> rootMatrix = GeneratedColumn<String>(
+    'root_matrix',
     aliasedName,
     false,
     type: DriftSqlType.string,
@@ -140,7 +315,23 @@ class $DpdRootsTable extends DpdRoots with TableInfo<$DpdRootsTable, DpdRoot> {
     sanskritRootMeaning,
     sanskritRootClass,
     rootExample,
+    dhatupathaNum,
+    dhatupathaRoot,
+    dhatupathaPali,
+    dhatupathaEnglish,
+    dhatumanjusaNum,
+    dhatumanjusaRoot,
+    dhatumanjusaPali,
+    dhatumanjusaEnglish,
+    dhatumalaRoot,
+    dhatamalaPali,
+    dhatumalaEnglish,
+    paniniRoot,
+    paniniSanskrit,
+    paniniEnglish,
+    note,
     rootInfo,
+    rootMatrix,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -255,6 +446,165 @@ class $DpdRootsTable extends DpdRoots with TableInfo<$DpdRootsTable, DpdRoot> {
     } else if (isInserting) {
       context.missing(_rootExampleMeta);
     }
+    if (data.containsKey('dhatupatha_num')) {
+      context.handle(
+        _dhatupathaNumMeta,
+        dhatupathaNum.isAcceptableOrUnknown(
+          data['dhatupatha_num']!,
+          _dhatupathaNumMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_dhatupathaNumMeta);
+    }
+    if (data.containsKey('dhatupatha_root')) {
+      context.handle(
+        _dhatupathaRootMeta,
+        dhatupathaRoot.isAcceptableOrUnknown(
+          data['dhatupatha_root']!,
+          _dhatupathaRootMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_dhatupathaRootMeta);
+    }
+    if (data.containsKey('dhatupatha_pali')) {
+      context.handle(
+        _dhatupathaPaliMeta,
+        dhatupathaPali.isAcceptableOrUnknown(
+          data['dhatupatha_pali']!,
+          _dhatupathaPaliMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_dhatupathaPaliMeta);
+    }
+    if (data.containsKey('dhatupatha_english')) {
+      context.handle(
+        _dhatupathaEnglishMeta,
+        dhatupathaEnglish.isAcceptableOrUnknown(
+          data['dhatupatha_english']!,
+          _dhatupathaEnglishMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_dhatupathaEnglishMeta);
+    }
+    if (data.containsKey('dhatumanjusa_num')) {
+      context.handle(
+        _dhatumanjusaNumMeta,
+        dhatumanjusaNum.isAcceptableOrUnknown(
+          data['dhatumanjusa_num']!,
+          _dhatumanjusaNumMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_dhatumanjusaNumMeta);
+    }
+    if (data.containsKey('dhatumanjusa_root')) {
+      context.handle(
+        _dhatumanjusaRootMeta,
+        dhatumanjusaRoot.isAcceptableOrUnknown(
+          data['dhatumanjusa_root']!,
+          _dhatumanjusaRootMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_dhatumanjusaRootMeta);
+    }
+    if (data.containsKey('dhatumanjusa_pali')) {
+      context.handle(
+        _dhatumanjusaPaliMeta,
+        dhatumanjusaPali.isAcceptableOrUnknown(
+          data['dhatumanjusa_pali']!,
+          _dhatumanjusaPaliMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_dhatumanjusaPaliMeta);
+    }
+    if (data.containsKey('dhatumanjusa_english')) {
+      context.handle(
+        _dhatumanjusaEnglishMeta,
+        dhatumanjusaEnglish.isAcceptableOrUnknown(
+          data['dhatumanjusa_english']!,
+          _dhatumanjusaEnglishMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_dhatumanjusaEnglishMeta);
+    }
+    if (data.containsKey('dhatumala_root')) {
+      context.handle(
+        _dhatumalaRootMeta,
+        dhatumalaRoot.isAcceptableOrUnknown(
+          data['dhatumala_root']!,
+          _dhatumalaRootMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_dhatumalaRootMeta);
+    }
+    if (data.containsKey('dhatumala_pali')) {
+      context.handle(
+        _dhatamalaPaliMeta,
+        dhatamalaPali.isAcceptableOrUnknown(
+          data['dhatumala_pali']!,
+          _dhatamalaPaliMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_dhatamalaPaliMeta);
+    }
+    if (data.containsKey('dhatumala_english')) {
+      context.handle(
+        _dhatumalaEnglishMeta,
+        dhatumalaEnglish.isAcceptableOrUnknown(
+          data['dhatumala_english']!,
+          _dhatumalaEnglishMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_dhatumalaEnglishMeta);
+    }
+    if (data.containsKey('panini_root')) {
+      context.handle(
+        _paniniRootMeta,
+        paniniRoot.isAcceptableOrUnknown(data['panini_root']!, _paniniRootMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_paniniRootMeta);
+    }
+    if (data.containsKey('panini_sanskrit')) {
+      context.handle(
+        _paniniSanskritMeta,
+        paniniSanskrit.isAcceptableOrUnknown(
+          data['panini_sanskrit']!,
+          _paniniSanskritMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_paniniSanskritMeta);
+    }
+    if (data.containsKey('panini_english')) {
+      context.handle(
+        _paniniEnglishMeta,
+        paniniEnglish.isAcceptableOrUnknown(
+          data['panini_english']!,
+          _paniniEnglishMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_paniniEnglishMeta);
+    }
+    if (data.containsKey('note')) {
+      context.handle(
+        _noteMeta,
+        note.isAcceptableOrUnknown(data['note']!, _noteMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_noteMeta);
+    }
     if (data.containsKey('root_info')) {
       context.handle(
         _rootInfoMeta,
@@ -262,6 +612,14 @@ class $DpdRootsTable extends DpdRoots with TableInfo<$DpdRootsTable, DpdRoot> {
       );
     } else if (isInserting) {
       context.missing(_rootInfoMeta);
+    }
+    if (data.containsKey('root_matrix')) {
+      context.handle(
+        _rootMatrixMeta,
+        rootMatrix.isAcceptableOrUnknown(data['root_matrix']!, _rootMatrixMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_rootMatrixMeta);
     }
     return context;
   }
@@ -312,9 +670,73 @@ class $DpdRootsTable extends DpdRoots with TableInfo<$DpdRootsTable, DpdRoot> {
         DriftSqlType.string,
         data['${effectivePrefix}root_example'],
       )!,
+      dhatupathaNum: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}dhatupatha_num'],
+      )!,
+      dhatupathaRoot: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}dhatupatha_root'],
+      )!,
+      dhatupathaPali: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}dhatupatha_pali'],
+      )!,
+      dhatupathaEnglish: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}dhatupatha_english'],
+      )!,
+      dhatumanjusaNum: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}dhatumanjusa_num'],
+      )!,
+      dhatumanjusaRoot: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}dhatumanjusa_root'],
+      )!,
+      dhatumanjusaPali: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}dhatumanjusa_pali'],
+      )!,
+      dhatumanjusaEnglish: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}dhatumanjusa_english'],
+      )!,
+      dhatumalaRoot: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}dhatumala_root'],
+      )!,
+      dhatamalaPali: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}dhatumala_pali'],
+      )!,
+      dhatumalaEnglish: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}dhatumala_english'],
+      )!,
+      paniniRoot: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}panini_root'],
+      )!,
+      paniniSanskrit: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}panini_sanskrit'],
+      )!,
+      paniniEnglish: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}panini_english'],
+      )!,
+      note: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}note'],
+      )!,
       rootInfo: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}root_info'],
+      )!,
+      rootMatrix: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}root_matrix'],
       )!,
     );
   }
@@ -336,7 +758,23 @@ class DpdRoot extends DataClass implements Insertable<DpdRoot> {
   final String sanskritRootMeaning;
   final String sanskritRootClass;
   final String rootExample;
+  final String dhatupathaNum;
+  final String dhatupathaRoot;
+  final String dhatupathaPali;
+  final String dhatupathaEnglish;
+  final String dhatumanjusaNum;
+  final String dhatumanjusaRoot;
+  final String dhatumanjusaPali;
+  final String dhatumanjusaEnglish;
+  final String dhatumalaRoot;
+  final String dhatamalaPali;
+  final String dhatumalaEnglish;
+  final String paniniRoot;
+  final String paniniSanskrit;
+  final String paniniEnglish;
+  final String note;
   final String rootInfo;
+  final String rootMatrix;
   const DpdRoot({
     required this.root,
     required this.rootInComps,
@@ -348,7 +786,23 @@ class DpdRoot extends DataClass implements Insertable<DpdRoot> {
     required this.sanskritRootMeaning,
     required this.sanskritRootClass,
     required this.rootExample,
+    required this.dhatupathaNum,
+    required this.dhatupathaRoot,
+    required this.dhatupathaPali,
+    required this.dhatupathaEnglish,
+    required this.dhatumanjusaNum,
+    required this.dhatumanjusaRoot,
+    required this.dhatumanjusaPali,
+    required this.dhatumanjusaEnglish,
+    required this.dhatumalaRoot,
+    required this.dhatamalaPali,
+    required this.dhatumalaEnglish,
+    required this.paniniRoot,
+    required this.paniniSanskrit,
+    required this.paniniEnglish,
+    required this.note,
     required this.rootInfo,
+    required this.rootMatrix,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -363,7 +817,23 @@ class DpdRoot extends DataClass implements Insertable<DpdRoot> {
     map['sanskrit_root_meaning'] = Variable<String>(sanskritRootMeaning);
     map['sanskrit_root_class'] = Variable<String>(sanskritRootClass);
     map['root_example'] = Variable<String>(rootExample);
+    map['dhatupatha_num'] = Variable<String>(dhatupathaNum);
+    map['dhatupatha_root'] = Variable<String>(dhatupathaRoot);
+    map['dhatupatha_pali'] = Variable<String>(dhatupathaPali);
+    map['dhatupatha_english'] = Variable<String>(dhatupathaEnglish);
+    map['dhatumanjusa_num'] = Variable<String>(dhatumanjusaNum);
+    map['dhatumanjusa_root'] = Variable<String>(dhatumanjusaRoot);
+    map['dhatumanjusa_pali'] = Variable<String>(dhatumanjusaPali);
+    map['dhatumanjusa_english'] = Variable<String>(dhatumanjusaEnglish);
+    map['dhatumala_root'] = Variable<String>(dhatumalaRoot);
+    map['dhatumala_pali'] = Variable<String>(dhatamalaPali);
+    map['dhatumala_english'] = Variable<String>(dhatumalaEnglish);
+    map['panini_root'] = Variable<String>(paniniRoot);
+    map['panini_sanskrit'] = Variable<String>(paniniSanskrit);
+    map['panini_english'] = Variable<String>(paniniEnglish);
+    map['note'] = Variable<String>(note);
     map['root_info'] = Variable<String>(rootInfo);
+    map['root_matrix'] = Variable<String>(rootMatrix);
     return map;
   }
 
@@ -379,7 +849,23 @@ class DpdRoot extends DataClass implements Insertable<DpdRoot> {
       sanskritRootMeaning: Value(sanskritRootMeaning),
       sanskritRootClass: Value(sanskritRootClass),
       rootExample: Value(rootExample),
+      dhatupathaNum: Value(dhatupathaNum),
+      dhatupathaRoot: Value(dhatupathaRoot),
+      dhatupathaPali: Value(dhatupathaPali),
+      dhatupathaEnglish: Value(dhatupathaEnglish),
+      dhatumanjusaNum: Value(dhatumanjusaNum),
+      dhatumanjusaRoot: Value(dhatumanjusaRoot),
+      dhatumanjusaPali: Value(dhatumanjusaPali),
+      dhatumanjusaEnglish: Value(dhatumanjusaEnglish),
+      dhatumalaRoot: Value(dhatumalaRoot),
+      dhatamalaPali: Value(dhatamalaPali),
+      dhatumalaEnglish: Value(dhatumalaEnglish),
+      paniniRoot: Value(paniniRoot),
+      paniniSanskrit: Value(paniniSanskrit),
+      paniniEnglish: Value(paniniEnglish),
+      note: Value(note),
       rootInfo: Value(rootInfo),
+      rootMatrix: Value(rootMatrix),
     );
   }
 
@@ -401,7 +887,25 @@ class DpdRoot extends DataClass implements Insertable<DpdRoot> {
       ),
       sanskritRootClass: serializer.fromJson<String>(json['sanskritRootClass']),
       rootExample: serializer.fromJson<String>(json['rootExample']),
+      dhatupathaNum: serializer.fromJson<String>(json['dhatupathaNum']),
+      dhatupathaRoot: serializer.fromJson<String>(json['dhatupathaRoot']),
+      dhatupathaPali: serializer.fromJson<String>(json['dhatupathaPali']),
+      dhatupathaEnglish: serializer.fromJson<String>(json['dhatupathaEnglish']),
+      dhatumanjusaNum: serializer.fromJson<String>(json['dhatumanjusaNum']),
+      dhatumanjusaRoot: serializer.fromJson<String>(json['dhatumanjusaRoot']),
+      dhatumanjusaPali: serializer.fromJson<String>(json['dhatumanjusaPali']),
+      dhatumanjusaEnglish: serializer.fromJson<String>(
+        json['dhatumanjusaEnglish'],
+      ),
+      dhatumalaRoot: serializer.fromJson<String>(json['dhatumalaRoot']),
+      dhatamalaPali: serializer.fromJson<String>(json['dhatamalaPali']),
+      dhatumalaEnglish: serializer.fromJson<String>(json['dhatumalaEnglish']),
+      paniniRoot: serializer.fromJson<String>(json['paniniRoot']),
+      paniniSanskrit: serializer.fromJson<String>(json['paniniSanskrit']),
+      paniniEnglish: serializer.fromJson<String>(json['paniniEnglish']),
+      note: serializer.fromJson<String>(json['note']),
       rootInfo: serializer.fromJson<String>(json['rootInfo']),
+      rootMatrix: serializer.fromJson<String>(json['rootMatrix']),
     );
   }
   @override
@@ -418,7 +922,23 @@ class DpdRoot extends DataClass implements Insertable<DpdRoot> {
       'sanskritRootMeaning': serializer.toJson<String>(sanskritRootMeaning),
       'sanskritRootClass': serializer.toJson<String>(sanskritRootClass),
       'rootExample': serializer.toJson<String>(rootExample),
+      'dhatupathaNum': serializer.toJson<String>(dhatupathaNum),
+      'dhatupathaRoot': serializer.toJson<String>(dhatupathaRoot),
+      'dhatupathaPali': serializer.toJson<String>(dhatupathaPali),
+      'dhatupathaEnglish': serializer.toJson<String>(dhatupathaEnglish),
+      'dhatumanjusaNum': serializer.toJson<String>(dhatumanjusaNum),
+      'dhatumanjusaRoot': serializer.toJson<String>(dhatumanjusaRoot),
+      'dhatumanjusaPali': serializer.toJson<String>(dhatumanjusaPali),
+      'dhatumanjusaEnglish': serializer.toJson<String>(dhatumanjusaEnglish),
+      'dhatumalaRoot': serializer.toJson<String>(dhatumalaRoot),
+      'dhatamalaPali': serializer.toJson<String>(dhatamalaPali),
+      'dhatumalaEnglish': serializer.toJson<String>(dhatumalaEnglish),
+      'paniniRoot': serializer.toJson<String>(paniniRoot),
+      'paniniSanskrit': serializer.toJson<String>(paniniSanskrit),
+      'paniniEnglish': serializer.toJson<String>(paniniEnglish),
+      'note': serializer.toJson<String>(note),
       'rootInfo': serializer.toJson<String>(rootInfo),
+      'rootMatrix': serializer.toJson<String>(rootMatrix),
     };
   }
 
@@ -433,7 +953,23 @@ class DpdRoot extends DataClass implements Insertable<DpdRoot> {
     String? sanskritRootMeaning,
     String? sanskritRootClass,
     String? rootExample,
+    String? dhatupathaNum,
+    String? dhatupathaRoot,
+    String? dhatupathaPali,
+    String? dhatupathaEnglish,
+    String? dhatumanjusaNum,
+    String? dhatumanjusaRoot,
+    String? dhatumanjusaPali,
+    String? dhatumanjusaEnglish,
+    String? dhatumalaRoot,
+    String? dhatamalaPali,
+    String? dhatumalaEnglish,
+    String? paniniRoot,
+    String? paniniSanskrit,
+    String? paniniEnglish,
+    String? note,
     String? rootInfo,
+    String? rootMatrix,
   }) => DpdRoot(
     root: root ?? this.root,
     rootInComps: rootInComps ?? this.rootInComps,
@@ -445,7 +981,23 @@ class DpdRoot extends DataClass implements Insertable<DpdRoot> {
     sanskritRootMeaning: sanskritRootMeaning ?? this.sanskritRootMeaning,
     sanskritRootClass: sanskritRootClass ?? this.sanskritRootClass,
     rootExample: rootExample ?? this.rootExample,
+    dhatupathaNum: dhatupathaNum ?? this.dhatupathaNum,
+    dhatupathaRoot: dhatupathaRoot ?? this.dhatupathaRoot,
+    dhatupathaPali: dhatupathaPali ?? this.dhatupathaPali,
+    dhatupathaEnglish: dhatupathaEnglish ?? this.dhatupathaEnglish,
+    dhatumanjusaNum: dhatumanjusaNum ?? this.dhatumanjusaNum,
+    dhatumanjusaRoot: dhatumanjusaRoot ?? this.dhatumanjusaRoot,
+    dhatumanjusaPali: dhatumanjusaPali ?? this.dhatumanjusaPali,
+    dhatumanjusaEnglish: dhatumanjusaEnglish ?? this.dhatumanjusaEnglish,
+    dhatumalaRoot: dhatumalaRoot ?? this.dhatumalaRoot,
+    dhatamalaPali: dhatamalaPali ?? this.dhatamalaPali,
+    dhatumalaEnglish: dhatumalaEnglish ?? this.dhatumalaEnglish,
+    paniniRoot: paniniRoot ?? this.paniniRoot,
+    paniniSanskrit: paniniSanskrit ?? this.paniniSanskrit,
+    paniniEnglish: paniniEnglish ?? this.paniniEnglish,
+    note: note ?? this.note,
     rootInfo: rootInfo ?? this.rootInfo,
+    rootMatrix: rootMatrix ?? this.rootMatrix,
   );
   DpdRoot copyWithCompanion(DpdRootsCompanion data) {
     return DpdRoot(
@@ -473,7 +1025,53 @@ class DpdRoot extends DataClass implements Insertable<DpdRoot> {
       rootExample: data.rootExample.present
           ? data.rootExample.value
           : this.rootExample,
+      dhatupathaNum: data.dhatupathaNum.present
+          ? data.dhatupathaNum.value
+          : this.dhatupathaNum,
+      dhatupathaRoot: data.dhatupathaRoot.present
+          ? data.dhatupathaRoot.value
+          : this.dhatupathaRoot,
+      dhatupathaPali: data.dhatupathaPali.present
+          ? data.dhatupathaPali.value
+          : this.dhatupathaPali,
+      dhatupathaEnglish: data.dhatupathaEnglish.present
+          ? data.dhatupathaEnglish.value
+          : this.dhatupathaEnglish,
+      dhatumanjusaNum: data.dhatumanjusaNum.present
+          ? data.dhatumanjusaNum.value
+          : this.dhatumanjusaNum,
+      dhatumanjusaRoot: data.dhatumanjusaRoot.present
+          ? data.dhatumanjusaRoot.value
+          : this.dhatumanjusaRoot,
+      dhatumanjusaPali: data.dhatumanjusaPali.present
+          ? data.dhatumanjusaPali.value
+          : this.dhatumanjusaPali,
+      dhatumanjusaEnglish: data.dhatumanjusaEnglish.present
+          ? data.dhatumanjusaEnglish.value
+          : this.dhatumanjusaEnglish,
+      dhatumalaRoot: data.dhatumalaRoot.present
+          ? data.dhatumalaRoot.value
+          : this.dhatumalaRoot,
+      dhatamalaPali: data.dhatamalaPali.present
+          ? data.dhatamalaPali.value
+          : this.dhatamalaPali,
+      dhatumalaEnglish: data.dhatumalaEnglish.present
+          ? data.dhatumalaEnglish.value
+          : this.dhatumalaEnglish,
+      paniniRoot: data.paniniRoot.present
+          ? data.paniniRoot.value
+          : this.paniniRoot,
+      paniniSanskrit: data.paniniSanskrit.present
+          ? data.paniniSanskrit.value
+          : this.paniniSanskrit,
+      paniniEnglish: data.paniniEnglish.present
+          ? data.paniniEnglish.value
+          : this.paniniEnglish,
+      note: data.note.present ? data.note.value : this.note,
       rootInfo: data.rootInfo.present ? data.rootInfo.value : this.rootInfo,
+      rootMatrix: data.rootMatrix.present
+          ? data.rootMatrix.value
+          : this.rootMatrix,
     );
   }
 
@@ -490,13 +1088,29 @@ class DpdRoot extends DataClass implements Insertable<DpdRoot> {
           ..write('sanskritRootMeaning: $sanskritRootMeaning, ')
           ..write('sanskritRootClass: $sanskritRootClass, ')
           ..write('rootExample: $rootExample, ')
-          ..write('rootInfo: $rootInfo')
+          ..write('dhatupathaNum: $dhatupathaNum, ')
+          ..write('dhatupathaRoot: $dhatupathaRoot, ')
+          ..write('dhatupathaPali: $dhatupathaPali, ')
+          ..write('dhatupathaEnglish: $dhatupathaEnglish, ')
+          ..write('dhatumanjusaNum: $dhatumanjusaNum, ')
+          ..write('dhatumanjusaRoot: $dhatumanjusaRoot, ')
+          ..write('dhatumanjusaPali: $dhatumanjusaPali, ')
+          ..write('dhatumanjusaEnglish: $dhatumanjusaEnglish, ')
+          ..write('dhatumalaRoot: $dhatumalaRoot, ')
+          ..write('dhatamalaPali: $dhatamalaPali, ')
+          ..write('dhatumalaEnglish: $dhatumalaEnglish, ')
+          ..write('paniniRoot: $paniniRoot, ')
+          ..write('paniniSanskrit: $paniniSanskrit, ')
+          ..write('paniniEnglish: $paniniEnglish, ')
+          ..write('note: $note, ')
+          ..write('rootInfo: $rootInfo, ')
+          ..write('rootMatrix: $rootMatrix')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(
+  int get hashCode => Object.hashAll([
     root,
     rootInComps,
     rootHasVerb,
@@ -507,8 +1121,24 @@ class DpdRoot extends DataClass implements Insertable<DpdRoot> {
     sanskritRootMeaning,
     sanskritRootClass,
     rootExample,
+    dhatupathaNum,
+    dhatupathaRoot,
+    dhatupathaPali,
+    dhatupathaEnglish,
+    dhatumanjusaNum,
+    dhatumanjusaRoot,
+    dhatumanjusaPali,
+    dhatumanjusaEnglish,
+    dhatumalaRoot,
+    dhatamalaPali,
+    dhatumalaEnglish,
+    paniniRoot,
+    paniniSanskrit,
+    paniniEnglish,
+    note,
     rootInfo,
-  );
+    rootMatrix,
+  ]);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -523,7 +1153,23 @@ class DpdRoot extends DataClass implements Insertable<DpdRoot> {
           other.sanskritRootMeaning == this.sanskritRootMeaning &&
           other.sanskritRootClass == this.sanskritRootClass &&
           other.rootExample == this.rootExample &&
-          other.rootInfo == this.rootInfo);
+          other.dhatupathaNum == this.dhatupathaNum &&
+          other.dhatupathaRoot == this.dhatupathaRoot &&
+          other.dhatupathaPali == this.dhatupathaPali &&
+          other.dhatupathaEnglish == this.dhatupathaEnglish &&
+          other.dhatumanjusaNum == this.dhatumanjusaNum &&
+          other.dhatumanjusaRoot == this.dhatumanjusaRoot &&
+          other.dhatumanjusaPali == this.dhatumanjusaPali &&
+          other.dhatumanjusaEnglish == this.dhatumanjusaEnglish &&
+          other.dhatumalaRoot == this.dhatumalaRoot &&
+          other.dhatamalaPali == this.dhatamalaPali &&
+          other.dhatumalaEnglish == this.dhatumalaEnglish &&
+          other.paniniRoot == this.paniniRoot &&
+          other.paniniSanskrit == this.paniniSanskrit &&
+          other.paniniEnglish == this.paniniEnglish &&
+          other.note == this.note &&
+          other.rootInfo == this.rootInfo &&
+          other.rootMatrix == this.rootMatrix);
 }
 
 class DpdRootsCompanion extends UpdateCompanion<DpdRoot> {
@@ -537,7 +1183,23 @@ class DpdRootsCompanion extends UpdateCompanion<DpdRoot> {
   final Value<String> sanskritRootMeaning;
   final Value<String> sanskritRootClass;
   final Value<String> rootExample;
+  final Value<String> dhatupathaNum;
+  final Value<String> dhatupathaRoot;
+  final Value<String> dhatupathaPali;
+  final Value<String> dhatupathaEnglish;
+  final Value<String> dhatumanjusaNum;
+  final Value<String> dhatumanjusaRoot;
+  final Value<String> dhatumanjusaPali;
+  final Value<String> dhatumanjusaEnglish;
+  final Value<String> dhatumalaRoot;
+  final Value<String> dhatamalaPali;
+  final Value<String> dhatumalaEnglish;
+  final Value<String> paniniRoot;
+  final Value<String> paniniSanskrit;
+  final Value<String> paniniEnglish;
+  final Value<String> note;
   final Value<String> rootInfo;
+  final Value<String> rootMatrix;
   final Value<int> rowid;
   const DpdRootsCompanion({
     this.root = const Value.absent(),
@@ -550,7 +1212,23 @@ class DpdRootsCompanion extends UpdateCompanion<DpdRoot> {
     this.sanskritRootMeaning = const Value.absent(),
     this.sanskritRootClass = const Value.absent(),
     this.rootExample = const Value.absent(),
+    this.dhatupathaNum = const Value.absent(),
+    this.dhatupathaRoot = const Value.absent(),
+    this.dhatupathaPali = const Value.absent(),
+    this.dhatupathaEnglish = const Value.absent(),
+    this.dhatumanjusaNum = const Value.absent(),
+    this.dhatumanjusaRoot = const Value.absent(),
+    this.dhatumanjusaPali = const Value.absent(),
+    this.dhatumanjusaEnglish = const Value.absent(),
+    this.dhatumalaRoot = const Value.absent(),
+    this.dhatamalaPali = const Value.absent(),
+    this.dhatumalaEnglish = const Value.absent(),
+    this.paniniRoot = const Value.absent(),
+    this.paniniSanskrit = const Value.absent(),
+    this.paniniEnglish = const Value.absent(),
+    this.note = const Value.absent(),
     this.rootInfo = const Value.absent(),
+    this.rootMatrix = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   DpdRootsCompanion.insert({
@@ -564,7 +1242,23 @@ class DpdRootsCompanion extends UpdateCompanion<DpdRoot> {
     required String sanskritRootMeaning,
     required String sanskritRootClass,
     required String rootExample,
+    required String dhatupathaNum,
+    required String dhatupathaRoot,
+    required String dhatupathaPali,
+    required String dhatupathaEnglish,
+    required String dhatumanjusaNum,
+    required String dhatumanjusaRoot,
+    required String dhatumanjusaPali,
+    required String dhatumanjusaEnglish,
+    required String dhatumalaRoot,
+    required String dhatamalaPali,
+    required String dhatumalaEnglish,
+    required String paniniRoot,
+    required String paniniSanskrit,
+    required String paniniEnglish,
+    required String note,
     required String rootInfo,
+    required String rootMatrix,
     this.rowid = const Value.absent(),
   }) : root = Value(root),
        rootInComps = Value(rootInComps),
@@ -576,7 +1270,23 @@ class DpdRootsCompanion extends UpdateCompanion<DpdRoot> {
        sanskritRootMeaning = Value(sanskritRootMeaning),
        sanskritRootClass = Value(sanskritRootClass),
        rootExample = Value(rootExample),
-       rootInfo = Value(rootInfo);
+       dhatupathaNum = Value(dhatupathaNum),
+       dhatupathaRoot = Value(dhatupathaRoot),
+       dhatupathaPali = Value(dhatupathaPali),
+       dhatupathaEnglish = Value(dhatupathaEnglish),
+       dhatumanjusaNum = Value(dhatumanjusaNum),
+       dhatumanjusaRoot = Value(dhatumanjusaRoot),
+       dhatumanjusaPali = Value(dhatumanjusaPali),
+       dhatumanjusaEnglish = Value(dhatumanjusaEnglish),
+       dhatumalaRoot = Value(dhatumalaRoot),
+       dhatamalaPali = Value(dhatamalaPali),
+       dhatumalaEnglish = Value(dhatumalaEnglish),
+       paniniRoot = Value(paniniRoot),
+       paniniSanskrit = Value(paniniSanskrit),
+       paniniEnglish = Value(paniniEnglish),
+       note = Value(note),
+       rootInfo = Value(rootInfo),
+       rootMatrix = Value(rootMatrix);
   static Insertable<DpdRoot> custom({
     Expression<String>? root,
     Expression<String>? rootInComps,
@@ -588,7 +1298,23 @@ class DpdRootsCompanion extends UpdateCompanion<DpdRoot> {
     Expression<String>? sanskritRootMeaning,
     Expression<String>? sanskritRootClass,
     Expression<String>? rootExample,
+    Expression<String>? dhatupathaNum,
+    Expression<String>? dhatupathaRoot,
+    Expression<String>? dhatupathaPali,
+    Expression<String>? dhatupathaEnglish,
+    Expression<String>? dhatumanjusaNum,
+    Expression<String>? dhatumanjusaRoot,
+    Expression<String>? dhatumanjusaPali,
+    Expression<String>? dhatumanjusaEnglish,
+    Expression<String>? dhatumalaRoot,
+    Expression<String>? dhatamalaPali,
+    Expression<String>? dhatumalaEnglish,
+    Expression<String>? paniniRoot,
+    Expression<String>? paniniSanskrit,
+    Expression<String>? paniniEnglish,
+    Expression<String>? note,
     Expression<String>? rootInfo,
+    Expression<String>? rootMatrix,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -603,7 +1329,24 @@ class DpdRootsCompanion extends UpdateCompanion<DpdRoot> {
         'sanskrit_root_meaning': sanskritRootMeaning,
       if (sanskritRootClass != null) 'sanskrit_root_class': sanskritRootClass,
       if (rootExample != null) 'root_example': rootExample,
+      if (dhatupathaNum != null) 'dhatupatha_num': dhatupathaNum,
+      if (dhatupathaRoot != null) 'dhatupatha_root': dhatupathaRoot,
+      if (dhatupathaPali != null) 'dhatupatha_pali': dhatupathaPali,
+      if (dhatupathaEnglish != null) 'dhatupatha_english': dhatupathaEnglish,
+      if (dhatumanjusaNum != null) 'dhatumanjusa_num': dhatumanjusaNum,
+      if (dhatumanjusaRoot != null) 'dhatumanjusa_root': dhatumanjusaRoot,
+      if (dhatumanjusaPali != null) 'dhatumanjusa_pali': dhatumanjusaPali,
+      if (dhatumanjusaEnglish != null)
+        'dhatumanjusa_english': dhatumanjusaEnglish,
+      if (dhatumalaRoot != null) 'dhatumala_root': dhatumalaRoot,
+      if (dhatamalaPali != null) 'dhatumala_pali': dhatamalaPali,
+      if (dhatumalaEnglish != null) 'dhatumala_english': dhatumalaEnglish,
+      if (paniniRoot != null) 'panini_root': paniniRoot,
+      if (paniniSanskrit != null) 'panini_sanskrit': paniniSanskrit,
+      if (paniniEnglish != null) 'panini_english': paniniEnglish,
+      if (note != null) 'note': note,
       if (rootInfo != null) 'root_info': rootInfo,
+      if (rootMatrix != null) 'root_matrix': rootMatrix,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -619,7 +1362,23 @@ class DpdRootsCompanion extends UpdateCompanion<DpdRoot> {
     Value<String>? sanskritRootMeaning,
     Value<String>? sanskritRootClass,
     Value<String>? rootExample,
+    Value<String>? dhatupathaNum,
+    Value<String>? dhatupathaRoot,
+    Value<String>? dhatupathaPali,
+    Value<String>? dhatupathaEnglish,
+    Value<String>? dhatumanjusaNum,
+    Value<String>? dhatumanjusaRoot,
+    Value<String>? dhatumanjusaPali,
+    Value<String>? dhatumanjusaEnglish,
+    Value<String>? dhatumalaRoot,
+    Value<String>? dhatamalaPali,
+    Value<String>? dhatumalaEnglish,
+    Value<String>? paniniRoot,
+    Value<String>? paniniSanskrit,
+    Value<String>? paniniEnglish,
+    Value<String>? note,
     Value<String>? rootInfo,
+    Value<String>? rootMatrix,
     Value<int>? rowid,
   }) {
     return DpdRootsCompanion(
@@ -633,7 +1392,23 @@ class DpdRootsCompanion extends UpdateCompanion<DpdRoot> {
       sanskritRootMeaning: sanskritRootMeaning ?? this.sanskritRootMeaning,
       sanskritRootClass: sanskritRootClass ?? this.sanskritRootClass,
       rootExample: rootExample ?? this.rootExample,
+      dhatupathaNum: dhatupathaNum ?? this.dhatupathaNum,
+      dhatupathaRoot: dhatupathaRoot ?? this.dhatupathaRoot,
+      dhatupathaPali: dhatupathaPali ?? this.dhatupathaPali,
+      dhatupathaEnglish: dhatupathaEnglish ?? this.dhatupathaEnglish,
+      dhatumanjusaNum: dhatumanjusaNum ?? this.dhatumanjusaNum,
+      dhatumanjusaRoot: dhatumanjusaRoot ?? this.dhatumanjusaRoot,
+      dhatumanjusaPali: dhatumanjusaPali ?? this.dhatumanjusaPali,
+      dhatumanjusaEnglish: dhatumanjusaEnglish ?? this.dhatumanjusaEnglish,
+      dhatumalaRoot: dhatumalaRoot ?? this.dhatumalaRoot,
+      dhatamalaPali: dhatamalaPali ?? this.dhatamalaPali,
+      dhatumalaEnglish: dhatumalaEnglish ?? this.dhatumalaEnglish,
+      paniniRoot: paniniRoot ?? this.paniniRoot,
+      paniniSanskrit: paniniSanskrit ?? this.paniniSanskrit,
+      paniniEnglish: paniniEnglish ?? this.paniniEnglish,
+      note: note ?? this.note,
       rootInfo: rootInfo ?? this.rootInfo,
+      rootMatrix: rootMatrix ?? this.rootMatrix,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -673,8 +1448,56 @@ class DpdRootsCompanion extends UpdateCompanion<DpdRoot> {
     if (rootExample.present) {
       map['root_example'] = Variable<String>(rootExample.value);
     }
+    if (dhatupathaNum.present) {
+      map['dhatupatha_num'] = Variable<String>(dhatupathaNum.value);
+    }
+    if (dhatupathaRoot.present) {
+      map['dhatupatha_root'] = Variable<String>(dhatupathaRoot.value);
+    }
+    if (dhatupathaPali.present) {
+      map['dhatupatha_pali'] = Variable<String>(dhatupathaPali.value);
+    }
+    if (dhatupathaEnglish.present) {
+      map['dhatupatha_english'] = Variable<String>(dhatupathaEnglish.value);
+    }
+    if (dhatumanjusaNum.present) {
+      map['dhatumanjusa_num'] = Variable<String>(dhatumanjusaNum.value);
+    }
+    if (dhatumanjusaRoot.present) {
+      map['dhatumanjusa_root'] = Variable<String>(dhatumanjusaRoot.value);
+    }
+    if (dhatumanjusaPali.present) {
+      map['dhatumanjusa_pali'] = Variable<String>(dhatumanjusaPali.value);
+    }
+    if (dhatumanjusaEnglish.present) {
+      map['dhatumanjusa_english'] = Variable<String>(dhatumanjusaEnglish.value);
+    }
+    if (dhatumalaRoot.present) {
+      map['dhatumala_root'] = Variable<String>(dhatumalaRoot.value);
+    }
+    if (dhatamalaPali.present) {
+      map['dhatumala_pali'] = Variable<String>(dhatamalaPali.value);
+    }
+    if (dhatumalaEnglish.present) {
+      map['dhatumala_english'] = Variable<String>(dhatumalaEnglish.value);
+    }
+    if (paniniRoot.present) {
+      map['panini_root'] = Variable<String>(paniniRoot.value);
+    }
+    if (paniniSanskrit.present) {
+      map['panini_sanskrit'] = Variable<String>(paniniSanskrit.value);
+    }
+    if (paniniEnglish.present) {
+      map['panini_english'] = Variable<String>(paniniEnglish.value);
+    }
+    if (note.present) {
+      map['note'] = Variable<String>(note.value);
+    }
     if (rootInfo.present) {
       map['root_info'] = Variable<String>(rootInfo.value);
+    }
+    if (rootMatrix.present) {
+      map['root_matrix'] = Variable<String>(rootMatrix.value);
     }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
@@ -695,7 +1518,23 @@ class DpdRootsCompanion extends UpdateCompanion<DpdRoot> {
           ..write('sanskritRootMeaning: $sanskritRootMeaning, ')
           ..write('sanskritRootClass: $sanskritRootClass, ')
           ..write('rootExample: $rootExample, ')
+          ..write('dhatupathaNum: $dhatupathaNum, ')
+          ..write('dhatupathaRoot: $dhatupathaRoot, ')
+          ..write('dhatupathaPali: $dhatupathaPali, ')
+          ..write('dhatupathaEnglish: $dhatupathaEnglish, ')
+          ..write('dhatumanjusaNum: $dhatumanjusaNum, ')
+          ..write('dhatumanjusaRoot: $dhatumanjusaRoot, ')
+          ..write('dhatumanjusaPali: $dhatumanjusaPali, ')
+          ..write('dhatumanjusaEnglish: $dhatumanjusaEnglish, ')
+          ..write('dhatumalaRoot: $dhatumalaRoot, ')
+          ..write('dhatamalaPali: $dhatamalaPali, ')
+          ..write('dhatumalaEnglish: $dhatumalaEnglish, ')
+          ..write('paniniRoot: $paniniRoot, ')
+          ..write('paniniSanskrit: $paniniSanskrit, ')
+          ..write('paniniEnglish: $paniniEnglish, ')
+          ..write('note: $note, ')
           ..write('rootInfo: $rootInfo, ')
+          ..write('rootMatrix: $rootMatrix, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -4436,6 +5275,15 @@ class $FamilyRootTable extends FamilyRoot
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _htmlMeta = const VerificationMeta('html');
+  @override
+  late final GeneratedColumn<String> html = GeneratedColumn<String>(
+    'html',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
   static const VerificationMeta _dataMeta = const VerificationMeta('data');
   @override
   late final GeneratedColumn<String> data = GeneratedColumn<String>(
@@ -4460,6 +5308,7 @@ class $FamilyRootTable extends FamilyRoot
     rootKey,
     rootFamily,
     rootMeaning,
+    html,
     data,
     count,
   ];
@@ -4513,6 +5362,14 @@ class $FamilyRootTable extends FamilyRoot
     } else if (isInserting) {
       context.missing(_rootMeaningMeta);
     }
+    if (data.containsKey('html')) {
+      context.handle(
+        _htmlMeta,
+        html.isAcceptableOrUnknown(data['html']!, _htmlMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_htmlMeta);
+    }
     if (data.containsKey('data')) {
       context.handle(
         _dataMeta,
@@ -4554,6 +5411,10 @@ class $FamilyRootTable extends FamilyRoot
         DriftSqlType.string,
         data['${effectivePrefix}root_meaning'],
       )!,
+      html: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}html'],
+      )!,
       data: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}data'],
@@ -4576,6 +5437,7 @@ class FamilyRootData extends DataClass implements Insertable<FamilyRootData> {
   final String rootKey;
   final String rootFamily;
   final String rootMeaning;
+  final String html;
   final String data;
   final int count;
   const FamilyRootData({
@@ -4583,6 +5445,7 @@ class FamilyRootData extends DataClass implements Insertable<FamilyRootData> {
     required this.rootKey,
     required this.rootFamily,
     required this.rootMeaning,
+    required this.html,
     required this.data,
     required this.count,
   });
@@ -4593,6 +5456,7 @@ class FamilyRootData extends DataClass implements Insertable<FamilyRootData> {
     map['root_key'] = Variable<String>(rootKey);
     map['root_family'] = Variable<String>(rootFamily);
     map['root_meaning'] = Variable<String>(rootMeaning);
+    map['html'] = Variable<String>(html);
     map['data'] = Variable<String>(data);
     map['count'] = Variable<int>(count);
     return map;
@@ -4604,6 +5468,7 @@ class FamilyRootData extends DataClass implements Insertable<FamilyRootData> {
       rootKey: Value(rootKey),
       rootFamily: Value(rootFamily),
       rootMeaning: Value(rootMeaning),
+      html: Value(html),
       data: Value(data),
       count: Value(count),
     );
@@ -4619,6 +5484,7 @@ class FamilyRootData extends DataClass implements Insertable<FamilyRootData> {
       rootKey: serializer.fromJson<String>(json['rootKey']),
       rootFamily: serializer.fromJson<String>(json['rootFamily']),
       rootMeaning: serializer.fromJson<String>(json['rootMeaning']),
+      html: serializer.fromJson<String>(json['html']),
       data: serializer.fromJson<String>(json['data']),
       count: serializer.fromJson<int>(json['count']),
     );
@@ -4631,6 +5497,7 @@ class FamilyRootData extends DataClass implements Insertable<FamilyRootData> {
       'rootKey': serializer.toJson<String>(rootKey),
       'rootFamily': serializer.toJson<String>(rootFamily),
       'rootMeaning': serializer.toJson<String>(rootMeaning),
+      'html': serializer.toJson<String>(html),
       'data': serializer.toJson<String>(data),
       'count': serializer.toJson<int>(count),
     };
@@ -4641,6 +5508,7 @@ class FamilyRootData extends DataClass implements Insertable<FamilyRootData> {
     String? rootKey,
     String? rootFamily,
     String? rootMeaning,
+    String? html,
     String? data,
     int? count,
   }) => FamilyRootData(
@@ -4648,6 +5516,7 @@ class FamilyRootData extends DataClass implements Insertable<FamilyRootData> {
     rootKey: rootKey ?? this.rootKey,
     rootFamily: rootFamily ?? this.rootFamily,
     rootMeaning: rootMeaning ?? this.rootMeaning,
+    html: html ?? this.html,
     data: data ?? this.data,
     count: count ?? this.count,
   );
@@ -4663,6 +5532,7 @@ class FamilyRootData extends DataClass implements Insertable<FamilyRootData> {
       rootMeaning: data.rootMeaning.present
           ? data.rootMeaning.value
           : this.rootMeaning,
+      html: data.html.present ? data.html.value : this.html,
       data: data.data.present ? data.data.value : this.data,
       count: data.count.present ? data.count.value : this.count,
     );
@@ -4675,6 +5545,7 @@ class FamilyRootData extends DataClass implements Insertable<FamilyRootData> {
           ..write('rootKey: $rootKey, ')
           ..write('rootFamily: $rootFamily, ')
           ..write('rootMeaning: $rootMeaning, ')
+          ..write('html: $html, ')
           ..write('data: $data, ')
           ..write('count: $count')
           ..write(')'))
@@ -4682,8 +5553,15 @@ class FamilyRootData extends DataClass implements Insertable<FamilyRootData> {
   }
 
   @override
-  int get hashCode =>
-      Object.hash(rootFamilyKey, rootKey, rootFamily, rootMeaning, data, count);
+  int get hashCode => Object.hash(
+    rootFamilyKey,
+    rootKey,
+    rootFamily,
+    rootMeaning,
+    html,
+    data,
+    count,
+  );
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -4692,6 +5570,7 @@ class FamilyRootData extends DataClass implements Insertable<FamilyRootData> {
           other.rootKey == this.rootKey &&
           other.rootFamily == this.rootFamily &&
           other.rootMeaning == this.rootMeaning &&
+          other.html == this.html &&
           other.data == this.data &&
           other.count == this.count);
 }
@@ -4701,6 +5580,7 @@ class FamilyRootCompanion extends UpdateCompanion<FamilyRootData> {
   final Value<String> rootKey;
   final Value<String> rootFamily;
   final Value<String> rootMeaning;
+  final Value<String> html;
   final Value<String> data;
   final Value<int> count;
   final Value<int> rowid;
@@ -4709,6 +5589,7 @@ class FamilyRootCompanion extends UpdateCompanion<FamilyRootData> {
     this.rootKey = const Value.absent(),
     this.rootFamily = const Value.absent(),
     this.rootMeaning = const Value.absent(),
+    this.html = const Value.absent(),
     this.data = const Value.absent(),
     this.count = const Value.absent(),
     this.rowid = const Value.absent(),
@@ -4718,6 +5599,7 @@ class FamilyRootCompanion extends UpdateCompanion<FamilyRootData> {
     required String rootKey,
     required String rootFamily,
     required String rootMeaning,
+    required String html,
     required String data,
     required int count,
     this.rowid = const Value.absent(),
@@ -4725,6 +5607,7 @@ class FamilyRootCompanion extends UpdateCompanion<FamilyRootData> {
        rootKey = Value(rootKey),
        rootFamily = Value(rootFamily),
        rootMeaning = Value(rootMeaning),
+       html = Value(html),
        data = Value(data),
        count = Value(count);
   static Insertable<FamilyRootData> custom({
@@ -4732,6 +5615,7 @@ class FamilyRootCompanion extends UpdateCompanion<FamilyRootData> {
     Expression<String>? rootKey,
     Expression<String>? rootFamily,
     Expression<String>? rootMeaning,
+    Expression<String>? html,
     Expression<String>? data,
     Expression<int>? count,
     Expression<int>? rowid,
@@ -4741,6 +5625,7 @@ class FamilyRootCompanion extends UpdateCompanion<FamilyRootData> {
       if (rootKey != null) 'root_key': rootKey,
       if (rootFamily != null) 'root_family': rootFamily,
       if (rootMeaning != null) 'root_meaning': rootMeaning,
+      if (html != null) 'html': html,
       if (data != null) 'data': data,
       if (count != null) 'count': count,
       if (rowid != null) 'rowid': rowid,
@@ -4752,6 +5637,7 @@ class FamilyRootCompanion extends UpdateCompanion<FamilyRootData> {
     Value<String>? rootKey,
     Value<String>? rootFamily,
     Value<String>? rootMeaning,
+    Value<String>? html,
     Value<String>? data,
     Value<int>? count,
     Value<int>? rowid,
@@ -4761,6 +5647,7 @@ class FamilyRootCompanion extends UpdateCompanion<FamilyRootData> {
       rootKey: rootKey ?? this.rootKey,
       rootFamily: rootFamily ?? this.rootFamily,
       rootMeaning: rootMeaning ?? this.rootMeaning,
+      html: html ?? this.html,
       data: data ?? this.data,
       count: count ?? this.count,
       rowid: rowid ?? this.rowid,
@@ -4782,6 +5669,9 @@ class FamilyRootCompanion extends UpdateCompanion<FamilyRootData> {
     if (rootMeaning.present) {
       map['root_meaning'] = Variable<String>(rootMeaning.value);
     }
+    if (html.present) {
+      map['html'] = Variable<String>(html.value);
+    }
     if (data.present) {
       map['data'] = Variable<String>(data.value);
     }
@@ -4801,6 +5691,7 @@ class FamilyRootCompanion extends UpdateCompanion<FamilyRootData> {
           ..write('rootKey: $rootKey, ')
           ..write('rootFamily: $rootFamily, ')
           ..write('rootMeaning: $rootMeaning, ')
+          ..write('html: $html, ')
           ..write('data: $data, ')
           ..write('count: $count, ')
           ..write('rowid: $rowid')
@@ -9308,7 +10199,23 @@ typedef $$DpdRootsTableCreateCompanionBuilder =
       required String sanskritRootMeaning,
       required String sanskritRootClass,
       required String rootExample,
+      required String dhatupathaNum,
+      required String dhatupathaRoot,
+      required String dhatupathaPali,
+      required String dhatupathaEnglish,
+      required String dhatumanjusaNum,
+      required String dhatumanjusaRoot,
+      required String dhatumanjusaPali,
+      required String dhatumanjusaEnglish,
+      required String dhatumalaRoot,
+      required String dhatamalaPali,
+      required String dhatumalaEnglish,
+      required String paniniRoot,
+      required String paniniSanskrit,
+      required String paniniEnglish,
+      required String note,
       required String rootInfo,
+      required String rootMatrix,
       Value<int> rowid,
     });
 typedef $$DpdRootsTableUpdateCompanionBuilder =
@@ -9323,7 +10230,23 @@ typedef $$DpdRootsTableUpdateCompanionBuilder =
       Value<String> sanskritRootMeaning,
       Value<String> sanskritRootClass,
       Value<String> rootExample,
+      Value<String> dhatupathaNum,
+      Value<String> dhatupathaRoot,
+      Value<String> dhatupathaPali,
+      Value<String> dhatupathaEnglish,
+      Value<String> dhatumanjusaNum,
+      Value<String> dhatumanjusaRoot,
+      Value<String> dhatumanjusaPali,
+      Value<String> dhatumanjusaEnglish,
+      Value<String> dhatumalaRoot,
+      Value<String> dhatamalaPali,
+      Value<String> dhatumalaEnglish,
+      Value<String> paniniRoot,
+      Value<String> paniniSanskrit,
+      Value<String> paniniEnglish,
+      Value<String> note,
       Value<String> rootInfo,
+      Value<String> rootMatrix,
       Value<int> rowid,
     });
 
@@ -9409,8 +10332,88 @@ class $$DpdRootsTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
+  ColumnFilters<String> get dhatupathaNum => $composableBuilder(
+    column: $table.dhatupathaNum,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get dhatupathaRoot => $composableBuilder(
+    column: $table.dhatupathaRoot,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get dhatupathaPali => $composableBuilder(
+    column: $table.dhatupathaPali,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get dhatupathaEnglish => $composableBuilder(
+    column: $table.dhatupathaEnglish,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get dhatumanjusaNum => $composableBuilder(
+    column: $table.dhatumanjusaNum,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get dhatumanjusaRoot => $composableBuilder(
+    column: $table.dhatumanjusaRoot,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get dhatumanjusaPali => $composableBuilder(
+    column: $table.dhatumanjusaPali,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get dhatumanjusaEnglish => $composableBuilder(
+    column: $table.dhatumanjusaEnglish,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get dhatumalaRoot => $composableBuilder(
+    column: $table.dhatumalaRoot,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get dhatamalaPali => $composableBuilder(
+    column: $table.dhatamalaPali,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get dhatumalaEnglish => $composableBuilder(
+    column: $table.dhatumalaEnglish,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get paniniRoot => $composableBuilder(
+    column: $table.paniniRoot,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get paniniSanskrit => $composableBuilder(
+    column: $table.paniniSanskrit,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get paniniEnglish => $composableBuilder(
+    column: $table.paniniEnglish,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get note => $composableBuilder(
+    column: $table.note,
+    builder: (column) => ColumnFilters(column),
+  );
+
   ColumnFilters<String> get rootInfo => $composableBuilder(
     column: $table.rootInfo,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get rootMatrix => $composableBuilder(
+    column: $table.rootMatrix,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -9499,8 +10502,88 @@ class $$DpdRootsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get dhatupathaNum => $composableBuilder(
+    column: $table.dhatupathaNum,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get dhatupathaRoot => $composableBuilder(
+    column: $table.dhatupathaRoot,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get dhatupathaPali => $composableBuilder(
+    column: $table.dhatupathaPali,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get dhatupathaEnglish => $composableBuilder(
+    column: $table.dhatupathaEnglish,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get dhatumanjusaNum => $composableBuilder(
+    column: $table.dhatumanjusaNum,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get dhatumanjusaRoot => $composableBuilder(
+    column: $table.dhatumanjusaRoot,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get dhatumanjusaPali => $composableBuilder(
+    column: $table.dhatumanjusaPali,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get dhatumanjusaEnglish => $composableBuilder(
+    column: $table.dhatumanjusaEnglish,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get dhatumalaRoot => $composableBuilder(
+    column: $table.dhatumalaRoot,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get dhatamalaPali => $composableBuilder(
+    column: $table.dhatamalaPali,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get dhatumalaEnglish => $composableBuilder(
+    column: $table.dhatumalaEnglish,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get paniniRoot => $composableBuilder(
+    column: $table.paniniRoot,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get paniniSanskrit => $composableBuilder(
+    column: $table.paniniSanskrit,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get paniniEnglish => $composableBuilder(
+    column: $table.paniniEnglish,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get note => $composableBuilder(
+    column: $table.note,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get rootInfo => $composableBuilder(
     column: $table.rootInfo,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get rootMatrix => $composableBuilder(
+    column: $table.rootMatrix,
     builder: (column) => ColumnOrderings(column),
   );
 }
@@ -9558,8 +10641,86 @@ class $$DpdRootsTableAnnotationComposer
     builder: (column) => column,
   );
 
+  GeneratedColumn<String> get dhatupathaNum => $composableBuilder(
+    column: $table.dhatupathaNum,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get dhatupathaRoot => $composableBuilder(
+    column: $table.dhatupathaRoot,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get dhatupathaPali => $composableBuilder(
+    column: $table.dhatupathaPali,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get dhatupathaEnglish => $composableBuilder(
+    column: $table.dhatupathaEnglish,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get dhatumanjusaNum => $composableBuilder(
+    column: $table.dhatumanjusaNum,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get dhatumanjusaRoot => $composableBuilder(
+    column: $table.dhatumanjusaRoot,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get dhatumanjusaPali => $composableBuilder(
+    column: $table.dhatumanjusaPali,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get dhatumanjusaEnglish => $composableBuilder(
+    column: $table.dhatumanjusaEnglish,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get dhatumalaRoot => $composableBuilder(
+    column: $table.dhatumalaRoot,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get dhatamalaPali => $composableBuilder(
+    column: $table.dhatamalaPali,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get dhatumalaEnglish => $composableBuilder(
+    column: $table.dhatumalaEnglish,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get paniniRoot => $composableBuilder(
+    column: $table.paniniRoot,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get paniniSanskrit => $composableBuilder(
+    column: $table.paniniSanskrit,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get paniniEnglish => $composableBuilder(
+    column: $table.paniniEnglish,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get note =>
+      $composableBuilder(column: $table.note, builder: (column) => column);
+
   GeneratedColumn<String> get rootInfo =>
       $composableBuilder(column: $table.rootInfo, builder: (column) => column);
+
+  GeneratedColumn<String> get rootMatrix => $composableBuilder(
+    column: $table.rootMatrix,
+    builder: (column) => column,
+  );
 
   Expression<T> dpdHeadwordsRefs<T extends Object>(
     Expression<T> Function($$DpdHeadwordsTableAnnotationComposer a) f,
@@ -9625,7 +10786,23 @@ class $$DpdRootsTableTableManager
                 Value<String> sanskritRootMeaning = const Value.absent(),
                 Value<String> sanskritRootClass = const Value.absent(),
                 Value<String> rootExample = const Value.absent(),
+                Value<String> dhatupathaNum = const Value.absent(),
+                Value<String> dhatupathaRoot = const Value.absent(),
+                Value<String> dhatupathaPali = const Value.absent(),
+                Value<String> dhatupathaEnglish = const Value.absent(),
+                Value<String> dhatumanjusaNum = const Value.absent(),
+                Value<String> dhatumanjusaRoot = const Value.absent(),
+                Value<String> dhatumanjusaPali = const Value.absent(),
+                Value<String> dhatumanjusaEnglish = const Value.absent(),
+                Value<String> dhatumalaRoot = const Value.absent(),
+                Value<String> dhatamalaPali = const Value.absent(),
+                Value<String> dhatumalaEnglish = const Value.absent(),
+                Value<String> paniniRoot = const Value.absent(),
+                Value<String> paniniSanskrit = const Value.absent(),
+                Value<String> paniniEnglish = const Value.absent(),
+                Value<String> note = const Value.absent(),
                 Value<String> rootInfo = const Value.absent(),
+                Value<String> rootMatrix = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => DpdRootsCompanion(
                 root: root,
@@ -9638,7 +10815,23 @@ class $$DpdRootsTableTableManager
                 sanskritRootMeaning: sanskritRootMeaning,
                 sanskritRootClass: sanskritRootClass,
                 rootExample: rootExample,
+                dhatupathaNum: dhatupathaNum,
+                dhatupathaRoot: dhatupathaRoot,
+                dhatupathaPali: dhatupathaPali,
+                dhatupathaEnglish: dhatupathaEnglish,
+                dhatumanjusaNum: dhatumanjusaNum,
+                dhatumanjusaRoot: dhatumanjusaRoot,
+                dhatumanjusaPali: dhatumanjusaPali,
+                dhatumanjusaEnglish: dhatumanjusaEnglish,
+                dhatumalaRoot: dhatumalaRoot,
+                dhatamalaPali: dhatamalaPali,
+                dhatumalaEnglish: dhatumalaEnglish,
+                paniniRoot: paniniRoot,
+                paniniSanskrit: paniniSanskrit,
+                paniniEnglish: paniniEnglish,
+                note: note,
                 rootInfo: rootInfo,
+                rootMatrix: rootMatrix,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -9653,7 +10846,23 @@ class $$DpdRootsTableTableManager
                 required String sanskritRootMeaning,
                 required String sanskritRootClass,
                 required String rootExample,
+                required String dhatupathaNum,
+                required String dhatupathaRoot,
+                required String dhatupathaPali,
+                required String dhatupathaEnglish,
+                required String dhatumanjusaNum,
+                required String dhatumanjusaRoot,
+                required String dhatumanjusaPali,
+                required String dhatumanjusaEnglish,
+                required String dhatumalaRoot,
+                required String dhatamalaPali,
+                required String dhatumalaEnglish,
+                required String paniniRoot,
+                required String paniniSanskrit,
+                required String paniniEnglish,
+                required String note,
                 required String rootInfo,
+                required String rootMatrix,
                 Value<int> rowid = const Value.absent(),
               }) => DpdRootsCompanion.insert(
                 root: root,
@@ -9666,7 +10875,23 @@ class $$DpdRootsTableTableManager
                 sanskritRootMeaning: sanskritRootMeaning,
                 sanskritRootClass: sanskritRootClass,
                 rootExample: rootExample,
+                dhatupathaNum: dhatupathaNum,
+                dhatupathaRoot: dhatupathaRoot,
+                dhatupathaPali: dhatupathaPali,
+                dhatupathaEnglish: dhatupathaEnglish,
+                dhatumanjusaNum: dhatumanjusaNum,
+                dhatumanjusaRoot: dhatumanjusaRoot,
+                dhatumanjusaPali: dhatumanjusaPali,
+                dhatumanjusaEnglish: dhatumanjusaEnglish,
+                dhatumalaRoot: dhatumalaRoot,
+                dhatamalaPali: dhatamalaPali,
+                dhatumalaEnglish: dhatumalaEnglish,
+                paniniRoot: paniniRoot,
+                paniniSanskrit: paniniSanskrit,
+                paniniEnglish: paniniEnglish,
+                note: note,
                 rootInfo: rootInfo,
+                rootMatrix: rootMatrix,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0
@@ -11523,6 +12748,7 @@ typedef $$FamilyRootTableCreateCompanionBuilder =
       required String rootKey,
       required String rootFamily,
       required String rootMeaning,
+      required String html,
       required String data,
       required int count,
       Value<int> rowid,
@@ -11533,6 +12759,7 @@ typedef $$FamilyRootTableUpdateCompanionBuilder =
       Value<String> rootKey,
       Value<String> rootFamily,
       Value<String> rootMeaning,
+      Value<String> html,
       Value<String> data,
       Value<int> count,
       Value<int> rowid,
@@ -11564,6 +12791,11 @@ class $$FamilyRootTableFilterComposer
 
   ColumnFilters<String> get rootMeaning => $composableBuilder(
     column: $table.rootMeaning,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get html => $composableBuilder(
+    column: $table.html,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -11607,6 +12839,11 @@ class $$FamilyRootTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get html => $composableBuilder(
+    column: $table.html,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get data => $composableBuilder(
     column: $table.data,
     builder: (column) => ColumnOrderings(column),
@@ -11644,6 +12881,9 @@ class $$FamilyRootTableAnnotationComposer
     column: $table.rootMeaning,
     builder: (column) => column,
   );
+
+  GeneratedColumn<String> get html =>
+      $composableBuilder(column: $table.html, builder: (column) => column);
 
   GeneratedColumn<String> get data =>
       $composableBuilder(column: $table.data, builder: (column) => column);
@@ -11687,6 +12927,7 @@ class $$FamilyRootTableTableManager
                 Value<String> rootKey = const Value.absent(),
                 Value<String> rootFamily = const Value.absent(),
                 Value<String> rootMeaning = const Value.absent(),
+                Value<String> html = const Value.absent(),
                 Value<String> data = const Value.absent(),
                 Value<int> count = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
@@ -11695,6 +12936,7 @@ class $$FamilyRootTableTableManager
                 rootKey: rootKey,
                 rootFamily: rootFamily,
                 rootMeaning: rootMeaning,
+                html: html,
                 data: data,
                 count: count,
                 rowid: rowid,
@@ -11705,6 +12947,7 @@ class $$FamilyRootTableTableManager
                 required String rootKey,
                 required String rootFamily,
                 required String rootMeaning,
+                required String html,
                 required String data,
                 required int count,
                 Value<int> rowid = const Value.absent(),
@@ -11713,6 +12956,7 @@ class $$FamilyRootTableTableManager
                 rootKey: rootKey,
                 rootFamily: rootFamily,
                 rootMeaning: rootMeaning,
+                html: html,
                 data: data,
                 count: count,
                 rowid: rowid,
