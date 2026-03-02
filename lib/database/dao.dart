@@ -167,6 +167,12 @@ class DpdDao extends DatabaseAccessor<AppDatabase> with _$DpdDaoMixin {
     return hw;
   }
 
+  Future<LookupData?> getLookupRow(String key) {
+    final normalized = _normalizeQuery(key);
+    return (select(lookup)..where((t) => t.lookupKey.equals(normalized)))
+        .getSingleOrNull();
+  }
+
   Future<DpdRoot?> getRoot(String rootKey) {
     return (select(
       dpdRoots,
