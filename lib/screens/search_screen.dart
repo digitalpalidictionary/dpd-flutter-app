@@ -242,34 +242,34 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                       ),
                     ),
                   ),
-                  _NavButton(
+                  const SizedBox(width: 4),
+                  _BarIconButton(
+                    icon: Icons.search,
+                    onPressed: _onSearch,
+                  ),
+                  _BarIconButton(
+                    icon: Icons.close,
+                    onPressed: _controller.text.isEmpty ? null : _onClear,
+                  ),
+                  _BarIconButton(
                     icon: Icons.arrow_back,
-                    enabled: ref.watch(canGoBackProvider),
-                    onPressed: () {
+                    onPressed: ref.watch(canGoBackProvider) ? () {
                       ref.read(historyProvider.notifier).goBack();
                       final entry = ref.read(historyProvider).currentEntry;
                       if (entry != null) {
                         ref.read(searchQueryProvider.notifier).state = entry;
                       }
-                    },
+                    } : null,
                   ),
-                  _NavButton(
+                  _BarIconButton(
                     icon: Icons.arrow_forward,
-                    enabled: ref.watch(canGoForwardProvider),
-                    onPressed: () {
+                    onPressed: ref.watch(canGoForwardProvider) ? () {
                       ref.read(historyProvider.notifier).goForward();
                       final entry = ref.read(historyProvider).currentEntry;
                       if (entry != null) {
                         ref.read(searchQueryProvider.notifier).state = entry;
                       }
-                    },
-                  ),
-                  const SizedBox(width: 2),
-                  _SearchButton(label: 'search', onPressed: _onSearch),
-                  const SizedBox(width: 5),
-                  _SearchButton(
-                    label: 'clear',
-                    onPressed: _controller.text.isEmpty ? null : _onClear,
+                    } : null,
                   ),
                 ],
               ),
@@ -339,28 +339,38 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   }
 }
 
-class _SearchButton extends StatelessWidget {
-  const _SearchButton({required this.label, required this.onPressed});
+class _BarIconButton extends StatelessWidget {
+  const _BarIconButton({required this.icon, required this.onPressed});
 
-  final String label;
+  final IconData icon;
   final VoidCallback? onPressed;
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 40,
-      child: ElevatedButton(
-        onPressed: onPressed,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: DpdColors.primary,
-          foregroundColor: DpdColors.light,
-          disabledBackgroundColor: DpdColors.primary.withValues(alpha: 0.4),
-          disabledForegroundColor: DpdColors.light.withValues(alpha: 0.5),
-          shape: RoundedRectangleBorder(borderRadius: DpdColors.borderRadius),
-          padding: const EdgeInsets.symmetric(horizontal: 12),
-          elevation: 2,
+    final enabled = onPressed != null;
+    return Padding(
+      padding: const EdgeInsets.only(left: 4),
+      child: SizedBox(
+        width: 40,
+        height: 40,
+        child: Material(
+          color: enabled
+              ? DpdColors.primary
+              : DpdColors.primary.withValues(alpha: 0.4),
+          borderRadius: DpdColors.borderRadius,
+          elevation: enabled ? 2 : 0,
+          child: InkWell(
+            borderRadius: DpdColors.borderRadius,
+            onTap: onPressed,
+            child: Icon(
+              icon,
+              size: 20,
+              color: enabled
+                  ? DpdColors.light
+                  : DpdColors.light.withValues(alpha: 0.5),
+            ),
+          ),
         ),
-        child: Text(label),
       ),
     );
   }
@@ -642,29 +652,3 @@ class _RootResultCard extends StatelessWidget {
   }
 }
 
-class _NavButton extends StatelessWidget {
-  const _NavButton({
-    required this.icon,
-    required this.enabled,
-    required this.onPressed,
-  });
-
-  final IconData icon;
-  final bool enabled;
-  final VoidCallback onPressed;
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: 32,
-      height: 40,
-      child: IconButton(
-        padding: EdgeInsets.zero,
-        icon: Icon(icon, size: 20),
-        color: DpdColors.primary,
-        disabledColor: Theme.of(context).disabledColor,
-        onPressed: enabled ? onPressed : null,
-      ),
-    );
-  }
-}
