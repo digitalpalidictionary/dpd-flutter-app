@@ -78,16 +78,16 @@
 
 ## Phase 6: Search Screen Integration
 
-- [ ] Task: Integrate secondary results into `SearchScreen` results list
-    - [ ] After existing headword and root result widgets, render secondary card widgets
-    - [ ] Use `SecondaryResultsProvider` to get ordered list of typed results
-    - [ ] Map each result type to its corresponding card widget
-    - [ ] Only render cards for non-null results (empty columns produce no output)
-- [ ] Task: Ensure correct ordering in all three display modes
-    - [ ] Inline mode: cards appear in scrollable list after headword/root entries
-    - [ ] Accordion mode: cards appear below accordion entries
-    - [ ] Bottom Sheet mode: cards appear in scrollable content area
-- [ ] Task: Verify cards respect theme (light/dark) and user font size settings
-- [ ] Task: Run `flutter analyze` — ensure no warnings or errors
-- [ ] Task: Run `flutter test` — ensure all tests pass
+- [x] Task: Integrate secondary results into `SearchScreen` results list
+    - [x] After existing headword and root result widgets, render secondary card widgets
+    - [x] Use `SecondaryResultsProvider` to get ordered list of typed results
+    - [x] Map each result type to its corresponding card widget
+    - [x] Only render cards for non-null results (empty columns produce no output)
+- [x] Task: Ensure correct ordering in all three display modes
+    - [x] Inline mode: cards appear in scrollable list after headword/root entries
+    - [x] Accordion mode: cards appear below accordion entries
+    - [x] Bottom Sheet mode: cards appear in scrollable content area
+- [x] Task: Verify cards respect theme (light/dark) and user font size settings
+- [x] Task: Run `flutter analyze` — ensure no warnings or errors
+- [x] Task: Run `flutter test` — ensure all tests pass
 - [ ] Task: Conductor - User Manual Verification 'All Phases' (Protocol in workflow.md)

@@ -5,8 +5,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../database/database.dart';
+import '../models/lookup_results.dart';
 import '../providers/autocomplete_provider.dart';
 import '../providers/search_provider.dart';
+import '../providers/secondary_results_provider.dart';
 import '../providers/settings_provider.dart';
 import '../theme/dpd_colors.dart';
 import '../utils/velthuis.dart';
@@ -16,6 +18,7 @@ import '../widgets/double_tap_search_wrapper.dart';
 import '../widgets/entry_bottom_sheet.dart';
 import '../widgets/inline_entry_card.dart';
 import '../widgets/inline_root_card.dart';
+import '../widgets/secondary/secondary_result_cards.dart';
 import '../widgets/word_card.dart';
 
 class SearchScreen extends ConsumerStatefulWidget {
@@ -277,6 +280,9 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     final rootAsync = ref.watch(rootResultsProvider(query));
     final roots = rootAsync.valueOrNull ?? [];
 
+    final secondaryAsync = ref.watch(secondaryResultsProvider(query));
+    final secondary = secondaryAsync.valueOrNull ?? [];
+
     if (exactLoading && exact.isEmpty) {
       return const Center(child: CircularProgressIndicator());
     }
@@ -285,7 +291,11 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
       return Center(child: Text('Error: ${exactAsync.error}'));
     }
 
-    if (exact.isEmpty && partial.isEmpty && roots.isEmpty && !partialLoading) {
+    if (exact.isEmpty &&
+        partial.isEmpty &&
+        roots.isEmpty &&
+        secondary.isEmpty &&
+        !partialLoading) {
       return _NoResults(query: query);
     }
 
@@ -295,6 +305,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
       partial: partial,
       partialLoading: partialLoading,
       roots: roots,
+      secondary: secondary,
       mode: mode,
     );
   }
@@ -333,6 +344,7 @@ class _SplitResultsList extends StatelessWidget {
     required this.partial,
     required this.partialLoading,
     required this.roots,
+    required this.secondary,
     required this.mode,
   });
 
@@ -340,6 +352,7 @@ class _SplitResultsList extends StatelessWidget {
   final List<DpdHeadwordWithRoot> partial;
   final bool partialLoading;
   final List<RootWithFamilies> roots;
+  final List<Object> secondary;
   final DisplayMode mode;
 
   @override
@@ -347,14 +360,16 @@ class _SplitResultsList extends StatelessWidget {
     final hasExact = exact.isNotEmpty;
     final hasPartial = partial.isNotEmpty;
     final hasRoots = roots.isNotEmpty;
+    final hasSecondary = secondary.isNotEmpty;
     final showRootDivider = hasRoots && hasExact;
     final showPartialDivider =
-        (hasExact || hasRoots) && (hasPartial || partialLoading);
+        (hasExact || hasRoots || hasSecondary) && (hasPartial || partialLoading);
 
     final itemCount =
         exact.length +
         (showRootDivider ? 1 : 0) +
         roots.length +
+        secondary.length +
         (showPartialDivider ? 1 : 0) +
         partial.length +
         (partialLoading ? 1 : 0);
@@ -362,7 +377,7 @@ class _SplitResultsList extends StatelessWidget {
     return ListView.separated(
       keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
       itemCount: itemCount,
-      separatorBuilder: (_, __) => const SizedBox.shrink(),
+      separatorBuilder: (context, index) => const SizedBox.shrink(),
       itemBuilder: (context, index) {
         // Exact headword matches first
         if (index < exact.length) {
@@ -381,6 +396,15 @@ class _SplitResultsList extends StatelessWidget {
           return _buildRootItem(context, roots[index]);
         }
         index -= roots.length;
+
+        // Secondary result cards (abbreviations, deconstructor, grammar, help, EPD, variant, spelling, see)
+        if (index < secondary.length) {
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            child: _buildSecondaryItem(secondary[index]),
+          );
+        }
+        index -= secondary.length;
 
         // Partial matches divider
         if (showPartialDivider && index == 0) {
@@ -411,6 +435,20 @@ class _SplitResultsList extends StatelessWidget {
         return const SizedBox.shrink();
       },
     );
+  }
+
+  Widget _buildSecondaryItem(Object result) {
+    return switch (result) {
+      DeconstructorResult r => DeconstructorCard(result: r),
+      GrammarDictResult r => GrammarDictCard(result: r),
+      AbbreviationResult r => AbbreviationCard(result: r),
+      HelpResult r => HelpCard(result: r),
+      EpdResult r => EpdCard(result: r),
+      VariantResult r => VariantCard(result: r),
+      SpellingResult r => SpellingCard(result: r),
+      SeeResult r => SeeCard(result: r),
+      _ => const SizedBox.shrink(),
+    };
   }
 
   Widget _buildItem(BuildContext context, DpdHeadwordWithRoot hw) {
