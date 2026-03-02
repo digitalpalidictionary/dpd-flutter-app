@@ -7,6 +7,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import '../database/database.dart';
 import '../models/lookup_results.dart';
 import '../providers/autocomplete_provider.dart';
+import '../providers/history_provider.dart';
 import '../providers/search_provider.dart';
 import '../providers/secondary_results_provider.dart';
 import '../providers/settings_provider.dart';
@@ -236,7 +237,29 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                       ),
                     ),
                   ),
-                  const SizedBox(width: 5),
+                  _NavButton(
+                    icon: Icons.arrow_back,
+                    enabled: ref.watch(canGoBackProvider),
+                    onPressed: () {
+                      ref.read(historyProvider.notifier).goBack();
+                      final entry = ref.read(historyProvider).currentEntry;
+                      if (entry != null) {
+                        ref.read(searchQueryProvider.notifier).state = entry;
+                      }
+                    },
+                  ),
+                  _NavButton(
+                    icon: Icons.arrow_forward,
+                    enabled: ref.watch(canGoForwardProvider),
+                    onPressed: () {
+                      ref.read(historyProvider.notifier).goForward();
+                      final entry = ref.read(historyProvider).currentEntry;
+                      if (entry != null) {
+                        ref.read(searchQueryProvider.notifier).state = entry;
+                      }
+                    },
+                  ),
+                  const SizedBox(width: 2),
                   _SearchButton(label: 'search', onPressed: _onSearch),
                   const SizedBox(width: 5),
                   _SearchButton(
@@ -609,6 +632,33 @@ class _RootResultCard extends StatelessWidget {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class _NavButton extends StatelessWidget {
+  const _NavButton({
+    required this.icon,
+    required this.enabled,
+    required this.onPressed,
+  });
+
+  final IconData icon;
+  final bool enabled;
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 32,
+      height: 40,
+      child: IconButton(
+        padding: EdgeInsets.zero,
+        icon: Icon(icon, size: 20),
+        color: DpdColors.primary,
+        disabledColor: Theme.of(context).disabledColor,
+        onPressed: enabled ? onPressed : null,
       ),
     );
   }
