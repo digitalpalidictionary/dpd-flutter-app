@@ -35,7 +35,7 @@
     - [ ] Only visible when history is non-empty
     - [ ] Integrate into `search_screen.dart` above the results area
 
-- [ ] Task: Wire search actions to history
+- [x] Task: Wire search actions to history [49ffb0d]
     - [ ] On `_onSearch()`: call `historyNotifier.add(query)` if query is non-empty
     - [ ] On double-tap search: also calls `add(query)` (via existing provider hook)
 
