@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -21,17 +23,48 @@ class DoubleTapSearchWrapper extends ConsumerStatefulWidget {
 class _DoubleTapSearchWrapperState extends ConsumerState<DoubleTapSearchWrapper> {
   SelectedContent? _currentSelection;
   int _lastTapTime = 0;
+  bool _awaitingSelection = false;
+  Timer? _fallbackTimer;
+
+  @override
+  void dispose() {
+    _fallbackTimer?.cancel();
+    super.dispose();
+  }
 
   void _handleSelectionChanged(SelectedContent? selection) {
     _currentSelection = selection;
+
+    if (_awaitingSelection && selection != null && selection.plainText.isNotEmpty) {
+      _awaitingSelection = false;
+      _fallbackTimer?.cancel();
+      _executeSearch(selection.plainText);
+    }
   }
 
   void _handlePointerDown(PointerDownEvent event) {
     final now = DateTime.now().millisecondsSinceEpoch;
     final delta = now - _lastTapTime;
-    
+
     if (delta < 300) {
-      _triggerSearch();
+      _awaitingSelection = true;
+      _fallbackTimer?.cancel();
+
+      // If selection is already available (updated before pointer-down), use it
+      if (_currentSelection != null && _currentSelection!.plainText.isNotEmpty) {
+        _awaitingSelection = false;
+        _executeSearch(_currentSelection!.plainText);
+      } else {
+        // Fallback: if onSelectionChanged doesn't fire within 300ms, try anyway
+        _fallbackTimer = Timer(const Duration(milliseconds: 300), () {
+          if (_awaitingSelection && mounted) {
+            _awaitingSelection = false;
+            if (_currentSelection != null && _currentSelection!.plainText.isNotEmpty) {
+              _executeSearch(_currentSelection!.plainText);
+            }
+          }
+        });
+      }
     }
     _lastTapTime = now;
   }
@@ -41,38 +74,25 @@ class _DoubleTapSearchWrapperState extends ConsumerState<DoubleTapSearchWrapper>
     if (word.isEmpty) return '';
 
     return word
-        .replaceFirst(RegExp(r'''^[\s'‘—.–।॥|…"“”]+'''), '')
-        .replaceFirst(RegExp(r'''[\s'‘,—.—–।॥|"“…:;”]+$'''), '')
-        .replaceAll(RegExp(r'''[‘'’‘"“””]+'''), "'")
+        .replaceFirst(RegExp(r'''^[\s''—.–।॥|…"""]+'''), '')
+        .replaceFirst(RegExp(r'''[\s'',—.—–।॥|""…:;"]+$'''), '')
+        .replaceAll(RegExp(r'''[''''""""]+'''), "'")
         .trim();
   }
 
-  void _triggerSearch() {
-    // Wait for the native SelectionArea to update its internal selection state
-    Future.delayed(const Duration(milliseconds: 200), () {
-      if (!mounted) return;
-      
-      if (_currentSelection != null) {
-        final rawText = _currentSelection!.plainText;
-        final selectedText = _cleanPali(rawText);
-        
-        if (selectedText.isNotEmpty) {
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            if (mounted) {
-              ref.read(searchQueryProvider.notifier).state = selectedText;
-              ref.read(historyProvider.notifier).add(selectedText);
+  void _executeSearch(String rawText) {
+    final selectedText = _cleanPali(rawText);
+    if (selectedText.isEmpty || !mounted) return;
 
-              if (widget.shouldPop) {
-                final navigator = Navigator.of(context);
-                if (navigator.canPop()) {
-                  navigator.pop();
-                }
-              }
-            }
-          });
-        }
+    ref.read(searchQueryProvider.notifier).state = selectedText;
+    ref.read(historyProvider.notifier).add(selectedText);
+
+    if (widget.shouldPop) {
+      final navigator = Navigator.of(context);
+      if (navigator.canPop()) {
+        navigator.pop();
       }
-    });
+    }
   }
 
   @override
