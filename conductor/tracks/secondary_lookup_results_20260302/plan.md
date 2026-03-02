@@ -52,15 +52,15 @@
 
 ## Phase 4: Shared Card Widget Foundation
 
-- [ ] Task: Create `DpdSecondaryCard` base widget in `lib/widgets/secondary/`
+- [x] Task: Create `DpdSecondaryCard` base widget in `lib/widgets/secondary/`
     - [ ] Accepts `String title`, `Widget content`, optional `Widget? footer`
     - [ ] Renders h3-equivalent header: font-size 130%, margin-top 10px, margin-bottom 1px, bold
     - [ ] Renders content in primary-bordered container: 2px solid primary (`#00BFFF`), 7px border-radius, padding 3px 7px, line-height 150%
-- [ ] Task: Create `TertiaryCard` variant widget
+- [x] Task: Create `TertiaryCard` variant widget
     - [ ] Same structure as `DpdSecondaryCard` but border uses secondary GREEN color (`hsl(158, 100%, 35%)`)
     - [ ] Padding 3px 5px (slightly narrower than DpdSecondaryCard's 3px 7px)
     - [ ] Used by Abbreviations and Help cards only
-- [ ] Task: Add secondary/tertiary color constants to `DpdColors`
+- [x] Task: Add secondary/tertiary color constants to `DpdColors`
     - [ ] `secondaryColor` = `hsl(158, 100%, 35%)` — green for tertiary borders and table headers
     - [ ] `epdColor` = `hsl(205, 79%, 48%)` — primary-text blue for EPD headwords
     - [ ] `hrColor` = `hsla(0, 0%, 50%, 0.25)` — gray-transparent for variant table separators
