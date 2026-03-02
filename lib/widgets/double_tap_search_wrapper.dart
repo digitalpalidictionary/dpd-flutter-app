@@ -21,6 +21,7 @@ class DoubleTapSearchWrapper extends ConsumerStatefulWidget {
 }
 
 class _DoubleTapSearchWrapperState extends ConsumerState<DoubleTapSearchWrapper> {
+  final _selectionAreaKey = GlobalKey<SelectionAreaState>();
   SelectedContent? _currentSelection;
   int _lastTapTime = 0;
   bool _awaitingSelection = false;
@@ -84,15 +85,22 @@ class _DoubleTapSearchWrapperState extends ConsumerState<DoubleTapSearchWrapper>
     final selectedText = _cleanPali(rawText);
     if (selectedText.isEmpty || !mounted) return;
 
-    ref.read(searchQueryProvider.notifier).state = selectedText;
-    ref.read(historyProvider.notifier).add(selectedText);
+    // Defer to next frame so SelectionArea finishes processing its
+    // selectable list before we trigger a rebuild (avoids
+    // ConcurrentModificationError in _flushInactiveSelections).
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      _selectionAreaKey.currentState?.selectableRegion.clearSelection();
+      ref.read(searchQueryProvider.notifier).state = selectedText;
+      ref.read(historyProvider.notifier).add(selectedText);
 
-    if (widget.shouldPop) {
-      final navigator = Navigator.of(context);
-      if (navigator.canPop()) {
-        navigator.pop();
+      if (widget.shouldPop) {
+        final navigator = Navigator.of(context);
+        if (navigator.canPop()) {
+          navigator.pop();
+        }
       }
-    }
+    });
   }
 
   @override
@@ -101,6 +109,7 @@ class _DoubleTapSearchWrapperState extends ConsumerState<DoubleTapSearchWrapper>
       behavior: HitTestBehavior.translucent,
       onPointerDown: _handlePointerDown,
       child: SelectionArea(
+        key: _selectionAreaKey,
         onSelectionChanged: _handleSelectionChanged,
         contextMenuBuilder: (context, selectableRegionState) => const SizedBox.shrink(),
         child: widget.child,
