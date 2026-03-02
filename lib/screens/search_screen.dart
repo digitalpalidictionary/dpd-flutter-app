@@ -20,6 +20,7 @@ import '../widgets/entry_bottom_sheet.dart';
 import '../widgets/inline_entry_card.dart';
 import '../widgets/inline_root_card.dart';
 import '../widgets/secondary/secondary_result_cards.dart';
+import '../widgets/history_panel.dart';
 import '../widgets/word_card.dart';
 
 class SearchScreen extends ConsumerStatefulWidget {
@@ -270,7 +271,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
               ),
             ),
 
-            const SizedBox(height: 8),
+            const HistoryPanel(),
 
             // Results
             Expanded(
