@@ -8,7 +8,7 @@
 - [x] Task: Run `dart run build_runner build --delete-conflicting-outputs` to regenerate Drift code
 - [x] Task: Verify the app compiles cleanly with `flutter analyze` [62acb6e]
 
-## Phase 2: Data Models & JSON Parsing
+## Phase 2: Data Models & JSON Parsing [checkpoint: 0d0a285]
 
 - [x] Task: Write failing tests for all 8 data model JSON parsers (Red Phase)
     - [ ] Test `DeconstructorResult` parses `list[str]` JSON correctly
