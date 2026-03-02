@@ -91,7 +91,23 @@ class DpdRoots extends Table {
   TextColumn get sanskritRootMeaning => text().named('sanskrit_root_meaning')();
   TextColumn get sanskritRootClass => text().named('sanskrit_root_class')();
   TextColumn get rootExample => text().named('root_example')();
+  TextColumn get dhatupathaNum => text().named('dhatupatha_num')();
+  TextColumn get dhatupathaRoot => text().named('dhatupatha_root')();
+  TextColumn get dhatupathaPali => text().named('dhatupatha_pali')();
+  TextColumn get dhatupathaEnglish => text().named('dhatupatha_english')();
+  TextColumn get dhatumanjusaNum => text().named('dhatumanjusa_num')();
+  TextColumn get dhatumanjusaRoot => text().named('dhatumanjusa_root')();
+  TextColumn get dhatumanjusaPali => text().named('dhatumanjusa_pali')();
+  TextColumn get dhatumanjusaEnglish => text().named('dhatumanjusa_english')();
+  TextColumn get dhatumalaRoot => text().named('dhatumala_root')();
+  TextColumn get dhatumalaPali => text().named('dhatumala_pali')();
+  TextColumn get dhatumalaEnglish => text().named('dhatumala_english')();
+  TextColumn get paniniRoot => text().named('panini_root')();
+  TextColumn get paniniSanskrit => text().named('panini_sanskrit')();
+  TextColumn get paniniEnglish => text().named('panini_english')();
+  TextColumn get note => text().named('note')();
   TextColumn get rootInfo => text().named('root_info')();
+  TextColumn get rootMatrix => text().named('root_matrix')();
 
   @override
   Set<Column> get primaryKey => {root};
@@ -122,6 +138,7 @@ class FamilyRoot extends Table {
   TextColumn get rootKey => text().named('root_key')();
   TextColumn get rootFamily => text().named('root_family')();
   TextColumn get rootMeaning => text().named('root_meaning')();
+  TextColumn get html => text()();
   TextColumn get data => text()();
   IntColumn get count => integer()();
 
@@ -224,10 +241,8 @@ class SuttaInfo extends Table {
   TextColumn get dvSubtopic => text().named('dv_subtopic').nullable()();
   TextColumn get dvSummary => text().named('dv_summary').nullable()();
   TextColumn get dvSimiles => text().named('dv_similes').nullable()();
-  TextColumn get dvKeyExcerpt1 =>
-      text().named('dv_key_excerpt1').nullable()();
-  TextColumn get dvKeyExcerpt2 =>
-      text().named('dv_key_excerpt2').nullable()();
+  TextColumn get dvKeyExcerpt1 => text().named('dv_key_excerpt1').nullable()();
+  TextColumn get dvKeyExcerpt2 => text().named('dv_key_excerpt2').nullable()();
   TextColumn get dvStage => text().named('dv_stage').nullable()();
   TextColumn get dvTraining => text().named('dv_training').nullable()();
   TextColumn get dvAspect => text().named('dv_aspect').nullable()();

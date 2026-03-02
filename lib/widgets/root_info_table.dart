@@ -141,7 +141,7 @@ class RootInfoTable extends StatelessWidget {
               style: valueStyle,
               children: [
                 TextSpan(text: '${root.dhatumalaRoot} '),
-                TextSpan(text: root.dhatamalaPali, style: italicStyle),
+                TextSpan(text: root.dhatumalaPali, style: italicStyle),
                 TextSpan(text: ' (${root.dhatumalaEnglish})'),
               ],
             ),

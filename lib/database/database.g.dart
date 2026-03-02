@@ -217,11 +217,11 @@ class $DpdRootsTable extends DpdRoots with TableInfo<$DpdRootsTable, DpdRoot> {
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
-  static const VerificationMeta _dhatamalaPaliMeta = const VerificationMeta(
-    'dhatamalaPali',
+  static const VerificationMeta _dhatumalaPaliMeta = const VerificationMeta(
+    'dhatumalaPali',
   );
   @override
-  late final GeneratedColumn<String> dhatamalaPali = GeneratedColumn<String>(
+  late final GeneratedColumn<String> dhatumalaPali = GeneratedColumn<String>(
     'dhatumala_pali',
     aliasedName,
     false,
@@ -324,7 +324,7 @@ class $DpdRootsTable extends DpdRoots with TableInfo<$DpdRootsTable, DpdRoot> {
     dhatumanjusaPali,
     dhatumanjusaEnglish,
     dhatumalaRoot,
-    dhatamalaPali,
+    dhatumalaPali,
     dhatumalaEnglish,
     paniniRoot,
     paniniSanskrit,
@@ -547,14 +547,14 @@ class $DpdRootsTable extends DpdRoots with TableInfo<$DpdRootsTable, DpdRoot> {
     }
     if (data.containsKey('dhatumala_pali')) {
       context.handle(
-        _dhatamalaPaliMeta,
-        dhatamalaPali.isAcceptableOrUnknown(
+        _dhatumalaPaliMeta,
+        dhatumalaPali.isAcceptableOrUnknown(
           data['dhatumala_pali']!,
-          _dhatamalaPaliMeta,
+          _dhatumalaPaliMeta,
         ),
       );
     } else if (isInserting) {
-      context.missing(_dhatamalaPaliMeta);
+      context.missing(_dhatumalaPaliMeta);
     }
     if (data.containsKey('dhatumala_english')) {
       context.handle(
@@ -706,7 +706,7 @@ class $DpdRootsTable extends DpdRoots with TableInfo<$DpdRootsTable, DpdRoot> {
         DriftSqlType.string,
         data['${effectivePrefix}dhatumala_root'],
       )!,
-      dhatamalaPali: attachedDatabase.typeMapping.read(
+      dhatumalaPali: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}dhatumala_pali'],
       )!,
@@ -767,7 +767,7 @@ class DpdRoot extends DataClass implements Insertable<DpdRoot> {
   final String dhatumanjusaPali;
   final String dhatumanjusaEnglish;
   final String dhatumalaRoot;
-  final String dhatamalaPali;
+  final String dhatumalaPali;
   final String dhatumalaEnglish;
   final String paniniRoot;
   final String paniniSanskrit;
@@ -795,7 +795,7 @@ class DpdRoot extends DataClass implements Insertable<DpdRoot> {
     required this.dhatumanjusaPali,
     required this.dhatumanjusaEnglish,
     required this.dhatumalaRoot,
-    required this.dhatamalaPali,
+    required this.dhatumalaPali,
     required this.dhatumalaEnglish,
     required this.paniniRoot,
     required this.paniniSanskrit,
@@ -826,7 +826,7 @@ class DpdRoot extends DataClass implements Insertable<DpdRoot> {
     map['dhatumanjusa_pali'] = Variable<String>(dhatumanjusaPali);
     map['dhatumanjusa_english'] = Variable<String>(dhatumanjusaEnglish);
     map['dhatumala_root'] = Variable<String>(dhatumalaRoot);
-    map['dhatumala_pali'] = Variable<String>(dhatamalaPali);
+    map['dhatumala_pali'] = Variable<String>(dhatumalaPali);
     map['dhatumala_english'] = Variable<String>(dhatumalaEnglish);
     map['panini_root'] = Variable<String>(paniniRoot);
     map['panini_sanskrit'] = Variable<String>(paniniSanskrit);
@@ -858,7 +858,7 @@ class DpdRoot extends DataClass implements Insertable<DpdRoot> {
       dhatumanjusaPali: Value(dhatumanjusaPali),
       dhatumanjusaEnglish: Value(dhatumanjusaEnglish),
       dhatumalaRoot: Value(dhatumalaRoot),
-      dhatamalaPali: Value(dhatamalaPali),
+      dhatumalaPali: Value(dhatumalaPali),
       dhatumalaEnglish: Value(dhatumalaEnglish),
       paniniRoot: Value(paniniRoot),
       paniniSanskrit: Value(paniniSanskrit),
@@ -898,7 +898,7 @@ class DpdRoot extends DataClass implements Insertable<DpdRoot> {
         json['dhatumanjusaEnglish'],
       ),
       dhatumalaRoot: serializer.fromJson<String>(json['dhatumalaRoot']),
-      dhatamalaPali: serializer.fromJson<String>(json['dhatamalaPali']),
+      dhatumalaPali: serializer.fromJson<String>(json['dhatumalaPali']),
       dhatumalaEnglish: serializer.fromJson<String>(json['dhatumalaEnglish']),
       paniniRoot: serializer.fromJson<String>(json['paniniRoot']),
       paniniSanskrit: serializer.fromJson<String>(json['paniniSanskrit']),
@@ -931,7 +931,7 @@ class DpdRoot extends DataClass implements Insertable<DpdRoot> {
       'dhatumanjusaPali': serializer.toJson<String>(dhatumanjusaPali),
       'dhatumanjusaEnglish': serializer.toJson<String>(dhatumanjusaEnglish),
       'dhatumalaRoot': serializer.toJson<String>(dhatumalaRoot),
-      'dhatamalaPali': serializer.toJson<String>(dhatamalaPali),
+      'dhatumalaPali': serializer.toJson<String>(dhatumalaPali),
       'dhatumalaEnglish': serializer.toJson<String>(dhatumalaEnglish),
       'paniniRoot': serializer.toJson<String>(paniniRoot),
       'paniniSanskrit': serializer.toJson<String>(paniniSanskrit),
@@ -962,7 +962,7 @@ class DpdRoot extends DataClass implements Insertable<DpdRoot> {
     String? dhatumanjusaPali,
     String? dhatumanjusaEnglish,
     String? dhatumalaRoot,
-    String? dhatamalaPali,
+    String? dhatumalaPali,
     String? dhatumalaEnglish,
     String? paniniRoot,
     String? paniniSanskrit,
@@ -990,7 +990,7 @@ class DpdRoot extends DataClass implements Insertable<DpdRoot> {
     dhatumanjusaPali: dhatumanjusaPali ?? this.dhatumanjusaPali,
     dhatumanjusaEnglish: dhatumanjusaEnglish ?? this.dhatumanjusaEnglish,
     dhatumalaRoot: dhatumalaRoot ?? this.dhatumalaRoot,
-    dhatamalaPali: dhatamalaPali ?? this.dhatamalaPali,
+    dhatumalaPali: dhatumalaPali ?? this.dhatumalaPali,
     dhatumalaEnglish: dhatumalaEnglish ?? this.dhatumalaEnglish,
     paniniRoot: paniniRoot ?? this.paniniRoot,
     paniniSanskrit: paniniSanskrit ?? this.paniniSanskrit,
@@ -1052,9 +1052,9 @@ class DpdRoot extends DataClass implements Insertable<DpdRoot> {
       dhatumalaRoot: data.dhatumalaRoot.present
           ? data.dhatumalaRoot.value
           : this.dhatumalaRoot,
-      dhatamalaPali: data.dhatamalaPali.present
-          ? data.dhatamalaPali.value
-          : this.dhatamalaPali,
+      dhatumalaPali: data.dhatumalaPali.present
+          ? data.dhatumalaPali.value
+          : this.dhatumalaPali,
       dhatumalaEnglish: data.dhatumalaEnglish.present
           ? data.dhatumalaEnglish.value
           : this.dhatumalaEnglish,
@@ -1097,7 +1097,7 @@ class DpdRoot extends DataClass implements Insertable<DpdRoot> {
           ..write('dhatumanjusaPali: $dhatumanjusaPali, ')
           ..write('dhatumanjusaEnglish: $dhatumanjusaEnglish, ')
           ..write('dhatumalaRoot: $dhatumalaRoot, ')
-          ..write('dhatamalaPali: $dhatamalaPali, ')
+          ..write('dhatumalaPali: $dhatumalaPali, ')
           ..write('dhatumalaEnglish: $dhatumalaEnglish, ')
           ..write('paniniRoot: $paniniRoot, ')
           ..write('paniniSanskrit: $paniniSanskrit, ')
@@ -1130,7 +1130,7 @@ class DpdRoot extends DataClass implements Insertable<DpdRoot> {
     dhatumanjusaPali,
     dhatumanjusaEnglish,
     dhatumalaRoot,
-    dhatamalaPali,
+    dhatumalaPali,
     dhatumalaEnglish,
     paniniRoot,
     paniniSanskrit,
@@ -1162,7 +1162,7 @@ class DpdRoot extends DataClass implements Insertable<DpdRoot> {
           other.dhatumanjusaPali == this.dhatumanjusaPali &&
           other.dhatumanjusaEnglish == this.dhatumanjusaEnglish &&
           other.dhatumalaRoot == this.dhatumalaRoot &&
-          other.dhatamalaPali == this.dhatamalaPali &&
+          other.dhatumalaPali == this.dhatumalaPali &&
           other.dhatumalaEnglish == this.dhatumalaEnglish &&
           other.paniniRoot == this.paniniRoot &&
           other.paniniSanskrit == this.paniniSanskrit &&
@@ -1192,7 +1192,7 @@ class DpdRootsCompanion extends UpdateCompanion<DpdRoot> {
   final Value<String> dhatumanjusaPali;
   final Value<String> dhatumanjusaEnglish;
   final Value<String> dhatumalaRoot;
-  final Value<String> dhatamalaPali;
+  final Value<String> dhatumalaPali;
   final Value<String> dhatumalaEnglish;
   final Value<String> paniniRoot;
   final Value<String> paniniSanskrit;
@@ -1221,7 +1221,7 @@ class DpdRootsCompanion extends UpdateCompanion<DpdRoot> {
     this.dhatumanjusaPali = const Value.absent(),
     this.dhatumanjusaEnglish = const Value.absent(),
     this.dhatumalaRoot = const Value.absent(),
-    this.dhatamalaPali = const Value.absent(),
+    this.dhatumalaPali = const Value.absent(),
     this.dhatumalaEnglish = const Value.absent(),
     this.paniniRoot = const Value.absent(),
     this.paniniSanskrit = const Value.absent(),
@@ -1251,7 +1251,7 @@ class DpdRootsCompanion extends UpdateCompanion<DpdRoot> {
     required String dhatumanjusaPali,
     required String dhatumanjusaEnglish,
     required String dhatumalaRoot,
-    required String dhatamalaPali,
+    required String dhatumalaPali,
     required String dhatumalaEnglish,
     required String paniniRoot,
     required String paniniSanskrit,
@@ -1279,7 +1279,7 @@ class DpdRootsCompanion extends UpdateCompanion<DpdRoot> {
        dhatumanjusaPali = Value(dhatumanjusaPali),
        dhatumanjusaEnglish = Value(dhatumanjusaEnglish),
        dhatumalaRoot = Value(dhatumalaRoot),
-       dhatamalaPali = Value(dhatamalaPali),
+       dhatumalaPali = Value(dhatumalaPali),
        dhatumalaEnglish = Value(dhatumalaEnglish),
        paniniRoot = Value(paniniRoot),
        paniniSanskrit = Value(paniniSanskrit),
@@ -1307,7 +1307,7 @@ class DpdRootsCompanion extends UpdateCompanion<DpdRoot> {
     Expression<String>? dhatumanjusaPali,
     Expression<String>? dhatumanjusaEnglish,
     Expression<String>? dhatumalaRoot,
-    Expression<String>? dhatamalaPali,
+    Expression<String>? dhatumalaPali,
     Expression<String>? dhatumalaEnglish,
     Expression<String>? paniniRoot,
     Expression<String>? paniniSanskrit,
@@ -1339,7 +1339,7 @@ class DpdRootsCompanion extends UpdateCompanion<DpdRoot> {
       if (dhatumanjusaEnglish != null)
         'dhatumanjusa_english': dhatumanjusaEnglish,
       if (dhatumalaRoot != null) 'dhatumala_root': dhatumalaRoot,
-      if (dhatamalaPali != null) 'dhatumala_pali': dhatamalaPali,
+      if (dhatumalaPali != null) 'dhatumala_pali': dhatumalaPali,
       if (dhatumalaEnglish != null) 'dhatumala_english': dhatumalaEnglish,
       if (paniniRoot != null) 'panini_root': paniniRoot,
       if (paniniSanskrit != null) 'panini_sanskrit': paniniSanskrit,
@@ -1371,7 +1371,7 @@ class DpdRootsCompanion extends UpdateCompanion<DpdRoot> {
     Value<String>? dhatumanjusaPali,
     Value<String>? dhatumanjusaEnglish,
     Value<String>? dhatumalaRoot,
-    Value<String>? dhatamalaPali,
+    Value<String>? dhatumalaPali,
     Value<String>? dhatumalaEnglish,
     Value<String>? paniniRoot,
     Value<String>? paniniSanskrit,
@@ -1401,7 +1401,7 @@ class DpdRootsCompanion extends UpdateCompanion<DpdRoot> {
       dhatumanjusaPali: dhatumanjusaPali ?? this.dhatumanjusaPali,
       dhatumanjusaEnglish: dhatumanjusaEnglish ?? this.dhatumanjusaEnglish,
       dhatumalaRoot: dhatumalaRoot ?? this.dhatumalaRoot,
-      dhatamalaPali: dhatamalaPali ?? this.dhatamalaPali,
+      dhatumalaPali: dhatumalaPali ?? this.dhatumalaPali,
       dhatumalaEnglish: dhatumalaEnglish ?? this.dhatumalaEnglish,
       paniniRoot: paniniRoot ?? this.paniniRoot,
       paniniSanskrit: paniniSanskrit ?? this.paniniSanskrit,
@@ -1475,8 +1475,8 @@ class DpdRootsCompanion extends UpdateCompanion<DpdRoot> {
     if (dhatumalaRoot.present) {
       map['dhatumala_root'] = Variable<String>(dhatumalaRoot.value);
     }
-    if (dhatamalaPali.present) {
-      map['dhatumala_pali'] = Variable<String>(dhatamalaPali.value);
+    if (dhatumalaPali.present) {
+      map['dhatumala_pali'] = Variable<String>(dhatumalaPali.value);
     }
     if (dhatumalaEnglish.present) {
       map['dhatumala_english'] = Variable<String>(dhatumalaEnglish.value);
@@ -1527,7 +1527,7 @@ class DpdRootsCompanion extends UpdateCompanion<DpdRoot> {
           ..write('dhatumanjusaPali: $dhatumanjusaPali, ')
           ..write('dhatumanjusaEnglish: $dhatumanjusaEnglish, ')
           ..write('dhatumalaRoot: $dhatumalaRoot, ')
-          ..write('dhatamalaPali: $dhatamalaPali, ')
+          ..write('dhatumalaPali: $dhatumalaPali, ')
           ..write('dhatumalaEnglish: $dhatumalaEnglish, ')
           ..write('paniniRoot: $paniniRoot, ')
           ..write('paniniSanskrit: $paniniSanskrit, ')
@@ -10208,7 +10208,7 @@ typedef $$DpdRootsTableCreateCompanionBuilder =
       required String dhatumanjusaPali,
       required String dhatumanjusaEnglish,
       required String dhatumalaRoot,
-      required String dhatamalaPali,
+      required String dhatumalaPali,
       required String dhatumalaEnglish,
       required String paniniRoot,
       required String paniniSanskrit,
@@ -10239,7 +10239,7 @@ typedef $$DpdRootsTableUpdateCompanionBuilder =
       Value<String> dhatumanjusaPali,
       Value<String> dhatumanjusaEnglish,
       Value<String> dhatumalaRoot,
-      Value<String> dhatamalaPali,
+      Value<String> dhatumalaPali,
       Value<String> dhatumalaEnglish,
       Value<String> paniniRoot,
       Value<String> paniniSanskrit,
@@ -10377,8 +10377,8 @@ class $$DpdRootsTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<String> get dhatamalaPali => $composableBuilder(
-    column: $table.dhatamalaPali,
+  ColumnFilters<String> get dhatumalaPali => $composableBuilder(
+    column: $table.dhatumalaPali,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -10547,8 +10547,8 @@ class $$DpdRootsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<String> get dhatamalaPali => $composableBuilder(
-    column: $table.dhatamalaPali,
+  ColumnOrderings<String> get dhatumalaPali => $composableBuilder(
+    column: $table.dhatumalaPali,
     builder: (column) => ColumnOrderings(column),
   );
 
@@ -10686,8 +10686,8 @@ class $$DpdRootsTableAnnotationComposer
     builder: (column) => column,
   );
 
-  GeneratedColumn<String> get dhatamalaPali => $composableBuilder(
-    column: $table.dhatamalaPali,
+  GeneratedColumn<String> get dhatumalaPali => $composableBuilder(
+    column: $table.dhatumalaPali,
     builder: (column) => column,
   );
 
@@ -10795,7 +10795,7 @@ class $$DpdRootsTableTableManager
                 Value<String> dhatumanjusaPali = const Value.absent(),
                 Value<String> dhatumanjusaEnglish = const Value.absent(),
                 Value<String> dhatumalaRoot = const Value.absent(),
-                Value<String> dhatamalaPali = const Value.absent(),
+                Value<String> dhatumalaPali = const Value.absent(),
                 Value<String> dhatumalaEnglish = const Value.absent(),
                 Value<String> paniniRoot = const Value.absent(),
                 Value<String> paniniSanskrit = const Value.absent(),
@@ -10824,7 +10824,7 @@ class $$DpdRootsTableTableManager
                 dhatumanjusaPali: dhatumanjusaPali,
                 dhatumanjusaEnglish: dhatumanjusaEnglish,
                 dhatumalaRoot: dhatumalaRoot,
-                dhatamalaPali: dhatamalaPali,
+                dhatumalaPali: dhatumalaPali,
                 dhatumalaEnglish: dhatumalaEnglish,
                 paniniRoot: paniniRoot,
                 paniniSanskrit: paniniSanskrit,
@@ -10855,7 +10855,7 @@ class $$DpdRootsTableTableManager
                 required String dhatumanjusaPali,
                 required String dhatumanjusaEnglish,
                 required String dhatumalaRoot,
-                required String dhatamalaPali,
+                required String dhatumalaPali,
                 required String dhatumalaEnglish,
                 required String paniniRoot,
                 required String paniniSanskrit,
@@ -10884,7 +10884,7 @@ class $$DpdRootsTableTableManager
                 dhatumanjusaPali: dhatumanjusaPali,
                 dhatumanjusaEnglish: dhatumanjusaEnglish,
                 dhatumalaRoot: dhatumalaRoot,
-                dhatamalaPali: dhatamalaPali,
+                dhatumalaPali: dhatumalaPali,
                 dhatumalaEnglish: dhatumalaEnglish,
                 paniniRoot: paniniRoot,
                 paniniSanskrit: paniniSanskrit,

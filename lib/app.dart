@@ -112,10 +112,12 @@ class _DpdAppState extends ConsumerState<DpdApp> {
       case '/':
         return MaterialPageRoute(builder: (_) => const SearchScreen());
       case '/entry':
-        final id = settings.arguments as int;
+        final id = settings.arguments as int?;
+        if (id == null) return null;
         return MaterialPageRoute(builder: (_) => EntryScreen(headwordId: id));
       case '/root':
-        final rootKey = settings.arguments as String;
+        final rootKey = settings.arguments as String?;
+        if (rootKey == null) return null;
         return MaterialPageRoute(builder: (_) => RootScreen(rootKey: rootKey));
       case '/settings':
         return MaterialPageRoute(builder: (_) => const SettingsScreen());

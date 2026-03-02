@@ -19,16 +19,19 @@ void main() {
 
   group('getRootFamily', () {
     test('returns row matching rootKey and familyRoot', () async {
-      await dao.into(dao.familyRoot).insert(
-        FamilyRootData(
-          rootFamilyKey: 'kara_kara',
-          rootKey: 'kara',
-          rootFamily: 'kara',
-          rootMeaning: 'to do',
-          data: '[["karoti","pr","to do","√"]]',
-          count: 5,
-        ),
-      );
+      await dao
+          .into(dao.familyRoot)
+          .insert(
+            FamilyRootData(
+              rootFamilyKey: 'kara_kara',
+              rootKey: 'kara',
+              rootFamily: 'kara',
+              rootMeaning: 'to do',
+              html: '<div>kara</div>',
+              data: '[["karoti","pr","to do","√"]]',
+              count: 5,
+            ),
+          );
 
       final result = await dao.getRootFamily('kara', 'kara');
 
@@ -48,13 +51,15 @@ void main() {
 
   group('getWordFamily', () {
     test('returns row matching wordFamily', () async {
-      await dao.into(dao.familyWord).insert(
-        FamilyWordData(
-          wordFamily: 'dhamma',
-          data: '[["dhamma","masc","truth","✓"]]',
-          count: 12,
-        ),
-      );
+      await dao
+          .into(dao.familyWord)
+          .insert(
+            FamilyWordData(
+              wordFamily: 'dhamma',
+              data: '[["dhamma","masc","truth","✓"]]',
+              count: 12,
+            ),
+          );
 
       final result = await dao.getWordFamily('dhamma');
 
@@ -73,20 +78,24 @@ void main() {
 
   group('getCompoundFamilies', () {
     setUp(() async {
-      await dao.into(dao.familyCompound).insert(
-        FamilyCompoundData(
-          compoundFamily: 'dhamma',
-          data: '[["saddhammo","masc","good dhamma","✓"]]',
-          count: 3,
-        ),
-      );
-      await dao.into(dao.familyCompound).insert(
-        FamilyCompoundData(
-          compoundFamily: 'kāya',
-          data: '[["kāyaduccarita","nt","bodily misconduct","✓"]]',
-          count: 2,
-        ),
-      );
+      await dao
+          .into(dao.familyCompound)
+          .insert(
+            FamilyCompoundData(
+              compoundFamily: 'dhamma',
+              data: '[["saddhammo","masc","good dhamma","✓"]]',
+              count: 3,
+            ),
+          );
+      await dao
+          .into(dao.familyCompound)
+          .insert(
+            FamilyCompoundData(
+              compoundFamily: 'kāya',
+              data: '[["kāyaduccarita","nt","bodily misconduct","✓"]]',
+              count: 2,
+            ),
+          );
     });
 
     test('returns single matching row', () async {
@@ -117,20 +126,24 @@ void main() {
 
   group('getIdioms', () {
     setUp(() async {
-      await dao.into(dao.familyIdiom).insert(
-        FamilyIdiomData(
-          idiom: 'citta',
-          data: '[["cittaṃ karoti","idiom","to pay attention","✓"]]',
-          count: 2,
-        ),
-      );
-      await dao.into(dao.familyIdiom).insert(
-        FamilyIdiomData(
-          idiom: 'kāra',
-          data: '[["sakkāra","masc","hospitality","✓"]]',
-          count: 1,
-        ),
-      );
+      await dao
+          .into(dao.familyIdiom)
+          .insert(
+            FamilyIdiomData(
+              idiom: 'citta',
+              data: '[["cittaṃ karoti","idiom","to pay attention","✓"]]',
+              count: 2,
+            ),
+          );
+      await dao
+          .into(dao.familyIdiom)
+          .insert(
+            FamilyIdiomData(
+              idiom: 'kāra',
+              data: '[["sakkāra","masc","hospitality","✓"]]',
+              count: 1,
+            ),
+          );
     });
 
     test('returns single matching idiom', () async {
@@ -159,20 +172,24 @@ void main() {
 
   group('getSets', () {
     setUp(() async {
-      await dao.into(dao.familySet).insert(
-        FamilySetData(
-          set_: 'dhammas',
-          data: '[["dhamma","masc","truth","✓"]]',
-          count: 8,
-        ),
-      );
-      await dao.into(dao.familySet).insert(
-        FamilySetData(
-          set_: 'khandhas',
-          data: '[["rūpa","masc","form","✓"]]',
-          count: 5,
-        ),
-      );
+      await dao
+          .into(dao.familySet)
+          .insert(
+            FamilySetData(
+              set_: 'dhammas',
+              data: '[["dhamma","masc","truth","✓"]]',
+              count: 8,
+            ),
+          );
+      await dao
+          .into(dao.familySet)
+          .insert(
+            FamilySetData(
+              set_: 'khandhas',
+              data: '[["rūpa","masc","form","✓"]]',
+              count: 5,
+            ),
+          );
     });
 
     test('returns single matching set', () async {

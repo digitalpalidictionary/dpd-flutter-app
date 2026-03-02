@@ -362,7 +362,7 @@ class _SplitResultsList extends StatelessWidget {
     return ListView.separated(
       keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
       itemCount: itemCount,
-      separatorBuilder: (_, _) => const SizedBox.shrink(),
+      separatorBuilder: (_, __) => const SizedBox.shrink(),
       itemBuilder: (context, index) {
         // Exact headword matches first
         if (index < exact.length) {

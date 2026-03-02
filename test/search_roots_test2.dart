@@ -6,11 +6,15 @@ import 'dart:io';
 void main() {
   test('Search roots test 2', () async {
     final file = File('../dpd-db/dpd.db');
+    if (!file.existsSync()) {
+      fail('Database file not found at ${file.absolute.path}');
+    }
     final db = AppDatabase.forTesting(NativeDatabase(file));
     final dao = DpdDao(db);
 
     try {
       final res2 = await dao.searchRoots("√har 1");
+      expect(res2, isNotEmpty);
       print("\nFound roots for √har 1:");
       for (final r in res2) {
         print("${r.root.root} (families: ${r.families.length})");
