@@ -169,8 +169,9 @@ class DpdDao extends DatabaseAccessor<AppDatabase> with _$DpdDaoMixin {
 
   Future<LookupData?> getLookupRow(String key) {
     final normalized = _normalizeQuery(key);
-    return (select(lookup)..where((t) => t.lookupKey.equals(normalized)))
-        .getSingleOrNull();
+    return (select(
+      lookup,
+    )..where((t) => t.lookupKey.equals(normalized))).getSingleOrNull();
   }
 
   Future<DpdRoot?> getRoot(String rootKey) {
@@ -222,6 +223,14 @@ class DpdDao extends DatabaseAccessor<AppDatabase> with _$DpdDaoMixin {
   Future<List<FamilyIdiomData>> getIdioms(List<String> idioms) {
     if (idioms.isEmpty) return Future.value([]);
     return (select(familyIdiom)..where((t) => t.idiom.isIn(idioms))).get();
+  }
+
+  Future<Set<String>> getAllIdiomKeys() async {
+    final rows = await (selectOnly(
+      familyIdiom,
+      distinct: true,
+    )..addColumns([familyIdiom.idiom])).get();
+    return rows.map((r) => r.read(familyIdiom.idiom)!).toSet();
   }
 
   Future<List<FamilySetData>> getSets(List<String> sets) {
@@ -283,35 +292,39 @@ class DpdDao extends DatabaseAccessor<AppDatabase> with _$DpdDaoMixin {
   // ── Root search ─────────────────────────────────────────────────────────
 
   Future<List<({String lemma1, String pos, String rootBase, String grammar})>>
-      getHeadwordsForRootMatrix(String rootKey) async {
-    final rows = await (selectOnly(dpdHeadwords)
-          ..addColumns([
-            dpdHeadwords.lemma1,
-            dpdHeadwords.pos,
-            dpdHeadwords.rootBase,
-            dpdHeadwords.grammar,
-          ])
-          ..where(
-            dpdHeadwords.rootKey.equals(rootKey) &
-                dpdHeadwords.rootKey.equals('').not(),
-          ))
-        .get();
+  getHeadwordsForRootMatrix(String rootKey) async {
+    final rows =
+        await (selectOnly(dpdHeadwords)
+              ..addColumns([
+                dpdHeadwords.lemma1,
+                dpdHeadwords.pos,
+                dpdHeadwords.rootBase,
+                dpdHeadwords.grammar,
+              ])
+              ..where(
+                dpdHeadwords.rootKey.equals(rootKey) &
+                    dpdHeadwords.rootKey.equals('').not(),
+              ))
+            .get();
 
     return rows
-        .map((r) => (
-              lemma1: r.read(dpdHeadwords.lemma1)!,
-              pos: r.read(dpdHeadwords.pos) ?? '',
-              rootBase: r.read(dpdHeadwords.rootBase) ?? '',
-              grammar: r.read(dpdHeadwords.grammar) ?? '',
-            ))
+        .map(
+          (r) => (
+            lemma1: r.read(dpdHeadwords.lemma1)!,
+            pos: r.read(dpdHeadwords.pos) ?? '',
+            rootBase: r.read(dpdHeadwords.rootBase) ?? '',
+            grammar: r.read(dpdHeadwords.grammar) ?? '',
+          ),
+        )
         .toList();
   }
 
   Future<List<String>> getBasesForRoot(String rootKey) async {
-    final rows = await (selectOnly(dpdHeadwords, distinct: true)
-          ..addColumns([dpdHeadwords.rootBase])
-          ..where(dpdHeadwords.rootKey.equals(rootKey)))
-        .get();
+    final rows =
+        await (selectOnly(dpdHeadwords, distinct: true)
+              ..addColumns([dpdHeadwords.rootBase])
+              ..where(dpdHeadwords.rootKey.equals(rootKey)))
+            .get();
 
     final bases = <String>{};
     for (final row in rows) {
@@ -326,22 +339,23 @@ class DpdDao extends DatabaseAccessor<AppDatabase> with _$DpdDaoMixin {
   }
 
   Future<RootWithFamilies?> getRootWithFamilies(String rootKey) async {
-    final rootRow = await (select(dpdRoots)
-          ..where((t) => t.root.equals(rootKey)))
-        .getSingleOrNull();
+    final rootRow = await (select(
+      dpdRoots,
+    )..where((t) => t.root.equals(rootKey))).getSingleOrNull();
     if (rootRow == null) return null;
 
-    final families = await (select(familyRoot)
-          ..where((t) => t.rootKey.equals(rootKey)))
-        .get();
+    final families = await (select(
+      familyRoot,
+    )..where((t) => t.rootKey.equals(rootKey))).get();
     families.sort(
       (a, b) => paliSortKey(a.rootFamily).compareTo(paliSortKey(b.rootFamily)),
     );
 
-    final countQuery = await (selectOnly(dpdHeadwords)
-          ..addColumns([dpdHeadwords.id.count()])
-          ..where(dpdHeadwords.rootKey.equals(rootKey)))
-        .getSingle();
+    final countQuery =
+        await (selectOnly(dpdHeadwords)
+              ..addColumns([dpdHeadwords.id.count()])
+              ..where(dpdHeadwords.rootKey.equals(rootKey)))
+            .getSingle();
     final count = countQuery.read(dpdHeadwords.id.count()) ?? 0;
 
     return RootWithFamilies(root: rootRow, families: families, count: count);
@@ -365,9 +379,9 @@ class DpdDao extends DatabaseAccessor<AppDatabase> with _$DpdDaoMixin {
     if (query.isEmpty) return [];
     final normalized = _normalizeQuery(query);
 
-    final lookupRows = await (select(lookup)
-          ..where((t) => t.lookupKey.equals(normalized)))
-        .get();
+    final lookupRows = await (select(
+      lookup,
+    )..where((t) => t.lookupKey.equals(normalized))).get();
 
     final rootKeys = _extractRootKeys(lookupRows);
     if (rootKeys.isEmpty) return [];

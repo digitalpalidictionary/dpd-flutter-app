@@ -26,6 +26,7 @@ class _DpdAppState extends ConsumerState<DpdApp> {
       ref.read(databaseProvider);
       ref.read(searchIndexProvider);
       ref.read(compoundFamilyKeysProvider);
+      ref.read(idiomKeysProvider);
     });
   }
 

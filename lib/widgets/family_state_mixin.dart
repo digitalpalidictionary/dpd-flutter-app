@@ -35,6 +35,11 @@ mixin FamilyStateMixin<T extends ConsumerStatefulWidget> on ConsumerState<T> {
   List<String> get _idiomKeys =>
       (_fh.familyIdioms ?? '').split(' ').where((s) => s.isNotEmpty).toList();
 
+  // Idiom key list: use family_idioms if populated, else fall back to lemma_clean.
+  // Mirrors the webapp's family_idioms_list cached_property.
+  List<String> get _idiomKeyList =>
+      _idiomKeys.isNotEmpty ? _idiomKeys : [_lemmaClean];
+
   List<String> get _setKeys =>
       (_fh.familySet ?? '').split('; ').where((s) => s.isNotEmpty).toList();
 
@@ -55,8 +60,11 @@ mixin FamilyStateMixin<T extends ConsumerStatefulWidget> on ConsumerState<T> {
         !(_fh.compoundType?.contains('?') ?? false);
   }
 
-  bool get familyHasIdioms =>
-      (_fh.meaning1?.isNotEmpty ?? false) && _idiomKeys.isNotEmpty;
+  bool get familyHasIdioms {
+    final idiomSet = ref.watch(idiomKeysProvider).valueOrNull;
+    return (_fh.meaning1?.isNotEmpty ?? false) &&
+        _idiomKeyList.any((k) => idiomSet?.contains(k) ?? false);
+  }
 
   bool get familyHasSets =>
       (_fh.meaning1?.isNotEmpty ?? false) && _setKeys.isNotEmpty;
@@ -104,7 +112,7 @@ mixin FamilyStateMixin<T extends ConsumerStatefulWidget> on ConsumerState<T> {
 
   Future<void> _loadIdioms() async {
     if (_idiomData != null) return;
-    final data = await ref.read(daoProvider).getIdioms(_idiomKeys);
+    final data = await ref.read(daoProvider).getIdioms(_idiomKeyList);
     if (mounted) setState(() => _idiomData = data);
   }
 
