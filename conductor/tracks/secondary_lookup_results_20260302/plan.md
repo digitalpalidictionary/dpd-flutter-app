@@ -65,7 +65,7 @@
     - [ ] `epdColor` = `hsl(205, 79%, 48%)` — primary-text blue for EPD headwords
     - [ ] `hrColor` = `hsla(0, 0%, 50%, 0.25)` — gray-transparent for variant table separators
 
-## Phase 5: Card Widget Implementations
+## Phase 5: Card Widget Implementations [checkpoint: f696b9c]
 
 - [x] Task: Implement `DeconstructorCard` widget
 - [x] Task: Implement `GrammarDictCard` widget
