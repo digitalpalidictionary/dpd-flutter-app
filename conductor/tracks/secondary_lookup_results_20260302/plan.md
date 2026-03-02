@@ -34,7 +34,7 @@
     - [ ] Each model has a factory `fromJson(String headword, String? jsonString)` that returns null if input is null/empty
 - [x] Task: Run tests — confirm all pass [404a407]
 
-## Phase 3: DAO & Provider Layer
+## Phase 3: DAO & Provider Layer [checkpoint: 8de00ee]
 
 - [x] Task: Write failing tests for secondary results parsing from a Lookup row (Red Phase)
     - [ ] Test that a Lookup row with populated columns produces the correct list of typed results
