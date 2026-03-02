@@ -90,4 +90,4 @@
 - [x] Task: Verify cards respect theme (light/dark) and user font size settings
 - [x] Task: Run `flutter analyze` — ensure no warnings or errors
 - [x] Task: Run `flutter test` — ensure all tests pass
-- [ ] Task: Conductor - User Manual Verification 'All Phases' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'All Phases' (Protocol in workflow.md)
