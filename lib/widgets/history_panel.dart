@@ -116,16 +116,7 @@ class _ClearButton extends StatelessWidget {
         child: InkWell(
           customBorder: const CircleBorder(),
           onTap: onPressed,
-          child: const Center(
-            child: Text(
-              'x',
-              style: TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
-            ),
-          ),
+          child: const Icon(Icons.close, size: 14, color: Colors.white),
         ),
       ),
     );
