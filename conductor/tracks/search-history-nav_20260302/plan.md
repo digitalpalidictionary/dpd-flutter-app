@@ -14,7 +14,7 @@
     - [ ] Persist entries list to SharedPreferences on each change (key: `dpd_history`)
     - [ ] Load entries from SharedPreferences on init
 
-- [ ] Task: Conductor - User Manual Verification 'Phase 1'
+- [x] Task: Conductor - User Manual Verification 'Phase 1'
 
 ---
 
