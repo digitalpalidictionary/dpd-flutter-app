@@ -20,7 +20,7 @@
 
 ## Phase 2: UI — Integration into Search Screen
 
-- [ ] Task: Add back/forward buttons to search screen
+- [x] Task: Add back/forward buttons to search screen [8b557a3]
     - [ ] Modify `lib/screens/search_screen.dart`
     - [ ] Add ← / → `IconButton`s inline in the existing search bar `Row`
     - [ ] Enabled/disabled state from `canGoBackProvider` / `canGoForwardProvider`
