@@ -26,7 +26,7 @@
     - [ ] Enabled/disabled state from `canGoBackProvider` / `canGoForwardProvider`
     - [ ] On tap: call `goBack()` / `goForward()`, update `searchQueryProvider` with navigated term
 
-- [ ] Task: Create history panel widget
+- [x] Task: Create history panel widget [714432a]
     - [ ] Create `lib/widgets/history_panel.dart`
     - [ ] Collapsible section (collapsed state is local `bool` in the widget)
     - [ ] Header row: "History" label + clear icon button + collapse toggle (▼/▲)
