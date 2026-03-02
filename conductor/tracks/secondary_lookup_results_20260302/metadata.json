@@ -1,0 +1,8 @@
+{
+  "track_id": "secondary_lookup_results_20260302",
+  "type": "feature",
+  "status": "new",
+  "created_at": "2026-03-02T04:30:05Z",
+  "updated_at": "2026-03-02T04:30:05Z",
+  "description": "Integrate all lookup-table secondary data types (deconstructor, grammar dict, abbreviations, help, EPD, variant, spelling, see) into Flutter app search results as always-visible cards"
+}
