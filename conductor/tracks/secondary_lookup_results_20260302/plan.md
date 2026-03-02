@@ -36,19 +36,19 @@
 
 ## Phase 3: DAO & Provider Layer
 
-- [ ] Task: Write failing tests for secondary results parsing from a Lookup row (Red Phase)
+- [x] Task: Write failing tests for secondary results parsing from a Lookup row (Red Phase)
     - [ ] Test that a Lookup row with populated columns produces the correct list of typed results
     - [ ] Test that a Lookup row with all-empty secondary columns produces an empty results list
     - [ ] Test that result ordering matches: abbreviations → deconstructor → grammar → help → EPD → variant → spelling → see
-- [ ] Task: Extend `DpdDao` — ensure existing lookup queries return all columns (Green Phase)
+- [x] Task: Extend `DpdDao` — ensure existing lookup queries return all columns (Green Phase)
     - [ ] Verify existing `select` on Lookup table already fetches full row (Drift default)
     - [ ] If not, update query to include all columns
-- [ ] Task: Create `SecondaryResultsProvider` in `lib/providers/`
+- [x] Task: Create `SecondaryResultsProvider` in `lib/providers/`
     - [ ] Accept a `LookupData` row (already fetched by search)
     - [ ] Parse each non-empty column into its typed model using the factory constructors
     - [ ] Return `List<Object>` of results in webapp order (abbreviations, deconstructor, grammar, help, EPD, variant, spelling, see)
     - [ ] Skip any column that is null or empty string
-- [ ] Task: Run tests — confirm all pass
+- [x] Task: Run tests — confirm all pass [809536a]
 
 ## Phase 4: Shared Card Widget Foundation
 
