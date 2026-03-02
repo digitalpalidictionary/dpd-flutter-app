@@ -64,9 +64,11 @@ class _HistoryPanelState extends ConsumerState<HistoryPanel> {
             ],
           ),
           if (!_collapsed)
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Wrap(
+                spacing: 0,
+                runSpacing: 2,
                 children: [
                   for (var i = 0; i < history.entries.length; i++) ...[
                     if (i > 0)
