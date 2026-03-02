@@ -75,6 +75,8 @@ class Lookup extends Table {
   TextColumn get grammar => text().nullable()();
   TextColumn get help => text().nullable()();
   TextColumn get abbrev => text().nullable()();
+  TextColumn get deconstructor => text().nullable()();
+  TextColumn get epd => text().nullable()();
 
   @override
   Set<Column> get primaryKey => {lookupKey};
