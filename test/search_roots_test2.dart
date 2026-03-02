@@ -12,26 +12,11 @@ void main() {
     final db = AppDatabase.forTesting(NativeDatabase(file));
     final dao = DpdDao(db);
 
-    try {
-      final res2 = await dao.searchRoots("√har 1");
-      expect(res2, isNotEmpty);
-      print("\nFound roots for √har 1:");
-      for (final r in res2) {
-        print("${r.root.root} (families: ${r.families.length})");
-      }
-    } catch (e) {
-      print("Error in √har 1: $e");
-    }
+    final res2 = await dao.searchRoots("√har 1");
+    expect(res2, isNotEmpty);
 
-    try {
-      final res3 = await dao.searchRoots("√har 3");
-      print("\nFound roots for √har 3:");
-      for (final r in res3) {
-        print("${r.root.root} (families: ${r.families.length})");
-      }
-    } catch (e) {
-      print("Error in √har 3: $e");
-    }
+    final res3 = await dao.searchRoots("√har 3");
+    expect(res3, isNotEmpty);
 
     await db.close();
   });

@@ -120,24 +120,21 @@ class _InlineRootCardState extends ConsumerState<InlineRootCard> {
     final basesAsync = ref.watch(basesForRootProvider(root.root));
     final bases = basesAsync.whenOrNull(data: (b) => b);
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8),
-      child: DpdSectionContainer(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            RootInfoTable(root: root, bases: bases),
-            Padding(
-              padding: DpdColors.sectionPadding,
-              child: DpdFooter(
-                messagePrefix: 'Something out of place?',
-                linkText: 'Report it here',
-                urlBuilder: () =>
-                    'https://docs.google.com/forms/d/e/1FAIpQLSf9boBe7k5tCwq7LdWgBHHGIPVc4ROO5yjVDo1X5LDAxkmGWQ/viewform?usp=pp_url&entry.438735500=$encodedRoot&entry.326955045=Root+Info',
-              ),
+    return DpdSectionContainer(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          RootInfoTable(root: root, bases: bases),
+          Padding(
+            padding: DpdColors.sectionPadding,
+            child: DpdFooter(
+              messagePrefix: 'Something out of place?',
+              linkText: 'Report it here',
+              urlBuilder: () =>
+                  'https://docs.google.com/forms/d/e/1FAIpQLSf9boBe7k5tCwq7LdWgBHHGIPVc4ROO5yjVDo1X5LDAxkmGWQ/viewform?usp=pp_url&entry.438735500=$encodedRoot&entry.326955045=Root+Info',
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -148,30 +145,27 @@ class _InlineRootCardState extends ConsumerState<InlineRootCard> {
     final matrixAsync = ref.watch(rootMatrixProvider(root.root));
     final matrix = matrixAsync.whenOrNull(data: (m) => m);
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8),
-      child: DpdSectionContainer(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (matrix != null)
-              RootMatrixTable(data: matrix)
-            else
-              Padding(
-                padding: DpdColors.sectionPadding,
-                child: const CircularProgressIndicator(),
-              ),
+    return DpdSectionContainer(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (matrix != null)
+            RootMatrixTable(data: matrix)
+          else
             Padding(
               padding: DpdColors.sectionPadding,
-              child: DpdFooter(
-                messagePrefix: 'Something out of place?',
-                linkText: 'Report it here',
-                urlBuilder: () =>
-                    'https://docs.google.com/forms/d/e/1FAIpQLSf9boBe7k5tCwq7LdWgBHHGIPVc4ROO5yjVDo1X5LDAxkmGWQ/viewform?usp=pp_url&entry.438735500=$encodedRoot&entry.326955045=Root+Matrix',
-              ),
+              child: const CircularProgressIndicator(),
             ),
-          ],
-        ),
+          Padding(
+            padding: DpdColors.sectionPadding,
+            child: DpdFooter(
+              messagePrefix: 'Something out of place?',
+              linkText: 'Report it here',
+              urlBuilder: () =>
+                  'https://docs.google.com/forms/d/e/1FAIpQLSf9boBe7k5tCwq7LdWgBHHGIPVc4ROO5yjVDo1X5LDAxkmGWQ/viewform?usp=pp_url&entry.438735500=$encodedRoot&entry.326955045=Root+Matrix',
+            ),
+          ),
+        ],
       ),
     );
   }

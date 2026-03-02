@@ -14,17 +14,9 @@ void main() {
 
     final res = await dao.searchRoots("√har");
     expect(res, isNotEmpty);
-    print("Found roots for √har:");
-    for (final r in res) {
-      print("${r.root.root} (families: ${r.families.length})");
-    }
 
     final res2 = await dao.searchRoots("√har 1");
     expect(res2, isNotEmpty);
-    print("\nFound roots for √har 1:");
-    for (final r in res2) {
-      print("${r.root.root} (families: ${r.families.length})");
-    }
 
     await db.close();
   });

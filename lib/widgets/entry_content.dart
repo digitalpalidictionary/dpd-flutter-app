@@ -244,7 +244,7 @@ class DpdSectionContainer extends StatelessWidget {
 
     return Container(
       width: double.infinity,
-      margin: const EdgeInsets.symmetric(vertical: 2),
+      margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
       decoration: BoxDecoration(
         border: Border.all(color: theme.colorScheme.primary, width: 2),
         borderRadius: DpdColors.borderRadius,

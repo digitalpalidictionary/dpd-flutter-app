@@ -3,6 +3,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../models/lookup_results.dart';
 import '../../theme/dpd_colors.dart';
+import '../entry_content.dart';
 import 'secondary_card.dart';
 
 // ── Shared helpers ────────────────────────────────────────────────────────────
@@ -24,19 +25,6 @@ Widget _lineBreakText(List<String> lines, TextStyle? baseStyle) {
   );
 }
 
-Widget _dpdLink(String text, String url, {TextStyle? style}) {
-  return InkWell(
-    onTap: () => launchUrl(Uri.parse(url), mode: LaunchMode.platformDefault),
-    child: Text(
-      text,
-      style: (style ?? const TextStyle()).copyWith(
-        color: DpdColors.primaryText,
-        fontWeight: FontWeight.w700,
-      ),
-    ),
-  );
-}
-
 // ── Deconstructor Card ────────────────────────────────────────────────────────
 
 class DeconstructorCard extends StatelessWidget {
@@ -52,22 +40,15 @@ class DeconstructorCard extends StatelessWidget {
     return DpdSecondaryCard(
       title: 'deconstructor: ${result.headword}',
       content: _lineBreakText(result.deconstructions, bodyStyle),
-      footer: _DeconstructorFooter(
-        encodedHeadword: encodedHeadword,
-        bodyStyle: bodyStyle,
-      ),
+      footer: _DeconstructorFooter(encodedHeadword: encodedHeadword),
     );
   }
 }
 
 class _DeconstructorFooter extends StatelessWidget {
-  const _DeconstructorFooter({
-    required this.encodedHeadword,
-    required this.bodyStyle,
-  });
+  const _DeconstructorFooter({required this.encodedHeadword});
 
   final String encodedHeadword;
-  final TextStyle? bodyStyle;
 
   @override
   Widget build(BuildContext context) {
@@ -80,10 +61,12 @@ class _DeconstructorFooter extends StatelessWidget {
     const addWordsUrl =
         'https://docs.google.com/forms/d/e/1FAIpQLSfResxEUiRCyFITWPkzoQ2HhHEvUS5fyg68Rl28hFH6vhHlaA/viewform';
 
-    final footerStyle = bodyStyle?.copyWith(
-      fontSize: (bodyStyle?.fontSize ?? 14) * 0.8,
-      color: Colors.grey,
-      height: _lineHeight,
+    const footerStyle = TextStyle(fontSize: 12.8, color: Colors.grey);
+    final linkStyle = TextStyle(
+      fontSize: 12.8,
+      color: DpdColors.primaryText,
+      fontWeight: FontWeight.w700,
+      decoration: TextDecoration.none,
     );
 
     return Container(
@@ -99,19 +82,30 @@ class _DeconstructorFooter extends StatelessWidget {
             const TextSpan(
                 text: 'These word breakups are code-generated. For more information, '),
             WidgetSpan(
-              child: _dpdLink('read the docs', docsUrl, style: footerStyle),
+              child: InkWell(
+                onTap: () => launchUrl(Uri.parse(docsUrl),
+                    mode: LaunchMode.platformDefault),
+                child: Text('read the docs', style: linkStyle),
+              ),
             ),
             const TextSpan(text: '. Please '),
             WidgetSpan(
-              child: _dpdLink('suggest any improvements here', suggestUrl,
-                  style: footerStyle),
+              child: InkWell(
+                onTap: () => launchUrl(Uri.parse(suggestUrl),
+                    mode: LaunchMode.platformDefault),
+                child: Text('suggest any improvements here',
+                    style: linkStyle),
+              ),
             ),
             const TextSpan(
                 text:
                     '. Mistakes in deconstruction are usually caused by a word missing from the dictionary. You can '),
             WidgetSpan(
-              child:
-                  _dpdLink('add missing words here', addWordsUrl, style: footerStyle),
+              child: InkWell(
+                onTap: () => launchUrl(Uri.parse(addWordsUrl),
+                    mode: LaunchMode.platformDefault),
+                child: Text('add missing words here', style: linkStyle),
+              ),
             ),
             const TextSpan(text: '.'),
           ],
@@ -136,10 +130,10 @@ class GrammarDictCard extends StatelessWidget {
     return DpdSecondaryCard(
       title: 'grammar: ${result.headword}',
       content: _GrammarDictTable(entries: result.entries),
-      footer: _SimpleDpdFooter(
-        prefix: 'For more information, please ',
+      footer: DpdFooter(
+        messagePrefix: 'For more information, please',
         linkText: 'read the docs',
-        url: docsUrl,
+        urlBuilder: () => docsUrl,
       ),
     );
   }
@@ -154,49 +148,55 @@ class _GrammarDictTable extends StatelessWidget {
   Widget build(BuildContext context) {
     final bodyStyle =
         Theme.of(context).textTheme.bodyMedium?.copyWith(height: _lineHeight);
+    final boldStyle = bodyStyle?.copyWith(fontWeight: FontWeight.w700);
+
+    // Only render as many component columns as have data (matches CSS display:none behaviour)
+    int maxComps = 0;
+    for (final entry in entries) {
+      for (int i = entry.components.length - 1; i >= 0; i--) {
+        if (entry.components[i].isNotEmpty) {
+          if (i + 1 > maxComps) maxComps = i + 1;
+          break;
+        }
+      }
+    }
 
     return Table(
       defaultColumnWidth: const IntrinsicColumnWidth(),
       defaultVerticalAlignment: TableCellVerticalAlignment.middle,
       children: [
-        // Header row
+        // Header row — <th> is bold in HTML by default
         TableRow(
           children: [
-            _cell(context, 'pos', style: bodyStyle, bold: false),
-            ...List.generate(3, (_) => _cell(context, '', style: bodyStyle)),
-            _cell(context, '', style: bodyStyle),
-            _cell(context, 'word', style: bodyStyle, bold: false),
+            _cell('pos', style: boldStyle),
+            ...List.generate(maxComps, (_) => _cell('', style: bodyStyle)),
+            _cell('', style: bodyStyle),
+            _cell('word', style: boldStyle),
           ],
         ),
         for (final entry in entries)
           TableRow(
             children: [
-              _cell(context, entry.pos, style: bodyStyle, bold: true),
-              ...entry.components.map((comp) => comp.isEmpty
-                  ? const SizedBox.shrink()
-                  : _cell(context, comp, style: bodyStyle)),
-              _cell(context, 'of', style: bodyStyle),
-              _cell(context, entry.headword, style: bodyStyle),
+              _cell(entry.pos, style: boldStyle),
+              ...List.generate(
+                maxComps,
+                (i) => _cell(
+                  i < entry.components.length ? entry.components[i] : '',
+                  style: bodyStyle,
+                ),
+              ),
+              _cell('of', style: bodyStyle),
+              _cell(entry.headword, style: bodyStyle),
             ],
           ),
       ],
     );
   }
 
-  Widget _cell(
-    BuildContext context,
-    String text, {
-    TextStyle? style,
-    bool bold = false,
-  }) {
+  Widget _cell(String text, {TextStyle? style}) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(0, 2, 10, 0),
-      child: Text(
-        text,
-        style: bold
-            ? style?.copyWith(fontWeight: FontWeight.w700)
-            : style,
-      ),
+      child: Text(text, style: style),
     );
   }
 }
@@ -275,11 +275,14 @@ class _HelpStyleTable extends StatelessWidget {
               ),
             ),
           ),
-          Text(
-            value,
-            style: bold
-                ? bodyStyle?.copyWith(fontWeight: FontWeight.w700)
-                : bodyStyle,
+          Padding(
+            padding: const EdgeInsets.only(right: 5),
+            child: Text(
+              value,
+              style: bold
+                  ? bodyStyle?.copyWith(fontWeight: FontWeight.w700)
+                  : bodyStyle,
+            ),
           ),
         ]);
       }).toList(),
@@ -341,10 +344,10 @@ class VariantCard extends StatelessWidget {
     return DpdSecondaryCard(
       title: 'variants: ${result.headword}',
       content: _VariantTable(variants: result.variants),
-      footer: _SimpleDpdFooter(
-        prefix: 'For details on how to use this, please ',
+      footer: DpdFooter(
+        messagePrefix: 'For details on how to use this, please',
         linkText: 'read the docs',
-        url: docsUrl,
+        urlBuilder: () => docsUrl,
       ),
     );
   }
@@ -362,44 +365,45 @@ class _VariantTable extends StatelessWidget {
     final headerStyle = bodyStyle?.copyWith(fontWeight: FontWeight.w700);
 
     final corpusList = variants.keys.toList();
+    final rows = <TableRow>[];
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // Header row (shared across all corpus groups)
-        Table(
-          defaultColumnWidth: const IntrinsicColumnWidth(),
-          defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-          children: [
-            TableRow(children: [
-              for (final h in ['source', 'filename', 'context', 'variant'])
-                _cell(h, style: headerStyle),
-            ]),
-          ],
-        ),
-        for (int ci = 0; ci < corpusList.length; ci++) ...[
-          if (ci > 0)
-            Container(
-              height: 1,
-              margin: const EdgeInsets.symmetric(vertical: 2),
-              color: DpdColors.grayTransparent,
+    // Header row
+    rows.add(TableRow(children: [
+      for (final h in ['source', 'filename', 'context', 'variant'])
+        _cell(h, style: headerStyle),
+    ]));
+
+    for (int ci = 0; ci < corpusList.length; ci++) {
+      final corpus = corpusList[ci];
+
+      // Separator row between corpus groups (1px height so decoration renders)
+      if (ci > 0) {
+        rows.add(TableRow(
+          decoration: BoxDecoration(
+            border: Border(
+              top: BorderSide(color: DpdColors.grayTransparent, width: 1),
             ),
-          Table(
-            defaultColumnWidth: const IntrinsicColumnWidth(),
-            defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-            children: [
-              for (final book in variants[corpusList[ci]]!.keys)
-                for (final entry in variants[corpusList[ci]]![book]!)
-                  TableRow(children: [
-                    _cell(corpusList[ci], style: bodyStyle, noWrap: true),
-                    _cell(book, style: bodyStyle, noWrap: true),
-                    _cell(entry[0], style: bodyStyle),
-                    _cell(entry[1], style: bodyStyle),
-                  ]),
-            ],
           ),
-        ],
-      ],
+          children: List.generate(4, (_) => const SizedBox(height: 1)),
+        ));
+      }
+
+      for (final book in variants[corpus]!.keys) {
+        for (final entry in variants[corpus]![book]!) {
+          rows.add(TableRow(children: [
+            _cell(corpus, style: bodyStyle, noWrap: true),
+            _cell(book, style: bodyStyle, noWrap: true),
+            _cell(entry[0], style: bodyStyle),
+            _cell(entry[1], style: bodyStyle),
+          ]));
+        }
+      }
+    }
+
+    return Table(
+      defaultColumnWidth: const IntrinsicColumnWidth(),
+      defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+      children: rows,
     );
   }
 
@@ -485,46 +489,3 @@ class SeeCard extends StatelessWidget {
   }
 }
 
-// ── Shared footer ─────────────────────────────────────────────────────────────
-
-class _SimpleDpdFooter extends StatelessWidget {
-  const _SimpleDpdFooter({
-    required this.prefix,
-    required this.linkText,
-    required this.url,
-  });
-
-  final String prefix;
-  final String linkText;
-  final String url;
-
-  @override
-  Widget build(BuildContext context) {
-    final footerStyle = Theme.of(context).textTheme.bodyMedium?.copyWith(
-          fontSize: (Theme.of(context).textTheme.bodyMedium?.fontSize ?? 14) *
-              0.8,
-          color: Colors.grey,
-          height: _lineHeight,
-        );
-
-    return Container(
-      margin: const EdgeInsets.only(top: 5),
-      padding: const EdgeInsets.symmetric(vertical: 5),
-      decoration: BoxDecoration(
-        border: Border(top: BorderSide(color: DpdColors.primary, width: 1)),
-      ),
-      child: Text.rich(
-        TextSpan(
-          style: footerStyle,
-          children: [
-            TextSpan(text: prefix),
-            WidgetSpan(
-              child: _dpdLink(linkText, url, style: footerStyle),
-            ),
-            const TextSpan(text: '.'),
-          ],
-        ),
-      ),
-    );
-  }
-}
