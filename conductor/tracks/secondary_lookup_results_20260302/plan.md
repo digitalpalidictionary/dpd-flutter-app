@@ -50,7 +50,7 @@
     - [ ] Skip any column that is null or empty string
 - [x] Task: Run tests — confirm all pass [809536a]
 
-## Phase 4: Shared Card Widget Foundation
+## Phase 4: Shared Card Widget Foundation [checkpoint: ad44059]
 
 - [x] Task: Create `DpdSecondaryCard` base widget in `lib/widgets/secondary/`
     - [ ] Accepts `String title`, `Widget content`, optional `Widget? footer`
