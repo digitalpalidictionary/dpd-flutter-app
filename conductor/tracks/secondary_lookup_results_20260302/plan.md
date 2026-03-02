@@ -67,66 +67,14 @@
 
 ## Phase 5: Card Widget Implementations
 
-- [ ] Task: Implement `DeconstructorCard` widget
-    - [ ] Header: "deconstructor: {headword}" — h3 equivalent
-    - [ ] Container: `div.dpd` — 2px solid primary, 7px radius, padding 3px 7px
-    - [ ] Content: Plain text strings from `deconstructions` list, each on own line separated by line breaks
-    - [ ] Footer: `DpdFooter` with three links — "read the docs" (https://digitalpalidictionary.github.io/features/deconstructor/), "suggest improvements" (Google Form with entry.326955045=Deconstructor), "add missing words" (Google Form)
-- [ ] Task: Implement `GrammarDictCard` widget
-    - [ ] Header: "grammar: {headword}" — h3 equivalent
-    - [ ] Container: `div.dpd` — 2px solid primary, 7px radius
-    - [ ] Content: Table widget with columns: pos (bold), comp1, comp2, comp3, "of", word
-    - [ ] Table CSS rules: no borders, `border-collapse: collapse`, `padding: 2px 10px 0px 0px`, left-aligned, `vertical-align: center`
-    - [ ] Empty component cells (`comp == ""`) are hidden entirely (`display: none` equivalent — simply omit from row)
-    - [ ] Table headers: "pos", (blank), (blank), (blank), (blank), "word" — NO sort arrows
-    - [ ] Footer: `DpdFooter` with "read the docs" link (https://digitalpalidictionary.github.io/features/grammardict/)
-- [ ] Task: Implement `AbbreviationCard` widget
-    - [ ] Header: "{headword}" — NO prefix, just the abbreviation itself, h3 equivalent
-    - [ ] Container: `div.tertiary` — 2px solid GREEN (`--secondary`), 7px radius, padding 3px 5px
-    - [ ] Content: Key-value table using `table.help` styling:
-        - [ ] `th` width 10%, color GREEN (`--secondary`), font-weight 700, left-aligned, vertical-align top
-        - [ ] `td` width 90%, left-aligned, vertical-align top
-        - [ ] Row "Abbreviation": value = **{headword}** (bold) — ALWAYS shown
-        - [ ] Row "Meaning": value = {meaning} — ALWAYS shown
-        - [ ] Row "Pāḷi": value = {pali} — ONLY if non-empty
-        - [ ] Row "Example": value = {example} — ONLY if non-empty
-        - [ ] Row "Information": value = {explanation} — ONLY if non-empty
-    - [ ] NO footer
-- [ ] Task: Implement `HelpCard` widget
-    - [ ] Header: "{headword}" — NO prefix, h3 equivalent
-    - [ ] Container: `div.tertiary` — 2px solid GREEN, 7px radius, padding 3px 5px
-    - [ ] Content: Key-value table using `table.help` styling (identical CSS to AbbreviationCard):
-        - [ ] Row "Help": value = **{headword}** (bold) — ALWAYS shown
-        - [ ] Row "Meaning": value = {helpText} — ALWAYS shown
-    - [ ] NO footer
-- [ ] Task: Implement `EpdCard` widget
-    - [ ] Header: "English: {headword}" — h3 equivalent
-    - [ ] Container: `div.dpd` — 2px solid primary, 7px radius
-    - [ ] Content: For each `EpdEntry`, a paragraph containing:
-        - [ ] Bold headword in primary-text color (`hsl(205, 79%, 48%)`) — `.epd` class
-        - [ ] If `posInfo` non-empty: " {posInfo}."
-        - [ ] " {meaning}."
-    - [ ] NO footer
-- [ ] Task: Implement `VariantCard` widget
-    - [ ] Header: "variants: {headword}" — h3 equivalent
-    - [ ] Container: `div.dpd` — 2px solid primary, 7px radius
-    - [ ] Content: Table with 4 columns and header row:
-        - [ ] Headers: "source", "filename", "context", "variant"
-        - [ ] Table CSS: `border-collapse: collapse`, no borders, `padding: 2px 10px 0px 0px`, left-aligned
-        - [ ] Iterate outer map (corpus → books): between each corpus group, insert a full-width `<hr>` separator row (1px solid gray-transparent `hsla(0,0%,50%,0.25)`)
-        - [ ] Iterate books → entries: each entry is a row with corpus, book, context, variant
-        - [ ] First 2 columns (source, filename) use `white-space: nowrap` equivalent
-    - [ ] Footer: `DpdFooter` with "read the docs" link (https://digitalpalidictionary.github.io/features/variants/)
-- [ ] Task: Implement `SpellingCard` widget
-    - [ ] Header: "spelling: {headword}" — h3 equivalent
-    - [ ] Container: `div.dpd` — 2px solid primary, 7px radius
-    - [ ] Content: For each spelling in list: "incorrect spelling of ***{spelling}***" (bold italic). Multiple entries separated by line breaks.
-    - [ ] NO footer
-- [ ] Task: Implement `SeeCard` widget
-    - [ ] Header: "see: {headword}" — h3 equivalent
-    - [ ] Container: `div.dpd` — 2px solid primary, 7px radius
-    - [ ] Content: For each headword in list: "see ***{headword}***" (bold italic). Multiple entries separated by line breaks.
-    - [ ] NO footer
+- [x] Task: Implement `DeconstructorCard` widget
+- [x] Task: Implement `GrammarDictCard` widget
+- [x] Task: Implement `AbbreviationCard` widget
+- [x] Task: Implement `HelpCard` widget
+- [x] Task: Implement `EpdCard` widget
+- [x] Task: Implement `VariantCard` widget
+- [x] Task: Implement `SpellingCard` widget
+- [x] Task: Implement `SeeCard` widget
 
 ## Phase 6: Search Screen Integration
 
