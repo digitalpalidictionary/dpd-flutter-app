@@ -1,6 +1,6 @@
 # Plan: Search History & Navigation
 
-## Phase 1: State — History Provider
+## Phase 1: State — History Provider [checkpoint: adf7ecf]
 
 - [x] Task: Create history provider [a89336b]
     - [ ] Create `lib/providers/history_provider.dart`
