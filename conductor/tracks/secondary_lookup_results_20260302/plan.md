@@ -10,7 +10,7 @@
 
 ## Phase 2: Data Models & JSON Parsing
 
-- [ ] Task: Write failing tests for all 8 data model JSON parsers (Red Phase)
+- [x] Task: Write failing tests for all 8 data model JSON parsers (Red Phase)
     - [ ] Test `DeconstructorResult` parses `list[str]` JSON correctly
     - [ ] Test `GrammarDictResult` parses `list[list[str,str,str]]` and splits components to 3-element padded list
     - [ ] Test `AbbreviationResult` parses `dict` with required `meaning` and optional `pali`, `example`, `explanation`
@@ -20,7 +20,7 @@
     - [ ] Test `SpellingResult` parses `list[str]`
     - [ ] Test `SeeResult` parses `list[str]`
     - [ ] Test all models return empty/null for empty string or null input
-- [ ] Task: Implement data models in `lib/models/lookup_results.dart` (Green Phase)
+- [x] Task: Implement data models in `lib/models/lookup_results.dart` (Green Phase)
     - [ ] `DeconstructorResult` — fields: `String headword`, `List<String> deconstructions`
     - [ ] `GrammarDictEntry` — fields: `String headword`, `String pos`, `List<String> components` (always length 3, padded with empty strings)
     - [ ] `GrammarDictResult` — fields: `String headword`, `List<GrammarDictEntry> entries`
@@ -32,7 +32,7 @@
     - [ ] `SpellingResult` — fields: `String headword`, `List<String> spellings`
     - [ ] `SeeResult` — fields: `String headword`, `List<String> seeHeadwords`
     - [ ] Each model has a factory `fromJson(String headword, String? jsonString)` that returns null if input is null/empty
-- [ ] Task: Run tests — confirm all pass
+- [x] Task: Run tests — confirm all pass [404a407]
 
 ## Phase 3: DAO & Provider Layer
 
