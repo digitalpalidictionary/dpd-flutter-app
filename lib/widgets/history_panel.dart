@@ -13,7 +13,7 @@ class HistoryPanel extends ConsumerStatefulWidget {
 }
 
 class _HistoryPanelState extends ConsumerState<HistoryPanel> {
-  bool _collapsed = false;
+  bool _collapsed = true;
 
   @override
   Widget build(BuildContext context) {
@@ -40,11 +40,13 @@ class _HistoryPanelState extends ConsumerState<HistoryPanel> {
                   fontWeight: FontWeight.w700,
                 ),
               ),
-              const SizedBox(width: 8),
-              _ClearButton(
-                onPressed: () =>
-                    ref.read(historyProvider.notifier).clear(),
-              ),
+              if (!_collapsed) ...[
+                const SizedBox(width: 8),
+                _ClearButton(
+                  onPressed: () =>
+                      ref.read(historyProvider.notifier).clear(),
+                ),
+              ],
               const Spacer(),
               GestureDetector(
                 onTap: () => setState(() => _collapsed = !_collapsed),

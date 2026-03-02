@@ -275,14 +275,14 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
               ),
             ),
 
-            const HistoryPanel(),
-
             // Results
             Expanded(
               child: DoubleTapSearchWrapper(
                 child: _buildBody(context, query, exactAsync, partialAsync),
               ),
             ),
+
+            const HistoryPanel(),
           ],
         ),
       ),
