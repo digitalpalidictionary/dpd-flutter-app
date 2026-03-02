@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../providers/history_provider.dart';
 import '../providers/search_provider.dart';
 
 class DoubleTapSearchWrapper extends ConsumerStatefulWidget {
@@ -59,7 +60,8 @@ class _DoubleTapSearchWrapperState extends ConsumerState<DoubleTapSearchWrapper>
           WidgetsBinding.instance.addPostFrameCallback((_) {
             if (mounted) {
               ref.read(searchQueryProvider.notifier).state = selectedText;
-              
+              ref.read(historyProvider.notifier).add(selectedText);
+
               if (widget.shouldPop) {
                 final navigator = Navigator.of(context);
                 if (navigator.canPop()) {

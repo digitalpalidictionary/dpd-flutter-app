@@ -74,6 +74,9 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     _debounce?.cancel();
     final query = _controller.text.trim();
     ref.read(searchQueryProvider.notifier).state = query;
+    if (query.isNotEmpty) {
+      ref.read(historyProvider.notifier).add(query);
+    }
     FocusScope.of(context).unfocus();
   }
 
@@ -134,6 +137,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     _autocompleteDebounce?.cancel();
     _debounce?.cancel();
     ref.read(searchQueryProvider.notifier).state = term;
+    ref.read(historyProvider.notifier).add(term);
     setState(() {});
   }
 
