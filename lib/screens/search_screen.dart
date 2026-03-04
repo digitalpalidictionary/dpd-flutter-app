@@ -26,6 +26,7 @@ import '../widgets/secondary/bibliography_card.dart';
 import '../widgets/secondary/secondary_result_cards.dart';
 import '../widgets/secondary/thanks_card.dart';
 import '../widgets/history_panel.dart';
+import '../widgets/settings_panel.dart';
 import '../widgets/velthuis_help_popup.dart';
 import '../widgets/word_card.dart';
 
@@ -312,7 +313,11 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                   ),
                   IconButton(
                     icon: const Icon(Icons.settings),
-                    onPressed: () => Navigator.pushNamed(context, '/settings'),
+                    onPressed: () {
+                      final useSheet =
+                          ref.read(settingsProvider).useBottomSheetSettings;
+                      showSettingsOverlay(context, useSheet);
+                    },
                   ),
                 ],
               ),
