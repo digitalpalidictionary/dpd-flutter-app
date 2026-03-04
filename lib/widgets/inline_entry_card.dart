@@ -87,6 +87,7 @@ class _InlineEntryCardState extends ConsumerState<InlineEntryCard>
         _inflectionsOpen = false;
         _frequencyOpen = false;
         _feedbackOpen = false;
+        familyResetAll();
       });
     }
   }

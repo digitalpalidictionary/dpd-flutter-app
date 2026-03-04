@@ -1,6 +1,7 @@
 # DPD Flutter TODO
 
 - summary
+- logo on startup
 
 ## Settings
 - Implement "One-button-at-a-time" mode

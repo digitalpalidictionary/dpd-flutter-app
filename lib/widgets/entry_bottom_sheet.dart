@@ -93,6 +93,7 @@ class _EntryBottomSheetState extends ConsumerState<EntryBottomSheet>
         _inflectionsOpen = false;
         _frequencyOpen = false;
         _feedbackOpen = false;
+        familyResetAll();
       });
     }
   }

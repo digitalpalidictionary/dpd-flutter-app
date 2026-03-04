@@ -81,6 +81,7 @@ class _AccordionCardState extends ConsumerState<AccordionCard>
         _grammarOpen = false;
         _examplesOpen = false;
         _inflectionsOpen = false;
+        familyResetAll();
       });
     }
   }
