@@ -52,7 +52,7 @@ class SettingsContent extends ConsumerWidget {
             value: settings.fontSize,
             min: 12,
             max: 24,
-            divisions: 6,
+            divisions: 12,
             label: settings.fontSize.toStringAsFixed(0),
             onChanged: notifier.setFontSize,
           ),
@@ -131,62 +131,6 @@ class SettingsContent extends ConsumerWidget {
   }
 }
 
-/// Side drawer settings overlay (slides in from the right).
-class SettingsSideDrawer extends StatelessWidget {
-  const SettingsSideDrawer({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final screenWidth = MediaQuery.of(context).size.width;
-
-    return Align(
-      alignment: Alignment.centerRight,
-      child: Material(
-        color: Colors.transparent,
-        child: Container(
-          width: screenWidth * 0.85,
-          height: double.infinity,
-          decoration: BoxDecoration(
-            color: theme.colorScheme.surface,
-            borderRadius: const BorderRadius.horizontal(
-              left: Radius.circular(DpdColors.borderRadiusValue),
-            ),
-            boxShadow: DpdColors.shadowHover,
-          ),
-          child: Column(
-            children: [
-              SafeArea(
-                bottom: false,
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 16, 8, 8),
-                  child: Row(
-                    children: [
-                      Text(
-                        'Settings',
-                        style: theme.textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                      const Spacer(),
-                      IconButton(
-                        icon: const Icon(Icons.close),
-                        onPressed: () => Navigator.of(context).pop(),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              const Divider(height: 1),
-              const Expanded(child: SettingsContent()),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
 /// A simple switch row with no checkmark icon — just a coloured Switch.
 class _ToggleRow extends StatelessWidget {
   const _ToggleRow({
@@ -247,12 +191,39 @@ class _CompactSegmented<T> extends StatelessWidget {
   }
 }
 
-/// Shows the settings side drawer. Tapping outside dismisses it.
+/// Shows the settings bottom sheet. Tapping outside dismisses it.
 Future<void> showSettingsOverlay(BuildContext context) {
-  return showDialog(
+  final theme = Theme.of(context);
+  final screenHeight = MediaQuery.of(context).size.height;
+  return showModalBottomSheet(
     context: context,
-    barrierColor: Colors.black26,
-    barrierDismissible: true,
-    builder: (_) => const SettingsSideDrawer(),
+    isScrollControlled: true,
+    backgroundColor: theme.colorScheme.surface,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(
+        top: Radius.circular(DpdColors.borderRadiusValue),
+      ),
+    ),
+    builder: (context) {
+      return SizedBox(
+        height: screenHeight * 0.85,
+        child: Column(
+          children: [
+            Center(
+              child: Container(
+                margin: const EdgeInsets.symmetric(vertical: 12),
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: theme.colorScheme.outlineVariant,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+            ),
+            const Expanded(child: SettingsContent()),
+          ],
+        ),
+      );
+    },
   );
 }
