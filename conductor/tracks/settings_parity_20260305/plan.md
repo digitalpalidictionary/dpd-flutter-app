@@ -6,13 +6,13 @@
   - [x] Add fields to Settings class with defaults
   - [x] Add SharedPreferences load/save methods to SettingsNotifier
   - [x] Run tests and confirm pass
-- [ ] Task: Build settings UI as both bottom sheet and side drawer prototypes
-  - [ ] Create a settings content widget (shared between both variants) with all toggles
-  - [ ] Implement bottom sheet variant triggered from app bar icon
-  - [ ] Implement side drawer variant triggered from app bar icon
-  - [ ] Add a temporary dev toggle to switch between the two variants for user testing
-  - [ ] Include all existing settings (theme, font size, font style, grammar/examples, display mode) plus new toggles
-  - [ ] Remove/retire the old separate settings screen
+- [x] Task: Build settings UI as both bottom sheet and side drawer prototypes [4cd4226]
+  - [x] Create a settings content widget (shared between both variants) with all toggles
+  - [x] Implement bottom sheet variant triggered from app bar icon
+  - [x] Implement side drawer variant triggered from app bar icon
+  - [x] Add a temporary dev toggle to switch between the two variants for user testing
+  - [x] Include all existing settings (theme, font size, font style, grammar/examples, display mode) plus new toggles
+  - [x] Remove/retire the old separate settings screen
 
 ## Phase 2: One-Button-At-A-Time Mode
 - [ ] Task: Implement one-button-at-a-time logic
