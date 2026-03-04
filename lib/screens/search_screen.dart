@@ -21,6 +21,7 @@ import '../widgets/inline_entry_card.dart';
 import '../widgets/inline_root_card.dart';
 import '../widgets/secondary/secondary_result_cards.dart';
 import '../widgets/history_panel.dart';
+import '../widgets/velthuis_help_popup.dart';
 import '../widgets/word_card.dart';
 
 class SearchScreen extends ConsumerStatefulWidget {
@@ -33,13 +34,17 @@ class SearchScreen extends ConsumerStatefulWidget {
 class _SearchScreenState extends ConsumerState<SearchScreen> {
   final _controller = TextEditingController();
   final _layerLink = LayerLink();
+  final _helpLayerLink = LayerLink();
   Timer? _debounce;
   Timer? _autocompleteDebounce;
   OverlayEntry? _overlayEntry;
+  OverlayEntry? _helpOverlayEntry;
+  bool _showHelpPopup = false;
 
   @override
   void dispose() {
     _removeOverlay();
+    _removeHelpOverlay();
     _controller.dispose();
     _debounce?.cancel();
     _autocompleteDebounce?.cancel();
@@ -70,6 +75,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
 
   void _onSearch() {
     _removeOverlay();
+    _hideVelthuisHelp();
     _autocompleteDebounce?.cancel();
     _debounce?.cancel();
     final query = _controller.text.trim();
@@ -147,6 +153,52 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     _overlayEntry = null;
   }
 
+  void _toggleHelpPopup() {
+    setState(() {
+      _showHelpPopup = !_showHelpPopup;
+    });
+    if (_showHelpPopup) {
+      _showVelthuisHelp();
+    } else {
+      _removeHelpOverlay();
+    }
+  }
+
+  void _showVelthuisHelp() {
+    _removeHelpOverlay();
+    final overlay = Overlay.of(context);
+    _helpOverlayEntry = OverlayEntry(
+      builder: (context) => Stack(
+        children: [
+          GestureDetector(
+            onTap: _hideVelthuisHelp,
+            child: Container(color: Colors.transparent),
+          ),
+          CompositedTransformFollower(
+            link: _helpLayerLink,
+            targetAnchor: Alignment.bottomLeft,
+            followerAnchor: Alignment.topLeft,
+            child: VelthuisHelpPopup(),
+          ),
+        ],
+      ),
+    );
+    overlay.insert(_helpOverlayEntry!);
+  }
+
+  void _hideVelthuisHelp() {
+    setState(() {
+      _showHelpPopup = false;
+    });
+    _removeHelpOverlay();
+  }
+
+  void _removeHelpOverlay() {
+    _helpOverlayEntry?.remove();
+    _helpOverlayEntry?.dispose();
+    _helpOverlayEntry = null;
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -207,69 +259,89 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                   Expanded(
                     child: CompositedTransformTarget(
                       link: _layerLink,
-                      child: TextField(
-                        controller: _controller,
-                        autofocus: false,
-                        onChanged: _onChanged,
-                        onSubmitted: (_) => _onSearch(),
-                        style: theme.textTheme.titleMedium,
-                        decoration: InputDecoration(
-                          hintText: 'Search Pāḷi...',
-                          hintStyle: theme.textTheme.titleMedium?.copyWith(
-                            color: theme.colorScheme.onSurface.withValues(
-                              alpha: 0.4,
+                      child: CompositedTransformTarget(
+                        link: _helpLayerLink,
+                        child: TextField(
+                          controller: _controller,
+                          autofocus: false,
+                          onChanged: _onChanged,
+                          onSubmitted: (_) => _onSearch(),
+                          style: theme.textTheme.titleMedium,
+                          decoration: InputDecoration(
+                            hintText: 'Search Pāḷi...',
+                            hintStyle: theme.textTheme.titleMedium?.copyWith(
+                              color: theme.colorScheme.onSurface.withValues(
+                                alpha: 0.4,
+                              ),
                             ),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: DpdColors.borderRadius,
-                            borderSide: BorderSide(
-                              color: theme.colorScheme.primary,
-                              width: 1.5,
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: DpdColors.borderRadius,
+                              borderSide: BorderSide(
+                                color: theme.colorScheme.primary,
+                                width: 1.5,
+                              ),
                             ),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: DpdColors.borderRadius,
-                            borderSide: BorderSide(
-                              color: theme.colorScheme.primary,
-                              width: 2,
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: DpdColors.borderRadius,
+                              borderSide: BorderSide(
+                                color: theme.colorScheme.primary,
+                                width: 2,
+                              ),
                             ),
-                          ),
-                          contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 12,
-                            vertical: 10,
+                            contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 10,
+                            ),
+                            suffixIcon: IconButton(
+                              icon: Icon(
+                                Icons.help_outline,
+                                color: theme.colorScheme.onSurface.withValues(
+                                  alpha: 0.6,
+                                ),
+                              ),
+                              onPressed: _toggleHelpPopup,
+                              tooltip: 'Velthuis typing help',
+                            ),
                           ),
                         ),
                       ),
                     ),
                   ),
                   const SizedBox(width: 4),
-                  _BarIconButton(
-                    icon: Icons.search,
-                    onPressed: _onSearch,
-                  ),
+                  _BarIconButton(icon: Icons.search, onPressed: _onSearch),
                   _BarIconButton(
                     icon: Icons.close,
                     onPressed: _controller.text.isEmpty ? null : _onClear,
                   ),
                   _BarIconButton(
                     icon: Icons.arrow_back,
-                    onPressed: ref.watch(canGoBackProvider) ? () {
-                      ref.read(historyProvider.notifier).goBack();
-                      final entry = ref.read(historyProvider).currentEntry;
-                      if (entry != null) {
-                        ref.read(searchQueryProvider.notifier).state = entry;
-                      }
-                    } : null,
+                    onPressed: ref.watch(canGoBackProvider)
+                        ? () {
+                            ref.read(historyProvider.notifier).goBack();
+                            final entry = ref
+                                .read(historyProvider)
+                                .currentEntry;
+                            if (entry != null) {
+                              ref.read(searchQueryProvider.notifier).state =
+                                  entry;
+                            }
+                          }
+                        : null,
                   ),
                   _BarIconButton(
                     icon: Icons.arrow_forward,
-                    onPressed: ref.watch(canGoForwardProvider) ? () {
-                      ref.read(historyProvider.notifier).goForward();
-                      final entry = ref.read(historyProvider).currentEntry;
-                      if (entry != null) {
-                        ref.read(searchQueryProvider.notifier).state = entry;
-                      }
-                    } : null,
+                    onPressed: ref.watch(canGoForwardProvider)
+                        ? () {
+                            ref.read(historyProvider.notifier).goForward();
+                            final entry = ref
+                                .read(historyProvider)
+                                .currentEntry;
+                            if (entry != null) {
+                              ref.read(searchQueryProvider.notifier).state =
+                                  entry;
+                            }
+                          }
+                        : null,
                   ),
                 ],
               ),
@@ -401,7 +473,8 @@ class _SplitResultsList extends StatelessWidget {
     final hasSecondary = secondary.isNotEmpty;
     final showRootDivider = hasRoots && hasExact;
     final showPartialDivider =
-        (hasExact || hasRoots || hasSecondary) && (hasPartial || partialLoading);
+        (hasExact || hasRoots || hasSecondary) &&
+        (hasPartial || partialLoading);
 
     final itemCount =
         exact.length +
@@ -651,4 +724,3 @@ class _RootResultCard extends StatelessWidget {
     );
   }
 }
-
