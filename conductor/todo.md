@@ -1,5 +1,4 @@
 # DPD Flutter TODO
-- Fix external links (Website, Mailing List)
 
 ## Data
 - Optimize mobile.db (remove unused HTML columns)
