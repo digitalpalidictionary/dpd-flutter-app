@@ -6,6 +6,7 @@ import '../providers/search_provider.dart';
 import '../providers/settings_provider.dart';
 import '../providers/template_cache_provider.dart';
 import '../theme/dpd_colors.dart';
+import '../utils/text_filters.dart';
 import 'entry_content.dart';
 import 'family_state_mixin.dart';
 import 'grammar_table.dart';
@@ -103,6 +104,9 @@ class _AccordionCardState extends ConsumerState<AccordionCard>
       }
     });
 
+    final niggahitaMode = ref.watch(settingsProvider.select((s) => s.niggahitaMode));
+    final filterMode = NiggahitaFilterMode.values[niggahitaMode.index];
+    String n(String t) => filterNiggahita(t, mode: filterMode);
     final theme = Theme.of(context);
     final h = widget.headword;
     final isExpanded = _cardState == _CardState.buttonsVisible;
@@ -127,7 +131,7 @@ class _AccordionCardState extends ConsumerState<AccordionCard>
               Padding(
                 padding: const EdgeInsets.fromLTRB(12, 10, 12, 1),
                 child: Text(
-                  h.lemma1,
+                  n(h.lemma1),
                   style: theme.textTheme.titleLarge?.copyWith(
                     fontWeight: FontWeight.w700,
                   ),

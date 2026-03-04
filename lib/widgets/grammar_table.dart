@@ -1,41 +1,50 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../database/database.dart';
 import '../database/dpd_headword_extensions.dart';
+import '../providers/settings_provider.dart';
 import '../theme/dpd_colors.dart';
+import '../utils/text_filters.dart';
 import 'entry_content.dart';
 
-class GrammarTable extends StatelessWidget {
+class GrammarTable extends ConsumerWidget {
   final DpdHeadwordWithRoot headword;
 
   const GrammarTable({super.key, required this.headword});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final niggahitaMode = ref.watch(
+      settingsProvider.select((s) => s.niggahitaMode),
+    );
+    final filterMode = NiggahitaFilterMode.values[niggahitaMode.index];
+    String n(String t) => filterNiggahita(t, mode: filterMode);
+
     final rows = [
-      _buildLemmaRow(headword),
-      _buildLemmaTradRow(headword),
+      _buildLemmaRow(headword, n),
+      _buildLemmaTradRow(headword, n),
       _buildLemmaIpaRow(headword),
-      _buildGrammarRow(headword),
-      _buildFamilyRootRow(headword),
-      _buildRootDetailsRow(headword),
-      _buildRootInCompsRow(headword),
-      _buildBaseRow(headword),
-      _buildConstructionRow(headword),
-      _buildDerivativeRow(headword),
-      _buildPhoneticRow(headword),
-      _buildCompoundRow(headword),
-      _buildAntonymRow(headword),
-      _buildSynonymRow(headword),
-      _buildVariantRow(headword),
-      _buildCommentaryRow(headword),
-      _buildNotesRow(headword),
-      _buildCognateRow(headword),
+      _buildGrammarRow(headword, n),
+      _buildFamilyRootRow(headword, n),
+      _buildRootDetailsRow(headword, n),
+      _buildRootInCompsRow(headword, n),
+      _buildBaseRow(headword, n),
+      _buildConstructionRow(headword, n),
+      _buildDerivativeRow(headword, n),
+      _buildPhoneticRow(headword, n),
+      _buildCompoundRow(headword, n),
+      _buildAntonymRow(headword, n),
+      _buildSynonymRow(headword, n),
+      _buildVariantRow(headword, n),
+      _buildCommentaryRow(headword, n),
+      _buildNotesRow(headword, n),
+      _buildCognateRow(headword, n),
       _buildLinkRow(headword),
-      _buildNonIaRow(headword),
-      _buildSanskritRow(headword),
-      _buildSanskritRootDetailsRow(headword),
+      _buildNonIaRow(headword, n),
+      _buildSanskritRow(headword, n),
+      _buildSanskritRootDetailsRow(headword, n),
     ].whereType<TableRow>().toList();
 
     return Column(
@@ -79,17 +88,19 @@ class GrammarTable extends StatelessWidget {
     );
   }
 
-  TableRow? _buildTextRow(String label, String? text) {
+  TableRow? _buildTextRow(String label, String? text, [String Function(String)? f]) {
     if (text == null || text.isEmpty) return null;
-    return _buildRow(label, Text(text));
+    final display = f != null ? f(text) : text;
+    return _buildRow(label, Text(display));
   }
 
-  TableRow? _buildHtmlRow(String label, String? htmlData) {
+  TableRow? _buildHtmlRow(String label, String? htmlData, [String Function(String)? f]) {
     if (htmlData == null || htmlData.isEmpty) return null;
+    final data = f != null ? f(htmlData) : htmlData;
     return _buildRow(
       label,
       Html(
-        data: htmlData,
+        data: data,
         style: {
           "body": Style(margin: Margins.zero, padding: HtmlPaddings.zero),
           "p": Style(margin: Margins.zero, padding: HtmlPaddings.zero),
@@ -98,16 +109,16 @@ class GrammarTable extends StatelessWidget {
     );
   }
 
-  TableRow? _buildLemmaRow(DpdHeadwordWithRoot headword) {
+  TableRow? _buildLemmaRow(DpdHeadwordWithRoot headword, String Function(String) n) {
     final lemma = headword.headword.lemmaClean;
     if (lemma.isEmpty) return null;
-    return _buildTextRow('Lemma', lemma);
+    return _buildTextRow('Lemma', lemma, n);
   }
 
-  TableRow? _buildLemmaTradRow(DpdHeadwordWithRoot headword) {
+  TableRow? _buildLemmaTradRow(DpdHeadwordWithRoot headword, String Function(String) n) {
     final lemmaTrad = headword.headword.lemmaTradClean;
     if (lemmaTrad.isEmpty) return null;
-    return _buildTextRow('Traditional Lemma', lemmaTrad);
+    return _buildTextRow('Traditional Lemma', lemmaTrad, n);
   }
 
   TableRow? _buildLemmaIpaRow(DpdHeadwordWithRoot headword) {
@@ -133,17 +144,17 @@ class GrammarTable extends StatelessWidget {
     );
   }
 
-  TableRow? _buildGrammarRow(DpdHeadwordWithRoot headword) {
+  TableRow? _buildGrammarRow(DpdHeadwordWithRoot headword, String Function(String) n) {
     final grammar = headword.headword.grammarLine;
     if (grammar.isEmpty) return null;
-    return _buildTextRow('Grammar', grammar);
+    return _buildTextRow('Grammar', grammar, n);
   }
 
-  TableRow? _buildFamilyRootRow(DpdHeadwordWithRoot headword) {
-    return _buildTextRow('Root Family', headword.familyRoot);
+  TableRow? _buildFamilyRootRow(DpdHeadwordWithRoot headword, String Function(String) n) {
+    return _buildTextRow('Root Family', headword.familyRoot, n);
   }
 
-  TableRow? _buildRootDetailsRow(DpdHeadwordWithRoot headword) {
+  TableRow? _buildRootDetailsRow(DpdHeadwordWithRoot headword, String Function(String) n) {
     final root = headword.root;
     if (root == null) return null;
     final parts = [
@@ -154,26 +165,26 @@ class GrammarTable extends StatelessWidget {
     ];
     final details = parts.join(' ').trim();
     if (details.isEmpty) return null;
-    return _buildTextRow('Root', details);
+    return _buildTextRow('Root', details, n);
   }
 
-  TableRow? _buildRootInCompsRow(DpdHeadwordWithRoot headword) {
+  TableRow? _buildRootInCompsRow(DpdHeadwordWithRoot headword, String Function(String) n) {
     final root = headword.root;
     if (root == null) return null;
     final inComps = root.rootInComps;
     if (inComps.isEmpty) return null;
-    return _buildTextRow('√ In Sandhi', inComps);
+    return _buildTextRow('√ In Sandhi', inComps, n);
   }
 
-  TableRow? _buildBaseRow(DpdHeadwordWithRoot headword) {
-    return _buildTextRow('Base', headword.rootBase);
+  TableRow? _buildBaseRow(DpdHeadwordWithRoot headword, String Function(String) n) {
+    return _buildTextRow('Base', headword.rootBase, n);
   }
 
-  TableRow? _buildConstructionRow(DpdHeadwordWithRoot headword) {
-    return _buildHtmlRow('Construction', headword.headword.cleanConstruction());
+  TableRow? _buildConstructionRow(DpdHeadwordWithRoot headword, String Function(String) n) {
+    return _buildHtmlRow('Construction', headword.headword.cleanConstruction(), n);
   }
 
-  TableRow? _buildDerivativeRow(DpdHeadwordWithRoot headword) {
+  TableRow? _buildDerivativeRow(DpdHeadwordWithRoot headword, String Function(String) n) {
     final derivative = headword.derivative;
     final suffix = headword.suffix;
     if ((derivative == null || derivative.isEmpty) &&
@@ -184,14 +195,14 @@ class GrammarTable extends StatelessWidget {
       if (derivative != null && derivative.isNotEmpty) derivative,
       if (suffix != null && suffix.isNotEmpty) '($suffix)',
     ].join(' ').trim();
-    return _buildTextRow('Derivative', text);
+    return _buildTextRow('Derivative', text, n);
   }
 
-  TableRow? _buildPhoneticRow(DpdHeadwordWithRoot headword) {
-    return _buildHtmlRow('Phonetic Change', headword.phonetic);
+  TableRow? _buildPhoneticRow(DpdHeadwordWithRoot headword, String Function(String) n) {
+    return _buildHtmlRow('Phonetic Change', headword.phonetic, n);
   }
 
-  TableRow? _buildCompoundRow(DpdHeadwordWithRoot headword) {
+  TableRow? _buildCompoundRow(DpdHeadwordWithRoot headword, String Function(String) n) {
     final type = headword.compoundType;
     final construction = headword.compoundConstruction;
     if ((type == null || type.isEmpty) &&
@@ -203,35 +214,35 @@ class GrammarTable extends StatelessWidget {
       if (type != null && type.isNotEmpty) type,
       if (construction != null && construction.isNotEmpty) '($construction)',
     ].join(' ').trim();
-    return _buildHtmlRow('Compound', text);
+    return _buildHtmlRow('Compound', text, n);
   }
 
-  TableRow? _buildAntonymRow(DpdHeadwordWithRoot headword) {
-    return _buildTextRow('Antonym', headword.antonym);
+  TableRow? _buildAntonymRow(DpdHeadwordWithRoot headword, String Function(String) n) {
+    return _buildTextRow('Antonym', headword.antonym, n);
   }
 
-  TableRow? _buildSynonymRow(DpdHeadwordWithRoot headword) {
-    return _buildTextRow('Synonym', headword.synonym);
+  TableRow? _buildSynonymRow(DpdHeadwordWithRoot headword, String Function(String) n) {
+    return _buildTextRow('Synonym', headword.synonym, n);
   }
 
-  TableRow? _buildVariantRow(DpdHeadwordWithRoot headword) {
-    return _buildTextRow('Variant', headword.variant);
+  TableRow? _buildVariantRow(DpdHeadwordWithRoot headword, String Function(String) n) {
+    return _buildTextRow('Variant', headword.variant, n);
   }
 
-  TableRow? _buildCommentaryRow(DpdHeadwordWithRoot headword) {
+  TableRow? _buildCommentaryRow(DpdHeadwordWithRoot headword, String Function(String) n) {
     final commentary = headword.commentary;
     if (commentary == null || commentary.isEmpty || commentary == '-') {
       return null;
     }
-    return _buildHtmlRow('Commentary', commentary);
+    return _buildHtmlRow('Commentary', commentary, n);
   }
 
-  TableRow? _buildNotesRow(DpdHeadwordWithRoot headword) {
-    return _buildHtmlRow('Notes', headword.notes);
+  TableRow? _buildNotesRow(DpdHeadwordWithRoot headword, String Function(String) n) {
+    return _buildHtmlRow('Notes', headword.notes, n);
   }
 
-  TableRow? _buildCognateRow(DpdHeadwordWithRoot headword) {
-    return _buildTextRow('English Cognate', headword.cognate);
+  TableRow? _buildCognateRow(DpdHeadwordWithRoot headword, String Function(String) n) {
+    return _buildTextRow('English Cognate', headword.cognate, n);
   }
 
   TableRow? _buildLinkRow(DpdHeadwordWithRoot headword) {
@@ -251,20 +262,20 @@ class GrammarTable extends StatelessWidget {
     );
   }
 
-  TableRow? _buildNonIaRow(DpdHeadwordWithRoot headword) {
-    return _buildTextRow('Non IA', headword.nonIa);
+  TableRow? _buildNonIaRow(DpdHeadwordWithRoot headword, String Function(String) n) {
+    return _buildTextRow('Non IA', headword.nonIa, n);
   }
 
-  TableRow? _buildSanskritRow(DpdHeadwordWithRoot headword) {
+  TableRow? _buildSanskritRow(DpdHeadwordWithRoot headword, String Function(String) n) {
     final sanskrit = headword.sanskrit;
     if (sanskrit == null || sanskrit.isEmpty) return null;
     return _buildRow(
       'Sanskrit',
-      Text(sanskrit, style: const TextStyle(fontStyle: FontStyle.italic)),
+      Text(n(sanskrit), style: const TextStyle(fontStyle: FontStyle.italic)),
     );
   }
 
-  TableRow? _buildSanskritRootDetailsRow(DpdHeadwordWithRoot headword) {
+  TableRow? _buildSanskritRootDetailsRow(DpdHeadwordWithRoot headword, String Function(String) n) {
     final root = headword.root;
     if (root == null) return null;
     final sr = root.sanskritRoot;
@@ -278,7 +289,7 @@ class GrammarTable extends StatelessWidget {
     if (details.isEmpty) return null;
     return _buildRow(
       'Sanskrit Root',
-      Text(details, style: const TextStyle(fontStyle: FontStyle.italic)),
+      Text(n(details), style: const TextStyle(fontStyle: FontStyle.italic)),
     );
   }
 }

@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../database/database.dart';
 import '../providers/settings_provider.dart';
 import '../theme/dpd_colors.dart';
+import '../utils/text_filters.dart';
 import 'double_tap_search_wrapper.dart';
 import 'entry_content.dart';
 import 'family_state_mixin.dart';
@@ -107,6 +108,9 @@ class _EntryBottomSheetState extends ConsumerState<EntryBottomSheet>
       }
     });
 
+    final niggahitaMode = ref.watch(settingsProvider.select((s) => s.niggahitaMode));
+    final filterMode = NiggahitaFilterMode.values[niggahitaMode.index];
+    String n(String t) => filterNiggahita(t, mode: filterMode);
     final theme = Theme.of(context);
     final h = widget.headword;
 
@@ -145,7 +149,7 @@ class _EntryBottomSheetState extends ConsumerState<EntryBottomSheet>
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
               child: Text(
-                h.lemma1,
+                n(h.lemma1),
                 style: theme.textTheme.titleLarge?.copyWith(
                   fontWeight: FontWeight.bold,
                 ),

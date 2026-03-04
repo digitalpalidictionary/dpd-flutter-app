@@ -1,20 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../database/database.dart';
+import '../providers/settings_provider.dart';
 import '../theme/dpd_colors.dart';
+import '../utils/text_filters.dart';
 
-class WordCard extends StatelessWidget {
+class WordCard extends ConsumerWidget {
   const WordCard({super.key, required this.headword, required this.onTap});
 
   final DpdHeadwordWithRoot headword;
   final VoidCallback onTap;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final niggahitaMode = ref.watch(
+      settingsProvider.select((s) => s.niggahitaMode),
+    );
+    final filterMode = NiggahitaFilterMode.values[niggahitaMode.index];
+    String n(String t) => filterNiggahita(t, mode: filterMode);
     final theme = Theme.of(context);
-    final meaning = headword.meaning1 ?? headword.meaningLit ?? '';
-    final pos = headword.pos ?? '';
-    final grammar = headword.grammar ?? '';
+    final meaning = n(headword.meaning1 ?? headword.meaningLit ?? '');
+    final pos = n(headword.pos ?? '');
+    final grammar = n(headword.grammar ?? '');
 
     return Material(
       color: Colors.transparent,
@@ -36,7 +44,7 @@ class WordCard extends StatelessWidget {
                   style: theme.textTheme.bodyMedium,
                   children: [
                     TextSpan(
-                      text: headword.lemma1,
+                      text: n(headword.lemma1),
                       style: theme.textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.w700,
                         color: theme.colorScheme.onSurface,

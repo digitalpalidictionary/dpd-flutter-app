@@ -118,7 +118,7 @@ class EntryLabelValue extends StatelessWidget {
   }
 }
 
-class EntryExampleBlock extends StatelessWidget {
+class EntryExampleBlock extends ConsumerWidget {
   const EntryExampleBlock({
     super.key,
     required this.example,
@@ -131,14 +131,19 @@ class EntryExampleBlock extends StatelessWidget {
   final String? source;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final niggahitaMode = ref.watch(
+      settingsProvider.select((s) => s.niggahitaMode),
+    );
+    final filterMode = NiggahitaFilterMode.values[niggahitaMode.index];
+    String n(String t) => filterNiggahita(t, mode: filterMode);
     final theme = Theme.of(context);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Html(
-          data: example,
+          data: n(example),
           shrinkWrap: true,
           style: {
             'body': Style(margin: Margins.zero, padding: HtmlPaddings.zero),
@@ -148,7 +153,7 @@ class EntryExampleBlock extends StatelessWidget {
         if (sutta != null || source != null) ...[
           Html(
             data:
-                '<p class="sutta">${[source, sutta].whereType<String>().join(' ')}</p>',
+                '<p class="sutta">${[source, sutta].whereType<String>().map(n).join(' ')}</p>',
             style: {
               'body': Style(margin: Margins.zero, padding: HtmlPaddings.zero),
               'p.sutta': Style(
@@ -190,6 +195,9 @@ class EntrySummaryBox extends ConsumerWidget {
     final showApostrophe = ref.watch(
       settingsProvider.select((s) => s.showSandhiApostrophe),
     );
+    final niggahitaMode = ref.watch(
+      settingsProvider.select((s) => s.niggahitaMode),
+    );
     final theme = Theme.of(context);
     final h = headword.headword;
     final baseStyle = theme.textTheme.bodyMedium?.copyWith(height: 1.5);
@@ -198,8 +206,10 @@ class EntrySummaryBox extends ConsumerWidget {
       color: Colors.grey,
     );
 
-    String f(String? text) =>
-        filterApostrophe(text ?? '', show: showApostrophe);
+    String f(String? text) => filterNiggahita(
+      filterApostrophe(text ?? '', show: showApostrophe),
+      mode: NiggahitaFilterMode.values[niggahitaMode.index],
+    );
 
     final hasMeaning1 = h.meaning1 != null && h.meaning1!.isNotEmpty;
     final summary = h.constructionSummary;
