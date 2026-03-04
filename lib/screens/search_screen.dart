@@ -240,12 +240,9 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                   _removeInfoOverlay();
                   setState(() => _activeInfo = content);
                 },
-                onMailingList: () {
+                onExternalLink: (url) {
                   _removeInfoOverlay();
-                  launchUrl(
-                    Uri.parse('https://forms.gle/gJ7ouhJriYREPm1s8'),
-                    mode: LaunchMode.externalApplication,
-                  );
+                  launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
                 },
               ),
             ),
@@ -491,15 +488,16 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
 // ── Info popup ────────────────────────────────────────────────────────────────
 
 class _InfoPopup extends StatelessWidget {
-  const _InfoPopup({required this.onSelect, required this.onMailingList});
+  const _InfoPopup({required this.onSelect, required this.onExternalLink});
 
   final void Function(_InfoContent) onSelect;
-  final VoidCallback onMailingList;
+  final void Function(String url) onExternalLink;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
+    final divider = Divider(height: 1, color: DpdColors.primary.withValues(alpha: 0.3));
 
     return Material(
       elevation: 4,
@@ -519,23 +517,29 @@ class _InfoPopup extends StatelessWidget {
               icon: Icons.menu_book_outlined,
               onTap: () => onSelect(_InfoContent.bibliography),
             ),
-            Divider(
-              height: 1,
-              color: DpdColors.primary.withValues(alpha: 0.3),
-            ),
+            divider,
             _InfoMenuItem(
               label: 'Thanks',
               icon: Icons.volunteer_activism_outlined,
               onTap: () => onSelect(_InfoContent.thanks),
             ),
-            Divider(
-              height: 1,
-              color: DpdColors.primary.withValues(alpha: 0.3),
+            divider,
+            _InfoMenuItem(
+              label: 'DPD Website',
+              icon: Icons.language,
+              onTap: () => onExternalLink('https://dpdict.net'),
             ),
+            divider,
+            _InfoMenuItem(
+              label: 'Documentation',
+              icon: Icons.description_outlined,
+              onTap: () => onExternalLink('https://docs.dpdict.net'),
+            ),
+            divider,
             _InfoMenuItem(
               label: 'Mailing List',
               icon: Icons.mail_outline,
-              onTap: onMailingList,
+              onTap: () => onExternalLink('https://forms.gle/gJ7ouhJriYREPm1s8'),
             ),
           ],
         ),
