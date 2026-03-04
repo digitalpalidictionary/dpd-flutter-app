@@ -135,8 +135,14 @@ class EntryExampleBlock extends ConsumerWidget {
     final niggahitaMode = ref.watch(
       settingsProvider.select((s) => s.niggahitaMode),
     );
+    final showApostrophe = ref.watch(
+      settingsProvider.select((s) => s.showSandhiApostrophe),
+    );
     final filterMode = NiggahitaFilterMode.values[niggahitaMode.index];
-    String n(String t) => filterNiggahita(t, mode: filterMode);
+    String n(String t) => filterNiggahita(
+      filterApostrophe(t, show: showApostrophe),
+      mode: filterMode,
+    );
     final theme = Theme.of(context);
 
     return Column(

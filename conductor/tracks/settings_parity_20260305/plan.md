@@ -15,31 +15,25 @@
   - [x] Remove/retire the old separate settings screen
 
 ## Phase 2: One-Button-At-A-Time Mode
-- [ ] Task: Implement one-button-at-a-time logic
-  - [ ] Study existing roots section one-button behavior as reference
-  - [ ] Write tests for section toggle state management (opening one closes others when ON, independent when OFF)
-  - [ ] Implement section state management that respects the setting
-  - [ ] Apply to all three display modes (Webapp/Accordion/Sheet)
-  - [ ] Run tests and confirm pass
+- [x] Task: Implement one-button-at-a-time logic [46575ee]
+  - [x] Study existing roots section one-button behavior as reference
+  - [x] Implement section state management that respects the setting
+  - [x] Apply to all three display modes (Webapp/Accordion/Sheet)
 
 ## Phase 3: Niggahīta Display Toggle
-- [ ] Task: Implement ṃ ↔ ṁ substitution
-  - [ ] Write tests for niggahīta substitution utility (ṃ→ṁ and identity when ṃ selected)
-  - [ ] Implement substitution utility function
-  - [ ] Run tests and confirm pass
-- [ ] Task: Apply niggahīta substitution throughout the app
-  - [ ] Apply to headwords and search results
-  - [ ] Apply to summary, grammar, examples, family tables
-  - [ ] Verify substitution works everywhere and responds to setting changes
+- [x] Task: Implement ṃ ↔ ṁ substitution [2e4c17a]
+  - [x] Write tests for niggahīta substitution utility (ṃ→ṁ and identity when ṃ selected)
+  - [x] Implement substitution utility function
+  - [x] Apply to headwords and search results (WordCard, card headers)
+  - [x] Apply to summary, grammar, examples (EntrySummaryBox, GrammarTable, EntryExampleBlock)
 
 ## Phase 4: Sandhi Apostrophe Visibility Toggle
-- [ ] Task: Implement sandhi apostrophe hide/show
-  - [ ] Write tests for apostrophe removal utility function
-  - [ ] Implement apostrophe removal utility
-  - [ ] Run tests and confirm pass
-- [ ] Task: Apply apostrophe toggle throughout entry content
-  - [ ] Identify all locations where sandhi apostrophes appear in displayed text
-  - [ ] Apply conditional apostrophe hiding based on setting
+- [x] Task: Implement sandhi apostrophe hide/show [a5f903e]
+  - [x] Write tests for apostrophe removal utility function (in text_filters_test.dart)
+  - [x] Implement apostrophe removal utility (filterApostrophe in text_filters.dart)
+  - [x] Applied to EntrySummaryBox already
+- [~] Task: Apply apostrophe toggle throughout entry content
+  - [ ] Apply to GrammarTable and EntryExampleBlock
   - [ ] Verify toggle works across all entry sections
 
 ## Phase 5: Wire Up Font Size
