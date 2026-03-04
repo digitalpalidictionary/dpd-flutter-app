@@ -40,5 +40,6 @@
   - [x] Implemented app-wide via MediaQuery.textScaler in MaterialApp.builder (fontSize / 16.0)
 
 ## Phase 6: Final Verification
-- [~] Task: Conductor - User Manual Verification 'Settings Parity' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Settings Parity'
   - [x] User chose drawer variant — bottom sheet already removed
+  - [x] All tests pass, flutter analyze clean (2 pre-existing warnings only)
