@@ -41,5 +41,7 @@
 
 ## Phase 6: Final Verification
 - [x] Task: Conductor - User Manual Verification 'Settings Parity'
-  - [x] User chose drawer variant — bottom sheet already removed
-  - [x] All tests pass, flutter analyze clean (2 pre-existing warnings only)
+  - [x] User chose bottom sheet variant (55% fixed height, scrollable content)
+  - [x] Font size slider divisions fixed to 12 (steps of 1 over range 12–24)
+  - [x] one-button-at-a-time family→family bug fixed (familyResetAll in hook)
+  - [x] All tests pass (130), flutter analyze clean (2 pre-existing warnings only)
