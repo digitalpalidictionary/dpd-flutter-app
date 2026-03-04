@@ -13,8 +13,8 @@ class SettingsContent extends ConsumerWidget {
     final notifier = ref.read(settingsProvider.notifier);
     final theme = Theme.of(context);
 
-    return Column(
-      mainAxisSize: MainAxisSize.min,
+    return ListView(
+      padding: EdgeInsets.zero,
       children: [
         ListTile(
           title: const Text('Result style'),
@@ -194,6 +194,7 @@ class _CompactSegmented<T> extends StatelessWidget {
 /// Shows the settings bottom sheet. Tapping outside dismisses it.
 Future<void> showSettingsOverlay(BuildContext context) {
   final theme = Theme.of(context);
+  final screenHeight = MediaQuery.of(context).size.height;
   return showModalBottomSheet(
     context: context,
     isScrollControlled: true,
@@ -204,31 +205,24 @@ Future<void> showSettingsOverlay(BuildContext context) {
       ),
     ),
     builder: (context) {
-      return DraggableScrollableSheet(
-        expand: false,
-        initialChildSize: 0.4,
-        minChildSize: 0.2,
-        maxChildSize: 0.85,
-        builder: (context, scrollController) {
-          return ListView(
-            controller: scrollController,
-            padding: EdgeInsets.zero,
-            children: [
-              Center(
-                child: Container(
-                  margin: const EdgeInsets.symmetric(vertical: 12),
-                  width: 40,
-                  height: 4,
-                  decoration: BoxDecoration(
-                    color: theme.colorScheme.outlineVariant,
-                    borderRadius: BorderRadius.circular(2),
-                  ),
+      return SizedBox(
+        height: screenHeight * 0.55,
+        child: Column(
+          children: [
+            Center(
+              child: Container(
+                margin: const EdgeInsets.symmetric(vertical: 12),
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: theme.colorScheme.outlineVariant,
+                  borderRadius: BorderRadius.circular(2),
                 ),
               ),
-              const SettingsContent(),
-            ],
-          );
-        },
+            ),
+            const Expanded(child: SettingsContent()),
+          ],
+        ),
       );
     },
   );
