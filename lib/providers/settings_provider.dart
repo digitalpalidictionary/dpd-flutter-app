@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-enum DisplayMode { inline, accordion, bottomSheet }
+enum DisplayMode { classic, compact, bottomDrawer }
 
 enum NiggahitaMode { dot, circle }
 
@@ -15,7 +15,7 @@ class Settings {
     this.useSerifFont = false,
     this.grammarOpen = false,
     this.examplesOpen = false,
-    this.displayMode = DisplayMode.accordion,
+    this.displayMode = DisplayMode.compact,
     this.oneButtonAtATime = true,
     this.niggahitaMode = NiggahitaMode.dot,
     this.showSummary = true,
@@ -123,10 +123,10 @@ class SettingsNotifier extends StateNotifier<Settings> {
     final useSerifFont = _prefs.getBool('use_serif_font') ?? false;
     final grammarOpen = _prefs.getBool('grammar_open') ?? false;
     final examplesOpen = _prefs.getBool('examples_open') ?? false;
-    final modeName = _prefs.getString('display_mode') ?? 'accordion';
+    final modeName = _prefs.getString('display_mode') ?? 'compact';
     final displayMode = DisplayMode.values.firstWhere(
       (m) => m.name == modeName,
-      orElse: () => DisplayMode.accordion,
+      orElse: () => DisplayMode.compact,
     );
     final oneButtonAtATime = _prefs.getBool('one_button_at_a_time') ?? true;
     final niggahitaName = _prefs.getString('niggahita_mode') ?? 'dot';

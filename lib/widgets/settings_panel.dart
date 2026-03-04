@@ -18,7 +18,22 @@ class SettingsContent extends ConsumerWidget {
     return ListView(
       padding: EdgeInsets.zero,
       children: [
-        _SectionHeader('Display'),
+        // Result style — top position
+        ListTile(
+          title: const Text('Result style'),
+          subtitle: Padding(
+            padding: const EdgeInsets.only(top: 8),
+            child: SegmentedButton<DisplayMode>(
+              segments: const [
+                ButtonSegment(value: DisplayMode.classic, label: Text('Classic')),
+                ButtonSegment(value: DisplayMode.compact, label: Text('Compact')),
+                ButtonSegment(value: DisplayMode.bottomDrawer, label: Text('Bottom')),
+              ],
+              selected: {settings.displayMode},
+              onSelectionChanged: (s) => notifier.setDisplayMode(s.first),
+            ),
+          ),
+        ),
         ListTile(
           title: const Text('Theme'),
           trailing: DropdownButton<ThemeMode>(
@@ -45,105 +60,67 @@ class SettingsContent extends ConsumerWidget {
             onChanged: notifier.setFontSize,
           ),
         ),
-        SwitchListTile(
-          title: const Text('Serif font'),
-          subtitle: Text(settings.useSerifFont ? 'Serif' : 'Sans-serif'),
+        _ToggleRow(
+          title: 'Serif font',
           value: settings.useSerifFont,
           onChanged: notifier.setUseSerifFont,
         ),
-        ListTile(
-          title: const Text('Result style'),
-          subtitle: Padding(
-            padding: const EdgeInsets.only(top: 8),
-            child: SegmentedButton<DisplayMode>(
-              segments: const [
-                ButtonSegment(value: DisplayMode.inline, label: Text('Webapp')),
-                ButtonSegment(
-                  value: DisplayMode.accordion,
-                  label: Text('Accordion'),
-                ),
-                ButtonSegment(
-                  value: DisplayMode.bottomSheet,
-                  label: Text('Sheet'),
-                ),
-              ],
-              selected: {settings.displayMode},
-              onSelectionChanged: (s) => notifier.setDisplayMode(s.first),
-            ),
-          ),
-        ),
-        _SectionHeader('Sections'),
-        SwitchListTile(
-          title: const Text('Grammar open by default'),
+        _ToggleRow(
+          title: 'Grammar open by default',
           value: settings.grammarOpen,
           onChanged: notifier.setGrammarOpen,
         ),
-        SwitchListTile(
-          title: const Text('Examples open by default'),
+        _ToggleRow(
+          title: 'Examples open by default',
           value: settings.examplesOpen,
           onChanged: notifier.setExamplesOpen,
         ),
-        SwitchListTile(
-          title: const Text('One section at a time'),
-          subtitle: const Text('Opening one section closes others'),
+        _ToggleRow(
+          title: 'One section at a time',
           value: settings.oneButtonAtATime,
           onChanged: notifier.setOneButtonAtATime,
         ),
-        _SectionHeader('Pāḷi Text'),
         ListTile(
           title: const Text('Niggahīta'),
-          subtitle: Padding(
-            padding: const EdgeInsets.only(top: 8),
-            child: SegmentedButton<NiggahitaMode>(
-              segments: const [
-                ButtonSegment(value: NiggahitaMode.dot, label: Text('ṃ')),
-                ButtonSegment(value: NiggahitaMode.circle, label: Text('ṁ')),
-              ],
-              selected: {settings.niggahitaMode},
-              onSelectionChanged: (s) => notifier.setNiggahitaMode(s.first),
-            ),
+          trailing: _CompactSegmented<NiggahitaMode>(
+            segments: const [
+              ButtonSegment(value: NiggahitaMode.dot, label: Text('ṃ')),
+              ButtonSegment(value: NiggahitaMode.circle, label: Text('ṁ')),
+            ],
+            selected: settings.niggahitaMode,
+            onChanged: notifier.setNiggahitaMode,
           ),
         ),
-        SwitchListTile(
-          title: const Text('Show sandhi apostrophes'),
-          subtitle: Text(
-            settings.showSandhiApostrophe ? "Show apostrophes (e.g. mahā'pi)" : "Hide apostrophes (e.g. mahāpi)",
-          ),
+        _ToggleRow(
+          title: 'Show sandhi apostrophes',
           value: settings.showSandhiApostrophe,
           onChanged: notifier.setShowSandhiApostrophe,
         ),
-        _SectionHeader('Entry Display'),
-        SwitchListTile(
-          title: const Text('Show summary box'),
-          subtitle: const Text('Integration coming in a future update'),
+        _ToggleRow(
+          title: 'Show summary box',
           value: settings.showSummary,
           onChanged: notifier.setShowSummary,
         ),
-        _SectionHeader('Audio'),
         ListTile(
           title: const Text('Audio gender'),
-          subtitle: const Text('Integration coming in a future update'),
-          trailing: SegmentedButton<AudioGender>(
+          trailing: _CompactSegmented<AudioGender>(
             segments: const [
               ButtonSegment(value: AudioGender.male, label: Text('Male')),
               ButtonSegment(value: AudioGender.female, label: Text('Female')),
             ],
-            selected: {settings.audioGender},
-            onSelectionChanged: (s) => notifier.setAudioGender(s.first),
+            selected: settings.audioGender,
+            onChanged: notifier.setAudioGender,
           ),
         ),
-        _SectionHeader('Dev'),
         ListTile(
-          title: const Text('Settings style [dev]'),
-          subtitle: const Text('Temporary — will be removed after user testing'),
-          trailing: SegmentedButton<bool>(
+          title: const Text('Settings panel [dev]'),
+          trailing: _CompactSegmented<bool>(
             segments: const [
               ButtonSegment(value: true, label: Text('Sheet')),
               ButtonSegment(value: false, label: Text('Drawer')),
             ],
-            selected: {settings.useBottomSheetSettings},
-            onSelectionChanged: (s) =>
-                notifier.setUseBottomSheetSettings(s.first),
+            selected: settings.useBottomSheetSettings,
+            onChanged: notifier.setUseBottomSheetSettings,
           ),
         ),
         const SizedBox(height: 16),
@@ -232,7 +209,9 @@ class SettingsSideDrawer extends StatelessWidget {
 
     return Align(
       alignment: Alignment.centerRight,
-      child: Container(
+      child: Material(
+        color: Colors.transparent,
+        child: Container(
         width: screenWidth * 0.85,
         height: double.infinity,
         decoration: BoxDecoration(
@@ -269,26 +248,60 @@ class SettingsSideDrawer extends StatelessWidget {
             const Expanded(child: SettingsContent()),
           ],
         ),
+        ),
       ),
     );
   }
 }
 
-class _SectionHeader extends StatelessWidget {
-  const _SectionHeader(this.title);
+/// A simple switch row with no checkmark icon — just a coloured Switch.
+class _ToggleRow extends StatelessWidget {
+  const _ToggleRow({
+    required this.title,
+    required this.value,
+    required this.onChanged,
+  });
 
   final String title;
+  final bool value;
+  final ValueChanged<bool> onChanged;
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 16, 16, 4),
-      child: Text(
-        title,
-        style: Theme.of(context).textTheme.labelLarge?.copyWith(
-          color: Theme.of(context).colorScheme.primary,
+    return ListTile(
+      title: Text(title),
+      trailing: Switch(value: value, onChanged: onChanged),
+      onTap: () => onChanged(!value),
+    );
+  }
+}
+
+/// A compact SegmentedButton suitable for use as a ListTile trailing widget.
+class _CompactSegmented<T> extends StatelessWidget {
+  const _CompactSegmented({
+    required this.segments,
+    required this.selected,
+    required this.onChanged,
+  });
+
+  final List<ButtonSegment<T>> segments;
+  final T selected;
+  final ValueChanged<T> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    return SegmentedButton<T>(
+      segments: segments,
+      selected: {selected},
+      onSelectionChanged: (s) => onChanged(s.first),
+      style: ButtonStyle(
+        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+        visualDensity: VisualDensity.compact,
+        padding: WidgetStateProperty.all(
+          const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
         ),
       ),
+      showSelectedIcon: false,
     );
   }
 }

@@ -65,9 +65,9 @@ class SettingsScreen extends ConsumerWidget {
               padding: const EdgeInsets.only(top: 8),
               child: SegmentedButton<DisplayMode>(
                 segments: const [
-                  ButtonSegment(value: DisplayMode.inline, label: Text('Webapp')),
-                  ButtonSegment(value: DisplayMode.accordion, label: Text('Accordion')),
-                  ButtonSegment(value: DisplayMode.bottomSheet, label: Text('Sheet')),
+                  ButtonSegment(value: DisplayMode.classic, label: Text('Classic')),
+                  ButtonSegment(value: DisplayMode.compact, label: Text('Compact')),
+                  ButtonSegment(value: DisplayMode.bottomDrawer, label: Text('Bottom')),
                 ],
                 selected: {settings.displayMode},
                 onSelectionChanged: (s) => notifier.setDisplayMode(s.first),

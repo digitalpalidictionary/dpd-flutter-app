@@ -18,7 +18,7 @@ void main() {
       expect(copy.useSerifFont, false);
       expect(copy.grammarOpen, false);
       expect(copy.examplesOpen, false);
-      expect(copy.displayMode, DisplayMode.accordion);
+      expect(copy.displayMode, DisplayMode.compact);
       expect(copy.oneButtonAtATime, true);
       expect(copy.niggahitaMode, NiggahitaMode.dot);
       expect(copy.showSummary, true);
@@ -64,7 +64,7 @@ void main() {
         useSerifFont: true,
         grammarOpen: true,
         examplesOpen: true,
-        displayMode: DisplayMode.inline,
+        displayMode: DisplayMode.classic,
         oneButtonAtATime: false,
         niggahitaMode: NiggahitaMode.circle,
         showSummary: false,
@@ -76,7 +76,7 @@ void main() {
       expect(copy.useSerifFont, true);
       expect(copy.grammarOpen, true);
       expect(copy.examplesOpen, true);
-      expect(copy.displayMode, DisplayMode.inline);
+      expect(copy.displayMode, DisplayMode.classic);
       expect(copy.oneButtonAtATime, false);
       expect(copy.niggahitaMode, NiggahitaMode.circle);
       expect(copy.showSummary, false);

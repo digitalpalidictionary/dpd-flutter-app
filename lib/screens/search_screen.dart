@@ -804,9 +804,9 @@ class _SplitResultsList extends StatelessWidget {
 
   Widget _buildItem(BuildContext context, DpdHeadwordWithRoot hw) {
     return switch (mode) {
-      DisplayMode.inline => InlineEntryCard(headword: hw),
-      DisplayMode.accordion => AccordionCard(headword: hw),
-      DisplayMode.bottomSheet => WordCard(
+      DisplayMode.classic => InlineEntryCard(headword: hw),
+      DisplayMode.compact => AccordionCard(headword: hw),
+      DisplayMode.bottomDrawer => WordCard(
         headword: hw,
         onTap: () => _showBottomSheet(context, hw),
       ),
@@ -815,7 +815,7 @@ class _SplitResultsList extends StatelessWidget {
 
   Widget _buildRootItem(BuildContext context, RootWithFamilies rwf) {
     return switch (mode) {
-      DisplayMode.inline => InlineRootCard(rwf: rwf),
+      DisplayMode.classic => InlineRootCard(rwf: rwf),
       _ => _RootResultCard(rwf: rwf),
     };
   }
