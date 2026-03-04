@@ -67,6 +67,35 @@ class _EntryBottomSheetState extends ConsumerState<EntryBottomSheet>
     }
   }
 
+  void _toggleSection({required bool isOpen, required void Function(bool) setter}) {
+    setState(() {
+      if (!isOpen && ref.read(settingsProvider).oneButtonAtATime) {
+        _suttaOpen = false;
+        _grammarOpen = false;
+        _examplesOpen = false;
+        _inflectionsOpen = false;
+        _frequencyOpen = false;
+        _feedbackOpen = false;
+        familyResetAll();
+      }
+      setter(!isOpen);
+    });
+  }
+
+  @override
+  void onBeforeOpenFamilySection() {
+    if (ref.read(settingsProvider).oneButtonAtATime) {
+      setState(() {
+        _suttaOpen = false;
+        _grammarOpen = false;
+        _examplesOpen = false;
+        _inflectionsOpen = false;
+        _frequencyOpen = false;
+        _feedbackOpen = false;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     ref.listen<Settings>(settingsProvider, (prev, next) {
@@ -137,39 +166,54 @@ class _EntryBottomSheetState extends ConsumerState<EntryBottomSheet>
                     DpdSectionButton(
                       label: 'sutta',
                       isActive: _suttaOpen,
-                      onTap: () => setState(() => _suttaOpen = !_suttaOpen),
+                      onTap: () => _toggleSection(
+                        isOpen: _suttaOpen,
+                        setter: (v) => _suttaOpen = v,
+                      ),
                     ),
                   DpdSectionButton(
                     label: 'grammar',
                     isActive: _grammarOpen,
-                    onTap: () => setState(() => _grammarOpen = !_grammarOpen),
+                    onTap: () => _toggleSection(
+                      isOpen: _grammarOpen,
+                      setter: (v) => _grammarOpen = v,
+                    ),
                   ),
                   if (hasExamples)
                     DpdSectionButton(
                       label: hasTwoExamples ? 'examples' : 'example',
                       isActive: _examplesOpen,
-                      onTap: () =>
-                          setState(() => _examplesOpen = !_examplesOpen),
+                      onTap: () => _toggleSection(
+                        isOpen: _examplesOpen,
+                        setter: (v) => _examplesOpen = v,
+                      ),
                     ),
                   if (hasInflections)
                     DpdSectionButton(
                       label: inflectionButtonLabel(h.pos),
                       isActive: _inflectionsOpen,
-                      onTap: () =>
-                          setState(() => _inflectionsOpen = !_inflectionsOpen),
+                      onTap: () => _toggleSection(
+                        isOpen: _inflectionsOpen,
+                        setter: (v) => _inflectionsOpen = v,
+                      ),
                     ),
                   ...buildFamilyButtons(),
                   if (hasFrequency)
                     DpdSectionButton(
                       label: 'frequency',
                       isActive: _frequencyOpen,
-                      onTap: () =>
-                          setState(() => _frequencyOpen = !_frequencyOpen),
+                      onTap: () => _toggleSection(
+                        isOpen: _frequencyOpen,
+                        setter: (v) => _frequencyOpen = v,
+                      ),
                     ),
                   DpdSectionButton(
                     label: 'feedback',
                     isActive: _feedbackOpen,
-                    onTap: () => setState(() => _feedbackOpen = !_feedbackOpen),
+                    onTap: () => _toggleSection(
+                      isOpen: _feedbackOpen,
+                      setter: (v) => _feedbackOpen = v,
+                    ),
                   ),
                 ],
               ),

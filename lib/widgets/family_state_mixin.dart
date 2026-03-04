@@ -122,27 +122,44 @@ mixin FamilyStateMixin<T extends ConsumerStatefulWidget> on ConsumerState<T> {
     if (mounted) setState(() => _setsData = data);
   }
 
+  /// Override in the card state to close all main sections before a family
+  /// section opens (for one-button-at-a-time mode).
+  void onBeforeOpenFamilySection() {}
+
+  void familyResetAll() {
+    _showRootFamily = false;
+    _showWordFamily = false;
+    _showCompoundFamilies = false;
+    _showIdioms = false;
+    _showSets = false;
+  }
+
   void familyToggleRoot() {
+    if (!_showRootFamily) onBeforeOpenFamilySection();
     setState(() => _showRootFamily = !_showRootFamily);
     if (_showRootFamily) _loadRootFamily();
   }
 
   void familyToggleWord() {
+    if (!_showWordFamily) onBeforeOpenFamilySection();
     setState(() => _showWordFamily = !_showWordFamily);
     if (_showWordFamily) _loadWordFamily();
   }
 
   void familyToggleCompound() {
+    if (!_showCompoundFamilies) onBeforeOpenFamilySection();
     setState(() => _showCompoundFamilies = !_showCompoundFamilies);
     if (_showCompoundFamilies) _loadCompoundFamilies();
   }
 
   void familyToggleIdioms() {
+    if (!_showIdioms) onBeforeOpenFamilySection();
     setState(() => _showIdioms = !_showIdioms);
     if (_showIdioms) _loadIdioms();
   }
 
   void familyToggleSets() {
+    if (!_showSets) onBeforeOpenFamilySection();
     setState(() => _showSets = !_showSets);
     if (_showSets) _loadSets();
   }
