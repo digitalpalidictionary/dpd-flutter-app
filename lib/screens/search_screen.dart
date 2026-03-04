@@ -313,11 +313,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                   ),
                   IconButton(
                     icon: const Icon(Icons.settings),
-                    onPressed: () {
-                      final useSheet =
-                          ref.read(settingsProvider).useBottomSheetSettings;
-                      showSettingsOverlay(context, useSheet);
-                    },
+                    onPressed: () => showSettingsOverlay(context),
                   ),
                 ],
               ),

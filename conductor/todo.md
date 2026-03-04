@@ -1,10 +1,6 @@
 # DPD Flutter TODO
 
-## Data
-- Optimize mobile.db (remove unused HTML columns)
-- Add thanks/bibliography TSV data as DB columns (replace asset bundle approach)
-- Add wordlist to database so can ... Gray out unattested forms
-
+- summary
 
 ## Settings
 - Implement "One-button-at-a-time" mode
@@ -13,6 +9,10 @@
 - Add Sandhi apostrophe visibility toggle
 - Add audio gender toggle to settings
 
+## Data
+- Optimize mobile.db (remove unused HTML columns)
+- Add thanks/bibliography TSV data as DB columns (replace asset bundle approach)
+- Add wordlist to database so can ... Gray out unattested forms
 
 ## Postponed
 - Display IPA transcription in grammar table

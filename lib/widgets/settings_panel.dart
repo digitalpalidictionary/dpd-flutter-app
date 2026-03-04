@@ -4,8 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/settings_provider.dart';
 import '../theme/dpd_colors.dart';
 
-/// Shared settings content widget used by both the bottom sheet and side
-/// drawer variants.
 class SettingsContent extends ConsumerWidget {
   const SettingsContent({super.key});
 
@@ -18,7 +16,6 @@ class SettingsContent extends ConsumerWidget {
     return ListView(
       padding: EdgeInsets.zero,
       children: [
-        // Result style — top position
         ListTile(
           title: const Text('Result style'),
           subtitle: Padding(
@@ -100,8 +97,10 @@ class SettingsContent extends ConsumerWidget {
           title: 'Show summary box',
           value: settings.showSummary,
           onChanged: notifier.setShowSummary,
+          enabled: false,
         ),
         ListTile(
+          enabled: false,
           title: const Text('Audio gender'),
           trailing: _CompactSegmented<AudioGender>(
             segments: const [
@@ -110,17 +109,7 @@ class SettingsContent extends ConsumerWidget {
             ],
             selected: settings.audioGender,
             onChanged: notifier.setAudioGender,
-          ),
-        ),
-        ListTile(
-          title: const Text('Settings panel [dev]'),
-          trailing: _CompactSegmented<bool>(
-            segments: const [
-              ButtonSegment(value: true, label: Text('Sheet')),
-              ButtonSegment(value: false, label: Text('Drawer')),
-            ],
-            selected: settings.useBottomSheetSettings,
-            onChanged: notifier.setUseBottomSheetSettings,
+            enabled: false,
           ),
         ),
         const SizedBox(height: 16),
@@ -142,62 +131,6 @@ class SettingsContent extends ConsumerWidget {
   }
 }
 
-/// Bottom sheet settings overlay.
-class SettingsBottomSheet extends StatelessWidget {
-  const SettingsBottomSheet({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return Container(
-      decoration: BoxDecoration(
-        color: theme.colorScheme.surface,
-        borderRadius: const BorderRadius.vertical(
-          top: Radius.circular(DpdColors.borderRadiusValue),
-        ),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          // Drag handle
-          Center(
-            child: Container(
-              margin: const EdgeInsets.symmetric(vertical: 12),
-              width: 40,
-              height: 4,
-              decoration: BoxDecoration(
-                color: theme.colorScheme.outlineVariant,
-                borderRadius: BorderRadius.circular(2),
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-            child: Row(
-              children: [
-                Text(
-                  'Settings',
-                  style: theme.textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-                const Spacer(),
-                IconButton(
-                  icon: const Icon(Icons.close),
-                  onPressed: () => Navigator.of(context).pop(),
-                ),
-              ],
-            ),
-          ),
-          const Divider(height: 1),
-          const Flexible(child: SettingsContent()),
-        ],
-      ),
-    );
-  }
-}
-
 /// Side drawer settings overlay (slides in from the right).
 class SettingsSideDrawer extends StatelessWidget {
   const SettingsSideDrawer({super.key});
@@ -212,42 +145,42 @@ class SettingsSideDrawer extends StatelessWidget {
       child: Material(
         color: Colors.transparent,
         child: Container(
-        width: screenWidth * 0.85,
-        height: double.infinity,
-        decoration: BoxDecoration(
-          color: theme.colorScheme.surface,
-          borderRadius: const BorderRadius.horizontal(
-            left: Radius.circular(DpdColors.borderRadiusValue),
+          width: screenWidth * 0.85,
+          height: double.infinity,
+          decoration: BoxDecoration(
+            color: theme.colorScheme.surface,
+            borderRadius: const BorderRadius.horizontal(
+              left: Radius.circular(DpdColors.borderRadiusValue),
+            ),
+            boxShadow: DpdColors.shadowHover,
           ),
-          boxShadow: DpdColors.shadowHover,
-        ),
-        child: Column(
-          children: [
-            SafeArea(
-              bottom: false,
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(16, 16, 8, 8),
-                child: Row(
-                  children: [
-                    Text(
-                      'Settings',
-                      style: theme.textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.w700,
+          child: Column(
+            children: [
+              SafeArea(
+                bottom: false,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 16, 8, 8),
+                  child: Row(
+                    children: [
+                      Text(
+                        'Settings',
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.w700,
+                        ),
                       ),
-                    ),
-                    const Spacer(),
-                    IconButton(
-                      icon: const Icon(Icons.close),
-                      onPressed: () => Navigator.of(context).pop(),
-                    ),
-                  ],
+                      const Spacer(),
+                      IconButton(
+                        icon: const Icon(Icons.close),
+                        onPressed: () => Navigator.of(context).pop(),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-            const Divider(height: 1),
-            const Expanded(child: SettingsContent()),
-          ],
-        ),
+              const Divider(height: 1),
+              const Expanded(child: SettingsContent()),
+            ],
+          ),
         ),
       ),
     );
@@ -260,18 +193,24 @@ class _ToggleRow extends StatelessWidget {
     required this.title,
     required this.value,
     required this.onChanged,
+    this.enabled = true,
   });
 
   final String title;
   final bool value;
   final ValueChanged<bool> onChanged;
+  final bool enabled;
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
+      enabled: enabled,
       title: Text(title),
-      trailing: Switch(value: value, onChanged: onChanged),
-      onTap: () => onChanged(!value),
+      trailing: Switch(
+        value: value,
+        onChanged: enabled ? onChanged : null,
+      ),
+      onTap: enabled ? () => onChanged(!value) : null,
     );
   }
 }
@@ -282,18 +221,20 @@ class _CompactSegmented<T> extends StatelessWidget {
     required this.segments,
     required this.selected,
     required this.onChanged,
+    this.enabled = true,
   });
 
   final List<ButtonSegment<T>> segments;
   final T selected;
   final ValueChanged<T> onChanged;
+  final bool enabled;
 
   @override
   Widget build(BuildContext context) {
     return SegmentedButton<T>(
       segments: segments,
       selected: {selected},
-      onSelectionChanged: (s) => onChanged(s.first),
+      onSelectionChanged: enabled ? (s) => onChanged(s.first) : null,
       style: ButtonStyle(
         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
         visualDensity: VisualDensity.compact,
@@ -306,26 +247,12 @@ class _CompactSegmented<T> extends StatelessWidget {
   }
 }
 
-/// Shows the settings overlay (bottom sheet or side drawer) based on the
-/// current [Settings.useBottomSheetSettings] preference.
-Future<void> showSettingsOverlay(BuildContext context, bool useBottomSheet) {
-  if (useBottomSheet) {
-    return showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (_) => DraggableScrollableSheet(
-        initialChildSize: 0.6,
-        minChildSize: 0.3,
-        maxChildSize: 0.95,
-        builder: (_, controller) => const SettingsBottomSheet(),
-      ),
-    );
-  } else {
-    return showDialog(
-      context: context,
-      barrierColor: Colors.black26,
-      builder: (_) => const SettingsSideDrawer(),
-    );
-  }
+/// Shows the settings side drawer. Tapping outside dismisses it.
+Future<void> showSettingsOverlay(BuildContext context) {
+  return showDialog(
+    context: context,
+    barrierColor: Colors.black26,
+    barrierDismissible: true,
+    builder: (_) => const SettingsSideDrawer(),
+  );
 }

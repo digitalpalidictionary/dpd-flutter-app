@@ -69,6 +69,15 @@ class _AccordionCardState extends ConsumerState<AccordionCard>
 
   @override
   Widget build(BuildContext context) {
+    ref.listen<Settings>(settingsProvider, (prev, next) {
+      if (prev?.grammarOpen != next.grammarOpen) {
+        setState(() => _grammarOpen = next.grammarOpen);
+      }
+      if (prev?.examplesOpen != next.examplesOpen) {
+        setState(() => _examplesOpen = next.examplesOpen);
+      }
+    });
+
     final theme = Theme.of(context);
     final h = widget.headword;
     final isExpanded = _cardState == _CardState.buttonsVisible;

@@ -21,7 +21,6 @@ class Settings {
     this.showSummary = true,
     this.showSandhiApostrophe = true,
     this.audioGender = AudioGender.male,
-    this.useBottomSheetSettings = true,
   });
 
   final ThemeMode themeMode;
@@ -35,9 +34,6 @@ class Settings {
   final bool showSummary;
   final bool showSandhiApostrophe;
   final AudioGender audioGender;
-  /// Temporary dev toggle: true = bottom sheet, false = side drawer.
-  /// Removed in Phase 6 after user picks preferred variant.
-  final bool useBottomSheetSettings;
 
   Settings copyWith({
     ThemeMode? themeMode,
@@ -51,7 +47,6 @@ class Settings {
     bool? showSummary,
     bool? showSandhiApostrophe,
     AudioGender? audioGender,
-    bool? useBottomSheetSettings,
   }) {
     return Settings(
       themeMode: themeMode ?? this.themeMode,
@@ -65,8 +60,6 @@ class Settings {
       showSummary: showSummary ?? this.showSummary,
       showSandhiApostrophe: showSandhiApostrophe ?? this.showSandhiApostrophe,
       audioGender: audioGender ?? this.audioGender,
-      useBottomSheetSettings:
-          useBottomSheetSettings ?? this.useBottomSheetSettings,
     );
   }
 
@@ -84,8 +77,7 @@ class Settings {
         other.niggahitaMode == niggahitaMode &&
         other.showSummary == showSummary &&
         other.showSandhiApostrophe == showSandhiApostrophe &&
-        other.audioGender == audioGender &&
-        other.useBottomSheetSettings == useBottomSheetSettings;
+        other.audioGender == audioGender;
   }
 
   @override
@@ -101,7 +93,6 @@ class Settings {
     showSummary,
     showSandhiApostrophe,
     audioGender,
-    useBottomSheetSettings,
   );
 }
 
@@ -142,9 +133,6 @@ class SettingsNotifier extends StateNotifier<Settings> {
       (g) => g.name == audioGenderName,
       orElse: () => AudioGender.male,
     );
-    final useBottomSheetSettings =
-        _prefs.getBool('use_bottom_sheet_settings') ?? true;
-
     state = Settings(
       themeMode: themeMode,
       fontSize: fontSize,
@@ -157,7 +145,6 @@ class SettingsNotifier extends StateNotifier<Settings> {
       showSummary: showSummary,
       showSandhiApostrophe: showSandhiApostrophe,
       audioGender: audioGender,
-      useBottomSheetSettings: useBottomSheetSettings,
     );
   }
 
@@ -214,11 +201,6 @@ class SettingsNotifier extends StateNotifier<Settings> {
   Future<void> setAudioGender(AudioGender gender) async {
     await _prefs.setString('audio_gender', gender.name);
     state = state.copyWith(audioGender: gender);
-  }
-
-  Future<void> setUseBottomSheetSettings(bool value) async {
-    await _prefs.setBool('use_bottom_sheet_settings', value);
-    state = state.copyWith(useBottomSheetSettings: value);
   }
 }
 

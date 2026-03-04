@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../database/database.dart';
 import '../database/dpd_headword_extensions.dart';
+import '../providers/settings_provider.dart';
 import '../theme/dpd_colors.dart';
+import '../utils/text_filters.dart';
 
 class DpdFooter extends StatelessWidget {
   const DpdFooter({
@@ -177,13 +180,16 @@ class EntryExampleBlock extends StatelessWidget {
   }
 }
 
-class EntrySummaryBox extends StatelessWidget {
+class EntrySummaryBox extends ConsumerWidget {
   const EntrySummaryBox({super.key, required this.headword});
 
   final DpdHeadwordWithRoot headword;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final showApostrophe = ref.watch(
+      settingsProvider.select((s) => s.showSandhiApostrophe),
+    );
     final theme = Theme.of(context);
     final h = headword.headword;
     final baseStyle = theme.textTheme.bodyMedium?.copyWith(height: 1.5);
@@ -191,6 +197,9 @@ class EntrySummaryBox extends StatelessWidget {
     final grayStyle = baseStyle?.copyWith(
       color: Colors.grey,
     );
+
+    String f(String? text) =>
+        filterApostrophe(text ?? '', show: showApostrophe);
 
     final hasMeaning1 = h.meaning1 != null && h.meaning1!.isNotEmpty;
     final summary = h.constructionSummary;
@@ -208,22 +217,22 @@ class EntrySummaryBox extends StatelessWidget {
           style: baseStyle,
           children: [
             if (h.pos != null && h.pos!.isNotEmpty)
-              TextSpan(text: '${h.pos}. '),
+              TextSpan(text: '${f(h.pos)}. '),
             if (h.plusCase != null && h.plusCase!.isNotEmpty)
-              TextSpan(text: '(${h.plusCase}) '),
+              TextSpan(text: '(${f(h.plusCase)}) '),
             if (hasMeaning1) ...[
-              TextSpan(text: h.meaning1!, style: boldStyle),
+              TextSpan(text: f(h.meaning1), style: boldStyle),
               if (h.meaningLit != null && h.meaningLit!.isNotEmpty)
-                TextSpan(text: '; lit. ${h.meaningLit}'),
+                TextSpan(text: '; lit. ${f(h.meaningLit)}'),
             ] else if (h.meaning2 != null && h.meaning2!.isNotEmpty) ...[
               if (h.meaning2!.contains('; lit.'))
-                TextSpan(text: h.meaning2!)
+                TextSpan(text: f(h.meaning2))
               else if (h.meaningLit != null && h.meaningLit!.isNotEmpty)
-                TextSpan(text: '${h.meaning2}; lit. ${h.meaningLit}')
+                TextSpan(text: '${f(h.meaning2)}; lit. ${f(h.meaningLit)}')
               else
-                TextSpan(text: h.meaning2!),
+                TextSpan(text: f(h.meaning2)),
             ],
-            if (summary.isNotEmpty) TextSpan(text: ' [$summary]'),
+            if (summary.isNotEmpty) TextSpan(text: ' [${f(summary)}]'),
             TextSpan(text: ' ${h.degreeOfCompletion}', style: grayStyle),
           ],
         ),
