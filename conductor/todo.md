@@ -1,13 +1,11 @@
 # DPD Flutter TODO
-
-- Implement Search History storage and UI panel
-- Add Velthuis typing help guide
-- Gray out unattested forms in inflection tables
 - Fix external links (Website, Mailing List)
-- Add Help and Bibliography
 
 ## Data
 - Optimize mobile.db (remove unused HTML columns)
+- Add thanks/bibliography TSV data as DB columns (replace asset bundle approach)
+- Add wordlist to database so can ... Gray out unattested forms
+
 
 ## Settings
 - Implement "One-button-at-a-time" mode
@@ -20,6 +18,8 @@
 ## Postponed
 - Display IPA transcription in grammar table
 - Implement audio playback service and UI buttons
+- Add Velthuis typing help guide (track added, implementation in progress)
+- Gray out unattested forms in inflection tables
 
 ## Review
 - Accessibility audit and keyboard refinements

@@ -2,9 +2,12 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+import '../data/help_data.dart';
 import '../database/database.dart';
+import '../models/help_results.dart';
 import '../models/lookup_results.dart';
 import '../providers/autocomplete_provider.dart';
 import '../providers/history_provider.dart';
@@ -19,10 +22,14 @@ import '../widgets/double_tap_search_wrapper.dart';
 import '../widgets/entry_bottom_sheet.dart';
 import '../widgets/inline_entry_card.dart';
 import '../widgets/inline_root_card.dart';
+import '../widgets/secondary/bibliography_card.dart';
 import '../widgets/secondary/secondary_result_cards.dart';
+import '../widgets/secondary/thanks_card.dart';
 import '../widgets/history_panel.dart';
 import '../widgets/velthuis_help_popup.dart';
 import '../widgets/word_card.dart';
+
+enum _InfoContent { bibliography, thanks }
 
 class SearchScreen extends ConsumerStatefulWidget {
   const SearchScreen({super.key});
@@ -35,16 +42,20 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   final _controller = TextEditingController();
   final _layerLink = LayerLink();
   final _helpLayerLink = LayerLink();
+  final _infoLayerLink = LayerLink();
   Timer? _debounce;
   Timer? _autocompleteDebounce;
   OverlayEntry? _overlayEntry;
   OverlayEntry? _helpOverlayEntry;
+  OverlayEntry? _infoOverlayEntry;
   bool _showHelpPopup = false;
+  _InfoContent? _activeInfo;
 
   @override
   void dispose() {
     _removeOverlay();
     _removeHelpOverlay();
+    _removeInfoOverlay();
     _controller.dispose();
     _debounce?.cancel();
     _autocompleteDebounce?.cancel();
@@ -199,6 +210,58 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     _helpOverlayEntry = null;
   }
 
+  void _onInfoButtonPressed() {
+    _removeInfoOverlay();
+    if (_activeInfo != null) {
+      setState(() => _activeInfo = null);
+    } else {
+      _showInfoPopup();
+    }
+  }
+
+  void _showInfoPopup() {
+    final overlay = Overlay.of(context);
+    _infoOverlayEntry = OverlayEntry(
+      builder: (_) => Stack(
+        children: [
+          GestureDetector(
+            behavior: HitTestBehavior.translucent,
+            onTap: _removeInfoOverlay,
+            child: const SizedBox.expand(),
+          ),
+          CompositedTransformFollower(
+            link: _infoLayerLink,
+            targetAnchor: Alignment.bottomRight,
+            followerAnchor: Alignment.topRight,
+            child: UnconstrainedBox(
+              alignment: Alignment.topRight,
+              child: _InfoPopup(
+                onSelect: (content) {
+                  _removeInfoOverlay();
+                  setState(() => _activeInfo = content);
+                },
+                onMailingList: () {
+                  _removeInfoOverlay();
+                  launchUrl(
+                    Uri.parse('https://forms.gle/gJ7ouhJriYREPm1s8'),
+                    mode: LaunchMode.externalApplication,
+                  );
+                },
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+    overlay.insert(_infoOverlayEntry!);
+  }
+
+  void _removeInfoOverlay() {
+    _infoOverlayEntry?.remove();
+    _infoOverlayEntry?.dispose();
+    _infoOverlayEntry = null;
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -239,6 +302,15 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                       style: theme.textTheme.titleLarge?.copyWith(
                         fontWeight: FontWeight.w700,
                       ),
+                    ),
+                  ),
+                  CompositedTransformTarget(
+                    link: _infoLayerLink,
+                    child: IconButton(
+                      icon: Icon(
+                        _activeInfo != null ? Icons.info : Icons.info_outline,
+                      ),
+                      onPressed: _onInfoButtonPressed,
                     ),
                   ),
                   IconButton(
@@ -347,11 +419,16 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
               ),
             ),
 
-            // Results
+            // Main content: info view or search results
             Expanded(
-              child: DoubleTapSearchWrapper(
-                child: _buildBody(context, query, exactAsync, partialAsync),
-              ),
+              child: _activeInfo != null
+                  ? _InfoContentView(
+                      content: _activeInfo!,
+                      onClose: () => setState(() => _activeInfo = null),
+                    )
+                  : DoubleTapSearchWrapper(
+                      child: _buildBody(context, query, exactAsync, partialAsync),
+                    ),
             ),
 
             const HistoryPanel(),
@@ -410,6 +487,160 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     );
   }
 }
+
+// ── Info popup ────────────────────────────────────────────────────────────────
+
+class _InfoPopup extends StatelessWidget {
+  const _InfoPopup({required this.onSelect, required this.onMailingList});
+
+  final void Function(_InfoContent) onSelect;
+  final VoidCallback onMailingList;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
+    return Material(
+      elevation: 4,
+      borderRadius: DpdColors.borderRadius,
+      color: isDark ? DpdColors.darkShade : DpdColors.light,
+      child: Container(
+        decoration: BoxDecoration(
+          border: Border.all(color: DpdColors.primary, width: 1.5),
+          borderRadius: DpdColors.borderRadius,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _InfoMenuItem(
+              label: 'Bibliography',
+              icon: Icons.menu_book_outlined,
+              onTap: () => onSelect(_InfoContent.bibliography),
+            ),
+            Divider(
+              height: 1,
+              color: DpdColors.primary.withValues(alpha: 0.3),
+            ),
+            _InfoMenuItem(
+              label: 'Thanks',
+              icon: Icons.volunteer_activism_outlined,
+              onTap: () => onSelect(_InfoContent.thanks),
+            ),
+            Divider(
+              height: 1,
+              color: DpdColors.primary.withValues(alpha: 0.3),
+            ),
+            _InfoMenuItem(
+              label: 'Mailing List',
+              icon: Icons.mail_outline,
+              onTap: onMailingList,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _InfoMenuItem extends StatelessWidget {
+  const _InfoMenuItem({required this.label, required this.onTap, required this.icon});
+
+  final String label;
+  final VoidCallback onTap;
+  final IconData icon;
+
+  @override
+  Widget build(BuildContext context) {
+    final style = Theme.of(context).textTheme.bodyMedium;
+    return InkWell(
+      borderRadius: DpdColors.borderRadius,
+      onTap: onTap,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon, size: 16, color: style?.color),
+            const SizedBox(width: 8),
+            Text(label, style: style),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ── Info content view ─────────────────────────────────────────────────────────
+
+class _InfoContentView extends StatefulWidget {
+  const _InfoContentView({required this.content, required this.onClose});
+
+  final _InfoContent content;
+  final VoidCallback onClose;
+
+  @override
+  State<_InfoContentView> createState() => _InfoContentViewState();
+}
+
+class _InfoContentViewState extends State<_InfoContentView> {
+  late Future<Widget> _future;
+
+  @override
+  void initState() {
+    super.initState();
+    _future = _load();
+  }
+
+  @override
+  void didUpdateWidget(_InfoContentView oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.content != widget.content) {
+      setState(() => _future = _load());
+    }
+  }
+
+  Future<Widget> _load() async {
+    switch (widget.content) {
+      case _InfoContent.bibliography:
+        final cats = await loadBibliography();
+        return BibliographyCard(result: BibliographyResult(categories: cats));
+      case _InfoContent.thanks:
+        final cats = await loadThanks();
+        return ThanksCard(result: ThanksResult(categories: cats));
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<Widget>(
+      future: _future,
+      builder: (context, snapshot) {
+        if (snapshot.hasError) {
+          return Center(
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Text(
+                'Error: ${snapshot.error}',
+                style: TextStyle(color: Theme.of(context).colorScheme.error),
+              ),
+            ),
+          );
+        }
+        if (!snapshot.hasData) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        return SingleChildScrollView(
+          padding: const EdgeInsets.all(8),
+          child: snapshot.data!,
+        );
+      },
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 
 class _BarIconButton extends StatelessWidget {
   const _BarIconButton({required this.icon, required this.onPressed});
