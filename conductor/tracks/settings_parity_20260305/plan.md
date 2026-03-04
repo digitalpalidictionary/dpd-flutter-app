@@ -31,17 +31,14 @@
 - [x] Task: Implement sandhi apostrophe hide/show [a5f903e]
   - [x] Write tests for apostrophe removal utility function (in text_filters_test.dart)
   - [x] Implement apostrophe removal utility (filterApostrophe in text_filters.dart)
-  - [x] Applied to EntrySummaryBox already
-- [~] Task: Apply apostrophe toggle throughout entry content
-  - [ ] Apply to GrammarTable and EntryExampleBlock
-  - [ ] Verify toggle works across all entry sections
+  - [x] Applied to EntrySummaryBox, GrammarTable, EntryExampleBlock
+- [x] Task: Apply apostrophe toggle throughout entry content [e080596]
+  - [x] Applied to GrammarTable and EntryExampleBlock
 
 ## Phase 5: Wire Up Font Size
-- [ ] Task: Apply fontSize setting to entry content
-  - [ ] Identify all text widgets in entry display that should scale
-  - [ ] Apply fontSize from settings as text scale factor or direct font size
-  - [ ] Verify font size slider visually scales entry text
+- [x] Task: Apply fontSize setting to entry content [4cd4226]
+  - [x] Implemented app-wide via MediaQuery.textScaler in MaterialApp.builder (fontSize / 16.0)
 
 ## Phase 6: Final Verification
-- [ ] Task: Conductor - User Manual Verification 'Settings Parity' (Protocol in workflow.md)
-  - [ ] User chooses between bottom sheet and side drawer — remove the unchosen variant
+- [~] Task: Conductor - User Manual Verification 'Settings Parity' (Protocol in workflow.md)
+  - [x] User chose drawer variant — bottom sheet already removed
