@@ -4,6 +4,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 enum DisplayMode { inline, accordion, bottomSheet }
 
+enum NiggahitaMode { dot, circle }
+
+enum AudioGender { male, female }
+
 class Settings {
   const Settings({
     this.themeMode = ThemeMode.system,
@@ -12,6 +16,11 @@ class Settings {
     this.grammarOpen = false,
     this.examplesOpen = false,
     this.displayMode = DisplayMode.accordion,
+    this.oneButtonAtATime = true,
+    this.niggahitaMode = NiggahitaMode.dot,
+    this.showSummary = true,
+    this.showSandhiApostrophe = true,
+    this.audioGender = AudioGender.male,
   });
 
   final ThemeMode themeMode;
@@ -20,6 +29,11 @@ class Settings {
   final bool grammarOpen;
   final bool examplesOpen;
   final DisplayMode displayMode;
+  final bool oneButtonAtATime;
+  final NiggahitaMode niggahitaMode;
+  final bool showSummary;
+  final bool showSandhiApostrophe;
+  final AudioGender audioGender;
 
   Settings copyWith({
     ThemeMode? themeMode,
@@ -28,6 +42,11 @@ class Settings {
     bool? grammarOpen,
     bool? examplesOpen,
     DisplayMode? displayMode,
+    bool? oneButtonAtATime,
+    NiggahitaMode? niggahitaMode,
+    bool? showSummary,
+    bool? showSandhiApostrophe,
+    AudioGender? audioGender,
   }) {
     return Settings(
       themeMode: themeMode ?? this.themeMode,
@@ -36,8 +55,45 @@ class Settings {
       grammarOpen: grammarOpen ?? this.grammarOpen,
       examplesOpen: examplesOpen ?? this.examplesOpen,
       displayMode: displayMode ?? this.displayMode,
+      oneButtonAtATime: oneButtonAtATime ?? this.oneButtonAtATime,
+      niggahitaMode: niggahitaMode ?? this.niggahitaMode,
+      showSummary: showSummary ?? this.showSummary,
+      showSandhiApostrophe: showSandhiApostrophe ?? this.showSandhiApostrophe,
+      audioGender: audioGender ?? this.audioGender,
     );
   }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is Settings &&
+        other.themeMode == themeMode &&
+        other.fontSize == fontSize &&
+        other.useSerifFont == useSerifFont &&
+        other.grammarOpen == grammarOpen &&
+        other.examplesOpen == examplesOpen &&
+        other.displayMode == displayMode &&
+        other.oneButtonAtATime == oneButtonAtATime &&
+        other.niggahitaMode == niggahitaMode &&
+        other.showSummary == showSummary &&
+        other.showSandhiApostrophe == showSandhiApostrophe &&
+        other.audioGender == audioGender;
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    themeMode,
+    fontSize,
+    useSerifFont,
+    grammarOpen,
+    examplesOpen,
+    displayMode,
+    oneButtonAtATime,
+    niggahitaMode,
+    showSummary,
+    showSandhiApostrophe,
+    audioGender,
+  );
 }
 
 class SettingsNotifier extends StateNotifier<Settings> {
@@ -63,6 +119,21 @@ class SettingsNotifier extends StateNotifier<Settings> {
       (m) => m.name == modeName,
       orElse: () => DisplayMode.accordion,
     );
+    final oneButtonAtATime = _prefs.getBool('one_button_at_a_time') ?? true;
+    final niggahitaName = _prefs.getString('niggahita_mode') ?? 'dot';
+    final niggahitaMode = NiggahitaMode.values.firstWhere(
+      (m) => m.name == niggahitaName,
+      orElse: () => NiggahitaMode.dot,
+    );
+    final showSummary = _prefs.getBool('show_summary') ?? true;
+    final showSandhiApostrophe =
+        _prefs.getBool('show_sandhi_apostrophe') ?? true;
+    final audioGenderName = _prefs.getString('audio_gender') ?? 'male';
+    final audioGender = AudioGender.values.firstWhere(
+      (g) => g.name == audioGenderName,
+      orElse: () => AudioGender.male,
+    );
+
     state = Settings(
       themeMode: themeMode,
       fontSize: fontSize,
@@ -70,6 +141,11 @@ class SettingsNotifier extends StateNotifier<Settings> {
       grammarOpen: grammarOpen,
       examplesOpen: examplesOpen,
       displayMode: displayMode,
+      oneButtonAtATime: oneButtonAtATime,
+      niggahitaMode: niggahitaMode,
+      showSummary: showSummary,
+      showSandhiApostrophe: showSandhiApostrophe,
+      audioGender: audioGender,
     );
   }
 
@@ -101,6 +177,31 @@ class SettingsNotifier extends StateNotifier<Settings> {
   Future<void> setDisplayMode(DisplayMode mode) async {
     await _prefs.setString('display_mode', mode.name);
     state = state.copyWith(displayMode: mode);
+  }
+
+  Future<void> setOneButtonAtATime(bool value) async {
+    await _prefs.setBool('one_button_at_a_time', value);
+    state = state.copyWith(oneButtonAtATime: value);
+  }
+
+  Future<void> setNiggahitaMode(NiggahitaMode mode) async {
+    await _prefs.setString('niggahita_mode', mode.name);
+    state = state.copyWith(niggahitaMode: mode);
+  }
+
+  Future<void> setShowSummary(bool value) async {
+    await _prefs.setBool('show_summary', value);
+    state = state.copyWith(showSummary: value);
+  }
+
+  Future<void> setShowSandhiApostrophe(bool value) async {
+    await _prefs.setBool('show_sandhi_apostrophe', value);
+    state = state.copyWith(showSandhiApostrophe: value);
+  }
+
+  Future<void> setAudioGender(AudioGender gender) async {
+    await _prefs.setString('audio_gender', gender.name);
+    state = state.copyWith(audioGender: gender);
   }
 }
 
