@@ -6,9 +6,9 @@ run:
 run-linux:
     flutter run -d linux
 
-# Install debug APK on connected Android device
+# Build and install debug APK on connected Android device
 install:
-    flutter install
+    flutter build apk --debug && flutter install
 
 # Build debug APK
 build:

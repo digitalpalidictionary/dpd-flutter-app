@@ -57,6 +57,10 @@ dev_dependencies:
   build_runner: ^2.4.14
   riverpod_generator: ^2.6.5
 
+  # Icon and splash generation
+  flutter_launcher_icons: ^0.14.3
+  flutter_native_splash: ^2.4.5
+
 flutter:
   uses-material-design: true
 
@@ -64,3 +68,40 @@ flutter:
     - assets/images/
     - assets/help/
 
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/dpd-logo-dark-512.png"
+  min_sdk_android: 21
+  adaptive_icon_background: "#ffffff"
+  adaptive_icon_foreground: "assets/images/dpd-logo-dark-512.png"
+  remove_alpha_ios: true
+  web:
+    generate: true
+    image_path: "assets/images/dpd-logo-dark-512.png"
+    background_color: "#ffffff"
+    theme_color: "#ffffff"
+  windows:
+    generate: true
+    image_path: "assets/images/dpd-logo-dark-512.png"
+    icon_size: 48
+  macos:
+    generate: true
+    image_path: "assets/images/dpd-logo-dark-512.png"
+  linux:
+    generate: true
+    image_path: "assets/images/dpd-logo-dark-512.png"
+
+flutter_native_splash:
+  color: "#ffffff"
+  color_dark: "#121212"
+  image: assets/images/dpd-logo-512.png
+  image_dark: assets/images/dpd-logo-dark-512.png
+  android: true
+  ios: true
+  web: true
+  android_12:
+    image: assets/images/dpd-logo-512.png
+    icon_background_color: "#ffffff"
+    image_dark: assets/images/dpd-logo-dark-512.png
+    icon_background_color_dark: "#121212"
