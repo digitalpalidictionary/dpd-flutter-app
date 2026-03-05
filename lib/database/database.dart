@@ -1,9 +1,9 @@
 import 'dart:io';
 
 import 'package:drift/drift.dart';
-import 'package:drift/native.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
+import 'package:drift/native.dart';
 
 import 'tables.dart';
 export 'dao.dart';
@@ -32,14 +32,6 @@ class AppDatabase extends _$AppDatabase {
 
   @override
   int get schemaVersion => 1;
-
-  @override
-  MigrationStrategy get migration => MigrationStrategy(
-    onCreate: (m) async {
-      await m.createAll();
-    },
-    onUpgrade: (m, from, to) async {},
-  );
 }
 
 LazyDatabase _openConnection() {
@@ -50,9 +42,9 @@ LazyDatabase _openConnection() {
 }
 
 Future<File> _resolveDbPath() async {
-  // DB lives in app documents directory.
-  // Dev: populated by ADB (see README).
+  // DB lives in app-specific external storage (no permissions required).
+  // Dev: push via `just push-db`.
   // Production: downloaded on first launch.
-  final docsDir = await getApplicationDocumentsDirectory();
-  return File(p.join(docsDir.path, 'dpd.db'));
+  final extDir = await getExternalStorageDirectory();
+  return File(p.join(extDir!.path, 'dpd.db'));
 }

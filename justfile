@@ -25,3 +25,7 @@ analyze:
 # Run tests
 test:
     flutter test
+
+# Push dpd.db to connected Android device
+push-db:
+    adb push ../dpd-db/dpd.db /storage/emulated/0/Android/data/net.dpdict.dpd_flutter_app/files/dpd.db
