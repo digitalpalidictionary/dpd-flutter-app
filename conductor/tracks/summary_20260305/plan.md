@@ -4,10 +4,10 @@
 - [x] Task: Create summary data model (bf81530)
   - [x] Define a SummaryEntry class (type, label, meaning, targetId)
   - [x] Support all result types: headword, root, see, grammar, spelling, variant, etc.
-- [ ] Task: Build summary provider
-  - [ ] Create a Riverpod provider that derives summary entries from exact search results
-  - [ ] Include all lookup categories (headwords, roots, see, grammar, spelling, variants, etc.)
-  - [ ] Reactively depend on the search query and settings toggle
+- [x] Task: Build summary provider (eef9114)
+  - [x] Create a Riverpod provider that derives summary entries from exact search results
+  - [x] Include all lookup categories (headwords, roots, see, grammar, spelling, variants, etc.)
+  - [x] Reactively depend on the search query and settings toggle
 - [ ] Task: Add showSummary setting to settings provider
   - [ ] Ensure showSummary is persisted via shared_preferences
   - [ ] Ensure toggling reactively updates any consumers
