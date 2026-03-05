@@ -8,9 +8,9 @@
   - [x] Create a Riverpod provider that derives summary entries from exact search results
   - [x] Include all lookup categories (headwords, roots, see, grammar, spelling, variants, etc.)
   - [x] Reactively depend on the search query and settings toggle
-- [ ] Task: Add showSummary setting to settings provider
-  - [ ] Ensure showSummary is persisted via shared_preferences
-  - [ ] Ensure toggling reactively updates any consumers
+- [x] Task: Add showSummary setting to settings provider (already existed)
+  - [x] Ensure showSummary is persisted via shared_preferences
+  - [x] Ensure toggling reactively updates any consumers
 
 ## Phase 2: UI Implementation
 - [ ] Task: Build SummarySection widget
