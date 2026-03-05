@@ -74,15 +74,18 @@ class _SummaryRow extends StatelessWidget {
         child: Row(
           children: [
             Expanded(
-              child: Wrap(
-                spacing: 4,
-                children: [
-                  Text(entry.label, style: labelStyle),
-                  if (entry.typeLabel.isNotEmpty)
-                    Text(entry.typeLabel, style: typeStyle),
-                  if (entry.meaning.isNotEmpty)
-                    Text(entry.meaning, style: meaningStyle),
-                ],
+              child: RichText(
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                text: TextSpan(
+                  children: [
+                    TextSpan(text: entry.label, style: labelStyle),
+                    if (entry.typeLabel.isNotEmpty)
+                      TextSpan(text: ' ${entry.typeLabel}', style: typeStyle),
+                    if (entry.meaning.isNotEmpty)
+                      TextSpan(text: ' ${entry.meaning}', style: meaningStyle),
+                  ],
+                ),
               ),
             ),
             const SizedBox(width: 8),
