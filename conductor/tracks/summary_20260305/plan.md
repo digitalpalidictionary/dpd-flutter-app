@@ -13,13 +13,13 @@
   - [x] Ensure toggling reactively updates any consumers
 
 ## Phase 2: UI Implementation
-- [ ] Task: Build SummarySection widget
-  - [ ] Render one-line summary entries matching webapp format (label, type, meaning, ► link)
-  - [ ] Conditionally display based on showSummary setting
-  - [ ] Hide when no exact matches exist
-- [ ] Task: Implement scroll-to-entry on summary tap
-  - [ ] Assign keys/anchors to each entry in the results list
-  - [ ] Smooth-scroll to the target entry when a summary link is tapped
-- [ ] Task: Add showSummary toggle to settings screen
-  - [ ] Wire toggle to the settings provider for real-time reactive update
+- [x] Task: Build SummarySection widget (5fe3e5d)
+  - [x] Render one-line summary entries matching webapp format (label, type, meaning, ► link)
+  - [x] Conditionally display based on showSummary setting
+  - [x] Hide when no exact matches exist
+- [x] Task: Implement scroll-to-entry on summary tap (5fe3e5d)
+  - [x] Assign keys/anchors to each entry in the results list
+  - [x] Smooth-scroll to the target entry when a summary link is tapped
+- [x] Task: Add showSummary toggle to settings screen (5fe3e5d)
+  - [x] Wire toggle to the settings provider for real-time reactive update
 - [ ] Task: Conductor - User Manual Verification 'Complete Feature' (Protocol in workflow.md)
