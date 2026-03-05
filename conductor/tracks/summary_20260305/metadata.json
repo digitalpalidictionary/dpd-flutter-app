@@ -1,0 +1,8 @@
+{
+  "track_id": "summary_20260305",
+  "type": "feature",
+  "status": "new",
+  "created_at": "2026-03-05T00:00:00Z",
+  "updated_at": "2026-03-05T00:00:00Z",
+  "description": "Implement summary section for exact matches with scroll-to links and settings toggle"
+}

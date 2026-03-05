@@ -1,14 +1,5 @@
 # DPD Flutter TODO
 
-- summary
-- logo on startup
-
-## Settings
-- Implement "One-button-at-a-time" mode
-- Add Niggahīta display toggle (ṃ vs ṁ)
-- Add Entry summary visibility toggle
-- Add Sandhi apostrophe visibility toggle
-- Add audio gender toggle to settings
 
 ## Data
 - Optimize mobile.db (remove unused HTML columns)
