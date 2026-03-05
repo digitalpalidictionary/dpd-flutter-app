@@ -27,16 +27,15 @@ class SummarySection extends StatelessWidget {
         children: [
           Text(
             'Summary',
-            style: theme.textTheme.labelSmall?.copyWith(
-              color: theme.colorScheme.onSurfaceVariant,
-              letterSpacing: 0.8,
+            style: theme.textTheme.titleLarge?.copyWith(
+              color: theme.colorScheme.onSurface,
             ),
           ),
           const SizedBox(height: 4),
           ...entries.map(
             (e) => _SummaryRow(entry: e, onTap: () => onTap(e.targetId)),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 12),
           Divider(height: 1, color: DpdColors.primary.withValues(alpha: 0.3)),
         ],
       ),

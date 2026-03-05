@@ -22,9 +22,12 @@ class SettingsContent extends ConsumerWidget {
             padding: const EdgeInsets.only(top: 8),
             child: SegmentedButton<DisplayMode>(
               segments: const [
-                ButtonSegment(value: DisplayMode.classic, label: Text('Classic')),
-                ButtonSegment(value: DisplayMode.compact, label: Text('Compact')),
-                ButtonSegment(value: DisplayMode.bottomDrawer, label: Text('Bottom')),
+                ButtonSegment(
+                    value: DisplayMode.classic, label: Text('Classic')),
+                ButtonSegment(
+                    value: DisplayMode.compact, label: Text('Compact')),
+                ButtonSegment(
+                    value: DisplayMode.bottomDrawer, label: Text('Bottom')),
               ],
               selected: {settings.displayMode},
               onSelectionChanged: (s) => notifier.setDisplayMode(s.first),
@@ -94,7 +97,7 @@ class SettingsContent extends ConsumerWidget {
           onChanged: notifier.setShowSandhiApostrophe,
         ),
         _ToggleRow(
-          title: 'Show summary box',
+          title: 'Show summary',
           value: settings.showSummary,
           onChanged: notifier.setShowSummary,
         ),
