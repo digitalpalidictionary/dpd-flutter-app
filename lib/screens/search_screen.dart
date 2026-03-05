@@ -717,6 +717,13 @@ class _SplitResultsList extends StatefulWidget {
 
 class _SplitResultsListState extends State<_SplitResultsList> {
   final Map<String, GlobalKey> _itemKeys = {};
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   GlobalKey _keyFor(String id) =>
       _itemKeys.putIfAbsent(id, GlobalKey.new);
@@ -757,6 +764,8 @@ class _SplitResultsListState extends State<_SplitResultsList> {
         (widget.partialLoading ? 1 : 0);
 
     return ListView.separated(
+      controller: _scrollController,
+      cacheExtent: 5000,
       keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
       itemCount: itemCount,
       separatorBuilder: (context, index) => const SizedBox.shrink(),
