@@ -7,7 +7,8 @@ import 'database_provider.dart';
 /// Parses a [LookupData] row into an ordered list of secondary result objects.
 ///
 /// Results are ordered: abbreviations → deconstructor → grammar → help →
-/// EPD → variant → spelling → see. Null or empty columns produce no entry.
+/// EPD → variant → spelling → see.
+/// Null or empty columns produce no entry.
 class SecondaryResultsProvider {
   static List<Object> parse(String headword, LookupData row) {
     final results = <Object>[];

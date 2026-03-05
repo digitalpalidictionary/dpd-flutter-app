@@ -26,21 +26,25 @@ List<SummaryEntry> buildSummaryEntries(
   final entries = <SummaryEntry>[];
 
   for (final hw in exact) {
+    final meaning = hw.headword.meaning1?.isNotEmpty == true
+        ? hw.headword.meaning1!
+        : hw.headword.meaning2 ?? '';
     entries.add(SummaryEntry(
       type: SummaryEntryType.headword,
       label: hw.headword.lemma1,
-      typeLabel: hw.headword.pos ?? '',
-      meaning: hw.headword.meaning1 ?? '',
+      typeLabel: '${hw.headword.pos ?? ''}.',
+      meaning: meaning,
       targetId: 'hw_${hw.headword.id}',
     ));
   }
 
   for (final rwf in roots) {
+    final rootClean = rwf.root.root.replaceFirst('√', '');
     entries.add(SummaryEntry(
       type: SummaryEntryType.root,
       label: rwf.root.root,
-      typeLabel: 'root',
-      meaning: rwf.root.rootMeaning,
+      typeLabel: 'root.',
+      meaning: '$rootClean (${rwf.root.rootMeaning})',
       targetId: 'root_${rwf.root.root}',
     ));
   }
@@ -51,36 +55,31 @@ List<SummaryEntry> buildSummaryEntries(
         entries.add(SummaryEntry(
           type: SummaryEntryType.see,
           label: r.headword,
-          typeLabel: 'see',
-          meaning: r.seeHeadwords.join(', '),
+          typeLabel: 'see headword.',
+          meaning: '',
           targetId: 'sec_see_${r.headword}',
         ));
       case GrammarDictResult r:
-        final first = r.entries.isNotEmpty ? r.entries.first : null;
-        final desc = first != null
-            ? '${first.pos} ${first.components.where((c) => c.isNotEmpty).join(' ')}'
-                .trim()
-            : '';
         entries.add(SummaryEntry(
           type: SummaryEntryType.grammar,
           label: r.headword,
-          typeLabel: 'grammar',
-          meaning: desc,
+          typeLabel: 'grammar.',
+          meaning: '',
           targetId: 'sec_grammar_${r.headword}',
         ));
       case SpellingResult r:
         entries.add(SummaryEntry(
           type: SummaryEntryType.spelling,
           label: r.headword,
-          typeLabel: 'spelling',
-          meaning: r.spellings.join(', '),
+          typeLabel: 'spelling mistake.',
+          meaning: '',
           targetId: 'sec_spelling_${r.headword}',
         ));
       case VariantResult r:
         entries.add(SummaryEntry(
           type: SummaryEntryType.variant,
           label: r.headword,
-          typeLabel: 'variant',
+          typeLabel: 'variants.',
           meaning: '',
           targetId: 'sec_variant_${r.headword}',
         ));
@@ -88,37 +87,32 @@ List<SummaryEntry> buildSummaryEntries(
         entries.add(SummaryEntry(
           type: SummaryEntryType.abbreviation,
           label: r.headword,
-          typeLabel: 'abbrev',
+          typeLabel: 'abbreviation.',
           meaning: r.meaning,
           targetId: 'sec_abbrev_${r.headword}',
         ));
       case EpdResult r:
-        final first = r.entries.isNotEmpty ? r.entries.first : null;
         entries.add(SummaryEntry(
           type: SummaryEntryType.epd,
           label: r.headword,
-          typeLabel: 'epd',
-          meaning: first?.meaning ?? '',
+          typeLabel: 'English.',
+          meaning: '',
           targetId: 'sec_epd_${r.headword}',
         ));
       case DeconstructorResult r:
         entries.add(SummaryEntry(
           type: SummaryEntryType.deconstructor,
           label: r.headword,
-          typeLabel: 'decon',
-          meaning:
-              r.deconstructions.isNotEmpty ? r.deconstructions.first : '',
+          typeLabel: 'deconstructor.',
+          meaning: '',
           targetId: 'sec_decon_${r.headword}',
         ));
       case HelpResult r:
-        final text = r.helpText.length > 60
-            ? '${r.helpText.substring(0, 60)}…'
-            : r.helpText;
         entries.add(SummaryEntry(
           type: SummaryEntryType.help,
           label: r.headword,
-          typeLabel: 'help',
-          meaning: text,
+          typeLabel: 'help.',
+          meaning: '',
           targetId: 'sec_help_${r.headword}',
         ));
       default:

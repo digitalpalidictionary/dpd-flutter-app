@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../models/summary_entry.dart';
 import '../theme/dpd_colors.dart';
 
-/// Displays a summary block at the top of search results.
+/// Displays a summary list at the top of search results.
 /// Each entry shows label, type, meaning, and a ► tap target.
 class SummarySection extends StatelessWidget {
   const SummarySection({
@@ -19,21 +19,26 @@ class SummarySection extends StatelessWidget {
   Widget build(BuildContext context) {
     if (entries.isEmpty) return const SizedBox.shrink();
 
+    final theme = Theme.of(context);
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      child: Container(
-        width: double.infinity,
-        decoration: BoxDecoration(
-          border: Border.all(color: DpdColors.primary, width: 2),
-          borderRadius: DpdColors.borderRadius,
-        ),
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: entries
-              .map((e) => _SummaryRow(entry: e, onTap: () => onTap(e.targetId)))
-              .toList(),
-        ),
+      padding: const EdgeInsets.fromLTRB(8, 12, 8, 0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Summary',
+            style: theme.textTheme.labelSmall?.copyWith(
+              color: theme.colorScheme.onSurfaceVariant,
+              letterSpacing: 0.8,
+            ),
+          ),
+          const SizedBox(height: 4),
+          ...entries.map(
+            (e) => _SummaryRow(entry: e, onTap: () => onTap(e.targetId)),
+          ),
+          const SizedBox(height: 8),
+          Divider(height: 1, color: DpdColors.primary.withValues(alpha: 0.3)),
+        ],
       ),
     );
   }
