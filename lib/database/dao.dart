@@ -61,7 +61,7 @@ class DpdDao extends DatabaseAccessor<AppDatabase> with _$DpdDaoMixin {
 
   Future<List<DpdHeadwordWithRoot>> searchPartial(
     String query, {
-    int limit = 20,
+    int limit = 30,
   }) async {
     if (query.isEmpty) return [];
     final normalized = _normalizeQuery(query);

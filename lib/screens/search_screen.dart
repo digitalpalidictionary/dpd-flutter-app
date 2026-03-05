@@ -905,13 +905,29 @@ class _MoreResultsDivider extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-      child: Text(
-        'more results',
-        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-          color: Theme.of(context).colorScheme.onSurfaceVariant,
-        ),
+      padding: const EdgeInsets.fromLTRB(8, 12, 8, 0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Divider(
+            height: 1,
+            color: DpdColors.primary.withValues(alpha: 0.3),
+          ),
+          const SizedBox(height: 12),
+          Text(
+            'more results',
+            style: theme.textTheme.titleLarge?.copyWith(
+              color: theme.colorScheme.onSurface,
+            ),
+          ),
+          const SizedBox(height: 12),
+          Divider(
+            height: 1,
+            color: DpdColors.primary.withValues(alpha: 0.3),
+          ),
+        ],
       ),
     );
   }
