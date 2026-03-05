@@ -28,6 +28,9 @@ import '../widgets/secondary/thanks_card.dart';
 import '../widgets/history_panel.dart';
 import '../widgets/settings_panel.dart';
 import '../widgets/velthuis_help_popup.dart';
+import '../models/summary_entry.dart';
+import '../providers/summary_provider.dart';
+import '../widgets/summary_section.dart';
 import '../widgets/word_card.dart';
 
 enum _InfoContent { bibliography, thanks }
@@ -474,14 +477,17 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
       return _NoResults(query: query);
     }
 
-    final mode = ref.watch(settingsProvider).displayMode;
+    final settings = ref.watch(settingsProvider);
+    final summaryEntries = buildSummaryEntries(exact, roots, secondary);
     return _SplitResultsList(
       exact: exact,
       partial: partial,
       partialLoading: partialLoading,
       roots: roots,
       secondary: secondary,
-      mode: mode,
+      summaryEntries: summaryEntries,
+      showSummary: settings.showSummary,
+      mode: settings.displayMode,
     );
   }
 }
@@ -684,13 +690,15 @@ class _BarIconButton extends StatelessWidget {
   }
 }
 
-class _SplitResultsList extends StatelessWidget {
+class _SplitResultsList extends StatefulWidget {
   const _SplitResultsList({
     required this.exact,
     required this.partial,
     required this.partialLoading,
     required this.roots,
     required this.secondary,
+    required this.summaryEntries,
+    required this.showSummary,
     required this.mode,
   });
 
@@ -699,38 +707,78 @@ class _SplitResultsList extends StatelessWidget {
   final bool partialLoading;
   final List<RootWithFamilies> roots;
   final List<Object> secondary;
+  final List<SummaryEntry> summaryEntries;
+  final bool showSummary;
   final DisplayMode mode;
 
   @override
+  State<_SplitResultsList> createState() => _SplitResultsListState();
+}
+
+class _SplitResultsListState extends State<_SplitResultsList> {
+  final Map<String, GlobalKey> _itemKeys = {};
+
+  GlobalKey _keyFor(String id) =>
+      _itemKeys.putIfAbsent(id, GlobalKey.new);
+
+  void _scrollToEntry(String targetId) {
+    final key = _itemKeys[targetId];
+    if (key?.currentContext != null) {
+      Scrollable.ensureVisible(
+        key!.currentContext!,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+        alignment: 0.1,
+      );
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final hasExact = exact.isNotEmpty;
-    final hasPartial = partial.isNotEmpty;
-    final hasRoots = roots.isNotEmpty;
-    final hasSecondary = secondary.isNotEmpty;
+    final hasSummary =
+        widget.showSummary && widget.summaryEntries.isNotEmpty;
+    final hasExact = widget.exact.isNotEmpty;
+    final hasPartial = widget.partial.isNotEmpty;
+    final hasRoots = widget.roots.isNotEmpty;
+    final hasSecondary = widget.secondary.isNotEmpty;
     final showRootDivider = hasRoots && hasExact;
     final showPartialDivider =
         (hasExact || hasRoots || hasSecondary) &&
-        (hasPartial || partialLoading);
+        (hasPartial || widget.partialLoading);
 
     final itemCount =
-        exact.length +
+        (hasSummary ? 1 : 0) +
+        widget.exact.length +
         (showRootDivider ? 1 : 0) +
-        roots.length +
-        secondary.length +
+        widget.roots.length +
+        widget.secondary.length +
         (showPartialDivider ? 1 : 0) +
-        partial.length +
-        (partialLoading ? 1 : 0);
+        widget.partial.length +
+        (widget.partialLoading ? 1 : 0);
 
     return ListView.separated(
       keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
       itemCount: itemCount,
       separatorBuilder: (context, index) => const SizedBox.shrink(),
       itemBuilder: (context, index) {
-        // Exact headword matches first
-        if (index < exact.length) {
-          return _buildItem(context, exact[index]);
+        // Summary section first
+        if (hasSummary && index == 0) {
+          return SummarySection(
+            entries: widget.summaryEntries,
+            onTap: _scrollToEntry,
+          );
         }
-        index -= exact.length;
+        if (hasSummary) index -= 1;
+
+        // Exact headword matches
+        if (index < widget.exact.length) {
+          final hw = widget.exact[index];
+          return KeyedSubtree(
+            key: _keyFor('hw_${hw.headword.id}'),
+            child: _buildItem(context, hw),
+          );
+        }
+        index -= widget.exact.length;
 
         // Root results divider
         if (showRootDivider && index == 0) {
@@ -739,19 +787,28 @@ class _SplitResultsList extends StatelessWidget {
         if (showRootDivider) index -= 1;
 
         // Root matches
-        if (index < roots.length) {
-          return _buildRootItem(context, roots[index]);
-        }
-        index -= roots.length;
-
-        // Secondary result cards (abbreviations, deconstructor, grammar, help, EPD, variant, spelling, see)
-        if (index < secondary.length) {
-          return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8),
-            child: _buildSecondaryItem(secondary[index]),
+        if (index < widget.roots.length) {
+          final rwf = widget.roots[index];
+          return KeyedSubtree(
+            key: _keyFor('root_${rwf.root.root}'),
+            child: _buildRootItem(context, rwf),
           );
         }
-        index -= secondary.length;
+        index -= widget.roots.length;
+
+        // Secondary result cards (abbreviations, deconstructor, grammar, help, EPD, variant, spelling, see)
+        if (index < widget.secondary.length) {
+          final result = widget.secondary[index];
+          final secId = _secondaryTargetId(result);
+          return KeyedSubtree(
+            key: secId.isNotEmpty ? _keyFor(secId) : null,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: _buildSecondaryItem(result),
+            ),
+          );
+        }
+        index -= widget.secondary.length;
 
         // Partial matches divider
         if (showPartialDivider && index == 0) {
@@ -760,12 +817,12 @@ class _SplitResultsList extends StatelessWidget {
         if (showPartialDivider) index -= 1;
 
         // Partial headword matches
-        if (index < partial.length) {
-          return _buildItem(context, partial[index]);
+        if (index < widget.partial.length) {
+          return _buildItem(context, widget.partial[index]);
         }
-        index -= partial.length;
+        index -= widget.partial.length;
 
-        if (partialLoading && index == 0) {
+        if (widget.partialLoading && index == 0) {
           return const Padding(
             padding: EdgeInsets.symmetric(vertical: 16),
             child: Center(
@@ -777,12 +834,23 @@ class _SplitResultsList extends StatelessWidget {
             ),
           );
         }
-        if (partialLoading) index -= 1;
 
         return const SizedBox.shrink();
       },
     );
   }
+
+  String _secondaryTargetId(Object result) => switch (result) {
+    SeeResult r => 'sec_see_${r.headword}',
+    GrammarDictResult r => 'sec_grammar_${r.headword}',
+    SpellingResult r => 'sec_spelling_${r.headword}',
+    VariantResult r => 'sec_variant_${r.headword}',
+    AbbreviationResult r => 'sec_abbrev_${r.headword}',
+    EpdResult r => 'sec_epd_${r.headword}',
+    DeconstructorResult r => 'sec_decon_${r.headword}',
+    HelpResult r => 'sec_help_${r.headword}',
+    _ => '',
+  };
 
   Widget _buildSecondaryItem(Object result) {
     return switch (result) {
@@ -799,7 +867,7 @@ class _SplitResultsList extends StatelessWidget {
   }
 
   Widget _buildItem(BuildContext context, DpdHeadwordWithRoot hw) {
-    return switch (mode) {
+    return switch (widget.mode) {
       DisplayMode.classic => InlineEntryCard(headword: hw),
       DisplayMode.compact => AccordionCard(headword: hw),
       DisplayMode.bottomDrawer => WordCard(
@@ -810,7 +878,7 @@ class _SplitResultsList extends StatelessWidget {
   }
 
   Widget _buildRootItem(BuildContext context, RootWithFamilies rwf) {
-    return switch (mode) {
+    return switch (widget.mode) {
       DisplayMode.classic => InlineRootCard(rwf: rwf),
       _ => _RootResultCard(rwf: rwf),
     };

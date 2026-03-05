@@ -97,7 +97,6 @@ class SettingsContent extends ConsumerWidget {
           title: 'Show summary box',
           value: settings.showSummary,
           onChanged: notifier.setShowSummary,
-          enabled: false,
         ),
         ListTile(
           enabled: false,
