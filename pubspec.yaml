@@ -44,6 +44,9 @@ dependencies:
   # Progress indicator for DB download
   percent_indicator: ^4.2.3
 
+  # Zip extraction for DB download
+  archive: ^4.0.4
+
   # SVG rendering (logo)
   flutter_svg: ^2.0.17
 

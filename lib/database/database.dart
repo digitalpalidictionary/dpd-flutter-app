@@ -36,12 +36,12 @@ class AppDatabase extends _$AppDatabase {
 
 LazyDatabase _openConnection() {
   return LazyDatabase(() async {
-    final dbFile = await _resolveDbPath();
+    final dbFile = await resolveDbPath();
     return NativeDatabase.createInBackground(dbFile);
   });
 }
 
-Future<File> _resolveDbPath() async {
+Future<File> resolveDbPath() async {
   // DB lives in app-specific external storage (no permissions required).
   // Dev: push via `just push-mobile-db`.
   // Production: downloaded on first launch.
