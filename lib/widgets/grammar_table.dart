@@ -315,6 +315,7 @@ class _SmallAudioButton extends StatefulWidget {
 class _SmallAudioButtonState extends State<_SmallAudioButton> {
   bool _playing = false;
   bool _errored = false;
+  bool _seenTrue = false;
   StreamSubscription<bool>? _sub;
 
   @override
@@ -326,9 +327,15 @@ class _SmallAudioButtonState extends State<_SmallAudioButton> {
   Future<void> _play() async {
     if (_errored) return;
     _sub?.cancel();
+    _seenTrue = false;
     setState(() => _playing = true);
     _sub = AudioService.instance.isPlayingStream.listen((playing) {
-      if (!playing && mounted) setState(() => _playing = false);
+      if (playing) {
+        _seenTrue = true;
+      } else if (_seenTrue && mounted) {
+        _seenTrue = false;
+        setState(() => _playing = false);
+      }
     });
     final ok = await AudioService.instance.play(widget.lemma, widget.gender);
     if (!ok && mounted) {
