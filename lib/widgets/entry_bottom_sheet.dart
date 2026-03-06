@@ -15,6 +15,7 @@ import 'inflection_section.dart';
 import 'sutta_info_section.dart';
 import '../models/frequency_data.dart';
 import '../providers/database_provider.dart';
+import '../providers/internet_provider.dart';
 import '../providers/search_provider.dart';
 import '../providers/template_cache_provider.dart';
 
@@ -167,11 +168,12 @@ class _EntryBottomSheetState extends ConsumerState<EntryBottomSheet>
                 spacing: 0,
                 runSpacing: 0,
                 children: [
-                  DpdPlayButton(
-                    key: ValueKey(ref.watch(settingsProvider.select((s) => s.audioGender))),
-                    lemma: h.lemma1,
-                    gender: ref.watch(settingsProvider.select((s) => s.audioGender)).name,
-                  ),
+                  if (ref.watch(hasInternetProvider).valueOrNull ?? false)
+                    DpdPlayButton(
+                      key: ValueKey(ref.watch(settingsProvider.select((s) => s.audioGender))),
+                      lemma: h.lemma1,
+                      gender: ref.watch(settingsProvider.select((s) => s.audioGender)).name,
+                    ),
                   if (_suttaLoaded && _suttaInfo != null)
                     DpdSectionButton(
                       label: 'sutta',

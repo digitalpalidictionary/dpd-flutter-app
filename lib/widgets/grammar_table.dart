@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../database/database.dart';
 import '../database/dpd_headword_extensions.dart';
+import '../providers/internet_provider.dart';
 import '../providers/settings_provider.dart';
 import '../services/audio_service.dart';
 import '../theme/dpd_colors.dart';
@@ -29,10 +30,12 @@ class GrammarTable extends ConsumerWidget {
       mode: filterMode,
     );
 
+    final hasInternet = ref.watch(hasInternetProvider).valueOrNull ?? false;
+
     final rows = [
       _buildLemmaRow(headword, n),
       _buildLemmaTradRow(headword, n),
-      _buildLemmaIpaRow(headword),
+      _buildLemmaIpaRow(headword, hasInternet),
       _buildGrammarRow(headword, n),
       _buildFamilyRootRow(headword, n),
       _buildRootDetailsRow(headword, n),
@@ -128,12 +131,12 @@ class GrammarTable extends ConsumerWidget {
     return _buildTextRow('Traditional Lemma', lemmaTrad, n);
   }
 
-  TableRow? _buildLemmaIpaRow(DpdHeadwordWithRoot headword) {
+  TableRow? _buildLemmaIpaRow(DpdHeadwordWithRoot headword, bool hasInternet) {
     final ipa = headword.headword.lemmaIpa;
     if (ipa == null || ipa.isEmpty) return null;
     return _buildRow(
       'IPA',
-      _IpaRowContent(ipa: ipa, lemma: headword.headword.lemma1),
+      _IpaRowContent(ipa: ipa, lemma: headword.headword.lemma1, hasInternet: hasInternet),
     );
   }
 
@@ -280,10 +283,15 @@ class GrammarTable extends ConsumerWidget {
 }
 
 class _IpaRowContent extends StatelessWidget {
-  const _IpaRowContent({required this.ipa, required this.lemma});
+  const _IpaRowContent({
+    required this.ipa,
+    required this.lemma,
+    required this.hasInternet,
+  });
 
   final String ipa;
   final String lemma;
+  final bool hasInternet;
 
   @override
   Widget build(BuildContext context) {
@@ -292,9 +300,11 @@ class _IpaRowContent extends StatelessWidget {
       spacing: 6,
       children: [
         Text('/$ipa/'),
-        _SmallAudioButton(lemma: lemma, gender: 'male1'),
-        _SmallAudioButton(lemma: lemma, gender: 'male2'),
-        _SmallAudioButton(lemma: lemma, gender: 'female1'),
+        if (hasInternet) ...[
+          _SmallAudioButton(lemma: lemma, gender: 'male1'),
+          _SmallAudioButton(lemma: lemma, gender: 'male2'),
+          _SmallAudioButton(lemma: lemma, gender: 'female1'),
+        ],
       ],
     );
   }

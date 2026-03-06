@@ -30,6 +30,11 @@
 | percent_indicator | Progress bar for database download |
 | cupertino_icons | iOS-style icons |
 
+### Audio
+| Package | Purpose |
+|---------|---------|
+| just_audio | HTTP audio streaming for word pronunciation playback |
+
 ### Networking
 | Package | Purpose |
 |---------|---------|
