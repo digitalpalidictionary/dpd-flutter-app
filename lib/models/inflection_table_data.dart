@@ -4,11 +4,16 @@ class InflectionForm {
     required this.stem,
     required this.ending,
     required this.word,
+    this.isOccurring = true,
   });
 
   final String stem;
   final String ending;
   final String word;
+
+  /// Whether this form occurs in the Tipitaka (lookup table).
+  /// Defaults to true when no lookup set is provided.
+  final bool isOccurring;
 }
 
 /// One cell in the inflection table: zero or more forms, optional grammar tooltip.

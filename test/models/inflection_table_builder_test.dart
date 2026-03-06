@@ -219,6 +219,74 @@ void main() {
       expect(genSg.forms[1].word, 'dhammno');
     });
 
+    test('all forms are occurring by default when no lookupKeys provided', () {
+      final result = buildInflectionTable(
+        stem: 'dhamm',
+        pattern: 'a masc',
+        pos: 'masc',
+        lemma1: 'dhamma 1',
+        templateLike: 'buddha',
+        templateData: _aMascGrid,
+      );
+
+      expect(result, isNotNull);
+      for (final (_, cells) in result!.rows) {
+        for (final cell in cells) {
+          for (final form in cell.forms) {
+            expect(form.isOccurring, isTrue);
+          }
+        }
+      }
+    });
+
+    test('forms in lookupKeys are occurring, others are not', () {
+      final result = buildInflectionTable(
+        stem: 'dhamm',
+        pattern: 'a masc',
+        pos: 'masc',
+        lemma1: 'dhamma 1',
+        templateLike: 'buddha',
+        templateData: _aMascGrid,
+        lookupKeys: {'dhammo', 'dhammā'}, // nom sg and nom pl
+      );
+
+      expect(result, isNotNull);
+      // nom row: dhammo (sg) and dhammā (pl) — both in lookupKeys
+      final nomRow = result!.rows[0];
+      expect(nomRow.$2[0].forms.first.word, 'dhammo');
+      expect(nomRow.$2[0].forms.first.isOccurring, isTrue);
+      expect(nomRow.$2[1].forms.first.word, 'dhammā');
+      expect(nomRow.$2[1].forms.first.isOccurring, isTrue);
+
+      // acc row: dhammaṃ (sg) and dhamme (pl) — not in lookupKeys
+      final accRow = result.rows[1];
+      expect(accRow.$2[0].forms.first.word, 'dhammaṃ');
+      expect(accRow.$2[0].forms.first.isOccurring, isFalse);
+      expect(accRow.$2[1].forms.first.word, 'dhamme');
+      expect(accRow.$2[1].forms.first.isOccurring, isFalse);
+    });
+
+    test('empty lookupKeys set marks all forms as non-occurring', () {
+      final result = buildInflectionTable(
+        stem: 'dhamm',
+        pattern: 'a masc',
+        pos: 'masc',
+        lemma1: 'dhamma 1',
+        templateLike: 'buddha',
+        templateData: _aMascGrid,
+        lookupKeys: {}, // empty — nothing occurs
+      );
+
+      expect(result, isNotNull);
+      for (final (_, cells) in result!.rows) {
+        for (final cell in cells) {
+          for (final form in cell.forms) {
+            expect(form.isOccurring, isFalse);
+          }
+        }
+      }
+    });
+
     test('empty ending produces empty cell', () {
       final result = buildInflectionTable(
         stem: 'dhamm',

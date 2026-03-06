@@ -35,6 +35,8 @@ const _conjugationPos = {
 /// Builds a structured [InflectionTableData] from raw headword and template data.
 ///
 /// Returns null for indeclinables (stem == '-').
+/// If [lookupKeys] is provided, each form's [InflectionForm.isOccurring] is set
+/// based on whether the word exists in the set.
 InflectionTableData? buildInflectionTable({
   required String? stem,
   required String? pattern,
@@ -42,6 +44,7 @@ InflectionTableData? buildInflectionTable({
   required String lemma1,
   required String? templateLike,
   required String templateData,
+  Set<String>? lookupKeys,
 }) {
   if (stem == null || stem == '-') return null;
 
@@ -81,7 +84,8 @@ InflectionTableData? buildInflectionTable({
         final e = ending as String;
         if (e.isEmpty) continue;
         final word = isIrregular ? e : '$cleanStem$e';
-        forms.add(InflectionForm(stem: cleanStem, ending: e, word: word));
+        final isOccurring = lookupKeys == null || lookupKeys.contains(word);
+        forms.add(InflectionForm(stem: cleanStem, ending: e, word: word, isOccurring: isOccurring));
       }
       cells.add(InflectionCell(forms: forms, grammarTooltip: tooltip));
     }
