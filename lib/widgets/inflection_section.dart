@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../database/database.dart';
 import '../models/inflection_table_builder.dart';
+import '../providers/database_provider.dart';
 import '../theme/dpd_colors.dart';
 import '../widgets/entry_content.dart';
 import 'inflection_table.dart';
@@ -10,7 +12,7 @@ import 'inflection_table.dart';
 ///
 /// Pass [templateCache] from [templateCacheProvider]. If the template is not
 /// found or the stem is indeclinable, the table part is omitted gracefully.
-class InflectionSection extends StatelessWidget {
+class InflectionSection extends ConsumerWidget {
   const InflectionSection({
     super.key,
     required this.headword,
@@ -26,10 +28,13 @@ class InflectionSection extends StatelessWidget {
   final String? lookupKey;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final h = headword;
     final pattern = h.pattern;
     final template = pattern != null ? templateCache[pattern] : null;
+
+    // Use the lookup keys if already loaded; null means not yet ready (graceful degradation).
+    final lookupKeys = ref.watch(lookupKeysProvider).valueOrNull;
 
     final tableData = template != null
         ? buildInflectionTable(
@@ -39,6 +44,7 @@ class InflectionSection extends StatelessWidget {
             lemma1: h.lemma1,
             templateLike: template.templateLike,
             templateData: template.data,
+            lookupKeys: lookupKeys,
           )
         : null;
 

@@ -261,13 +261,17 @@ class InflectionTable extends StatelessWidget {
     final isMatch =
         lookupKey != null && lookupKey.isNotEmpty && form.word == lookupKey.trim();
 
+    // Match highlight takes precedence over gray; gray only applies to non-occurring, non-matched forms.
+    final textStyle = isMatch
+        ? base.copyWith(color: Theme.of(context).colorScheme.onPrimary)
+        : !form.isOccurring
+        ? base.copyWith(color: DpdColors.gray)
+        : base;
+
     final richText = RichText(
       textAlign: TextAlign.center,
       text: TextSpan(
-        // Highlighted forms use onPrimary text on primary blue; normal forms use default.
-        style: isMatch
-            ? base.copyWith(color: Theme.of(context).colorScheme.onPrimary)
-            : base,
+        style: textStyle,
         children: [
           if (form.stem.isNotEmpty) TextSpan(text: form.stem),
           TextSpan(
