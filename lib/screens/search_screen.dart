@@ -13,6 +13,7 @@ import '../providers/autocomplete_provider.dart';
 import '../providers/history_provider.dart';
 import '../providers/search_provider.dart';
 import '../providers/secondary_results_provider.dart';
+import '../providers/database_provider.dart';
 import '../providers/database_update_provider.dart';
 import '../providers/settings_provider.dart';
 import '../services/database_update_service.dart';
@@ -56,6 +57,14 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   OverlayEntry? _infoOverlayEntry;
   bool _showHelpPopup = false;
   _InfoContent? _activeInfo;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(lookupKeysProvider);
+    });
+  }
 
   @override
   void dispose() {
