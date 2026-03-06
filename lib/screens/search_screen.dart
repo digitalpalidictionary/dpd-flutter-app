@@ -13,7 +13,9 @@ import '../providers/autocomplete_provider.dart';
 import '../providers/history_provider.dart';
 import '../providers/search_provider.dart';
 import '../providers/secondary_results_provider.dart';
+import '../providers/database_update_provider.dart';
 import '../providers/settings_provider.dart';
+import '../services/database_update_service.dart';
 import '../theme/dpd_colors.dart';
 import '../utils/velthuis.dart';
 import '../widgets/accordion_card.dart';
@@ -107,6 +109,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     _autocompleteDebounce?.cancel();
     _debounce?.cancel();
     ref.read(searchQueryProvider.notifier).state = '';
+    ref.read(historyProvider.notifier).resetPosition();
     setState(() {});
   }
 
@@ -321,6 +324,8 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                 ],
               ),
             ),
+
+            const _UpdateBanner(),
 
             const SizedBox(height: 8),
 
@@ -1046,6 +1051,49 @@ class _RootResultCard extends StatelessWidget {
               TextSpan(text: root.rootSign),
               TextSpan(text: ' (${root.rootMeaning})'),
               TextSpan(text: ' ${rwf.count}', style: grayStyle),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _UpdateBanner extends ConsumerWidget {
+  const _UpdateBanner();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final updateState = ref.watch(dbUpdateProvider);
+    final theme = Theme.of(context);
+
+    final status = updateState.status;
+    if (status != DbStatus.downloading && status != DbStatus.extracting) {
+      return const SizedBox.shrink();
+    }
+
+    final percent = updateState.progress;
+    final label = status == DbStatus.extracting
+        ? 'Applying update…'
+        : 'Updating database… ${(percent * 100).toStringAsFixed(0)}%';
+
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(8, 4, 8, 0),
+      child: Card(
+        color: DpdColors.primary.withValues(alpha: 0.1),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          child: Row(
+            children: [
+              const SizedBox(
+                width: 20,
+                height: 20,
+                child: CircularProgressIndicator(strokeWidth: 2),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(label, style: theme.textTheme.bodySmall),
+              ),
             ],
           ),
         ),

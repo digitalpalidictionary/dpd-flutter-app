@@ -67,6 +67,10 @@ class HistoryNotifier extends StateNotifier<HistoryState> {
     _persist();
   }
 
+  void resetPosition() {
+    state = state.copyWith(currentIndex: -1);
+  }
+
   void goBack() {
     if (!state.canGoBack) return;
     state = state.copyWith(currentIndex: state.currentIndex + 1);
