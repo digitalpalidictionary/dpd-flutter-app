@@ -6,6 +6,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../database/database.dart';
 import '../database/dpd_headword_extensions.dart';
 import '../providers/settings_provider.dart';
+import '../services/audio_service.dart';
 import '../theme/dpd_colors.dart';
 import '../utils/text_filters.dart';
 
@@ -324,6 +325,49 @@ class DpdSectionButton extends StatelessWidget {
             height: 1.5,
           ),
         ),
+      ),
+    );
+  }
+}
+
+/// Main play button — same visual style as DpdSectionButton but with a play icon.
+/// Grays out if audio fetch fails.
+class DpdPlayButton extends StatefulWidget {
+  const DpdPlayButton({super.key, required this.lemma, required this.gender});
+
+  final String lemma;
+  final String gender;
+
+  @override
+  State<DpdPlayButton> createState() => _DpdPlayButtonState();
+}
+
+class _DpdPlayButtonState extends State<DpdPlayButton> {
+  bool _errored = false;
+
+  Future<void> _play() async {
+    final ok = await AudioService.instance.play(widget.lemma, widget.gender);
+    if (!ok && mounted) setState(() => _errored = true);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final bg = _errored ? theme.colorScheme.onSurface.withValues(alpha: 0.12) : theme.colorScheme.primary;
+    final fg = _errored ? theme.colorScheme.onSurface.withValues(alpha: 0.38) : theme.colorScheme.onPrimary;
+    final shadow = _errored ? <BoxShadow>[] : DpdColors.shadowDefault;
+    return GestureDetector(
+      onTap: _errored ? null : _play,
+      child: Container(
+        margin: const EdgeInsets.fromLTRB(1, 1, 1, 2),
+        padding: const EdgeInsets.fromLTRB(5, 2, 5, 2),
+        decoration: BoxDecoration(
+          color: bg,
+          border: Border.all(color: bg, width: 1),
+          borderRadius: DpdColors.borderRadius,
+          boxShadow: shadow,
+        ),
+        child: Icon(Icons.play_arrow, color: fg, size: 18),
       ),
     );
   }

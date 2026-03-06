@@ -121,6 +121,14 @@ class _EntryViewState extends ConsumerState<_EntryView> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   EntrySummaryBox(headword: h),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 8, top: 4),
+                    child: DpdPlayButton(
+                      key: ValueKey(settings.audioGender),
+                      lemma: h.lemma1,
+                      gender: settings.audioGender.name,
+                    ),
+                  ),
 
                   // Sutta info section
                   if (_suttaLoaded && _suttaInfo != null)
