@@ -18,9 +18,9 @@
 
 ## Phase 3: Flutter Schema & DB Reference Updates (dpd-flutter-app repo)
 
-- [ ] Task: Add `lemma_ipa` (TEXT nullable) column to `DpdHeadwords` Drift table
-- [ ] Task: Add `root_count` (INTEGER nullable) column to `DpdRoots` Drift table
-- [ ] Task: Update DB filename from `dpd.db` to `dpd-mobile.db` in `lib/database/`
-- [ ] Task: Regenerate Drift code (`dart run build_runner build`)
-- [ ] Task: Rename `push-db` → `push-mobile-db` in justfile, update source path
+- [x] Task: Add `lemma_ipa` (TEXT nullable) column to `DpdHeadwords` Drift table [3f22f5c]
+- [x] Task: Add `root_count` (INTEGER nullable) column to `DpdRoots` Drift table [3f22f5c]
+- [x] Task: Update DB filename from `dpd.db` to `dpd-mobile.db` in `lib/database/` [3f22f5c]
+- [x] Task: Regenerate Drift code (`dart run build_runner build`) [3f22f5c]
+- [x] Task: Rename `push-db` → `push-mobile-db` in justfile, update source path [3f22f5c]
 - [ ] Task: Conductor - User Manual Verification 'Phase 3' (Protocol in workflow.md)

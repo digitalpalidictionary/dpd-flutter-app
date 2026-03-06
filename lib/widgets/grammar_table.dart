@@ -128,26 +128,9 @@ class GrammarTable extends ConsumerWidget {
   }
 
   TableRow? _buildLemmaIpaRow(DpdHeadwordWithRoot headword) {
-    // PLACEHOLDER: awaiting IPA conversion implementation
-    const ipa = '';
-    return _buildRow(
-      'IPA',
-      Row(
-        children: [
-          Text(ipa.isEmpty ? '—' : '/$ipa/'),
-          const SizedBox(width: 8),
-          Container(
-            width: 16,
-            height: 16,
-            decoration: BoxDecoration(
-              color: Colors.grey[400],
-              shape: BoxShape.circle,
-            ),
-            child: const Icon(Icons.play_arrow, size: 10, color: Colors.white),
-          ),
-        ],
-      ),
-    );
+    final ipa = headword.headword.lemmaIpa;
+    if (ipa == null || ipa.isEmpty) return null;
+    return _buildTextRow('IPA', '/$ipa/');
   }
 
   TableRow? _buildGrammarRow(DpdHeadwordWithRoot headword, String Function(String) n) {
