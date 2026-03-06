@@ -102,7 +102,6 @@ class SettingsContent extends ConsumerWidget {
           onChanged: notifier.setShowSummary,
         ),
         ListTile(
-          enabled: false,
           title: const Text('Audio gender'),
           trailing: _CompactSegmented<AudioGender>(
             segments: const [
@@ -111,7 +110,6 @@ class SettingsContent extends ConsumerWidget {
             ],
             selected: settings.audioGender,
             onChanged: notifier.setAudioGender,
-            enabled: false,
           ),
         ),
         const SizedBox(height: 16),
