@@ -43,8 +43,8 @@ LazyDatabase _openConnection() {
 
 Future<File> _resolveDbPath() async {
   // DB lives in app-specific external storage (no permissions required).
-  // Dev: push via `just push-db`.
+  // Dev: push via `just push-mobile-db`.
   // Production: downloaded on first launch.
   final extDir = await getExternalStorageDirectory();
-  return File(p.join(extDir!.path, 'dpd.db'));
+  return File(p.join(extDir!.path, 'dpd-mobile.db'));
 }

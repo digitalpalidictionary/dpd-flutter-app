@@ -191,17 +191,9 @@ class GrammarTable extends ConsumerWidget {
   }
 
   TableRow? _buildDerivativeRow(DpdHeadwordWithRoot headword, String Function(String) n) {
-    final derivative = headword.derivative;
     final suffix = headword.suffix;
-    if ((derivative == null || derivative.isEmpty) &&
-        (suffix == null || suffix.isEmpty)) {
-      return null;
-    }
-    final text = [
-      if (derivative != null && derivative.isNotEmpty) derivative,
-      if (suffix != null && suffix.isNotEmpty) '($suffix)',
-    ].join(' ').trim();
-    return _buildTextRow('Derivative', text, n);
+    if (suffix == null || suffix.isEmpty) return null;
+    return _buildTextRow('Derivative', '($suffix)', n);
   }
 
   TableRow? _buildPhoneticRow(DpdHeadwordWithRoot headword, String Function(String) n) {

@@ -31,7 +31,6 @@ void main() {
             sanskritRootMeaning: '',
             sanskritRootClass: '',
             rootExample: '',
-            rootInfo: '',
             dhatupathaNum: '',
             dhatupathaRoot: '',
             dhatupathaPali: '',
@@ -47,7 +46,6 @@ void main() {
             paniniSanskrit: '',
             paniniEnglish: '',
             note: '',
-            rootMatrix: '',
           ),
         );
 
@@ -89,7 +87,6 @@ void main() {
             sanskritRootMeaning: '',
             sanskritRootClass: '',
             rootExample: '',
-            rootInfo: '',
             dhatupathaNum: '',
             dhatupathaRoot: '',
             dhatupathaPali: '',
@@ -105,7 +102,6 @@ void main() {
             paniniSanskrit: '',
             paniniEnglish: '',
             note: '',
-            rootMatrix: '',
           ),
         );
 

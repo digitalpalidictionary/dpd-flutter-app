@@ -21,7 +21,6 @@ DpdHeadword _headword({
     verb: null,
     trans: null,
     plusCase: null,
-    derivative: null,
     meaning1: meaning1,
     meaningLit: null,
     meaning2: null,
@@ -48,8 +47,6 @@ DpdHeadword _headword({
     stem: null,
     pattern: null,
     suffix: null,
-    inflectionsHtml: null,
-    freqHtml: null,
     freqData: null,
     ebtCount: null,
     nonIa: null,
@@ -92,8 +89,6 @@ DpdRoot _root({required String root, String meaning = ''}) {
     paniniSanskrit: '',
     paniniEnglish: '',
     note: '',
-    rootInfo: '',
-    rootMatrix: '',
   );
 }
 
@@ -114,7 +109,7 @@ void main() {
       expect(result, hasLength(1));
       expect(result[0].type, SummaryEntryType.headword);
       expect(result[0].label, 'dhamma');
-      expect(result[0].typeLabel, 'masc');
+      expect(result[0].typeLabel, 'masc.');
       expect(result[0].meaning, 'truth');
       expect(result[0].targetId, 'hw_1');
     });
@@ -130,8 +125,8 @@ void main() {
       expect(result, hasLength(1));
       expect(result[0].type, SummaryEntryType.root);
       expect(result[0].label, '√kam');
-      expect(result[0].typeLabel, 'root');
-      expect(result[0].meaning, 'to love');
+      expect(result[0].typeLabel, 'root.');
+      expect(result[0].meaning, 'kam (to love)');
       expect(result[0].targetId, 'root_√kam');
     });
 
@@ -144,8 +139,8 @@ void main() {
 
       expect(result, hasLength(1));
       expect(result[0].type, SummaryEntryType.see);
-      expect(result[0].typeLabel, 'see');
-      expect(result[0].meaning, 'dhamma 1, dhamma 2');
+      expect(result[0].typeLabel, 'see headword.');
+      expect(result[0].meaning, '');
       expect(result[0].targetId, 'sec_see_dhamma');
     });
 
@@ -157,7 +152,7 @@ void main() {
       final result = buildSummaryEntries([], [], [spelling]);
 
       expect(result[0].type, SummaryEntryType.spelling);
-      expect(result[0].meaning, 'nibbāna, nibbāṇa');
+      expect(result[0].meaning, '');
       expect(result[0].targetId, 'sec_spelling_nibbana');
     });
 
@@ -169,7 +164,7 @@ void main() {
       final result = buildSummaryEntries([], [], [abbrev]);
 
       expect(result[0].type, SummaryEntryType.abbreviation);
-      expect(result[0].typeLabel, 'abbrev');
+      expect(result[0].typeLabel, 'abbreviation.');
       expect(result[0].meaning, 'adjective');
     });
 
@@ -198,7 +193,7 @@ void main() {
         null,
       );
       final result = buildSummaryEntries([hw], [], []);
-      expect(result[0].typeLabel, '');
+      expect(result[0].typeLabel, '.');
     });
   });
 }

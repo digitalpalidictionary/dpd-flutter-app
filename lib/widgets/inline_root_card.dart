@@ -75,13 +75,13 @@ class _InlineRootCardState extends ConsumerState<InlineRootCard> {
             padding: const EdgeInsets.fromLTRB(7, 2, 7, 3),
             child: Wrap(
               children: [
-                if (root.rootInfo.isNotEmpty)
+                if (true)
                   DpdSectionButton(
                     label: 'root info',
                     isActive: _activeSection == 'info',
                     onTap: () => _toggle('info'),
                   ),
-                if (root.rootMatrix.isNotEmpty)
+                if ((root.rootCount ?? 0) > 0)
                   DpdSectionButton(
                     label: 'root matrix',
                     isActive: _activeSection == 'matrix',
@@ -98,10 +98,10 @@ class _InlineRootCardState extends ConsumerState<InlineRootCard> {
           ),
 
           // Content sections
-          if (_activeSection == 'info' && root.rootInfo.isNotEmpty)
+          if (_activeSection == 'info' && true)
             _buildRootInfoSection(),
 
-          if (_activeSection == 'matrix' && root.rootMatrix.isNotEmpty)
+          if (_activeSection == 'matrix' && (root.rootCount ?? 0) > 0)
             _buildRootMatrixSection(),
 
           for (final fam in families)

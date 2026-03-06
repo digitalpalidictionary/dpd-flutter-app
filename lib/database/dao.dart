@@ -503,7 +503,6 @@ extension DpdHeadwordGetters on DpdHeadwordWithRoot {
   String? get verb => headword.verb;
   String? get trans => headword.trans;
   String? get plusCase => headword.plusCase;
-  String? get derivative => headword.derivative;
   String? get meaning1 => headword.meaning1;
   String? get meaningLit => headword.meaningLit;
   String? get meaning2 => headword.meaning2;
@@ -531,8 +530,6 @@ extension DpdHeadwordGetters on DpdHeadwordWithRoot {
   String? get stem => headword.stem;
   String? get pattern => headword.pattern;
   String? get suffix => headword.suffix;
-  String? get inflectionsHtml => headword.inflectionsHtml;
-  String? get freqHtml => headword.freqHtml;
   String? get freqData => headword.freqData;
   int? get ebtCount => headword.ebtCount;
   String? get nonIa => headword.nonIa;

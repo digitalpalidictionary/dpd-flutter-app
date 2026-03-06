@@ -67,7 +67,7 @@ void main() {
 
     test('placeholders return empty string or specific placeholder', () {
       final hw = const DpdHeadword(id: 1, lemma1: 'test');
-      expect(hw.lemmaIpa, isEmpty);
+      expect(hw.lemmaIpa ?? '', isEmpty);
     });
 
     test('lemmaTradClean applies traditional endings from pattern', () {

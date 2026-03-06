@@ -1,9 +1,8 @@
 import 'package:drift/drift.dart';
 
-// Database computed fields (added at build time, not in source DB):
-// - DpdRoots.rootCount: COUNT of headwords with each root (for webapp parity)
+// Computed fields pre-built by dpd-db mobile exporter (not in source DB):
+// - DpdRoots.rootCount: COUNT of headwords with each root
 // - DpdHeadwords.lemmaIpa: IPA transcription via Aksharamukha (IASTPali -> IPA)
-//   Implementation: transliterate.process("IASTPali", "IPA", lemma_clean)
 
 class DpdHeadwords extends Table {
   IntColumn get id => integer()();
@@ -16,7 +15,6 @@ class DpdHeadwords extends Table {
   TextColumn get verb => text().nullable()();
   TextColumn get trans => text().nullable()();
   TextColumn get plusCase => text().named('plus_case').nullable()();
-  TextColumn get derivative => text().nullable()();
   TextColumn get meaning1 => text().named('meaning_1').nullable()();
   TextColumn get meaningLit => text().named('meaning_lit').nullable()();
   TextColumn get meaning2 => text().named('meaning_2').nullable()();
@@ -45,10 +43,8 @@ class DpdHeadwords extends Table {
   TextColumn get stem => text().nullable()();
   TextColumn get pattern => text().nullable()();
   TextColumn get suffix => text().nullable()();
-  TextColumn get inflectionsHtml =>
-      text().named('inflections_html').nullable()();
-  TextColumn get freqHtml => text().named('freq_html').nullable()();
   TextColumn get freqData => text().named('freq_data').nullable()();
+  TextColumn get lemmaIpa => text().named('lemma_ipa').nullable()();
   IntColumn get ebtCount => integer().named('ebt_count').nullable()();
   TextColumn get nonIa => text().named('non_ia').nullable()();
   TextColumn get sanskrit => text().nullable()();
@@ -108,8 +104,7 @@ class DpdRoots extends Table {
   TextColumn get paniniSanskrit => text().named('panini_sanskrit')();
   TextColumn get paniniEnglish => text().named('panini_english')();
   TextColumn get note => text().named('note')();
-  TextColumn get rootInfo => text().named('root_info')();
-  TextColumn get rootMatrix => text().named('root_matrix')();
+  IntColumn get rootCount => integer().named('root_count').nullable()();
 
   @override
   Set<Column> get primaryKey => {root};

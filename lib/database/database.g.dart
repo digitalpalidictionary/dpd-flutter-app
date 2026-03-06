@@ -281,27 +281,16 @@ class $DpdRootsTable extends DpdRoots with TableInfo<$DpdRootsTable, DpdRoot> {
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
-  static const VerificationMeta _rootInfoMeta = const VerificationMeta(
-    'rootInfo',
+  static const VerificationMeta _rootCountMeta = const VerificationMeta(
+    'rootCount',
   );
   @override
-  late final GeneratedColumn<String> rootInfo = GeneratedColumn<String>(
-    'root_info',
+  late final GeneratedColumn<int> rootCount = GeneratedColumn<int>(
+    'root_count',
     aliasedName,
-    false,
-    type: DriftSqlType.string,
-    requiredDuringInsert: true,
-  );
-  static const VerificationMeta _rootMatrixMeta = const VerificationMeta(
-    'rootMatrix',
-  );
-  @override
-  late final GeneratedColumn<String> rootMatrix = GeneratedColumn<String>(
-    'root_matrix',
-    aliasedName,
-    false,
-    type: DriftSqlType.string,
-    requiredDuringInsert: true,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
   );
   @override
   List<GeneratedColumn> get $columns => [
@@ -330,8 +319,7 @@ class $DpdRootsTable extends DpdRoots with TableInfo<$DpdRootsTable, DpdRoot> {
     paniniSanskrit,
     paniniEnglish,
     note,
-    rootInfo,
-    rootMatrix,
+    rootCount,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -605,21 +593,11 @@ class $DpdRootsTable extends DpdRoots with TableInfo<$DpdRootsTable, DpdRoot> {
     } else if (isInserting) {
       context.missing(_noteMeta);
     }
-    if (data.containsKey('root_info')) {
+    if (data.containsKey('root_count')) {
       context.handle(
-        _rootInfoMeta,
-        rootInfo.isAcceptableOrUnknown(data['root_info']!, _rootInfoMeta),
+        _rootCountMeta,
+        rootCount.isAcceptableOrUnknown(data['root_count']!, _rootCountMeta),
       );
-    } else if (isInserting) {
-      context.missing(_rootInfoMeta);
-    }
-    if (data.containsKey('root_matrix')) {
-      context.handle(
-        _rootMatrixMeta,
-        rootMatrix.isAcceptableOrUnknown(data['root_matrix']!, _rootMatrixMeta),
-      );
-    } else if (isInserting) {
-      context.missing(_rootMatrixMeta);
     }
     return context;
   }
@@ -730,14 +708,10 @@ class $DpdRootsTable extends DpdRoots with TableInfo<$DpdRootsTable, DpdRoot> {
         DriftSqlType.string,
         data['${effectivePrefix}note'],
       )!,
-      rootInfo: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}root_info'],
-      )!,
-      rootMatrix: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}root_matrix'],
-      )!,
+      rootCount: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}root_count'],
+      ),
     );
   }
 
@@ -773,8 +747,7 @@ class DpdRoot extends DataClass implements Insertable<DpdRoot> {
   final String paniniSanskrit;
   final String paniniEnglish;
   final String note;
-  final String rootInfo;
-  final String rootMatrix;
+  final int? rootCount;
   const DpdRoot({
     required this.root,
     required this.rootInComps,
@@ -801,8 +774,7 @@ class DpdRoot extends DataClass implements Insertable<DpdRoot> {
     required this.paniniSanskrit,
     required this.paniniEnglish,
     required this.note,
-    required this.rootInfo,
-    required this.rootMatrix,
+    this.rootCount,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -832,8 +804,9 @@ class DpdRoot extends DataClass implements Insertable<DpdRoot> {
     map['panini_sanskrit'] = Variable<String>(paniniSanskrit);
     map['panini_english'] = Variable<String>(paniniEnglish);
     map['note'] = Variable<String>(note);
-    map['root_info'] = Variable<String>(rootInfo);
-    map['root_matrix'] = Variable<String>(rootMatrix);
+    if (!nullToAbsent || rootCount != null) {
+      map['root_count'] = Variable<int>(rootCount);
+    }
     return map;
   }
 
@@ -864,8 +837,9 @@ class DpdRoot extends DataClass implements Insertable<DpdRoot> {
       paniniSanskrit: Value(paniniSanskrit),
       paniniEnglish: Value(paniniEnglish),
       note: Value(note),
-      rootInfo: Value(rootInfo),
-      rootMatrix: Value(rootMatrix),
+      rootCount: rootCount == null && nullToAbsent
+          ? const Value.absent()
+          : Value(rootCount),
     );
   }
 
@@ -904,8 +878,7 @@ class DpdRoot extends DataClass implements Insertable<DpdRoot> {
       paniniSanskrit: serializer.fromJson<String>(json['paniniSanskrit']),
       paniniEnglish: serializer.fromJson<String>(json['paniniEnglish']),
       note: serializer.fromJson<String>(json['note']),
-      rootInfo: serializer.fromJson<String>(json['rootInfo']),
-      rootMatrix: serializer.fromJson<String>(json['rootMatrix']),
+      rootCount: serializer.fromJson<int?>(json['rootCount']),
     );
   }
   @override
@@ -937,8 +910,7 @@ class DpdRoot extends DataClass implements Insertable<DpdRoot> {
       'paniniSanskrit': serializer.toJson<String>(paniniSanskrit),
       'paniniEnglish': serializer.toJson<String>(paniniEnglish),
       'note': serializer.toJson<String>(note),
-      'rootInfo': serializer.toJson<String>(rootInfo),
-      'rootMatrix': serializer.toJson<String>(rootMatrix),
+      'rootCount': serializer.toJson<int?>(rootCount),
     };
   }
 
@@ -968,8 +940,7 @@ class DpdRoot extends DataClass implements Insertable<DpdRoot> {
     String? paniniSanskrit,
     String? paniniEnglish,
     String? note,
-    String? rootInfo,
-    String? rootMatrix,
+    Value<int?> rootCount = const Value.absent(),
   }) => DpdRoot(
     root: root ?? this.root,
     rootInComps: rootInComps ?? this.rootInComps,
@@ -996,8 +967,7 @@ class DpdRoot extends DataClass implements Insertable<DpdRoot> {
     paniniSanskrit: paniniSanskrit ?? this.paniniSanskrit,
     paniniEnglish: paniniEnglish ?? this.paniniEnglish,
     note: note ?? this.note,
-    rootInfo: rootInfo ?? this.rootInfo,
-    rootMatrix: rootMatrix ?? this.rootMatrix,
+    rootCount: rootCount.present ? rootCount.value : this.rootCount,
   );
   DpdRoot copyWithCompanion(DpdRootsCompanion data) {
     return DpdRoot(
@@ -1068,10 +1038,7 @@ class DpdRoot extends DataClass implements Insertable<DpdRoot> {
           ? data.paniniEnglish.value
           : this.paniniEnglish,
       note: data.note.present ? data.note.value : this.note,
-      rootInfo: data.rootInfo.present ? data.rootInfo.value : this.rootInfo,
-      rootMatrix: data.rootMatrix.present
-          ? data.rootMatrix.value
-          : this.rootMatrix,
+      rootCount: data.rootCount.present ? data.rootCount.value : this.rootCount,
     );
   }
 
@@ -1103,8 +1070,7 @@ class DpdRoot extends DataClass implements Insertable<DpdRoot> {
           ..write('paniniSanskrit: $paniniSanskrit, ')
           ..write('paniniEnglish: $paniniEnglish, ')
           ..write('note: $note, ')
-          ..write('rootInfo: $rootInfo, ')
-          ..write('rootMatrix: $rootMatrix')
+          ..write('rootCount: $rootCount')
           ..write(')'))
         .toString();
   }
@@ -1136,8 +1102,7 @@ class DpdRoot extends DataClass implements Insertable<DpdRoot> {
     paniniSanskrit,
     paniniEnglish,
     note,
-    rootInfo,
-    rootMatrix,
+    rootCount,
   ]);
   @override
   bool operator ==(Object other) =>
@@ -1168,8 +1133,7 @@ class DpdRoot extends DataClass implements Insertable<DpdRoot> {
           other.paniniSanskrit == this.paniniSanskrit &&
           other.paniniEnglish == this.paniniEnglish &&
           other.note == this.note &&
-          other.rootInfo == this.rootInfo &&
-          other.rootMatrix == this.rootMatrix);
+          other.rootCount == this.rootCount);
 }
 
 class DpdRootsCompanion extends UpdateCompanion<DpdRoot> {
@@ -1198,8 +1162,7 @@ class DpdRootsCompanion extends UpdateCompanion<DpdRoot> {
   final Value<String> paniniSanskrit;
   final Value<String> paniniEnglish;
   final Value<String> note;
-  final Value<String> rootInfo;
-  final Value<String> rootMatrix;
+  final Value<int?> rootCount;
   final Value<int> rowid;
   const DpdRootsCompanion({
     this.root = const Value.absent(),
@@ -1227,8 +1190,7 @@ class DpdRootsCompanion extends UpdateCompanion<DpdRoot> {
     this.paniniSanskrit = const Value.absent(),
     this.paniniEnglish = const Value.absent(),
     this.note = const Value.absent(),
-    this.rootInfo = const Value.absent(),
-    this.rootMatrix = const Value.absent(),
+    this.rootCount = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   DpdRootsCompanion.insert({
@@ -1257,8 +1219,7 @@ class DpdRootsCompanion extends UpdateCompanion<DpdRoot> {
     required String paniniSanskrit,
     required String paniniEnglish,
     required String note,
-    required String rootInfo,
-    required String rootMatrix,
+    this.rootCount = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : root = Value(root),
        rootInComps = Value(rootInComps),
@@ -1284,9 +1245,7 @@ class DpdRootsCompanion extends UpdateCompanion<DpdRoot> {
        paniniRoot = Value(paniniRoot),
        paniniSanskrit = Value(paniniSanskrit),
        paniniEnglish = Value(paniniEnglish),
-       note = Value(note),
-       rootInfo = Value(rootInfo),
-       rootMatrix = Value(rootMatrix);
+       note = Value(note);
   static Insertable<DpdRoot> custom({
     Expression<String>? root,
     Expression<String>? rootInComps,
@@ -1313,8 +1272,7 @@ class DpdRootsCompanion extends UpdateCompanion<DpdRoot> {
     Expression<String>? paniniSanskrit,
     Expression<String>? paniniEnglish,
     Expression<String>? note,
-    Expression<String>? rootInfo,
-    Expression<String>? rootMatrix,
+    Expression<int>? rootCount,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -1345,8 +1303,7 @@ class DpdRootsCompanion extends UpdateCompanion<DpdRoot> {
       if (paniniSanskrit != null) 'panini_sanskrit': paniniSanskrit,
       if (paniniEnglish != null) 'panini_english': paniniEnglish,
       if (note != null) 'note': note,
-      if (rootInfo != null) 'root_info': rootInfo,
-      if (rootMatrix != null) 'root_matrix': rootMatrix,
+      if (rootCount != null) 'root_count': rootCount,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -1377,8 +1334,7 @@ class DpdRootsCompanion extends UpdateCompanion<DpdRoot> {
     Value<String>? paniniSanskrit,
     Value<String>? paniniEnglish,
     Value<String>? note,
-    Value<String>? rootInfo,
-    Value<String>? rootMatrix,
+    Value<int?>? rootCount,
     Value<int>? rowid,
   }) {
     return DpdRootsCompanion(
@@ -1407,8 +1363,7 @@ class DpdRootsCompanion extends UpdateCompanion<DpdRoot> {
       paniniSanskrit: paniniSanskrit ?? this.paniniSanskrit,
       paniniEnglish: paniniEnglish ?? this.paniniEnglish,
       note: note ?? this.note,
-      rootInfo: rootInfo ?? this.rootInfo,
-      rootMatrix: rootMatrix ?? this.rootMatrix,
+      rootCount: rootCount ?? this.rootCount,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -1493,11 +1448,8 @@ class DpdRootsCompanion extends UpdateCompanion<DpdRoot> {
     if (note.present) {
       map['note'] = Variable<String>(note.value);
     }
-    if (rootInfo.present) {
-      map['root_info'] = Variable<String>(rootInfo.value);
-    }
-    if (rootMatrix.present) {
-      map['root_matrix'] = Variable<String>(rootMatrix.value);
+    if (rootCount.present) {
+      map['root_count'] = Variable<int>(rootCount.value);
     }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
@@ -1533,8 +1485,7 @@ class DpdRootsCompanion extends UpdateCompanion<DpdRoot> {
           ..write('paniniSanskrit: $paniniSanskrit, ')
           ..write('paniniEnglish: $paniniEnglish, ')
           ..write('note: $note, ')
-          ..write('rootInfo: $rootInfo, ')
-          ..write('rootMatrix: $rootMatrix, ')
+          ..write('rootCount: $rootCount, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -1638,17 +1589,6 @@ class $DpdHeadwordsTable extends DpdHeadwords
   @override
   late final GeneratedColumn<String> plusCase = GeneratedColumn<String>(
     'plus_case',
-    aliasedName,
-    true,
-    type: DriftSqlType.string,
-    requiredDuringInsert: false,
-  );
-  static const VerificationMeta _derivativeMeta = const VerificationMeta(
-    'derivative',
-  );
-  @override
-  late final GeneratedColumn<String> derivative = GeneratedColumn<String>(
-    'derivative',
     aliasedName,
     true,
     type: DriftSqlType.string,
@@ -1935,34 +1875,23 @@ class $DpdHeadwordsTable extends DpdHeadwords
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
-  static const VerificationMeta _inflectionsHtmlMeta = const VerificationMeta(
-    'inflectionsHtml',
-  );
-  @override
-  late final GeneratedColumn<String> inflectionsHtml = GeneratedColumn<String>(
-    'inflections_html',
-    aliasedName,
-    true,
-    type: DriftSqlType.string,
-    requiredDuringInsert: false,
-  );
-  static const VerificationMeta _freqHtmlMeta = const VerificationMeta(
-    'freqHtml',
-  );
-  @override
-  late final GeneratedColumn<String> freqHtml = GeneratedColumn<String>(
-    'freq_html',
-    aliasedName,
-    true,
-    type: DriftSqlType.string,
-    requiredDuringInsert: false,
-  );
   static const VerificationMeta _freqDataMeta = const VerificationMeta(
     'freqData',
   );
   @override
   late final GeneratedColumn<String> freqData = GeneratedColumn<String>(
     'freq_data',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _lemmaIpaMeta = const VerificationMeta(
+    'lemmaIpa',
+  );
+  @override
+  late final GeneratedColumn<String> lemmaIpa = GeneratedColumn<String>(
+    'lemma_ipa',
     aliasedName,
     true,
     type: DriftSqlType.string,
@@ -2093,7 +2022,6 @@ class $DpdHeadwordsTable extends DpdHeadwords
     verb,
     trans,
     plusCase,
-    derivative,
     meaning1,
     meaningLit,
     meaning2,
@@ -2120,9 +2048,8 @@ class $DpdHeadwordsTable extends DpdHeadwords
     stem,
     pattern,
     suffix,
-    inflectionsHtml,
-    freqHtml,
     freqData,
+    lemmaIpa,
     ebtCount,
     nonIa,
     sanskrit,
@@ -2207,12 +2134,6 @@ class $DpdHeadwordsTable extends DpdHeadwords
       context.handle(
         _plusCaseMeta,
         plusCase.isAcceptableOrUnknown(data['plus_case']!, _plusCaseMeta),
-      );
-    }
-    if (data.containsKey('derivative')) {
-      context.handle(
-        _derivativeMeta,
-        derivative.isAcceptableOrUnknown(data['derivative']!, _derivativeMeta),
       );
     }
     if (data.containsKey('meaning_1')) {
@@ -2386,25 +2307,16 @@ class $DpdHeadwordsTable extends DpdHeadwords
         suffix.isAcceptableOrUnknown(data['suffix']!, _suffixMeta),
       );
     }
-    if (data.containsKey('inflections_html')) {
-      context.handle(
-        _inflectionsHtmlMeta,
-        inflectionsHtml.isAcceptableOrUnknown(
-          data['inflections_html']!,
-          _inflectionsHtmlMeta,
-        ),
-      );
-    }
-    if (data.containsKey('freq_html')) {
-      context.handle(
-        _freqHtmlMeta,
-        freqHtml.isAcceptableOrUnknown(data['freq_html']!, _freqHtmlMeta),
-      );
-    }
     if (data.containsKey('freq_data')) {
       context.handle(
         _freqDataMeta,
         freqData.isAcceptableOrUnknown(data['freq_data']!, _freqDataMeta),
+      );
+    }
+    if (data.containsKey('lemma_ipa')) {
+      context.handle(
+        _lemmaIpaMeta,
+        lemmaIpa.isAcceptableOrUnknown(data['lemma_ipa']!, _lemmaIpaMeta),
       );
     }
     if (data.containsKey('ebt_count')) {
@@ -2525,10 +2437,6 @@ class $DpdHeadwordsTable extends DpdHeadwords
         DriftSqlType.string,
         data['${effectivePrefix}plus_case'],
       ),
-      derivative: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}derivative'],
-      ),
       meaning1: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}meaning_1'],
@@ -2633,17 +2541,13 @@ class $DpdHeadwordsTable extends DpdHeadwords
         DriftSqlType.string,
         data['${effectivePrefix}suffix'],
       ),
-      inflectionsHtml: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}inflections_html'],
-      ),
-      freqHtml: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}freq_html'],
-      ),
       freqData: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}freq_data'],
+      ),
+      lemmaIpa: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}lemma_ipa'],
       ),
       ebtCount: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
@@ -2709,7 +2613,6 @@ class DpdHeadword extends DataClass implements Insertable<DpdHeadword> {
   final String? verb;
   final String? trans;
   final String? plusCase;
-  final String? derivative;
   final String? meaning1;
   final String? meaningLit;
   final String? meaning2;
@@ -2736,9 +2639,8 @@ class DpdHeadword extends DataClass implements Insertable<DpdHeadword> {
   final String? stem;
   final String? pattern;
   final String? suffix;
-  final String? inflectionsHtml;
-  final String? freqHtml;
   final String? freqData;
+  final String? lemmaIpa;
   final int? ebtCount;
   final String? nonIa;
   final String? sanskrit;
@@ -2761,7 +2663,6 @@ class DpdHeadword extends DataClass implements Insertable<DpdHeadword> {
     this.verb,
     this.trans,
     this.plusCase,
-    this.derivative,
     this.meaning1,
     this.meaningLit,
     this.meaning2,
@@ -2788,9 +2689,8 @@ class DpdHeadword extends DataClass implements Insertable<DpdHeadword> {
     this.stem,
     this.pattern,
     this.suffix,
-    this.inflectionsHtml,
-    this.freqHtml,
     this.freqData,
+    this.lemmaIpa,
     this.ebtCount,
     this.nonIa,
     this.sanskrit,
@@ -2831,9 +2731,6 @@ class DpdHeadword extends DataClass implements Insertable<DpdHeadword> {
     }
     if (!nullToAbsent || plusCase != null) {
       map['plus_case'] = Variable<String>(plusCase);
-    }
-    if (!nullToAbsent || derivative != null) {
-      map['derivative'] = Variable<String>(derivative);
     }
     if (!nullToAbsent || meaning1 != null) {
       map['meaning_1'] = Variable<String>(meaning1);
@@ -2913,14 +2810,11 @@ class DpdHeadword extends DataClass implements Insertable<DpdHeadword> {
     if (!nullToAbsent || suffix != null) {
       map['suffix'] = Variable<String>(suffix);
     }
-    if (!nullToAbsent || inflectionsHtml != null) {
-      map['inflections_html'] = Variable<String>(inflectionsHtml);
-    }
-    if (!nullToAbsent || freqHtml != null) {
-      map['freq_html'] = Variable<String>(freqHtml);
-    }
     if (!nullToAbsent || freqData != null) {
       map['freq_data'] = Variable<String>(freqData);
+    }
+    if (!nullToAbsent || lemmaIpa != null) {
+      map['lemma_ipa'] = Variable<String>(lemmaIpa);
     }
     if (!nullToAbsent || ebtCount != null) {
       map['ebt_count'] = Variable<int>(ebtCount);
@@ -2980,9 +2874,6 @@ class DpdHeadword extends DataClass implements Insertable<DpdHeadword> {
       plusCase: plusCase == null && nullToAbsent
           ? const Value.absent()
           : Value(plusCase),
-      derivative: derivative == null && nullToAbsent
-          ? const Value.absent()
-          : Value(derivative),
       meaning1: meaning1 == null && nullToAbsent
           ? const Value.absent()
           : Value(meaning1),
@@ -3059,15 +2950,12 @@ class DpdHeadword extends DataClass implements Insertable<DpdHeadword> {
       suffix: suffix == null && nullToAbsent
           ? const Value.absent()
           : Value(suffix),
-      inflectionsHtml: inflectionsHtml == null && nullToAbsent
-          ? const Value.absent()
-          : Value(inflectionsHtml),
-      freqHtml: freqHtml == null && nullToAbsent
-          ? const Value.absent()
-          : Value(freqHtml),
       freqData: freqData == null && nullToAbsent
           ? const Value.absent()
           : Value(freqData),
+      lemmaIpa: lemmaIpa == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lemmaIpa),
       ebtCount: ebtCount == null && nullToAbsent
           ? const Value.absent()
           : Value(ebtCount),
@@ -3118,7 +3006,6 @@ class DpdHeadword extends DataClass implements Insertable<DpdHeadword> {
       verb: serializer.fromJson<String?>(json['verb']),
       trans: serializer.fromJson<String?>(json['trans']),
       plusCase: serializer.fromJson<String?>(json['plusCase']),
-      derivative: serializer.fromJson<String?>(json['derivative']),
       meaning1: serializer.fromJson<String?>(json['meaning1']),
       meaningLit: serializer.fromJson<String?>(json['meaningLit']),
       meaning2: serializer.fromJson<String?>(json['meaning2']),
@@ -3147,9 +3034,8 @@ class DpdHeadword extends DataClass implements Insertable<DpdHeadword> {
       stem: serializer.fromJson<String?>(json['stem']),
       pattern: serializer.fromJson<String?>(json['pattern']),
       suffix: serializer.fromJson<String?>(json['suffix']),
-      inflectionsHtml: serializer.fromJson<String?>(json['inflectionsHtml']),
-      freqHtml: serializer.fromJson<String?>(json['freqHtml']),
       freqData: serializer.fromJson<String?>(json['freqData']),
+      lemmaIpa: serializer.fromJson<String?>(json['lemmaIpa']),
       ebtCount: serializer.fromJson<int?>(json['ebtCount']),
       nonIa: serializer.fromJson<String?>(json['nonIa']),
       sanskrit: serializer.fromJson<String?>(json['sanskrit']),
@@ -3177,7 +3063,6 @@ class DpdHeadword extends DataClass implements Insertable<DpdHeadword> {
       'verb': serializer.toJson<String?>(verb),
       'trans': serializer.toJson<String?>(trans),
       'plusCase': serializer.toJson<String?>(plusCase),
-      'derivative': serializer.toJson<String?>(derivative),
       'meaning1': serializer.toJson<String?>(meaning1),
       'meaningLit': serializer.toJson<String?>(meaningLit),
       'meaning2': serializer.toJson<String?>(meaning2),
@@ -3204,9 +3089,8 @@ class DpdHeadword extends DataClass implements Insertable<DpdHeadword> {
       'stem': serializer.toJson<String?>(stem),
       'pattern': serializer.toJson<String?>(pattern),
       'suffix': serializer.toJson<String?>(suffix),
-      'inflectionsHtml': serializer.toJson<String?>(inflectionsHtml),
-      'freqHtml': serializer.toJson<String?>(freqHtml),
       'freqData': serializer.toJson<String?>(freqData),
+      'lemmaIpa': serializer.toJson<String?>(lemmaIpa),
       'ebtCount': serializer.toJson<int?>(ebtCount),
       'nonIa': serializer.toJson<String?>(nonIa),
       'sanskrit': serializer.toJson<String?>(sanskrit),
@@ -3232,7 +3116,6 @@ class DpdHeadword extends DataClass implements Insertable<DpdHeadword> {
     Value<String?> verb = const Value.absent(),
     Value<String?> trans = const Value.absent(),
     Value<String?> plusCase = const Value.absent(),
-    Value<String?> derivative = const Value.absent(),
     Value<String?> meaning1 = const Value.absent(),
     Value<String?> meaningLit = const Value.absent(),
     Value<String?> meaning2 = const Value.absent(),
@@ -3259,9 +3142,8 @@ class DpdHeadword extends DataClass implements Insertable<DpdHeadword> {
     Value<String?> stem = const Value.absent(),
     Value<String?> pattern = const Value.absent(),
     Value<String?> suffix = const Value.absent(),
-    Value<String?> inflectionsHtml = const Value.absent(),
-    Value<String?> freqHtml = const Value.absent(),
     Value<String?> freqData = const Value.absent(),
+    Value<String?> lemmaIpa = const Value.absent(),
     Value<int?> ebtCount = const Value.absent(),
     Value<String?> nonIa = const Value.absent(),
     Value<String?> sanskrit = const Value.absent(),
@@ -3284,7 +3166,6 @@ class DpdHeadword extends DataClass implements Insertable<DpdHeadword> {
     verb: verb.present ? verb.value : this.verb,
     trans: trans.present ? trans.value : this.trans,
     plusCase: plusCase.present ? plusCase.value : this.plusCase,
-    derivative: derivative.present ? derivative.value : this.derivative,
     meaning1: meaning1.present ? meaning1.value : this.meaning1,
     meaningLit: meaningLit.present ? meaningLit.value : this.meaningLit,
     meaning2: meaning2.present ? meaning2.value : this.meaning2,
@@ -3315,11 +3196,8 @@ class DpdHeadword extends DataClass implements Insertable<DpdHeadword> {
     stem: stem.present ? stem.value : this.stem,
     pattern: pattern.present ? pattern.value : this.pattern,
     suffix: suffix.present ? suffix.value : this.suffix,
-    inflectionsHtml: inflectionsHtml.present
-        ? inflectionsHtml.value
-        : this.inflectionsHtml,
-    freqHtml: freqHtml.present ? freqHtml.value : this.freqHtml,
     freqData: freqData.present ? freqData.value : this.freqData,
+    lemmaIpa: lemmaIpa.present ? lemmaIpa.value : this.lemmaIpa,
     ebtCount: ebtCount.present ? ebtCount.value : this.ebtCount,
     nonIa: nonIa.present ? nonIa.value : this.nonIa,
     sanskrit: sanskrit.present ? sanskrit.value : this.sanskrit,
@@ -3346,9 +3224,6 @@ class DpdHeadword extends DataClass implements Insertable<DpdHeadword> {
       verb: data.verb.present ? data.verb.value : this.verb,
       trans: data.trans.present ? data.trans.value : this.trans,
       plusCase: data.plusCase.present ? data.plusCase.value : this.plusCase,
-      derivative: data.derivative.present
-          ? data.derivative.value
-          : this.derivative,
       meaning1: data.meaning1.present ? data.meaning1.value : this.meaning1,
       meaningLit: data.meaningLit.present
           ? data.meaningLit.value
@@ -3391,11 +3266,8 @@ class DpdHeadword extends DataClass implements Insertable<DpdHeadword> {
       stem: data.stem.present ? data.stem.value : this.stem,
       pattern: data.pattern.present ? data.pattern.value : this.pattern,
       suffix: data.suffix.present ? data.suffix.value : this.suffix,
-      inflectionsHtml: data.inflectionsHtml.present
-          ? data.inflectionsHtml.value
-          : this.inflectionsHtml,
-      freqHtml: data.freqHtml.present ? data.freqHtml.value : this.freqHtml,
       freqData: data.freqData.present ? data.freqData.value : this.freqData,
+      lemmaIpa: data.lemmaIpa.present ? data.lemmaIpa.value : this.lemmaIpa,
       ebtCount: data.ebtCount.present ? data.ebtCount.value : this.ebtCount,
       nonIa: data.nonIa.present ? data.nonIa.value : this.nonIa,
       sanskrit: data.sanskrit.present ? data.sanskrit.value : this.sanskrit,
@@ -3427,7 +3299,6 @@ class DpdHeadword extends DataClass implements Insertable<DpdHeadword> {
           ..write('verb: $verb, ')
           ..write('trans: $trans, ')
           ..write('plusCase: $plusCase, ')
-          ..write('derivative: $derivative, ')
           ..write('meaning1: $meaning1, ')
           ..write('meaningLit: $meaningLit, ')
           ..write('meaning2: $meaning2, ')
@@ -3454,9 +3325,8 @@ class DpdHeadword extends DataClass implements Insertable<DpdHeadword> {
           ..write('stem: $stem, ')
           ..write('pattern: $pattern, ')
           ..write('suffix: $suffix, ')
-          ..write('inflectionsHtml: $inflectionsHtml, ')
-          ..write('freqHtml: $freqHtml, ')
           ..write('freqData: $freqData, ')
+          ..write('lemmaIpa: $lemmaIpa, ')
           ..write('ebtCount: $ebtCount, ')
           ..write('nonIa: $nonIa, ')
           ..write('sanskrit: $sanskrit, ')
@@ -3484,7 +3354,6 @@ class DpdHeadword extends DataClass implements Insertable<DpdHeadword> {
     verb,
     trans,
     plusCase,
-    derivative,
     meaning1,
     meaningLit,
     meaning2,
@@ -3511,9 +3380,8 @@ class DpdHeadword extends DataClass implements Insertable<DpdHeadword> {
     stem,
     pattern,
     suffix,
-    inflectionsHtml,
-    freqHtml,
     freqData,
+    lemmaIpa,
     ebtCount,
     nonIa,
     sanskrit,
@@ -3540,7 +3408,6 @@ class DpdHeadword extends DataClass implements Insertable<DpdHeadword> {
           other.verb == this.verb &&
           other.trans == this.trans &&
           other.plusCase == this.plusCase &&
-          other.derivative == this.derivative &&
           other.meaning1 == this.meaning1 &&
           other.meaningLit == this.meaningLit &&
           other.meaning2 == this.meaning2 &&
@@ -3567,9 +3434,8 @@ class DpdHeadword extends DataClass implements Insertable<DpdHeadword> {
           other.stem == this.stem &&
           other.pattern == this.pattern &&
           other.suffix == this.suffix &&
-          other.inflectionsHtml == this.inflectionsHtml &&
-          other.freqHtml == this.freqHtml &&
           other.freqData == this.freqData &&
+          other.lemmaIpa == this.lemmaIpa &&
           other.ebtCount == this.ebtCount &&
           other.nonIa == this.nonIa &&
           other.sanskrit == this.sanskrit &&
@@ -3594,7 +3460,6 @@ class DpdHeadwordsCompanion extends UpdateCompanion<DpdHeadword> {
   final Value<String?> verb;
   final Value<String?> trans;
   final Value<String?> plusCase;
-  final Value<String?> derivative;
   final Value<String?> meaning1;
   final Value<String?> meaningLit;
   final Value<String?> meaning2;
@@ -3621,9 +3486,8 @@ class DpdHeadwordsCompanion extends UpdateCompanion<DpdHeadword> {
   final Value<String?> stem;
   final Value<String?> pattern;
   final Value<String?> suffix;
-  final Value<String?> inflectionsHtml;
-  final Value<String?> freqHtml;
   final Value<String?> freqData;
+  final Value<String?> lemmaIpa;
   final Value<int?> ebtCount;
   final Value<String?> nonIa;
   final Value<String?> sanskrit;
@@ -3646,7 +3510,6 @@ class DpdHeadwordsCompanion extends UpdateCompanion<DpdHeadword> {
     this.verb = const Value.absent(),
     this.trans = const Value.absent(),
     this.plusCase = const Value.absent(),
-    this.derivative = const Value.absent(),
     this.meaning1 = const Value.absent(),
     this.meaningLit = const Value.absent(),
     this.meaning2 = const Value.absent(),
@@ -3673,9 +3536,8 @@ class DpdHeadwordsCompanion extends UpdateCompanion<DpdHeadword> {
     this.stem = const Value.absent(),
     this.pattern = const Value.absent(),
     this.suffix = const Value.absent(),
-    this.inflectionsHtml = const Value.absent(),
-    this.freqHtml = const Value.absent(),
     this.freqData = const Value.absent(),
+    this.lemmaIpa = const Value.absent(),
     this.ebtCount = const Value.absent(),
     this.nonIa = const Value.absent(),
     this.sanskrit = const Value.absent(),
@@ -3699,7 +3561,6 @@ class DpdHeadwordsCompanion extends UpdateCompanion<DpdHeadword> {
     this.verb = const Value.absent(),
     this.trans = const Value.absent(),
     this.plusCase = const Value.absent(),
-    this.derivative = const Value.absent(),
     this.meaning1 = const Value.absent(),
     this.meaningLit = const Value.absent(),
     this.meaning2 = const Value.absent(),
@@ -3726,9 +3587,8 @@ class DpdHeadwordsCompanion extends UpdateCompanion<DpdHeadword> {
     this.stem = const Value.absent(),
     this.pattern = const Value.absent(),
     this.suffix = const Value.absent(),
-    this.inflectionsHtml = const Value.absent(),
-    this.freqHtml = const Value.absent(),
     this.freqData = const Value.absent(),
+    this.lemmaIpa = const Value.absent(),
     this.ebtCount = const Value.absent(),
     this.nonIa = const Value.absent(),
     this.sanskrit = const Value.absent(),
@@ -3752,7 +3612,6 @@ class DpdHeadwordsCompanion extends UpdateCompanion<DpdHeadword> {
     Expression<String>? verb,
     Expression<String>? trans,
     Expression<String>? plusCase,
-    Expression<String>? derivative,
     Expression<String>? meaning1,
     Expression<String>? meaningLit,
     Expression<String>? meaning2,
@@ -3779,9 +3638,8 @@ class DpdHeadwordsCompanion extends UpdateCompanion<DpdHeadword> {
     Expression<String>? stem,
     Expression<String>? pattern,
     Expression<String>? suffix,
-    Expression<String>? inflectionsHtml,
-    Expression<String>? freqHtml,
     Expression<String>? freqData,
+    Expression<String>? lemmaIpa,
     Expression<int>? ebtCount,
     Expression<String>? nonIa,
     Expression<String>? sanskrit,
@@ -3805,7 +3663,6 @@ class DpdHeadwordsCompanion extends UpdateCompanion<DpdHeadword> {
       if (verb != null) 'verb': verb,
       if (trans != null) 'trans': trans,
       if (plusCase != null) 'plus_case': plusCase,
-      if (derivative != null) 'derivative': derivative,
       if (meaning1 != null) 'meaning_1': meaning1,
       if (meaningLit != null) 'meaning_lit': meaningLit,
       if (meaning2 != null) 'meaning_2': meaning2,
@@ -3833,9 +3690,8 @@ class DpdHeadwordsCompanion extends UpdateCompanion<DpdHeadword> {
       if (stem != null) 'stem': stem,
       if (pattern != null) 'pattern': pattern,
       if (suffix != null) 'suffix': suffix,
-      if (inflectionsHtml != null) 'inflections_html': inflectionsHtml,
-      if (freqHtml != null) 'freq_html': freqHtml,
       if (freqData != null) 'freq_data': freqData,
+      if (lemmaIpa != null) 'lemma_ipa': lemmaIpa,
       if (ebtCount != null) 'ebt_count': ebtCount,
       if (nonIa != null) 'non_ia': nonIa,
       if (sanskrit != null) 'sanskrit': sanskrit,
@@ -3861,7 +3717,6 @@ class DpdHeadwordsCompanion extends UpdateCompanion<DpdHeadword> {
     Value<String?>? verb,
     Value<String?>? trans,
     Value<String?>? plusCase,
-    Value<String?>? derivative,
     Value<String?>? meaning1,
     Value<String?>? meaningLit,
     Value<String?>? meaning2,
@@ -3888,9 +3743,8 @@ class DpdHeadwordsCompanion extends UpdateCompanion<DpdHeadword> {
     Value<String?>? stem,
     Value<String?>? pattern,
     Value<String?>? suffix,
-    Value<String?>? inflectionsHtml,
-    Value<String?>? freqHtml,
     Value<String?>? freqData,
+    Value<String?>? lemmaIpa,
     Value<int?>? ebtCount,
     Value<String?>? nonIa,
     Value<String?>? sanskrit,
@@ -3914,7 +3768,6 @@ class DpdHeadwordsCompanion extends UpdateCompanion<DpdHeadword> {
       verb: verb ?? this.verb,
       trans: trans ?? this.trans,
       plusCase: plusCase ?? this.plusCase,
-      derivative: derivative ?? this.derivative,
       meaning1: meaning1 ?? this.meaning1,
       meaningLit: meaningLit ?? this.meaningLit,
       meaning2: meaning2 ?? this.meaning2,
@@ -3941,9 +3794,8 @@ class DpdHeadwordsCompanion extends UpdateCompanion<DpdHeadword> {
       stem: stem ?? this.stem,
       pattern: pattern ?? this.pattern,
       suffix: suffix ?? this.suffix,
-      inflectionsHtml: inflectionsHtml ?? this.inflectionsHtml,
-      freqHtml: freqHtml ?? this.freqHtml,
       freqData: freqData ?? this.freqData,
+      lemmaIpa: lemmaIpa ?? this.lemmaIpa,
       ebtCount: ebtCount ?? this.ebtCount,
       nonIa: nonIa ?? this.nonIa,
       sanskrit: sanskrit ?? this.sanskrit,
@@ -3990,9 +3842,6 @@ class DpdHeadwordsCompanion extends UpdateCompanion<DpdHeadword> {
     }
     if (plusCase.present) {
       map['plus_case'] = Variable<String>(plusCase.value);
-    }
-    if (derivative.present) {
-      map['derivative'] = Variable<String>(derivative.value);
     }
     if (meaning1.present) {
       map['meaning_1'] = Variable<String>(meaning1.value);
@@ -4074,14 +3923,11 @@ class DpdHeadwordsCompanion extends UpdateCompanion<DpdHeadword> {
     if (suffix.present) {
       map['suffix'] = Variable<String>(suffix.value);
     }
-    if (inflectionsHtml.present) {
-      map['inflections_html'] = Variable<String>(inflectionsHtml.value);
-    }
-    if (freqHtml.present) {
-      map['freq_html'] = Variable<String>(freqHtml.value);
-    }
     if (freqData.present) {
       map['freq_data'] = Variable<String>(freqData.value);
+    }
+    if (lemmaIpa.present) {
+      map['lemma_ipa'] = Variable<String>(lemmaIpa.value);
     }
     if (ebtCount.present) {
       map['ebt_count'] = Variable<int>(ebtCount.value);
@@ -4132,7 +3978,6 @@ class DpdHeadwordsCompanion extends UpdateCompanion<DpdHeadword> {
           ..write('verb: $verb, ')
           ..write('trans: $trans, ')
           ..write('plusCase: $plusCase, ')
-          ..write('derivative: $derivative, ')
           ..write('meaning1: $meaning1, ')
           ..write('meaningLit: $meaningLit, ')
           ..write('meaning2: $meaning2, ')
@@ -4159,9 +4004,8 @@ class DpdHeadwordsCompanion extends UpdateCompanion<DpdHeadword> {
           ..write('stem: $stem, ')
           ..write('pattern: $pattern, ')
           ..write('suffix: $suffix, ')
-          ..write('inflectionsHtml: $inflectionsHtml, ')
-          ..write('freqHtml: $freqHtml, ')
           ..write('freqData: $freqData, ')
+          ..write('lemmaIpa: $lemmaIpa, ')
           ..write('ebtCount: $ebtCount, ')
           ..write('nonIa: $nonIa, ')
           ..write('sanskrit: $sanskrit, ')
@@ -10315,8 +10159,7 @@ typedef $$DpdRootsTableCreateCompanionBuilder =
       required String paniniSanskrit,
       required String paniniEnglish,
       required String note,
-      required String rootInfo,
-      required String rootMatrix,
+      Value<int?> rootCount,
       Value<int> rowid,
     });
 typedef $$DpdRootsTableUpdateCompanionBuilder =
@@ -10346,8 +10189,7 @@ typedef $$DpdRootsTableUpdateCompanionBuilder =
       Value<String> paniniSanskrit,
       Value<String> paniniEnglish,
       Value<String> note,
-      Value<String> rootInfo,
-      Value<String> rootMatrix,
+      Value<int?> rootCount,
       Value<int> rowid,
     });
 
@@ -10508,13 +10350,8 @@ class $$DpdRootsTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<String> get rootInfo => $composableBuilder(
-    column: $table.rootInfo,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<String> get rootMatrix => $composableBuilder(
-    column: $table.rootMatrix,
+  ColumnFilters<int> get rootCount => $composableBuilder(
+    column: $table.rootCount,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -10678,13 +10515,8 @@ class $$DpdRootsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<String> get rootInfo => $composableBuilder(
-    column: $table.rootInfo,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<String> get rootMatrix => $composableBuilder(
-    column: $table.rootMatrix,
+  ColumnOrderings<int> get rootCount => $composableBuilder(
+    column: $table.rootCount,
     builder: (column) => ColumnOrderings(column),
   );
 }
@@ -10815,13 +10647,8 @@ class $$DpdRootsTableAnnotationComposer
   GeneratedColumn<String> get note =>
       $composableBuilder(column: $table.note, builder: (column) => column);
 
-  GeneratedColumn<String> get rootInfo =>
-      $composableBuilder(column: $table.rootInfo, builder: (column) => column);
-
-  GeneratedColumn<String> get rootMatrix => $composableBuilder(
-    column: $table.rootMatrix,
-    builder: (column) => column,
-  );
+  GeneratedColumn<int> get rootCount =>
+      $composableBuilder(column: $table.rootCount, builder: (column) => column);
 
   Expression<T> dpdHeadwordsRefs<T extends Object>(
     Expression<T> Function($$DpdHeadwordsTableAnnotationComposer a) f,
@@ -10902,8 +10729,7 @@ class $$DpdRootsTableTableManager
                 Value<String> paniniSanskrit = const Value.absent(),
                 Value<String> paniniEnglish = const Value.absent(),
                 Value<String> note = const Value.absent(),
-                Value<String> rootInfo = const Value.absent(),
-                Value<String> rootMatrix = const Value.absent(),
+                Value<int?> rootCount = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => DpdRootsCompanion(
                 root: root,
@@ -10931,8 +10757,7 @@ class $$DpdRootsTableTableManager
                 paniniSanskrit: paniniSanskrit,
                 paniniEnglish: paniniEnglish,
                 note: note,
-                rootInfo: rootInfo,
-                rootMatrix: rootMatrix,
+                rootCount: rootCount,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -10962,8 +10787,7 @@ class $$DpdRootsTableTableManager
                 required String paniniSanskrit,
                 required String paniniEnglish,
                 required String note,
-                required String rootInfo,
-                required String rootMatrix,
+                Value<int?> rootCount = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => DpdRootsCompanion.insert(
                 root: root,
@@ -10991,8 +10815,7 @@ class $$DpdRootsTableTableManager
                 paniniSanskrit: paniniSanskrit,
                 paniniEnglish: paniniEnglish,
                 note: note,
-                rootInfo: rootInfo,
-                rootMatrix: rootMatrix,
+                rootCount: rootCount,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0
@@ -11062,7 +10885,6 @@ typedef $$DpdHeadwordsTableCreateCompanionBuilder =
       Value<String?> verb,
       Value<String?> trans,
       Value<String?> plusCase,
-      Value<String?> derivative,
       Value<String?> meaning1,
       Value<String?> meaningLit,
       Value<String?> meaning2,
@@ -11089,9 +10911,8 @@ typedef $$DpdHeadwordsTableCreateCompanionBuilder =
       Value<String?> stem,
       Value<String?> pattern,
       Value<String?> suffix,
-      Value<String?> inflectionsHtml,
-      Value<String?> freqHtml,
       Value<String?> freqData,
+      Value<String?> lemmaIpa,
       Value<int?> ebtCount,
       Value<String?> nonIa,
       Value<String?> sanskrit,
@@ -11116,7 +10937,6 @@ typedef $$DpdHeadwordsTableUpdateCompanionBuilder =
       Value<String?> verb,
       Value<String?> trans,
       Value<String?> plusCase,
-      Value<String?> derivative,
       Value<String?> meaning1,
       Value<String?> meaningLit,
       Value<String?> meaning2,
@@ -11143,9 +10963,8 @@ typedef $$DpdHeadwordsTableUpdateCompanionBuilder =
       Value<String?> stem,
       Value<String?> pattern,
       Value<String?> suffix,
-      Value<String?> inflectionsHtml,
-      Value<String?> freqHtml,
       Value<String?> freqData,
+      Value<String?> lemmaIpa,
       Value<int?> ebtCount,
       Value<String?> nonIa,
       Value<String?> sanskrit,
@@ -11239,11 +11058,6 @@ class $$DpdHeadwordsTableFilterComposer
 
   ColumnFilters<String> get plusCase => $composableBuilder(
     column: $table.plusCase,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<String> get derivative => $composableBuilder(
-    column: $table.derivative,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -11372,18 +11186,13 @@ class $$DpdHeadwordsTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<String> get inflectionsHtml => $composableBuilder(
-    column: $table.inflectionsHtml,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<String> get freqHtml => $composableBuilder(
-    column: $table.freqHtml,
-    builder: (column) => ColumnFilters(column),
-  );
-
   ColumnFilters<String> get freqData => $composableBuilder(
     column: $table.freqData,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get lemmaIpa => $composableBuilder(
+    column: $table.lemmaIpa,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -11525,11 +11334,6 @@ class $$DpdHeadwordsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<String> get derivative => $composableBuilder(
-    column: $table.derivative,
-    builder: (column) => ColumnOrderings(column),
-  );
-
   ColumnOrderings<String> get meaning1 => $composableBuilder(
     column: $table.meaning1,
     builder: (column) => ColumnOrderings(column),
@@ -11655,18 +11459,13 @@ class $$DpdHeadwordsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<String> get inflectionsHtml => $composableBuilder(
-    column: $table.inflectionsHtml,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<String> get freqHtml => $composableBuilder(
-    column: $table.freqHtml,
-    builder: (column) => ColumnOrderings(column),
-  );
-
   ColumnOrderings<String> get freqData => $composableBuilder(
     column: $table.freqData,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get lemmaIpa => $composableBuilder(
+    column: $table.lemmaIpa,
     builder: (column) => ColumnOrderings(column),
   );
 
@@ -11790,11 +11589,6 @@ class $$DpdHeadwordsTableAnnotationComposer
   GeneratedColumn<String> get plusCase =>
       $composableBuilder(column: $table.plusCase, builder: (column) => column);
 
-  GeneratedColumn<String> get derivative => $composableBuilder(
-    column: $table.derivative,
-    builder: (column) => column,
-  );
-
   GeneratedColumn<String> get meaning1 =>
       $composableBuilder(column: $table.meaning1, builder: (column) => column);
 
@@ -11886,16 +11680,11 @@ class $$DpdHeadwordsTableAnnotationComposer
   GeneratedColumn<String> get suffix =>
       $composableBuilder(column: $table.suffix, builder: (column) => column);
 
-  GeneratedColumn<String> get inflectionsHtml => $composableBuilder(
-    column: $table.inflectionsHtml,
-    builder: (column) => column,
-  );
-
-  GeneratedColumn<String> get freqHtml =>
-      $composableBuilder(column: $table.freqHtml, builder: (column) => column);
-
   GeneratedColumn<String> get freqData =>
       $composableBuilder(column: $table.freqData, builder: (column) => column);
+
+  GeneratedColumn<String> get lemmaIpa =>
+      $composableBuilder(column: $table.lemmaIpa, builder: (column) => column);
 
   GeneratedColumn<int> get ebtCount =>
       $composableBuilder(column: $table.ebtCount, builder: (column) => column);
@@ -11996,7 +11785,6 @@ class $$DpdHeadwordsTableTableManager
                 Value<String?> verb = const Value.absent(),
                 Value<String?> trans = const Value.absent(),
                 Value<String?> plusCase = const Value.absent(),
-                Value<String?> derivative = const Value.absent(),
                 Value<String?> meaning1 = const Value.absent(),
                 Value<String?> meaningLit = const Value.absent(),
                 Value<String?> meaning2 = const Value.absent(),
@@ -12023,9 +11811,8 @@ class $$DpdHeadwordsTableTableManager
                 Value<String?> stem = const Value.absent(),
                 Value<String?> pattern = const Value.absent(),
                 Value<String?> suffix = const Value.absent(),
-                Value<String?> inflectionsHtml = const Value.absent(),
-                Value<String?> freqHtml = const Value.absent(),
                 Value<String?> freqData = const Value.absent(),
+                Value<String?> lemmaIpa = const Value.absent(),
                 Value<int?> ebtCount = const Value.absent(),
                 Value<String?> nonIa = const Value.absent(),
                 Value<String?> sanskrit = const Value.absent(),
@@ -12048,7 +11835,6 @@ class $$DpdHeadwordsTableTableManager
                 verb: verb,
                 trans: trans,
                 plusCase: plusCase,
-                derivative: derivative,
                 meaning1: meaning1,
                 meaningLit: meaningLit,
                 meaning2: meaning2,
@@ -12075,9 +11861,8 @@ class $$DpdHeadwordsTableTableManager
                 stem: stem,
                 pattern: pattern,
                 suffix: suffix,
-                inflectionsHtml: inflectionsHtml,
-                freqHtml: freqHtml,
                 freqData: freqData,
+                lemmaIpa: lemmaIpa,
                 ebtCount: ebtCount,
                 nonIa: nonIa,
                 sanskrit: sanskrit,
@@ -12102,7 +11887,6 @@ class $$DpdHeadwordsTableTableManager
                 Value<String?> verb = const Value.absent(),
                 Value<String?> trans = const Value.absent(),
                 Value<String?> plusCase = const Value.absent(),
-                Value<String?> derivative = const Value.absent(),
                 Value<String?> meaning1 = const Value.absent(),
                 Value<String?> meaningLit = const Value.absent(),
                 Value<String?> meaning2 = const Value.absent(),
@@ -12129,9 +11913,8 @@ class $$DpdHeadwordsTableTableManager
                 Value<String?> stem = const Value.absent(),
                 Value<String?> pattern = const Value.absent(),
                 Value<String?> suffix = const Value.absent(),
-                Value<String?> inflectionsHtml = const Value.absent(),
-                Value<String?> freqHtml = const Value.absent(),
                 Value<String?> freqData = const Value.absent(),
+                Value<String?> lemmaIpa = const Value.absent(),
                 Value<int?> ebtCount = const Value.absent(),
                 Value<String?> nonIa = const Value.absent(),
                 Value<String?> sanskrit = const Value.absent(),
@@ -12154,7 +11937,6 @@ class $$DpdHeadwordsTableTableManager
                 verb: verb,
                 trans: trans,
                 plusCase: plusCase,
-                derivative: derivative,
                 meaning1: meaning1,
                 meaningLit: meaningLit,
                 meaning2: meaning2,
@@ -12181,9 +11963,8 @@ class $$DpdHeadwordsTableTableManager
                 stem: stem,
                 pattern: pattern,
                 suffix: suffix,
-                inflectionsHtml: inflectionsHtml,
-                freqHtml: freqHtml,
                 freqData: freqData,
+                lemmaIpa: lemmaIpa,
                 ebtCount: ebtCount,
                 nonIa: nonIa,
                 sanskrit: sanskrit,
