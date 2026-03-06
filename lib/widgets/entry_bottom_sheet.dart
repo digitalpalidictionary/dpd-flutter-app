@@ -168,7 +168,7 @@ class _EntryBottomSheetState extends ConsumerState<EntryBottomSheet>
                 spacing: 0,
                 runSpacing: 0,
                 children: [
-                  if (ref.watch(hasInternetProvider).valueOrNull ?? false)
+                  if (ref.watch(hasInternetProvider).valueOrNull ?? true)
                     DpdPlayButton(
                       key: ValueKey(ref.watch(settingsProvider.select((s) => s.audioGender))),
                       lemma: h.lemma1,

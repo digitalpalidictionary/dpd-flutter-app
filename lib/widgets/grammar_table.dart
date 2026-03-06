@@ -30,7 +30,7 @@ class GrammarTable extends ConsumerWidget {
       mode: filterMode,
     );
 
-    final hasInternet = ref.watch(hasInternetProvider).valueOrNull ?? false;
+    final hasInternet = ref.watch(hasInternetProvider).valueOrNull ?? true;
 
     final rows = [
       _buildLemmaRow(headword, n),
