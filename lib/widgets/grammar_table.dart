@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -315,36 +313,16 @@ class _SmallAudioButton extends StatefulWidget {
 class _SmallAudioButtonState extends State<_SmallAudioButton> {
   bool _playing = false;
   bool _errored = false;
-  bool _seenTrue = false;
-  StreamSubscription<bool>? _sub;
-
-  @override
-  void dispose() {
-    _sub?.cancel();
-    super.dispose();
-  }
 
   Future<void> _play() async {
     if (_errored) return;
-    _sub?.cancel();
-    _seenTrue = false;
     setState(() => _playing = true);
-    _sub = AudioService.instance.isPlayingStream.listen((playing) {
-      if (playing) {
-        _seenTrue = true;
-      } else if (_seenTrue && mounted) {
-        _seenTrue = false;
-        setState(() => _playing = false);
-      }
-    });
     final ok = await AudioService.instance.play(widget.lemma, widget.gender);
-    if (!ok && mounted) {
-      _sub?.cancel();
-      setState(() {
-        _playing = false;
-        _errored = true;
-      });
-    }
+    if (!mounted) return;
+    setState(() {
+      _playing = false;
+      if (!ok) _errored = true;
+    });
   }
 
   @override
