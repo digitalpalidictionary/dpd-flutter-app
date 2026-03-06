@@ -61,8 +61,8 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(lookupKeysProvider);
+    Future.delayed(const Duration(seconds: 10), () {
+      if (mounted) ref.read(lookupKeysProvider);
     });
   }
 
