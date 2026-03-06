@@ -1,22 +1,11 @@
 # DPD Flutter TODO
 
 
-## Data
-- Optimize mobile.db (remove unused HTML columns)
-- add IPA column to db
-- Add thanks/bibliography TSV data as DB columns (replace asset bundle approach)
-- Add wordlist to database so can ... Gray out unattested forms
-
-## Stage 2: Mobile DB Distribution
-- Build GitHub Actions workflow in dpd-db to produce and upload `dpd-mobile.db` as a release asset
-- In-app DB update/download mechanism: check GitHub Releases for new version, download if available
-- Version checking: compare local DB version (db_info table) against latest GitHub Release tag
+## Performance
+- Root family table slow for large families (e.g. √kar ~1000 entries): `IntrinsicColumnWidth()` on 3 of 4 columns forces O(n) layout passes; all rows rendered eagerly with no virtualization. Fix: replace with fixed/flex widths and/or switch to `ListView.builder`.
 
 ## Postponed
-- Display IPA transcription in grammar table
 - Implement audio playback service and UI buttons
-- Add Velthuis typing help guide (track added, implementation in progress)
-- Gray out unattested forms in inflection tables
 
 ## Review
 - Accessibility audit and keyboard refinements
