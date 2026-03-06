@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../database/database.dart';
 import '../database/dpd_headword_extensions.dart';
 import '../providers/settings_provider.dart';
+import '../services/audio_service.dart';
 import '../theme/dpd_colors.dart';
 import '../utils/text_filters.dart';
 import 'entry_content.dart';
@@ -130,7 +131,10 @@ class GrammarTable extends ConsumerWidget {
   TableRow? _buildLemmaIpaRow(DpdHeadwordWithRoot headword) {
     final ipa = headword.headword.lemmaIpa;
     if (ipa == null || ipa.isEmpty) return null;
-    return _buildTextRow('IPA', '/$ipa/');
+    return _buildRow(
+      'IPA',
+      _IpaRowContent(ipa: ipa, lemma: headword.headword.lemma1),
+    );
   }
 
   TableRow? _buildGrammarRow(DpdHeadwordWithRoot headword, String Function(String) n) {
@@ -271,6 +275,83 @@ class GrammarTable extends ConsumerWidget {
     return _buildRow(
       'Sanskrit Root',
       Text(n(details), style: const TextStyle(fontStyle: FontStyle.italic)),
+    );
+  }
+}
+
+class _IpaRowContent extends StatelessWidget {
+  const _IpaRowContent({required this.ipa, required this.lemma});
+
+  final String ipa;
+  final String lemma;
+
+  @override
+  Widget build(BuildContext context) {
+    return Wrap(
+      crossAxisAlignment: WrapCrossAlignment.center,
+      spacing: 4,
+      children: [
+        Text('/$ipa/'),
+        _SmallAudioButton(lemma: lemma, gender: 'male1', label: 'M1'),
+        _SmallAudioButton(lemma: lemma, gender: 'male2', label: 'M2'),
+        _SmallAudioButton(lemma: lemma, gender: 'female1', label: 'F'),
+      ],
+    );
+  }
+}
+
+class _SmallAudioButton extends StatefulWidget {
+  const _SmallAudioButton({
+    required this.lemma,
+    required this.gender,
+    required this.label,
+  });
+
+  final String lemma;
+  final String gender;
+  final String label;
+
+  @override
+  State<_SmallAudioButton> createState() => _SmallAudioButtonState();
+}
+
+class _SmallAudioButtonState extends State<_SmallAudioButton> {
+  bool _errored = false;
+
+  Future<void> _play() async {
+    final ok = await AudioService.instance.play(widget.lemma, widget.gender);
+    if (!ok && mounted) setState(() => _errored = true);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final bg = _errored
+        ? theme.colorScheme.onSurface.withValues(alpha: 0.12)
+        : theme.colorScheme.primary;
+    final fg = _errored
+        ? theme.colorScheme.onSurface.withValues(alpha: 0.38)
+        : theme.colorScheme.onPrimary;
+    return GestureDetector(
+      onTap: _errored ? null : _play,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
+        decoration: BoxDecoration(
+          color: bg,
+          borderRadius: DpdColors.borderRadius,
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(Icons.play_arrow, color: fg, size: 12),
+            const SizedBox(width: 2),
+            Text(
+              widget.label,
+              style: TextStyle(color: fg, fontSize: 10, fontWeight: FontWeight.w500),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
