@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -331,7 +333,7 @@ class DpdSectionButton extends StatelessWidget {
 }
 
 /// Main play button — same visual style as DpdSectionButton but with a play icon.
-/// Grays out if audio fetch fails.
+/// Shows active color while playing, grays out if audio fetch fails.
 class DpdPlayButton extends StatefulWidget {
   const DpdPlayButton({super.key, required this.lemma, required this.gender});
 
@@ -343,19 +345,52 @@ class DpdPlayButton extends StatefulWidget {
 }
 
 class _DpdPlayButtonState extends State<DpdPlayButton> {
+  bool _playing = false;
   bool _errored = false;
+  StreamSubscription<bool>? _sub;
+
+  @override
+  void dispose() {
+    _sub?.cancel();
+    super.dispose();
+  }
 
   Future<void> _play() async {
+    if (_errored) return;
+    _sub?.cancel();
+    setState(() => _playing = true);
+    _sub = AudioService.instance.isPlayingStream.listen((playing) {
+      if (!playing && mounted) setState(() => _playing = false);
+    });
     final ok = await AudioService.instance.play(widget.lemma, widget.gender);
-    if (!ok && mounted) setState(() => _errored = true);
+    if (!ok && mounted) {
+      _sub?.cancel();
+      setState(() {
+        _playing = false;
+        _errored = true;
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final bg = _errored ? theme.colorScheme.onSurface.withValues(alpha: 0.12) : theme.colorScheme.primary;
-    final fg = _errored ? theme.colorScheme.onSurface.withValues(alpha: 0.38) : theme.colorScheme.onPrimary;
-    final shadow = _errored ? <BoxShadow>[] : DpdColors.shadowDefault;
+    final Color bg;
+    final Color fg;
+    final List<BoxShadow> shadow;
+    if (_errored) {
+      bg = theme.colorScheme.onSurface.withValues(alpha: 0.12);
+      fg = theme.colorScheme.onSurface.withValues(alpha: 0.38);
+      shadow = [];
+    } else if (_playing) {
+      bg = theme.colorScheme.secondary;
+      fg = theme.colorScheme.onSecondary;
+      shadow = DpdColors.shadowHover;
+    } else {
+      bg = theme.colorScheme.primary;
+      fg = theme.colorScheme.onPrimary;
+      shadow = DpdColors.shadowDefault;
+    }
     return GestureDetector(
       onTap: _errored ? null : _play,
       child: Container(

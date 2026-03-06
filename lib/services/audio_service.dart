@@ -7,6 +7,8 @@ class AudioService {
 
   final AudioPlayer _player = AudioPlayer();
 
+  Stream<bool> get isPlayingStream => _player.playingStream;
+
   static String buildUrl(String lemma, String gender) {
     final clean = lemma.replaceAll(
       RegExp(r' \d.*$', unicode: true),

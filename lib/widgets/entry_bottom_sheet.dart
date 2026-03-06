@@ -167,6 +167,11 @@ class _EntryBottomSheetState extends ConsumerState<EntryBottomSheet>
                 spacing: 0,
                 runSpacing: 0,
                 children: [
+                  DpdPlayButton(
+                    key: ValueKey(ref.watch(settingsProvider.select((s) => s.audioGender))),
+                    lemma: h.lemma1,
+                    gender: ref.watch(settingsProvider.select((s) => s.audioGender)).name,
+                  ),
                   if (_suttaLoaded && _suttaInfo != null)
                     DpdSectionButton(
                       label: 'sutta',
