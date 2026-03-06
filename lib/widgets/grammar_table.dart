@@ -289,27 +289,22 @@ class _IpaRowContent extends StatelessWidget {
   Widget build(BuildContext context) {
     return Wrap(
       crossAxisAlignment: WrapCrossAlignment.center,
-      spacing: 4,
+      spacing: 6,
       children: [
         Text('/$ipa/'),
-        _SmallAudioButton(lemma: lemma, gender: 'male1', label: 'M1'),
-        _SmallAudioButton(lemma: lemma, gender: 'male2', label: 'M2'),
-        _SmallAudioButton(lemma: lemma, gender: 'female1', label: 'F'),
+        _SmallAudioButton(lemma: lemma, gender: 'male1'),
+        _SmallAudioButton(lemma: lemma, gender: 'male2'),
+        _SmallAudioButton(lemma: lemma, gender: 'female1'),
       ],
     );
   }
 }
 
 class _SmallAudioButton extends StatefulWidget {
-  const _SmallAudioButton({
-    required this.lemma,
-    required this.gender,
-    required this.label,
-  });
+  const _SmallAudioButton({required this.lemma, required this.gender});
 
   final String lemma;
   final String gender;
-  final String label;
 
   @override
   State<_SmallAudioButton> createState() => _SmallAudioButtonState();
@@ -335,22 +330,9 @@ class _SmallAudioButtonState extends State<_SmallAudioButton> {
     return GestureDetector(
       onTap: _errored ? null : _play,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
-        decoration: BoxDecoration(
-          color: bg,
-          borderRadius: DpdColors.borderRadius,
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(Icons.play_arrow, color: fg, size: 12),
-            const SizedBox(width: 2),
-            Text(
-              widget.label,
-              style: TextStyle(color: fg, fontSize: 10, fontWeight: FontWeight.w500),
-            ),
-          ],
-        ),
+        padding: const EdgeInsets.all(3),
+        decoration: BoxDecoration(color: bg, borderRadius: DpdColors.borderRadius),
+        child: Icon(Icons.play_arrow, color: fg, size: 12),
       ),
     );
   }
