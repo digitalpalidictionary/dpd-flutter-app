@@ -71,6 +71,29 @@ void main() {
     expect(result.root!.rootMeaning, 'to love');
   });
 
+  test('getAllLookupKeys returns a Set of all lookup_key values', () async {
+    await dao.into(dao.lookup).insert(
+      LookupData(lookupKey: 'dhammo', headwords: '[1]'),
+    );
+    await dao.into(dao.lookup).insert(
+      LookupData(lookupKey: 'dhammā', headwords: '[1]'),
+    );
+    await dao.into(dao.lookup).insert(
+      LookupData(lookupKey: 'kāma', headwords: '[2]'),
+    );
+
+    final keys = await dao.getAllLookupKeys();
+
+    expect(keys, isA<Set<String>>());
+    expect(keys.length, 3);
+    expect(keys, containsAll(['dhammo', 'dhammā', 'kāma']));
+  });
+
+  test('getAllLookupKeys returns empty set when lookup table is empty', () async {
+    final keys = await dao.getAllLookupKeys();
+    expect(keys, isEmpty);
+  });
+
   test('getById joins DpdRoots and returns DpdHeadwordWithRoot', () async {
     // Insert a root
     await dao

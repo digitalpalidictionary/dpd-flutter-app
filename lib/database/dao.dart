@@ -167,6 +167,11 @@ class DpdDao extends DatabaseAccessor<AppDatabase> with _$DpdDaoMixin {
     return hw;
   }
 
+  Future<Set<String>> getAllLookupKeys() async {
+    final rows = await (selectOnly(lookup)..addColumns([lookup.lookupKey])).get();
+    return rows.map((r) => r.read(lookup.lookupKey)!).toSet();
+  }
+
   Future<LookupData?> getLookupRow(String key) {
     final normalized = _normalizeQuery(key);
     return (select(
