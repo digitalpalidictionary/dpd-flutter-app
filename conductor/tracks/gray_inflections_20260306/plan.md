@@ -37,4 +37,10 @@
   - [x] Pass the set (or `null` if not yet loaded) to `buildInflectionTable()`
   - [x] Verify inflection tables render with gray non-occurring forms
 
+- [x] Task: Rearchitect — per-table targeted lookup query (replaces lookupKeysProvider) [b5886d2]
+  - [x] Remove `lookupKeysProvider` and eager init (too slow: 10.8s for 1.28M keys)
+  - [x] Add `extractWordForms()` helper to `inflection_table_builder.dart`
+  - [x] Add `checkWordsInLookup()` to `dao.dart`
+  - [x] Convert `InflectionSection` to `ConsumerStatefulWidget` with lazy per-table load
+
 - [ ] Task: Conductor - User Manual Verification 'Gray Out Non-Occurring Inflection Forms' (Protocol in workflow.md)
