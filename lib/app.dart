@@ -4,11 +4,14 @@ import 'package:google_fonts/google_fonts.dart';
 
 import 'providers/autocomplete_provider.dart';
 import 'providers/database_provider.dart';
+import 'providers/database_update_provider.dart';
 import 'providers/settings_provider.dart';
+import 'screens/download_screen.dart';
 import 'screens/entry_screen.dart';
 import 'screens/root_screen.dart';
 import 'screens/search_screen.dart';
 import 'screens/settings_screen.dart';
+import 'services/database_update_service.dart';
 import 'theme/dpd_colors.dart';
 
 class DpdApp extends ConsumerStatefulWidget {
@@ -23,10 +26,7 @@ class _DpdAppState extends ConsumerState<DpdApp> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(databaseProvider);
-      ref.read(searchIndexProvider);
-      ref.read(compoundFamilyKeysProvider);
-      ref.read(idiomKeysProvider);
+      ref.read(dbUpdateProvider.notifier).checkForUpdates();
     });
   }
 
@@ -120,7 +120,7 @@ class _DpdAppState extends ConsumerState<DpdApp> {
   Route<dynamic>? _onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
       case '/':
-        return MaterialPageRoute(builder: (_) => const SearchScreen());
+        return MaterialPageRoute(builder: (_) => const _DbGate());
       case '/entry':
         final id = settings.arguments as int?;
         if (id == null) return null;
@@ -133,6 +133,44 @@ class _DpdAppState extends ConsumerState<DpdApp> {
         return MaterialPageRoute(builder: (_) => const SettingsScreen());
       default:
         return null;
+    }
+  }
+}
+
+class _DbGate extends ConsumerStatefulWidget {
+  const _DbGate();
+
+  @override
+  ConsumerState<_DbGate> createState() => _DbGateState();
+}
+
+class _DbGateState extends ConsumerState<_DbGate> {
+  bool _eagerLoaded = false;
+
+  void _eagerLoadProviders() {
+    if (_eagerLoaded) return;
+    _eagerLoaded = true;
+    ref.read(databaseProvider);
+    ref.read(searchIndexProvider);
+    ref.read(compoundFamilyKeysProvider);
+    ref.read(idiomKeysProvider);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final updateState = ref.watch(dbUpdateProvider);
+
+    switch (updateState.status) {
+      case DbStatus.checking:
+      case DbStatus.noDatabase:
+      case DbStatus.downloading:
+      case DbStatus.extracting:
+      case DbStatus.error:
+        return const DownloadScreen();
+      case DbStatus.upToDate:
+      case DbStatus.updateAvailable:
+        _eagerLoadProviders();
+        return const SearchScreen();
     }
   }
 }

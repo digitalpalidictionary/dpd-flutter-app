@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../providers/database_update_provider.dart';
 import '../providers/settings_provider.dart';
+import '../services/database_update_service.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -10,6 +12,7 @@ class SettingsScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final settings = ref.watch(settingsProvider);
     final notifier = ref.read(settingsProvider.notifier);
+    final updateState = ref.watch(dbUpdateProvider);
 
     return Scaffold(
       appBar: AppBar(title: const Text('Settings')),
@@ -73,6 +76,24 @@ class SettingsScreen extends ConsumerWidget {
                 onSelectionChanged: (s) => notifier.setDisplayMode(s.first),
               ),
             ),
+          ),
+          const _SectionHeader('Database'),
+          ListTile(
+            title: const Text('Database version'),
+            trailing: Text(updateState.localVersion ?? 'unknown'),
+          ),
+          ListTile(
+            title: const Text('Check for updates'),
+            trailing: updateState.status == DbStatus.checking
+                ? const SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  )
+                : const Icon(Icons.refresh),
+            onTap: updateState.status == DbStatus.checking
+                ? null
+                : () => ref.read(dbUpdateProvider.notifier).checkForUpdates(),
           ),
           const _SectionHeader('About'),
           ListTile(
