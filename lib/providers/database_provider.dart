@@ -21,11 +21,6 @@ final idiomKeysProvider = FutureProvider<Set<String>>((ref) async {
   return ref.watch(daoProvider).getAllIdiomKeys();
 });
 
-/// All keys from the lookup table, loaded once in the background after app start.
-/// Used to determine whether inflected forms occur in the Tipitaka.
-final lookupKeysProvider = FutureProvider<Set<String>>((ref) async {
-  return ref.watch(daoProvider).getAllLookupKeys();
-});
 
 final basesForRootProvider = FutureProvider.autoDispose
     .family<List<String>, String>((ref, rootKey) {

@@ -32,6 +32,27 @@ const _conjugationPos = {
   'pr',
 };
 
+/// Extracts the set of all inflected word forms from a template without building
+/// the full table structure. Used for targeted lookup-table occurrence checks.
+Set<String> extractWordForms({required String? stem, required String templateData}) {
+  if (stem == null || stem == '-') return {};
+  final isIrregular = stem == '*';
+  final cleanStem = isIrregular ? '' : stem.replaceAll(RegExp(r'^[!]'), '');
+  final grid = jsonDecode(templateData) as List;
+  final words = <String>{};
+  for (int row = 1; row < grid.length; row++) {
+    final rowData = grid[row] as List;
+    for (int col = 1; col < rowData.length; col += 2) {
+      for (final ending in rowData[col] as List) {
+        final e = ending as String;
+        if (e.isEmpty) continue;
+        words.add(isIrregular ? e : '$cleanStem$e');
+      }
+    }
+  }
+  return words;
+}
+
 /// Builds a structured [InflectionTableData] from raw headword and template data.
 ///
 /// Returns null for indeclinables (stem == '-').

@@ -12,7 +12,10 @@ import 'inflection_table.dart';
 ///
 /// Pass [templateCache] from [templateCacheProvider]. If the template is not
 /// found or the stem is indeclinable, the table part is omitted gracefully.
-class InflectionSection extends ConsumerWidget {
+///
+/// Occurrence data (gray forms) is loaded lazily per-table via a targeted
+/// lookup query — only the ~50-200 words in this specific table are checked.
+class InflectionSection extends ConsumerStatefulWidget {
   const InflectionSection({
     super.key,
     required this.headword,
@@ -28,13 +31,45 @@ class InflectionSection extends ConsumerWidget {
   final String? lookupKey;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final h = headword;
-    final pattern = h.pattern;
-    final template = pattern != null ? templateCache[pattern] : null;
+  ConsumerState<InflectionSection> createState() => _InflectionSectionState();
+}
 
-    // Use the lookup keys if already loaded; null means not yet ready (graceful degradation).
-    final lookupKeys = ref.watch(lookupKeysProvider).valueOrNull;
+class _InflectionSectionState extends ConsumerState<InflectionSection> {
+  Set<String>? _occurrenceSet;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadOccurrences();
+  }
+
+  @override
+  void didUpdateWidget(InflectionSection oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.headword.id != widget.headword.id) {
+      setState(() => _occurrenceSet = null);
+      _loadOccurrences();
+    }
+  }
+
+  Future<void> _loadOccurrences() async {
+    final h = widget.headword;
+    final pattern = h.pattern;
+    final template = pattern != null ? widget.templateCache[pattern] : null;
+    if (template == null) return;
+
+    final words = extractWordForms(stem: h.stem, templateData: template.data);
+    if (words.isEmpty) return;
+
+    final existing = await ref.read(daoProvider).checkWordsInLookup(words);
+    if (mounted) setState(() => _occurrenceSet = existing);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final h = widget.headword;
+    final pattern = h.pattern;
+    final template = pattern != null ? widget.templateCache[pattern] : null;
 
     final tableData = template != null
         ? buildInflectionTable(
@@ -44,7 +79,7 @@ class InflectionSection extends ConsumerWidget {
             lemma1: h.lemma1,
             templateLike: template.templateLike,
             templateData: template.data,
-            lookupKeys: lookupKeys,
+            lookupKeys: _occurrenceSet,
           )
         : null;
 
@@ -54,7 +89,7 @@ class InflectionSection extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           if (tableData != null) ...[
-            InflectionTable(data: tableData, lookupKey: lookupKey),
+            InflectionTable(data: tableData, lookupKey: widget.lookupKey),
             const SizedBox(height: 12),
           ],
           _InflectionFooter(headwordId: h.id, lemma1: h.lemma1),

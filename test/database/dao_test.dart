@@ -71,6 +71,21 @@ void main() {
     expect(result.root!.rootMeaning, 'to love');
   });
 
+  test('checkWordsInLookup returns only words that exist in lookup', () async {
+    await dao.into(dao.lookup).insert(LookupData(lookupKey: 'dhammo', headwords: '[1]'));
+    await dao.into(dao.lookup).insert(LookupData(lookupKey: 'dhammā', headwords: '[1]'));
+
+    final result = await dao.checkWordsInLookup({'dhammo', 'dhammā', 'dhammañ'});
+
+    expect(result, {'dhammo', 'dhammā'});
+    expect(result.contains('dhammañ'), isFalse);
+  });
+
+  test('checkWordsInLookup returns empty set for empty input', () async {
+    final result = await dao.checkWordsInLookup({});
+    expect(result, isEmpty);
+  });
+
   test('getAllLookupKeys returns a Set of all lookup_key values', () async {
     await dao.into(dao.lookup).insert(
       LookupData(lookupKey: 'dhammo', headwords: '[1]'),

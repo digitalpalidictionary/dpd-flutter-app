@@ -94,6 +94,34 @@ final _irregularGrid = _encodeGrid([
 ]);
 
 void main() {
+  group('extractWordForms', () {
+    test('extracts all word forms from a standard grid', () {
+      final words = extractWordForms(stem: 'dhamm', templateData: _aMascGrid);
+      expect(words, containsAll(['dhammo', 'dhammā', 'dhammaṃ', 'dhamme']));
+      expect(words.length, 4);
+    });
+
+    test('returns empty set for indeclinable stem', () {
+      final words = extractWordForms(stem: '-', templateData: _aMascGrid);
+      expect(words, isEmpty);
+    });
+
+    test('returns empty set for null stem', () {
+      final words = extractWordForms(stem: null, templateData: _aMascGrid);
+      expect(words, isEmpty);
+    });
+
+    test('handles irregular stem (*) — uses endings as full forms', () {
+      final words = extractWordForms(stem: '*', templateData: _irregularGrid);
+      expect(words, {'atthi'});
+    });
+
+    test('strips ! marker from stem', () {
+      final words = extractWordForms(stem: '!dhamm', templateData: _aMascGrid);
+      expect(words, containsAll(['dhammo', 'dhammā']));
+    });
+  });
+
   group('buildInflectionTable', () {
     test('standard a-masc declension returns Declension table', () {
       final result = buildInflectionTable(

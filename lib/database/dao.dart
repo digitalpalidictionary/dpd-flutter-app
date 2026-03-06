@@ -167,6 +167,14 @@ class DpdDao extends DatabaseAccessor<AppDatabase> with _$DpdDaoMixin {
     return hw;
   }
 
+  Future<Set<String>> checkWordsInLookup(Set<String> words) async {
+    if (words.isEmpty) return {};
+    final rows = await (select(lookup)
+          ..where((t) => t.lookupKey.isIn(words)))
+        .get();
+    return rows.map((r) => r.lookupKey).toSet();
+  }
+
   Future<Set<String>> getAllLookupKeys() async {
     final rows = await (selectOnly(lookup)..addColumns([lookup.lookupKey])).get();
     return rows.map((r) => r.read(lookup.lookupKey)!).toSet();
