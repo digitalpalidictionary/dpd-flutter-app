@@ -1,16 +1,12 @@
-import 'package:dio/dio.dart';
+import 'dart:io';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final hasInternetProvider = FutureProvider<bool>((ref) async {
   try {
-    await Dio().head<void>(
-      'https://dpdict.net',
-      options: Options(
-        sendTimeout: const Duration(seconds: 5),
-        receiveTimeout: const Duration(seconds: 5),
-      ),
-    );
-    return true;
+    final result = await InternetAddress.lookup('dpdict.net')
+        .timeout(const Duration(seconds: 5));
+    return result.isNotEmpty && result.first.rawAddress.isNotEmpty;
   } catch (_) {
     return false;
   }
