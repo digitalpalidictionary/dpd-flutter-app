@@ -8,6 +8,7 @@
 - Implement audio playback service and UI buttons
 
 ## Review
+- simplify everything that can be simplified without losing any functionality
 - Accessibility audit and keyboard refinements
 - Review use of different text display widgets across different button sections, and sync
 - Review different design patterns used in different button sections

@@ -17,7 +17,7 @@ class ThanksCard extends StatelessWidget {
     final categoryStyle = bodyStyle?.copyWith(
       fontWeight: FontWeight.w700,
       color: Theme.of(context).colorScheme.primary,
-      fontSize: (bodyStyle?.fontSize ?? 14) + 2,
+      fontSize: (bodyStyle.fontSize ?? 14) + 2,
     );
     final descStyle = bodyStyle?.copyWith(fontStyle: FontStyle.italic);
 
