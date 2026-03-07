@@ -52,7 +52,7 @@ class AutocompleteDropdown extends StatelessWidget {
             padding: EdgeInsets.zero,
             shrinkWrap: true,
             itemCount: suggestions.length,
-            separatorBuilder: (_, _) => Divider(
+            separatorBuilder: (_, i) => Divider(
               height: 1,
               color: DpdColors.grayTransparent,
             ),
