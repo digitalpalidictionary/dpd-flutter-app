@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-enum DisplayMode { classic, compact, bottomDrawer }
+enum DisplayMode { classic, compact }
 
 enum NiggahitaMode { dot, circle }
 
@@ -117,7 +117,7 @@ class SettingsNotifier extends StateNotifier<Settings> {
     final modeName = _prefs.getString('display_mode') ?? 'classic';
     final displayMode = DisplayMode.values.firstWhere(
       (m) => m.name == modeName,
-      orElse: () => DisplayMode.classic,
+      orElse: () => DisplayMode.compact,
     );
     final oneButtonAtATime = _prefs.getBool('one_button_at_a_time') ?? true;
     final niggahitaName = _prefs.getString('niggahita_mode') ?? 'dot';

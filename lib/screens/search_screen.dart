@@ -21,7 +21,6 @@ import '../utils/velthuis.dart';
 import '../widgets/accordion_card.dart';
 import '../widgets/autocomplete_dropdown.dart';
 import '../widgets/double_tap_search_wrapper.dart';
-import '../widgets/entry_bottom_sheet.dart';
 import '../widgets/inline_entry_card.dart';
 import '../widgets/inline_root_card.dart';
 import '../widgets/secondary/bibliography_card.dart';
@@ -33,7 +32,6 @@ import '../widgets/velthuis_help_popup.dart';
 import '../models/summary_entry.dart';
 import '../providers/summary_provider.dart';
 import '../widgets/summary_section.dart';
-import '../widgets/word_card.dart';
 
 enum _InfoContent { bibliography, thanks }
 
@@ -928,10 +926,6 @@ class _SplitResultsListState extends State<_SplitResultsList> {
     return switch (widget.mode) {
       DisplayMode.classic => InlineEntryCard(headword: hw),
       DisplayMode.compact => AccordionCard(headword: hw),
-      DisplayMode.bottomDrawer => WordCard(
-        headword: hw,
-        onTap: () => _showBottomSheet(context, hw),
-      ),
     };
   }
 
@@ -939,23 +933,7 @@ class _SplitResultsListState extends State<_SplitResultsList> {
     return switch (widget.mode) {
       DisplayMode.classic => InlineRootCard(rwf: rwf),
       DisplayMode.compact => AccordionRootCard(rwf: rwf),
-      _ => _RootResultCard(rwf: rwf),
     };
-  }
-
-  void _showBottomSheet(BuildContext context, DpdHeadwordWithRoot headword) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (_) => DraggableScrollableSheet(
-        initialChildSize: 0.6,
-        minChildSize: 0.3,
-        maxChildSize: 0.95,
-        builder: (_, controller) =>
-            EntryBottomSheet(headword: headword, scrollController: controller),
-      ),
-    );
   }
 }
 
@@ -1194,55 +1172,6 @@ class _NoResults extends StatelessWidget {
 }
 
 
-class _RootResultCard extends StatelessWidget {
-  const _RootResultCard({required this.rwf});
-
-  final RootWithFamilies rwf;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final root = rwf.root;
-    final baseStyle = theme.textTheme.bodyMedium?.copyWith(height: 1.5);
-    final boldStyle = baseStyle?.copyWith(fontWeight: FontWeight.w700);
-    final grayStyle = baseStyle?.copyWith(color: Colors.grey);
-    final rootClean = root.root.replaceAll('√', '');
-
-    return InkWell(
-      onTap: () => Navigator.pushNamed(context, '/root', arguments: root.root),
-      child: Container(
-        width: double.infinity,
-        margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-        decoration: BoxDecoration(
-          border: Border.all(color: theme.colorScheme.primary, width: 2),
-          borderRadius: DpdColors.borderRadius,
-        ),
-        padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
-        child: RichText(
-          text: TextSpan(
-            style: baseStyle,
-            children: [
-              const TextSpan(text: 'root. '),
-              TextSpan(text: rootClean, style: boldStyle),
-              if (root.rootHasVerb.isNotEmpty)
-                TextSpan(
-                  text: root.rootHasVerb,
-                  style: baseStyle?.copyWith(
-                    fontSize: (baseStyle.fontSize ?? 14) * 0.7,
-                    fontFeatures: [const FontFeature.superscripts()],
-                  ),
-                ),
-              TextSpan(text: ' ${root.rootGroup} '),
-              TextSpan(text: root.rootSign),
-              TextSpan(text: ' (${root.rootMeaning})'),
-              TextSpan(text: ' ${rwf.count}', style: grayStyle),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
 
 class _UpdateBanner extends ConsumerWidget {
   const _UpdateBanner();

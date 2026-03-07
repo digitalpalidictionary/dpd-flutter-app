@@ -26,8 +26,6 @@ class SettingsContent extends ConsumerWidget {
                     value: DisplayMode.classic, label: Text('Classic')),
                 ButtonSegment(
                     value: DisplayMode.compact, label: Text('Compact')),
-                ButtonSegment(
-                    value: DisplayMode.bottomDrawer, label: Text('Bottom')),
               ],
               selected: {settings.displayMode},
               onSelectionChanged: (s) => notifier.setDisplayMode(s.first),
