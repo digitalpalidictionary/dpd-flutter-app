@@ -106,7 +106,7 @@ class GrammarTable extends ConsumerWidget {
 
   TableRow? _buildHtmlRow(String label, String? htmlData, [String Function(String)? f]) {
     if (htmlData == null || htmlData.isEmpty) return null;
-    final data = f != null ? f(htmlData) : htmlData;
+    final data = (f != null ? f(htmlData) : htmlData).replaceAll('\n', '<br>');
     return _buildRow(
       label,
       Html(
@@ -128,6 +128,7 @@ class GrammarTable extends ConsumerWidget {
   TableRow? _buildLemmaTradRow(DpdHeadwordWithRoot headword, String Function(String) n) {
     final lemmaTrad = headword.headword.lemmaTradClean;
     if (lemmaTrad.isEmpty) return null;
+    if (lemmaTrad == headword.headword.lemmaClean) return null;
     return _buildTextRow('Traditional Lemma', lemmaTrad, n);
   }
 

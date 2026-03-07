@@ -401,8 +401,13 @@ class _VariantTable extends StatelessWidget {
     }
 
     return Table(
-      defaultColumnWidth: const IntrinsicColumnWidth(),
-      defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+      columnWidths: const {
+        0: IntrinsicColumnWidth(),
+        1: IntrinsicColumnWidth(),
+        2: FlexColumnWidth(),
+        3: FlexColumnWidth(),
+      },
+      defaultVerticalAlignment: TableCellVerticalAlignment.top,
       children: rows,
     );
   }

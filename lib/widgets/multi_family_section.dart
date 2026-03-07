@@ -172,9 +172,9 @@ class _JumpToNav extends StatelessWidget {
       spacing: 4,
       crossAxisAlignment: WrapCrossAlignment.center,
       children: [
-        const Text(
+        Text(
           'jump to: ',
-          style: TextStyle(fontSize: 12, color: Colors.white),
+          style: TextStyle(fontSize: 12, color: DpdColors.primaryText),
         ),
         for (int i = 0; i < keys.length; i++)
           GestureDetector(

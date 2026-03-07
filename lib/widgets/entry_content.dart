@@ -150,7 +150,7 @@ class EntryExampleBlock extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Html(
-          data: n(example),
+          data: n(example).replaceAll('\n', '<br>'),
           shrinkWrap: true,
           style: {
             'body': Style(margin: Margins.zero, padding: HtmlPaddings.zero),

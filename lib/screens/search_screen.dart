@@ -753,7 +753,6 @@ class _SplitResultsListState extends State<_SplitResultsList> {
     final hasPartial = widget.partial.isNotEmpty;
     final hasRoots = widget.roots.isNotEmpty;
     final hasSecondary = widget.secondary.isNotEmpty;
-    final showRootDivider = hasRoots && hasExact;
     final showPartialDivider =
         (hasExact || hasRoots || hasSecondary) &&
         (hasPartial || widget.partialLoading);
@@ -761,7 +760,6 @@ class _SplitResultsListState extends State<_SplitResultsList> {
     final itemCount =
         (hasSummary ? 1 : 0) +
         widget.exact.length +
-        (showRootDivider ? 1 : 0) +
         widget.roots.length +
         widget.secondary.length +
         (showPartialDivider ? 1 : 0) +
@@ -793,12 +791,6 @@ class _SplitResultsListState extends State<_SplitResultsList> {
           );
         }
         index -= widget.exact.length;
-
-        // Root results divider
-        if (showRootDivider && index == 0) {
-          return const _RootResultsDivider();
-        }
-        if (showRootDivider) index -= 1;
 
         // Root matches
         if (index < widget.roots.length) {
@@ -992,22 +984,6 @@ class _NoResults extends StatelessWidget {
   }
 }
 
-class _RootResultsDivider extends StatelessWidget {
-  const _RootResultsDivider();
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-      child: Text(
-        'root results',
-        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-          color: Theme.of(context).colorScheme.onSurfaceVariant,
-        ),
-      ),
-    );
-  }
-}
 
 class _RootResultCard extends StatelessWidget {
   const _RootResultCard({required this.rwf});
