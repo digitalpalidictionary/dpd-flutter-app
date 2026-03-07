@@ -25,6 +25,7 @@ class _DoubleTapSearchWrapperState extends ConsumerState<DoubleTapSearchWrapper>
   SelectedContent? _currentSelection;
   int _lastTapTime = 0;
   bool _awaitingSelection = false;
+  bool _suppressContextMenu = false;
   Timer? _fallbackTimer;
 
   @override
@@ -49,6 +50,7 @@ class _DoubleTapSearchWrapperState extends ConsumerState<DoubleTapSearchWrapper>
 
     if (delta < 300) {
       _awaitingSelection = true;
+      _suppressContextMenu = true;
       _fallbackTimer?.cancel();
 
       // If selection is already available (updated before pointer-down), use it
@@ -90,6 +92,7 @@ class _DoubleTapSearchWrapperState extends ConsumerState<DoubleTapSearchWrapper>
     // ConcurrentModificationError in _flushInactiveSelections).
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
+      _suppressContextMenu = false;
       _selectionAreaKey.currentState?.selectableRegion.clearSelection();
       ref.read(searchQueryProvider.notifier).state = selectedText;
       ref.read(historyProvider.notifier).add(selectedText);
@@ -111,7 +114,12 @@ class _DoubleTapSearchWrapperState extends ConsumerState<DoubleTapSearchWrapper>
       child: SelectionArea(
         key: _selectionAreaKey,
         onSelectionChanged: _handleSelectionChanged,
-        contextMenuBuilder: (context, selectableRegionState) => const SizedBox.shrink(),
+        contextMenuBuilder: (context, selectableRegionState) {
+          if (_suppressContextMenu) return const SizedBox.shrink();
+          return AdaptiveTextSelectionToolbar.selectableRegion(
+            selectableRegionState: selectableRegionState,
+          );
+        },
         child: widget.child,
       ),
     );
