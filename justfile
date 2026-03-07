@@ -21,6 +21,8 @@ build:
 # Build release APK
 build-release:
     flutter build apk --release
+    cp build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/dpd.apk
+    @echo "\nRelease APK: build/app/outputs/flutter-apk/dpd.apk"
 
 # Analyze code
 analyze:
