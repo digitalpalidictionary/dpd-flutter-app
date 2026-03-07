@@ -3,6 +3,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../models/lookup_results.dart';
 import '../../theme/dpd_colors.dart';
+import '../../utils/pali_sort.dart';
 import '../entry_content.dart';
 import 'secondary_card.dart';
 
@@ -139,10 +140,34 @@ class GrammarDictCard extends StatelessWidget {
   }
 }
 
-class _GrammarDictTable extends StatelessWidget {
+class _GrammarDictTable extends StatefulWidget {
   const _GrammarDictTable({required this.entries});
 
   final List<GrammarDictEntry> entries;
+
+  @override
+  State<_GrammarDictTable> createState() => _GrammarDictTableState();
+}
+
+class _GrammarDictTableState extends State<_GrammarDictTable> {
+  int? _sortColumn;
+  bool _ascending = true;
+
+  void _onHeaderTap(int column) {
+    setState(() {
+      if (_sortColumn == column) {
+        if (_ascending) {
+          _ascending = false;
+        } else {
+          _sortColumn = null;
+          _ascending = true;
+        }
+      } else {
+        _sortColumn = column;
+        _ascending = true;
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -150,9 +175,8 @@ class _GrammarDictTable extends StatelessWidget {
         Theme.of(context).textTheme.bodyMedium?.copyWith(height: _lineHeight);
     final boldStyle = bodyStyle?.copyWith(fontWeight: FontWeight.w700);
 
-    // Only render as many component columns as have data (matches CSS display:none behaviour)
     int maxComps = 0;
-    for (final entry in entries) {
+    for (final entry in widget.entries) {
       for (int i = entry.components.length - 1; i >= 0; i--) {
         if (entry.components[i].isNotEmpty) {
           if (i + 1 > maxComps) maxComps = i + 1;
@@ -161,20 +185,65 @@ class _GrammarDictTable extends StatelessWidget {
       }
     }
 
+    final totalCols = 1 + maxComps + 1 + 1; // pos + comps + "of" + word
+    final posCol = 0;
+    final wordCol = totalCols - 1;
+
+    final sorted = List<GrammarDictEntry>.of(widget.entries);
+    if (_sortColumn != null) {
+      final col = _sortColumn!;
+      final usePali = col == posCol || col == wordCol;
+      sorted.sort((a, b) {
+        String aVal, bVal;
+        if (col == posCol) {
+          aVal = a.pos;
+          bVal = b.pos;
+        } else if (col == wordCol) {
+          aVal = a.headword;
+          bVal = b.headword;
+        } else {
+          final compIdx = col - 1;
+          aVal = compIdx < a.components.length ? a.components[compIdx] : '';
+          bVal = compIdx < b.components.length ? b.components[compIdx] : '';
+        }
+        final cmp = usePali
+            ? paliSortKey(aVal).compareTo(paliSortKey(bVal))
+            : aVal.compareTo(bVal);
+        return _ascending ? cmp : -cmp;
+      });
+    }
+
+    String arrow(int col) {
+      if (_sortColumn != col) return ' ⇅';
+      return _ascending ? ' ▲' : ' ▼';
+    }
+
+    Widget sortableHeader(String label, int col, {TextStyle? style}) {
+      return GestureDetector(
+        onTap: () => _onHeaderTap(col),
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(0, 2, 10, 0),
+          child: Text('$label${arrow(col)}', style: style),
+        ),
+      );
+    }
+
     return Table(
       defaultColumnWidth: const IntrinsicColumnWidth(),
       defaultVerticalAlignment: TableCellVerticalAlignment.middle,
       children: [
-        // Header row — <th> is bold in HTML by default
         TableRow(
           children: [
-            _cell('pos', style: boldStyle),
-            ...List.generate(maxComps, (_) => _cell('', style: bodyStyle)),
+            sortableHeader('pos', posCol, style: boldStyle),
+            ...List.generate(
+              maxComps,
+              (i) => sortableHeader('', 1 + i, style: bodyStyle),
+            ),
             _cell('', style: bodyStyle),
-            _cell('word', style: boldStyle),
+            sortableHeader('word', wordCol, style: boldStyle),
           ],
         ),
-        for (final entry in entries)
+        for (final entry in sorted)
           TableRow(
             children: [
               _cell(entry.pos, style: boldStyle),
