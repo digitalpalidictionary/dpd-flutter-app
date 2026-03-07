@@ -53,13 +53,10 @@ class _SummaryRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final baseStyle = theme.textTheme.bodyMedium;
-    final labelStyle = baseStyle?.copyWith(fontWeight: FontWeight.w700);
-    final typeStyle = baseStyle?.copyWith(
-      color: DpdColors.primaryText,
-      fontStyle: FontStyle.italic,
-    );
-    final meaningStyle = baseStyle?.copyWith(
-      color: theme.colorScheme.onSurfaceVariant,
+    final isDark = theme.brightness == Brightness.dark;
+    final labelStyle = baseStyle?.copyWith(
+      color: isDark ? DpdColors.primaryTextDark : DpdColors.primaryText,
+      fontWeight: FontWeight.w700,
     );
     final linkStyle = baseStyle?.copyWith(
       color: DpdColors.primaryText,
@@ -81,9 +78,9 @@ class _SummaryRow extends StatelessWidget {
                   children: [
                     TextSpan(text: entry.label, style: labelStyle),
                     if (entry.typeLabel.isNotEmpty)
-                      TextSpan(text: ' ${entry.typeLabel}', style: typeStyle),
+                      TextSpan(text: ' ${entry.typeLabel}', style: baseStyle),
                     if (entry.meaning.isNotEmpty)
-                      TextSpan(text: ' ${entry.meaning}', style: meaningStyle),
+                      TextSpan(text: ' ${entry.meaning}', style: baseStyle),
                   ],
                 ),
               ),

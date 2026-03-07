@@ -20,6 +20,15 @@ abstract final class DpdColors {
     0.48,
   ).toColor();
 
+  // Lighter variant for dark backgrounds
+  // --primary-text dark: hsl(205, 79%, 65%)
+  static final Color primaryTextDark = HSLColor.fromAHSL(
+    1,
+    205,
+    0.79,
+    0.56,
+  ).toColor();
+
   // Light mode backgrounds
   // --light: hsl(198, 100%, 95%)
   static final Color light = HSLColor.fromAHSL(1, 198, 1, 0.95).toColor();
