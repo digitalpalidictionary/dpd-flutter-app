@@ -29,45 +29,26 @@ mixin FamilyStateMixin<T extends ConsumerStatefulWidget> on ConsumerState<T> {
 
   String get _lemmaClean => _fh.headword.lemmaClean;
 
-  List<String> get _compoundKeys =>
-      (_fh.familyCompound ?? '').split(' ').where((s) => s.isNotEmpty).toList();
+  List<String> get _idiomKeyList {
+    final keys = (_fh.familyIdioms ?? '').split(' ').where((s) => s.isNotEmpty).toList();
+    return keys.isNotEmpty ? keys : [_lemmaClean];
+  }
 
-  List<String> get _idiomKeys =>
-      (_fh.familyIdioms ?? '').split(' ').where((s) => s.isNotEmpty).toList();
+  bool get familyHasRoot => _fh.needsRootFamilyButton;
 
-  // Idiom key list: use family_idioms if populated, else fall back to lemma_clean.
-  // Mirrors the webapp's family_idioms_list cached_property.
-  List<String> get _idiomKeyList =>
-      _idiomKeys.isNotEmpty ? _idiomKeys : [_lemmaClean];
-
-  List<String> get _setKeys =>
-      (_fh.familySet ?? '').split('; ').where((s) => s.isNotEmpty).toList();
-
-  bool get familyHasRoot =>
-      _fh.familyRoot != null && _fh.familyRoot!.isNotEmpty;
-
-  bool get familyHasWord =>
-      _fh.familyWord != null && _fh.familyWord!.isNotEmpty;
+  bool get familyHasWord => _fh.needsWordFamilyButton;
 
   bool get familyHasCompound {
     final cfSet = ref.watch(compoundFamilyKeysProvider).valueOrNull;
-    final lemmaInCfSet = cfSet?.contains(_lemmaClean) ?? false;
-
-    return (_fh.meaning1?.isNotEmpty ?? false) &&
-        (_compoundKeys.isNotEmpty || lemmaInCfSet) &&
-        !(_fh.pos?.contains('sandhi') ?? false) &&
-        !(_fh.pos?.contains('idiom') ?? false) &&
-        !(_fh.compoundType?.contains('?') ?? false);
+    return _fh.needsCompoundFamilyButton(cfSet);
   }
 
   bool get familyHasIdioms {
     final idiomSet = ref.watch(idiomKeysProvider).valueOrNull;
-    return (_fh.meaning1?.isNotEmpty ?? false) &&
-        _idiomKeyList.any((k) => idiomSet?.contains(k) ?? false);
+    return _fh.needsIdiomButton(idiomSet);
   }
 
-  bool get familyHasSets =>
-      (_fh.meaning1?.isNotEmpty ?? false) && _setKeys.isNotEmpty;
+  bool get familyHasSets => _fh.needsSetButton;
 
   bool get familyHasAny =>
       familyHasRoot ||
@@ -96,7 +77,8 @@ mixin FamilyStateMixin<T extends ConsumerStatefulWidget> on ConsumerState<T> {
     final cfSet = ref.watch(compoundFamilyKeysProvider).valueOrNull;
     final lemmaInCfSet = cfSet?.contains(_lemmaClean) ?? false;
 
-    List<String> keysToLoad = _compoundKeys;
+    final compoundKeys = (_fh.familyCompound ?? '').split(' ').where((s) => s.isNotEmpty).toList();
+    List<String> keysToLoad = compoundKeys;
     if (keysToLoad.isEmpty && lemmaInCfSet) {
       keysToLoad = [_lemmaClean];
     }
@@ -118,7 +100,7 @@ mixin FamilyStateMixin<T extends ConsumerStatefulWidget> on ConsumerState<T> {
 
   Future<void> _loadSets() async {
     if (_setsData != null) return;
-    final data = await ref.read(daoProvider).getSets(_setKeys);
+    final data = await ref.read(daoProvider).getSets(_fh.setKeys);
     if (mounted) setState(() => _setsData = data);
   }
 
@@ -165,9 +147,6 @@ mixin FamilyStateMixin<T extends ConsumerStatefulWidget> on ConsumerState<T> {
   }
 
   List<Widget> buildFamilyButtons() {
-    final isCompoundPlural = (_fh.familyCompound ?? '').contains(' ');
-    final isSetsPlural = _setKeys.length > 1;
-
     return [
       if (familyHasRoot)
         DpdSectionButton(
@@ -183,7 +162,7 @@ mixin FamilyStateMixin<T extends ConsumerStatefulWidget> on ConsumerState<T> {
         ),
       if (familyHasCompound)
         DpdSectionButton(
-          label: isCompoundPlural ? 'compound families' : 'compound family',
+          label: _fh.isCompoundFamilyPlural ? 'compound families' : 'compound family',
           isActive: _showCompoundFamilies,
           onTap: familyToggleCompound,
         ),
@@ -195,7 +174,7 @@ mixin FamilyStateMixin<T extends ConsumerStatefulWidget> on ConsumerState<T> {
         ),
       if (familyHasSets)
         DpdSectionButton(
-          label: isSetsPlural ? 'sets' : 'set',
+          label: _fh.isSetsPlural ? 'sets' : 'set',
           isActive: _showSets,
           onTap: familyToggleSets,
         ),

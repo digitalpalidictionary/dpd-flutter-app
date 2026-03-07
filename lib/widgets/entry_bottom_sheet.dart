@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../database/database.dart';
+import '../database/dpd_headword_extensions.dart';
 import '../providers/settings_provider.dart';
 import '../theme/dpd_colors.dart';
 import '../utils/text_filters.dart';
@@ -117,12 +118,6 @@ class _EntryBottomSheetState extends ConsumerState<EntryBottomSheet>
     final h = widget.headword;
 
     final templateCache = ref.watch(templateCacheProvider).valueOrNull ?? {};
-    final hasInflections = hasInflectionContent(h);
-    final hasEx1 = h.example1 != null && h.example1!.isNotEmpty;
-    final hasEx2 = h.example2 != null && h.example2!.isNotEmpty;
-    final hasExamples = hasEx1 || hasEx2;
-    final hasTwoExamples = hasEx1 && hasEx2;
-    final hasFrequency = h.freqData != null && h.freqData!.isNotEmpty;
 
     return Material(
       color: theme.colorScheme.surface,
@@ -183,26 +178,27 @@ class _EntryBottomSheetState extends ConsumerState<EntryBottomSheet>
                         setter: (v) => _suttaOpen = v,
                       ),
                     ),
-                  DpdSectionButton(
-                    label: 'grammar',
-                    isActive: _grammarOpen,
-                    onTap: () => _toggleSection(
-                      isOpen: _grammarOpen,
-                      setter: (v) => _grammarOpen = v,
-                    ),
-                  ),
-                  if (hasExamples)
+                  if (h.needsGrammarButton)
                     DpdSectionButton(
-                      label: hasTwoExamples ? 'examples' : 'example',
+                      label: 'grammar',
+                      isActive: _grammarOpen,
+                      onTap: () => _toggleSection(
+                        isOpen: _grammarOpen,
+                        setter: (v) => _grammarOpen = v,
+                      ),
+                    ),
+                  if (h.needsExampleButton || h.needsExamplesButton)
+                    DpdSectionButton(
+                      label: h.needsExamplesButton ? 'examples' : 'example',
                       isActive: _examplesOpen,
                       onTap: () => _toggleSection(
                         isOpen: _examplesOpen,
                         setter: (v) => _examplesOpen = v,
                       ),
                     ),
-                  if (hasInflections)
+                  if (h.needsInflectionButton)
                     DpdSectionButton(
-                      label: inflectionButtonLabel(h.pos),
+                      label: h.inflectionButtonLabel,
                       isActive: _inflectionsOpen,
                       onTap: () => _toggleSection(
                         isOpen: _inflectionsOpen,
@@ -210,7 +206,7 @@ class _EntryBottomSheetState extends ConsumerState<EntryBottomSheet>
                       ),
                     ),
                   ...buildFamilyButtons(),
-                  if (hasFrequency)
+                  if (h.needsFrequencyButton)
                     DpdSectionButton(
                       label: 'frequency',
                       isActive: _frequencyOpen,
@@ -239,7 +235,7 @@ class _EntryBottomSheetState extends ConsumerState<EntryBottomSheet>
                 lemma1: h.lemma1,
               ),
 
-            if (_grammarOpen)
+            if (_grammarOpen && h.needsGrammarButton)
               DpdSectionContainer(
                 child: Padding(
                   padding: DpdColors.sectionPadding,
@@ -247,20 +243,20 @@ class _EntryBottomSheetState extends ConsumerState<EntryBottomSheet>
                 ),
               ),
 
-            if (_examplesOpen && hasExamples)
+            if (_examplesOpen && (h.needsExampleButton || h.needsExamplesButton))
               DpdSectionContainer(
                 child: Padding(
                   padding: DpdColors.sectionPadding,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      if (hasEx1)
+                      if (h.needsExampleButton || h.needsExamplesButton)
                         EntryExampleBlock(
                           example: h.example1!,
                           sutta: h.sutta1,
                           source: h.source1,
                         ),
-                      if (hasEx2)
+                      if (h.needsExamplesButton)
                         EntryExampleBlock(
                           example: h.example2!,
                           sutta: h.sutta2,
@@ -272,7 +268,7 @@ class _EntryBottomSheetState extends ConsumerState<EntryBottomSheet>
                 ),
               ),
 
-            if (_inflectionsOpen && hasInflections)
+            if (_inflectionsOpen && h.needsInflectionButton)
               DpdSectionContainer(
                 child: InflectionSection(
                   headword: h,
@@ -283,7 +279,7 @@ class _EntryBottomSheetState extends ConsumerState<EntryBottomSheet>
 
             ...buildFamilySections(),
 
-            if (_frequencyOpen && hasFrequency)
+            if (_frequencyOpen && h.needsFrequencyButton)
               FrequencySection(
                 data: parseFrequencyData(h.freqData)!,
                 headwordId: h.id,

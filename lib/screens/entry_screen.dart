@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../database/database.dart';
+import '../database/dpd_headword_extensions.dart';
 import '../providers/database_provider.dart';
 import '../providers/search_provider.dart';
 import '../providers/settings_provider.dart';
@@ -85,10 +86,6 @@ class _EntryViewState extends ConsumerState<_EntryView> {
     final templateCache = ref.watch(templateCacheProvider).valueOrNull ?? {};
 
     final h = widget.headword;
-    final hasInflections = hasInflectionContent(h);
-    final hasEx1 = h.example1 != null && h.example1!.isNotEmpty;
-    final hasEx2 = h.example2 != null && h.example2!.isNotEmpty;
-    final hasExamples = hasEx1 || hasEx2;
 
     return Scaffold(
       body: DoubleTapSearchWrapper(
@@ -147,31 +144,32 @@ class _EntryViewState extends ConsumerState<_EntryView> {
                     ),
 
                   // Grammar section
-                  ExpansionTile(
-                    title: const Text('Grammar'),
-                    initiallyExpanded: settings.grammarOpen,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: GrammarTable(headword: h),
-                      ),
-                    ],
-                  ),
+                  if (h.needsGrammarButton)
+                    ExpansionTile(
+                      title: const Text('Grammar'),
+                      initiallyExpanded: settings.grammarOpen,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: GrammarTable(headword: h),
+                        ),
+                      ],
+                    ),
 
                   // Examples section
-                  if (hasExamples)
+                  if (h.needsExampleButton || h.needsExamplesButton)
                     Padding(
                       padding: const EdgeInsets.all(16.0),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          if (hasEx1)
+                          if (h.needsExampleButton || h.needsExamplesButton)
                             EntryExampleBlock(
                               example: h.example1!,
                               sutta: h.sutta1,
                               source: h.source1,
                             ),
-                          if (hasEx2)
+                          if (h.needsExamplesButton)
                             EntryExampleBlock(
                               example: h.example2!,
                               sutta: h.sutta2,
@@ -186,9 +184,9 @@ class _EntryViewState extends ConsumerState<_EntryView> {
                     ),
 
                   // Inflections section
-                  if (hasInflections)
+                  if (h.needsInflectionButton)
                     ExpansionTile(
-                      title: Text(inflectionButtonLabel(h.pos)),
+                      title: Text(h.inflectionButtonLabel),
                       initiallyExpanded: false,
                       children: [
                         InflectionSection(

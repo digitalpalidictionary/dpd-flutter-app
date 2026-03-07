@@ -121,25 +121,3 @@ class _InflectionFooter extends StatelessWidget {
   }
 }
 
-/// Determine if a headword has inflection content to show.
-/// Indeclinables (stem == '-') never get an inflection button.
-bool hasInflectionContent(DpdHeadwordWithRoot h) {
-  if (h.stem == '-') return false;
-  return h.stem != null && h.pattern != null && h.pattern!.isNotEmpty;
-}
-
-/// Returns the button label based on the headword's pos.
-/// Uses [DpdColors] constants — delegates to the builder's logic.
-String inflectionButtonLabel(String? pos) {
-  const conjugationPos = {
-    'aor',
-    'cond',
-    'fut',
-    'imp',
-    'imperf',
-    'opt',
-    'perf',
-    'pr',
-  };
-  return conjugationPos.contains(pos) ? 'conjugation' : 'declension';
-}

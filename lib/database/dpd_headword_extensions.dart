@@ -179,3 +179,84 @@ extension DpdHeadwordGrammar on DpdHeadword {
   }
 
 }
+
+/// Mirrors the webapp's `needs_*` cached_property pattern.
+/// Single source of truth for all button/section visibility logic.
+extension DpdHeadwordButtons on DpdHeadwordWithRoot {
+  static const _conjugationPos = {
+    'aor', 'cond', 'fut', 'imp', 'imperf', 'opt', 'perf', 'pr',
+  };
+
+  bool get _hasMeaning => meaning1 != null && meaning1!.isNotEmpty;
+
+  // ── Grammar / Examples ────────────────────────────────────────────────────
+
+  bool get needsGrammarButton => _hasMeaning;
+
+  bool get needsExampleButton =>
+      _hasMeaning &&
+      example1 != null && example1!.isNotEmpty &&
+      (example2 == null || example2!.isEmpty);
+
+  bool get needsExamplesButton =>
+      _hasMeaning &&
+      example1 != null && example1!.isNotEmpty &&
+      example2 != null && example2!.isNotEmpty;
+
+  // ── Inflections ───────────────────────────────────────────────────────────
+
+  bool get needsInflectionButton {
+    if (stem == '-') return false;
+    return stem != null && pattern != null && pattern!.isNotEmpty;
+  }
+
+  String get inflectionButtonLabel =>
+      _conjugationPos.contains(pos) ? 'conjugation' : 'declension';
+
+  // ── Families ──────────────────────────────────────────────────────────────
+
+  bool get needsRootFamilyButton =>
+      familyRoot != null && familyRoot!.isNotEmpty;
+
+  bool get needsWordFamilyButton =>
+      familyWord != null && familyWord!.isNotEmpty;
+
+  /// Requires the compound-family key set from [compoundFamilyKeysProvider].
+  bool needsCompoundFamilyButton(Set<String>? compoundFamilyKeys) {
+    if (!_hasMeaning) return false;
+    if (pos?.contains('sandhi') ?? false) return false;
+    if (pos?.contains('idiom') ?? false) return false;
+    if (compoundType?.contains('?') ?? false) return false;
+    final keys = (familyCompound ?? '')
+        .split(' ')
+        .where((s) => s.isNotEmpty)
+        .toList();
+    final lemmaInSet = compoundFamilyKeys?.contains(headword.lemmaClean) ?? false;
+    return keys.isNotEmpty || lemmaInSet;
+  }
+
+  bool get isCompoundFamilyPlural =>
+      (familyCompound ?? '').contains(' ');
+
+  /// Requires the idiom key set from [idiomKeysProvider].
+  bool needsIdiomButton(Set<String>? idiomKeys) {
+    if (!_hasMeaning) return false;
+    final idiomKeyList = (familyIdioms ?? '')
+        .split(' ')
+        .where((s) => s.isNotEmpty)
+        .toList();
+    final keyList = idiomKeyList.isNotEmpty ? idiomKeyList : [headword.lemmaClean];
+    return keyList.any((k) => idiomKeys?.contains(k) ?? false);
+  }
+
+  List<String> get setKeys =>
+      (familySet ?? '').split('; ').where((s) => s.isNotEmpty).toList();
+
+  bool get needsSetButton => _hasMeaning && setKeys.isNotEmpty;
+
+  bool get isSetsPlural => setKeys.length > 1;
+
+  // ── Frequency ─────────────────────────────────────────────────────────────
+
+  bool get needsFrequencyButton => freqData != null && freqData!.isNotEmpty;
+}

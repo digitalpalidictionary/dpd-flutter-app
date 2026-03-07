@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../database/database.dart';
+import '../database/dpd_headword_extensions.dart';
 import '../providers/search_provider.dart';
 import '../providers/settings_provider.dart';
 import '../providers/template_cache_provider.dart';
@@ -114,11 +115,6 @@ class _AccordionCardState extends ConsumerState<AccordionCard>
     final isExpanded = _cardState == _CardState.buttonsVisible;
 
     final templateCache = ref.watch(templateCacheProvider).valueOrNull ?? {};
-    final hasInflections = hasInflectionContent(h);
-    final hasEx1 = h.example1 != null && h.example1!.isNotEmpty;
-    final hasEx2 = h.example2 != null && h.example2!.isNotEmpty;
-    final hasExamples = hasEx1 || hasEx2;
-    final hasTwoExamples = hasEx1 && hasEx2;
 
     return Material(
       color: Colors.transparent,
@@ -167,26 +163,27 @@ class _AccordionCardState extends ConsumerState<AccordionCard>
                             setter: (v) => _suttaOpen = v,
                           ),
                         ),
-                      DpdSectionButton(
-                        label: 'grammar',
-                        isActive: _grammarOpen,
-                        onTap: () => _toggleSection(
-                          isOpen: _grammarOpen,
-                          setter: (v) => _grammarOpen = v,
-                        ),
-                      ),
-                      if (hasExamples)
+                      if (h.needsGrammarButton)
                         DpdSectionButton(
-                          label: hasTwoExamples ? 'examples' : 'example',
+                          label: 'grammar',
+                          isActive: _grammarOpen,
+                          onTap: () => _toggleSection(
+                            isOpen: _grammarOpen,
+                            setter: (v) => _grammarOpen = v,
+                          ),
+                        ),
+                      if (h.needsExampleButton || h.needsExamplesButton)
+                        DpdSectionButton(
+                          label: h.needsExamplesButton ? 'examples' : 'example',
                           isActive: _examplesOpen,
                           onTap: () => _toggleSection(
                             isOpen: _examplesOpen,
                             setter: (v) => _examplesOpen = v,
                           ),
                         ),
-                      if (hasInflections)
+                      if (h.needsInflectionButton)
                         DpdSectionButton(
-                          label: inflectionButtonLabel(h.pos),
+                          label: h.inflectionButtonLabel,
                           isActive: _inflectionsOpen,
                           onTap: () => _toggleSection(
                             isOpen: _inflectionsOpen,
@@ -205,7 +202,7 @@ class _AccordionCardState extends ConsumerState<AccordionCard>
                     lemma1: h.lemma1,
                   ),
 
-                if (_grammarOpen)
+                if (_grammarOpen && h.needsGrammarButton)
                   DpdSectionContainer(
                     child: Padding(
                       padding: DpdColors.sectionPadding,
@@ -213,20 +210,20 @@ class _AccordionCardState extends ConsumerState<AccordionCard>
                     ),
                   ),
 
-                if (_examplesOpen && hasExamples)
+                if (_examplesOpen && (h.needsExampleButton || h.needsExamplesButton))
                   DpdSectionContainer(
                     child: Padding(
                       padding: DpdColors.sectionPadding,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          if (hasEx1)
+                          if (h.needsExampleButton || h.needsExamplesButton)
                             EntryExampleBlock(
                               example: h.example1!,
                               sutta: h.sutta1,
                               source: h.source1,
                             ),
-                          if (hasEx2)
+                          if (h.needsExamplesButton)
                             EntryExampleBlock(
                               example: h.example2!,
                               sutta: h.sutta2,
@@ -241,7 +238,7 @@ class _AccordionCardState extends ConsumerState<AccordionCard>
                     ),
                   ),
 
-                if (_inflectionsOpen && hasInflections)
+                if (_inflectionsOpen && h.needsInflectionButton)
                   DpdSectionContainer(
                     child: InflectionSection(
                       headword: h,
