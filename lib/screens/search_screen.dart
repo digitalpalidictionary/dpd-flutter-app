@@ -81,12 +81,12 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
 
     _autocompleteDebounce?.cancel();
     _autocompleteDebounce = Timer(const Duration(milliseconds: 150), () {
-      _updateAutocomplete(converted.trim());
+      _updateAutocomplete(converted);
     });
 
     _debounce?.cancel();
     _debounce = Timer(const Duration(milliseconds: 300), () {
-      ref.read(searchQueryProvider.notifier).state = converted.trim();
+      ref.read(searchQueryProvider.notifier).state = converted;
     });
   }
 

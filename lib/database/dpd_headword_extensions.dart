@@ -231,8 +231,11 @@ extension DpdHeadwordButtons on DpdHeadwordWithRoot {
         .split(' ')
         .where((s) => s.isNotEmpty)
         .toList();
-    final lemmaInSet = compoundFamilyKeys?.contains(headword.lemmaClean) ?? false;
-    return keys.isNotEmpty || lemmaInSet;
+    final lemmaInSet =
+        compoundFamilyKeys?.contains(headword.lemmaClean) ?? false;
+    final keysInSet =
+        keys.any((k) => compoundFamilyKeys?.contains(k) ?? false);
+    return keysInSet || (lemmaInSet && keys.isEmpty);
   }
 
   bool get isCompoundFamilyPlural =>
