@@ -1,23 +1,29 @@
 import 'package:flutter/services.dart';
 
-/// Handles Android ACTION_PROCESS_TEXT intents.
-///
-/// When the user selects text in any app and chooses "Look up in DPD",
-/// Android delivers the selected text via this channel.
+/// Handles Android ACTION_PROCESS_TEXT and ACTION_SEND intents.
 class IntentService {
-  static const _channel = MethodChannel('net.dpdict.app/intent');
+  static const _methodChannel = MethodChannel('net.dpdict.app/intent');
+  static const _eventChannel = EventChannel('net.dpdict.app/intent/stream');
 
-  /// Returns the text delivered via ACTION_PROCESS_TEXT, or null if the app
-  /// was launched normally (not via text selection intent).
-  static Future<String?> getProcessTextExtra() async {
+  /// Returns text from the cold-launch intent (either PROCESS_TEXT or SEND),
+  /// or null if the app was launched normally.
+  static Future<String?> getInitialText() async {
     try {
-      final text = await _channel.invokeMethod<String>('getProcessText');
+      final text = await _methodChannel.invokeMethod<String>('getInitialText');
       return text?.trim().isEmpty == true ? null : text?.trim();
     } on MissingPluginException {
-      // Not on Android or MainActivity not wired — ignore
       return null;
     } catch (_) {
       return null;
     }
+  }
+
+  /// Stream of texts delivered while the app is already running.
+  static Stream<String> get intentStream {
+    return _eventChannel
+        .receiveBroadcastStream()
+        .where((event) => event is String && event.trim().isNotEmpty)
+        .cast<String>()
+        .map((t) => t.trim());
   }
 }

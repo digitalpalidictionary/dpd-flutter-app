@@ -11,7 +11,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   final prefs = await SharedPreferences.getInstance();
-  final intentText = await IntentService.getProcessTextExtra();
+  final intentText = await IntentService.getInitialText();
 
   runApp(
     ProviderScope(

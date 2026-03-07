@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -5,6 +7,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'providers/autocomplete_provider.dart';
 import 'providers/database_provider.dart';
 import 'providers/database_update_provider.dart';
+import 'providers/search_provider.dart';
 import 'providers/settings_provider.dart';
 import 'screens/download_screen.dart';
 import 'screens/entry_screen.dart';
@@ -12,6 +15,7 @@ import 'screens/root_screen.dart';
 import 'screens/search_screen.dart';
 import 'screens/settings_screen.dart';
 import 'services/database_update_service.dart';
+import 'services/intent_service.dart';
 import 'theme/dpd_colors.dart';
 
 final _switchTheme = SwitchThemeData(
@@ -33,12 +37,26 @@ class DpdApp extends ConsumerStatefulWidget {
 }
 
 class _DpdAppState extends ConsumerState<DpdApp> {
+  final _navKey = GlobalKey<NavigatorState>();
+  StreamSubscription<String>? _intentSub;
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(dbUpdateProvider.notifier).checkForUpdates();
     });
+
+    _intentSub = IntentService.intentStream.listen((text) {
+      _navKey.currentState?.popUntil((route) => route.isFirst);
+      ref.read(searchQueryProvider.notifier).state = text;
+    });
+  }
+
+  @override
+  void dispose() {
+    _intentSub?.cancel();
+    super.dispose();
   }
 
   @override
@@ -95,6 +113,7 @@ class _DpdAppState extends ConsumerState<DpdApp> {
     }
 
     return MaterialApp(
+      navigatorKey: _navKey,
       title: 'DPD',
       debugShowCheckedModeBanner: false,
       themeMode: settings.themeMode,
