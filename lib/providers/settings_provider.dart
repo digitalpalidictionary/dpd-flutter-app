@@ -15,7 +15,7 @@ class Settings {
     this.useSerifFont = false,
     this.grammarOpen = false,
     this.examplesOpen = false,
-    this.displayMode = DisplayMode.compact,
+    this.displayMode = DisplayMode.classic,
     this.oneButtonAtATime = true,
     this.niggahitaMode = NiggahitaMode.dot,
     this.showSummary = true,
@@ -114,10 +114,10 @@ class SettingsNotifier extends StateNotifier<Settings> {
     final useSerifFont = _prefs.getBool('use_serif_font') ?? false;
     final grammarOpen = _prefs.getBool('grammar_open') ?? false;
     final examplesOpen = _prefs.getBool('examples_open') ?? false;
-    final modeName = _prefs.getString('display_mode') ?? 'compact';
+    final modeName = _prefs.getString('display_mode') ?? 'classic';
     final displayMode = DisplayMode.values.firstWhere(
       (m) => m.name == modeName,
-      orElse: () => DisplayMode.compact,
+      orElse: () => DisplayMode.classic,
     );
     final oneButtonAtATime = _prefs.getBool('one_button_at_a_time') ?? true;
     final niggahitaName = _prefs.getString('niggahita_mode') ?? 'dot';
