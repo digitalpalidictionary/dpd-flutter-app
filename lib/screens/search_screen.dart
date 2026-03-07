@@ -491,7 +491,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
       roots: roots,
       secondary: secondary,
       summaryEntries: summaryEntries,
-      showSummary: settings.showSummary,
+      showSummary: settings.showSummary && settings.displayMode != DisplayMode.compact,
       mode: settings.displayMode,
     );
   }
@@ -818,7 +818,7 @@ class _SplitResultsListState extends State<_SplitResultsList> {
 
         // Partial matches divider
         if (showPartialDivider && index == 0) {
-          return const _MoreResultsDivider();
+          return _MoreResultsDivider(isCompact: widget.mode == DisplayMode.compact);
         }
         if (showPartialDivider) index -= 1;
 
@@ -859,17 +859,69 @@ class _SplitResultsListState extends State<_SplitResultsList> {
   };
 
   Widget _buildSecondaryItem(Object result) {
-    return switch (result) {
-      DeconstructorResult r => DeconstructorCard(result: r),
-      GrammarDictResult r => GrammarDictCard(result: r),
-      AbbreviationResult r => AbbreviationCard(result: r),
-      HelpResult r => HelpCard(result: r),
-      EpdResult r => EpdCard(result: r),
-      VariantResult r => VariantCard(result: r),
-      SpellingResult r => SpellingCard(result: r),
-      SeeResult r => SeeCard(result: r),
-      _ => const SizedBox.shrink(),
+    if (widget.mode != DisplayMode.compact) {
+      return switch (result) {
+        DeconstructorResult r => DeconstructorCard(result: r),
+        GrammarDictResult r => GrammarDictCard(result: r),
+        AbbreviationResult r => AbbreviationCard(result: r),
+        HelpResult r => HelpCard(result: r),
+        EpdResult r => EpdCard(result: r),
+        VariantResult r => VariantCard(result: r),
+        SpellingResult r => SpellingCard(result: r),
+        SeeResult r => SeeCard(result: r),
+        _ => const SizedBox.shrink(),
+      };
+    }
+
+    final (title, compactChild, expandedChild) = switch (result) {
+      GrammarDictResult r => (
+        'grammar: ${r.headword}',
+        _CompactGrammarTable(entries: r.entries) as Widget,
+        GrammarDictCard(result: r) as Widget,
+      ),
+      DeconstructorResult r => (
+        'deconstructor: ${r.headword}',
+        _CompactTextLines(lines: r.deconstructions) as Widget,
+        DeconstructorCard(result: r) as Widget,
+      ),
+      AbbreviationResult r => (
+        r.headword,
+        _CompactTextLines(lines: [r.meaning]) as Widget,
+        AbbreviationCard(result: r) as Widget,
+      ),
+      HelpResult r => (
+        r.headword,
+        _CompactTextLines(lines: [r.helpText]) as Widget,
+        HelpCard(result: r) as Widget,
+      ),
+      EpdResult r => (
+        'English: ${r.headword}',
+        _CompactEpdList(entries: r.entries) as Widget,
+        EpdCard(result: r) as Widget,
+      ),
+      VariantResult r => (
+        'variants: ${r.headword}',
+        _CompactVariantSummary(variants: r.variants) as Widget,
+        VariantCard(result: r) as Widget,
+      ),
+      SpellingResult r => (
+        'spelling: ${r.headword}',
+        _CompactTextLines(lines: r.spellings.map((s) => 'incorrect spelling of $s').toList()) as Widget,
+        SpellingCard(result: r) as Widget,
+      ),
+      SeeResult r => (
+        'see: ${r.headword}',
+        _CompactTextLines(lines: r.seeHeadwords.map((s) => 'see $s').toList()) as Widget,
+        SeeCard(result: r) as Widget,
+      ),
+      _ => ('', const SizedBox.shrink() as Widget, const SizedBox.shrink() as Widget),
     };
+
+    return _AccordionSecondaryCard(
+      title: title,
+      compactChild: compactChild,
+      expandedChild: expandedChild,
+    );
   }
 
   Widget _buildItem(BuildContext context, DpdHeadwordWithRoot hw) {
@@ -886,6 +938,7 @@ class _SplitResultsListState extends State<_SplitResultsList> {
   Widget _buildRootItem(BuildContext context, RootWithFamilies rwf) {
     return switch (widget.mode) {
       DisplayMode.classic => InlineRootCard(rwf: rwf),
+      DisplayMode.compact => AccordionRootCard(rwf: rwf),
       _ => _RootResultCard(rwf: rwf),
     };
   }
@@ -907,11 +960,16 @@ class _SplitResultsListState extends State<_SplitResultsList> {
 }
 
 class _MoreResultsDivider extends StatelessWidget {
-  const _MoreResultsDivider();
+  const _MoreResultsDivider({this.isCompact = false});
+
+  final bool isCompact;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final textStyle = isCompact
+        ? theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.onSurface)
+        : theme.textTheme.titleLarge?.copyWith(color: theme.colorScheme.onSurface);
     return Padding(
       padding: const EdgeInsets.fromLTRB(8, 12, 8, 0),
       child: Column(
@@ -922,12 +980,7 @@ class _MoreResultsDivider extends StatelessWidget {
             color: DpdColors.primary.withValues(alpha: 0.3),
           ),
           const SizedBox(height: 12),
-          Text(
-            'more results',
-            style: theme.textTheme.titleLarge?.copyWith(
-              color: theme.colorScheme.onSurface,
-            ),
-          ),
+          Text('more results', style: textStyle),
           const SizedBox(height: 12),
           Divider(
             height: 1,
@@ -961,6 +1014,162 @@ class _EmptyPrompt extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _AccordionSecondaryCard extends StatefulWidget {
+  const _AccordionSecondaryCard({
+    required this.title,
+    required this.compactChild,
+    required this.expandedChild,
+  });
+
+  final String title;
+  final Widget compactChild;
+  final Widget expandedChild;
+
+  @override
+  State<_AccordionSecondaryCard> createState() => _AccordionSecondaryCardState();
+}
+
+class _AccordionSecondaryCardState extends State<_AccordionSecondaryCard> {
+  bool _isExpanded = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final boldStyle = theme.textTheme.bodyMedium?.copyWith(
+      height: 1.5,
+      fontWeight: FontWeight.w700,
+      color: theme.colorScheme.primary,
+    );
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: _isExpanded
+        ? Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  onTap: () => setState(() => _isExpanded = false),
+                  child: widget.expandedChild,
+                ),
+              ),
+            ],
+          )
+        : Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  onTap: () => setState(() => _isExpanded = true),
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(4, 6, 4, 6),
+                    child: Text(widget.title, style: boldStyle),
+                  ),
+                ),
+              ),
+              widget.compactChild,
+            ],
+          ),
+    );
+  }
+}
+
+class _CompactGrammarTable extends StatelessWidget {
+  const _CompactGrammarTable({required this.entries});
+
+  final List<GrammarDictEntry> entries;
+
+  @override
+  Widget build(BuildContext context) {
+    final style = Theme.of(context).textTheme.bodyMedium?.copyWith(height: 1.5);
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(4, 0, 4, 0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          for (final e in entries)
+            Text(
+              '${e.components.where((c) => c.isNotEmpty).join(' ')} of ${e.headword}',
+              style: style,
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+class _CompactTextLines extends StatelessWidget {
+  const _CompactTextLines({required this.lines});
+
+  final List<String> lines;
+
+  @override
+  Widget build(BuildContext context) {
+    final style = Theme.of(context).textTheme.bodyMedium?.copyWith(height: 1.5);
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(4, 0, 4, 0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [for (final line in lines) Text(line, style: style)],
+      ),
+    );
+  }
+}
+
+class _CompactEpdList extends StatelessWidget {
+  const _CompactEpdList({required this.entries});
+
+  final List<EpdEntry> entries;
+
+  @override
+  Widget build(BuildContext context) {
+    final style = Theme.of(context).textTheme.bodyMedium?.copyWith(height: 1.5);
+    final boldStyle = style?.copyWith(fontWeight: FontWeight.w700);
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(4, 0, 4, 0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          for (final e in entries)
+            Text.rich(TextSpan(style: style, children: [
+              TextSpan(text: e.headword, style: boldStyle),
+              if (e.posInfo.isNotEmpty) TextSpan(text: ' ${e.posInfo}.'),
+              TextSpan(text: ' ${e.meaning}.'),
+            ])),
+        ],
+      ),
+    );
+  }
+}
+
+class _CompactVariantSummary extends StatelessWidget {
+  const _CompactVariantSummary({required this.variants});
+
+  final Map<String, Map<String, List<List<String>>>> variants;
+
+  @override
+  Widget build(BuildContext context) {
+    final style = Theme.of(context).textTheme.bodyMedium?.copyWith(height: 1.5);
+    final lines = <String>[];
+    for (final corpus in variants.keys) {
+      for (final book in variants[corpus]!.keys) {
+        for (final entry in variants[corpus]![book]!) {
+          lines.add('$corpus $book: ${entry[1]}');
+        }
+      }
+    }
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(4, 0, 4, 0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [for (final line in lines) Text(line, style: style)],
       ),
     );
   }

@@ -116,31 +116,86 @@ class _AccordionCardState extends ConsumerState<AccordionCard>
 
     final templateCache = ref.watch(templateCacheProvider).valueOrNull ?? {};
 
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: _toggleCard,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 4),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Header (Lemma) - above the box
-              Padding(
-                padding: const EdgeInsets.fromLTRB(12, 10, 12, 1),
-                child: Text(
-                  n(h.lemma1),
-                  style: theme.textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.w700,
+    final showApostrophe = ref.watch(
+      settingsProvider.select((s) => s.showSandhiApostrophe),
+    );
+    String f(String? text) => filterNiggahita(
+      filterApostrophe(text ?? '', show: showApostrophe),
+      mode: filterMode,
+    );
+
+    final hw = h.headword;
+    final hasMeaning1 = hw.meaning1 != null && hw.meaning1!.isNotEmpty;
+    final summary = hw.constructionSummary;
+    final baseStyle = theme.textTheme.bodyMedium?.copyWith(height: 1.5);
+    final boldStyle = baseStyle?.copyWith(fontWeight: FontWeight.w700);
+    final grayStyle = baseStyle?.copyWith(color: Colors.grey);
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Tappable header: one-liner when compact, lemma+summary box when expanded
+          Material(
+            color: Colors.transparent,
+            child: InkWell(
+              onTap: _toggleCard,
+              child: isExpanded
+                ? Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(12, 10, 12, 1),
+                        child: Text(
+                          n(h.lemma1),
+                          style: theme.textTheme.titleLarge?.copyWith(
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ),
+                      EntrySummaryBox(headword: h),
+                    ],
+                  )
+                : Padding(
+                    padding: const EdgeInsets.fromLTRB(12, 6, 12, 6),
+                    child: Text.rich(
+                      TextSpan(
+                        style: baseStyle,
+                        children: [
+                          TextSpan(
+                            text: '${n(h.lemma1)}  ',
+                            style: boldStyle?.copyWith(
+                              color: theme.colorScheme.primary,
+                            ),
+                          ),
+                          if (hw.pos != null && hw.pos!.isNotEmpty)
+                            TextSpan(text: '${f(hw.pos)}. '),
+                          if (hw.plusCase != null && hw.plusCase!.isNotEmpty)
+                            TextSpan(text: '(${f(hw.plusCase)}) '),
+                          if (hasMeaning1) ...[
+                            TextSpan(text: f(hw.meaning1), style: boldStyle),
+                            if (hw.meaningLit != null && hw.meaningLit!.isNotEmpty)
+                              TextSpan(text: '; lit. ${f(hw.meaningLit)}'),
+                          ] else if (hw.meaning2 != null && hw.meaning2!.isNotEmpty) ...[
+                            if (hw.meaning2!.contains('; lit.'))
+                              TextSpan(text: f(hw.meaning2))
+                            else if (hw.meaningLit != null && hw.meaningLit!.isNotEmpty)
+                              TextSpan(text: '${f(hw.meaning2)}; lit. ${f(hw.meaningLit)}')
+                            else
+                              TextSpan(text: f(hw.meaning2)),
+                          ],
+                          if (summary.isNotEmpty) TextSpan(text: ' [${f(summary)}]'),
+                          TextSpan(text: ' ${hw.degreeOfCompletion}', style: grayStyle),
+                        ],
+                      ),
+                    ),
                   ),
-                ),
-              ),
+            ),
+          ),
 
-              // Summary Box (Bordered)
-              EntrySummaryBox(headword: h),
-
-              // Expanded section: buttons + sections
-              if (isExpanded) ...[
+          // Expanded section: buttons + sections (outside InkWell)
+          if (isExpanded) ...[
                 // Unified button row
                 Padding(
                   padding: const EdgeInsets.fromLTRB(7, 2, 7, 3),
@@ -251,8 +306,6 @@ class _AccordionCardState extends ConsumerState<AccordionCard>
               ],
             ],
           ),
-        ),
-      ),
-    );
+        );
   }
 }

@@ -189,6 +189,227 @@ class _InlineRootCardState extends ConsumerState<InlineRootCard> {
   }
 }
 
+class AccordionRootCard extends ConsumerStatefulWidget {
+  const AccordionRootCard({super.key, required this.rwf});
+
+  final RootWithFamilies rwf;
+
+  @override
+  ConsumerState<AccordionRootCard> createState() => _AccordionRootCardState();
+}
+
+class _AccordionRootCardState extends ConsumerState<AccordionRootCard> {
+  bool _isExpanded = false;
+  String? _activeSection;
+
+  String get _rootClean => widget.rwf.root.root.replaceAll('√', '');
+
+  void _toggleCard() {
+    setState(() => _isExpanded = !_isExpanded);
+  }
+
+  void _toggle(String section) {
+    setState(() {
+      _activeSection = _activeSection == section ? null : section;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final root = widget.rwf.root;
+    final families = widget.rwf.families;
+    final baseStyle = theme.textTheme.bodyMedium?.copyWith(height: 1.5);
+    final boldStyle = baseStyle?.copyWith(fontWeight: FontWeight.w700);
+    final grayStyle = baseStyle?.copyWith(color: Colors.grey);
+
+    if (_isExpanded) {
+      ref.watch(basesForRootProvider(root.root));
+      ref.watch(rootMatrixProvider(root.root));
+    }
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Material(
+            color: Colors.transparent,
+            child: InkWell(
+              onTap: _toggleCard,
+              child: _isExpanded
+                ? Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(12, 10, 12, 1),
+                        child: Text(
+                          'root: $_rootClean',
+                          style: theme.textTheme.titleLarge?.copyWith(
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ),
+                      _RootSummaryBox(
+                        rootClean: _rootClean,
+                        root: root,
+                        count: widget.rwf.count,
+                        baseStyle: baseStyle,
+                        boldStyle: boldStyle,
+                        grayStyle: grayStyle,
+                      ),
+                    ],
+                  )
+                : Padding(
+                    padding: const EdgeInsets.fromLTRB(12, 6, 12, 6),
+                    child: RichText(
+                      text: TextSpan(
+                        style: baseStyle,
+                        children: [
+                          TextSpan(
+                            text: '$_rootClean  ',
+                            style: boldStyle?.copyWith(
+                              color: theme.colorScheme.primary,
+                            ),
+                          ),
+                          const TextSpan(text: 'root. '),
+                          if (root.rootHasVerb.isNotEmpty)
+                            TextSpan(
+                              text: root.rootHasVerb,
+                              style: baseStyle?.copyWith(
+                                fontSize: (baseStyle.fontSize ?? 14) * 0.7,
+                                fontFeatures: [const FontFeature.superscripts()],
+                              ),
+                            ),
+                          TextSpan(text: ' ${root.rootGroup} '),
+                          TextSpan(text: root.rootSign),
+                          TextSpan(text: ' (${root.rootMeaning})'),
+                          TextSpan(text: ' ${widget.rwf.count}', style: grayStyle),
+                        ],
+                      ),
+                    ),
+                  ),
+            ),
+          ),
+
+          if (_isExpanded) ...[
+            Padding(
+              padding: const EdgeInsets.fromLTRB(7, 2, 7, 3),
+              child: Wrap(
+                children: [
+                  DpdSectionButton(
+                    label: 'root info',
+                    isActive: _activeSection == 'info',
+                    onTap: () => _toggle('info'),
+                  ),
+                  if ((root.rootCount ?? 0) > 0)
+                    DpdSectionButton(
+                      label: 'root matrix',
+                      isActive: _activeSection == 'matrix',
+                      onTap: () => _toggle('matrix'),
+                    ),
+                  for (final fam in families)
+                    DpdSectionButton(
+                      label: fam.rootFamily,
+                      isActive: _activeSection == fam.rootFamilyKey,
+                      onTap: () => _toggle(fam.rootFamilyKey),
+                    ),
+                ],
+              ),
+            ),
+
+            if (_activeSection == 'info')
+              _buildRootInfoSection(),
+
+            if (_activeSection == 'matrix' && (root.rootCount ?? 0) > 0)
+              _buildRootMatrixSection(),
+
+            for (final fam in families)
+              if (_activeSection == fam.rootFamilyKey)
+                _buildFamilySection(fam),
+
+            const SizedBox(height: 4),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Widget _buildRootInfoSection() {
+    final root = widget.rwf.root;
+    final encodedRoot = Uri.encodeComponent(root.root);
+    final basesAsync = ref.watch(basesForRootProvider(root.root));
+    final bases = basesAsync.whenOrNull(data: (b) => b);
+
+    return DpdSectionContainer(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          RootInfoTable(root: root, bases: bases),
+          Padding(
+            padding: DpdColors.sectionPadding,
+            child: DpdFooter(
+              messagePrefix: 'Something out of place?',
+              linkText: 'Report it here',
+              urlBuilder: () =>
+                  'https://docs.google.com/forms/d/e/1FAIpQLSf9boBe7k5tCwq7LdWgBHHGIPVc4ROO5yjVDo1X5LDAxkmGWQ/viewform?usp=pp_url&entry.438735500=$encodedRoot&entry.326955045=Root+Info',
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildRootMatrixSection() {
+    final root = widget.rwf.root;
+    final encodedRoot = Uri.encodeComponent(root.root);
+    final matrixAsync = ref.watch(rootMatrixProvider(root.root));
+    final matrix = matrixAsync.whenOrNull(data: (m) => m);
+
+    return DpdSectionContainer(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (matrix != null)
+            RootMatrixTable(data: matrix)
+          else
+            Padding(
+              padding: DpdColors.sectionPadding,
+              child: const CircularProgressIndicator(),
+            ),
+          Padding(
+            padding: DpdColors.sectionPadding,
+            child: DpdFooter(
+              messagePrefix: 'Something out of place?',
+              linkText: 'Report it here',
+              urlBuilder: () =>
+                  'https://docs.google.com/forms/d/e/1FAIpQLSf9boBe7k5tCwq7LdWgBHHGIPVc4ROO5yjVDo1X5LDAxkmGWQ/viewform?usp=pp_url&entry.438735500=$encodedRoot&entry.326955045=Root+Matrix',
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildFamilySection(FamilyRootData fam) {
+    return FamilyTableWidget(
+      header: buildRootFamilyHeader(context, fam),
+      entries: parseFamilyData(fam.data),
+      footerConfig: _buildRootFooterConfig(fam),
+    );
+  }
+
+  FamilyFooterConfig _buildRootFooterConfig(FamilyRootData fam) {
+    final encodedRoot = Uri.encodeComponent(widget.rwf.root.root);
+    return FamilyFooterConfig(
+      messagePrefix: 'Something out of place?',
+      linkText: 'Report it here',
+      urlBuilder: () =>
+          'https://docs.google.com/forms/d/e/1FAIpQLSf9boBe7k5tCwq7LdWgBHHGIPVc4ROO5yjVDo1X5LDAxkmGWQ/viewform?usp=pp_url&entry.438735500=$encodedRoot&entry.326955045=Root+Family',
+    );
+  }
+}
+
 class _RootSummaryBox extends StatelessWidget {
   const _RootSummaryBox({
     required this.rootClean,
