@@ -28,16 +28,15 @@ class IntentService {
         .map((t) => _clean(t)!);
   }
 
+  static final _urlPattern = RegExp(r'https?://\S+', caseSensitive: false);
+  static final _quotePattern = RegExp(
+    r'''["'\u201C\u201D\u2018\u2019]''',
+  );
+
   static String? _clean(String? text) {
     if (text == null) return null;
-    var s = text.trim();
-    if (s.length >= 2 &&
-        (s.startsWith('"') && s.endsWith('"') ||
-            s.startsWith("'") && s.endsWith("'") ||
-            s.startsWith('\u201C') && s.endsWith('\u201D') ||
-            s.startsWith('\u2018') && s.endsWith('\u2019'))) {
-      s = s.substring(1, s.length - 1).trim();
-    }
+    var s = text.replaceAll(_urlPattern, '').trim();
+    s = s.replaceAll(_quotePattern, '').trim();
     return s;
   }
 }
