@@ -14,6 +14,17 @@ import 'screens/settings_screen.dart';
 import 'services/database_update_service.dart';
 import 'theme/dpd_colors.dart';
 
+final _switchTheme = SwitchThemeData(
+  thumbColor: WidgetStateProperty.resolveWith((states) {
+    if (states.contains(WidgetState.selected)) return Colors.white;
+    return null;
+  }),
+  trackColor: WidgetStateProperty.resolveWith((states) {
+    if (states.contains(WidgetState.selected)) return DpdColors.primary;
+    return null;
+  }),
+);
+
 class DpdApp extends ConsumerStatefulWidget {
   const DpdApp({super.key});
 
@@ -93,6 +104,7 @@ class _DpdAppState extends ConsumerState<DpdApp> {
         textTheme: buildTextTheme(
           ThemeData(colorScheme: lightScheme).textTheme,
         ),
+        switchTheme: _switchTheme,
         useMaterial3: true,
       ),
       darkTheme: ThemeData(
@@ -101,6 +113,7 @@ class _DpdAppState extends ConsumerState<DpdApp> {
         textTheme: buildTextTheme(
           ThemeData.dark().copyWith(colorScheme: darkScheme).textTheme,
         ),
+        switchTheme: _switchTheme,
         useMaterial3: true,
       ),
       builder: (context, child) {

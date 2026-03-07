@@ -137,24 +137,18 @@ class _ToggleRow extends StatelessWidget {
     required this.title,
     required this.value,
     required this.onChanged,
-    this.enabled = true,
   });
 
   final String title;
   final bool value;
   final ValueChanged<bool> onChanged;
-  final bool enabled;
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      enabled: enabled,
       title: Text(title),
-      trailing: Switch(
-        value: value,
-        onChanged: enabled ? onChanged : null,
-      ),
-      onTap: enabled ? () => onChanged(!value) : null,
+      trailing: Switch(value: value, onChanged: onChanged),
+      onTap: () => onChanged(!value),
     );
   }
 }
@@ -193,18 +187,17 @@ class _CompactSegmented<T> extends StatelessWidget {
 
 /// Shows the settings bottom sheet. Tapping outside dismisses it.
 Future<void> showSettingsOverlay(BuildContext context) {
-  final theme = Theme.of(context);
   final screenHeight = MediaQuery.of(context).size.height;
   return showModalBottomSheet(
     context: context,
     isScrollControlled: true,
-    backgroundColor: theme.colorScheme.surface,
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(
         top: Radius.circular(DpdColors.borderRadiusValue),
       ),
     ),
     builder: (context) {
+      final theme = Theme.of(context);
       return SizedBox(
         height: screenHeight * 0.55,
         child: Column(
