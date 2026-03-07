@@ -47,5 +47,5 @@ final secondaryResultsProvider = FutureProvider.autoDispose
   final dao = ref.watch(daoProvider);
   final row = await dao.getLookupRow(query);
   if (row == null) return [];
-  return SecondaryResultsProvider.parse(query, row);
+  return SecondaryResultsProvider.parse(row.lookupKey, row);
 });

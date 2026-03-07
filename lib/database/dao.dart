@@ -413,7 +413,7 @@ class DpdDao extends DatabaseAccessor<AppDatabase> with _$DpdDaoMixin {
   // ── Helpers ───────────────────────────────────────────────────────────────
 
   String _normalizeQuery(String input) {
-    return input.trim().toLowerCase().replaceAll("'", '');
+    return input.trim().toLowerCase().replaceAll("'", '').replaceAll('-', '');
   }
 }
 
