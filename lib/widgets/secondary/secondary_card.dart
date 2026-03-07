@@ -40,7 +40,8 @@ class DpdSecondaryCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               content,
-              ?footer,
+              // ignore: use_null_aware_elements
+              if (footer != null) footer!,
             ],
           ),
         ),
