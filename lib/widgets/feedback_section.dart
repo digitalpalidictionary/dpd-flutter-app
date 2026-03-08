@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../theme/dpd_colors.dart';
-import '../utils/date_utils.dart';
+import '../utils/feedback_urls.dart';
 import 'entry_content.dart';
 
 class FeedbackSection extends StatelessWidget {
@@ -15,15 +15,10 @@ class FeedbackSection extends StatelessWidget {
   final int headwordId;
   final String lemma1;
 
-  String get _appLabel => dpdAppLabel();
+  String get _addWordUrl => buildAddWordUrl();
 
-  String get _addWordUrl =>
-      'https://docs.google.com/forms/d/e/1FAIpQLSfResxEUiRCyFITWPkzoQ2HhHEvUS5fyg68Rl28hFH6vhHlaA/viewform?usp=pp_url&entry.1433863141=$_appLabel';
-
-  String get _correctMistakeUrl {
-    final encodedLemma = Uri.encodeComponent(lemma1);
-    return 'https://docs.google.com/forms/d/e/1FAIpQLSf9boBe7k5tCwq7LdWgBHHGIPVc4ROO5yjVDo1X5LDAxkmGWQ/viewform?usp=pp_url&entry.438735500=$headwordId%20$encodedLemma&entry.1433863141=$_appLabel';
-  }
+  String get _correctMistakeUrl =>
+      buildMistakeUrl(word: lemma1, headwordId: headwordId);
 
   static const _docsUrl = 'https://digitalpalidictionary.github.io/';
 

@@ -3,7 +3,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../models/lookup_results.dart';
 import '../../theme/dpd_colors.dart';
-import '../../utils/date_utils.dart';
+import '../../utils/feedback_urls.dart';
 import '../../utils/pali_sort.dart';
 import '../entry_content.dart';
 import 'secondary_card.dart';
@@ -54,14 +54,13 @@ class _DeconstructorFooter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const baseUrl =
-        'https://docs.google.com/forms/d/e/1FAIpQLSf9boBe7k5tCwq7LdWgBHHGIPVc4ROO5yjVDo1X5LDAxkmGWQ/viewform?usp=pp_url';
     final docsUrl =
         'https://digitalpalidictionary.github.io/features/deconstructor/';
-    final suggestUrl =
-        '$baseUrl&entry.438735500=$encodedHeadword&entry.326955045=Deconstructor&entry.1433863141=${dpdAppLabel()}';
-    final addWordsUrl =
-        'https://docs.google.com/forms/d/e/1FAIpQLSfResxEUiRCyFITWPkzoQ2HhHEvUS5fyg68Rl28hFH6vhHlaA/viewform?entry.1433863141=${dpdAppLabel()}';
+    final suggestUrl = buildMistakeUrl(
+      word: Uri.decodeComponent(encodedHeadword),
+      feedbackType: 'Deconstructor',
+    );
+    final addWordsUrl = buildAddWordUrl();
 
     const footerStyle = TextStyle(fontSize: 12.8, color: Colors.grey);
     final linkStyle = TextStyle(

@@ -9,7 +9,7 @@ import '../database/dpd_headword_extensions.dart';
 import '../providers/settings_provider.dart';
 import '../services/audio_service.dart';
 import '../theme/dpd_colors.dart';
-import '../utils/date_utils.dart';
+import '../utils/feedback_urls.dart';
 import '../utils/text_filters.dart';
 
 /// Padding for the label cell in a key-value table row.
@@ -136,20 +136,11 @@ class DpdFooter extends StatelessWidget {
     if (customUrlBuilder != null) {
       return customUrlBuilder!();
     }
-
-    final encodedWord = Uri.encodeComponent(word!);
-    final wordIdentifier = headwordId != null
-        ? '$headwordId%20$encodedWord'
-        : encodedWord;
-
-    final type = Uri.encodeComponent(feedbackType!.value);
-    final appLabel = Uri.encodeComponent(dpdAppLabel());
-
-    return 'https://docs.google.com/forms/d/e/1FAIpQLSf9boBe7k5tCwq7LdWgBHHGIPVc4ROO5yjVDo1X5LDAxkmGWQ/viewform'
-        '?usp=pp_url'
-        '&entry.438735500=$wordIdentifier'
-        '&entry.326955045=$type'
-        '&entry.1433863141=$appLabel';
+    return buildMistakeUrl(
+      word: word,
+      headwordId: headwordId,
+      feedbackType: feedbackType?.value,
+    );
   }
 
   @override
