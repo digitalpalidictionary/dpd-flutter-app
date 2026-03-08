@@ -204,7 +204,9 @@ class SuttaInfoSection extends StatelessWidget {
           : Colors.black.withValues(alpha: 0.05),
       child: Text(
         title,
-        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+          fontWeight: FontWeight.bold,
+        ),
       ),
     );
   }

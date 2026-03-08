@@ -41,9 +41,7 @@ class FeedbackSection extends StatelessWidget {
           children: [
             RichText(
               text: TextSpan(
-                style: DefaultTextStyle.of(
-                  context,
-                ).style.copyWith(fontSize: 13),
+                style: Theme.of(context).textTheme.bodyMedium,
                 children: [
                   const TextSpan(text: 'ID '),
                   TextSpan(
@@ -54,9 +52,9 @@ class FeedbackSection extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 8),
-            const Text(
+            Text(
               'Digital Pāḷi Dictionary is a work in progress, made available for testing and feedback purposes.',
-              style: TextStyle(fontSize: 13),
+              style: Theme.of(context).textTheme.bodyMedium,
             ),
             const SizedBox(height: 8),
             _FeedbackLink(
@@ -113,7 +111,7 @@ class _FeedbackLink extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final style = DefaultTextStyle.of(context).style.copyWith(fontSize: 13);
+    final style = Theme.of(context).textTheme.bodyMedium;
     return RichText(
       text: TextSpan(
         style: style,
@@ -125,8 +123,7 @@ class _FeedbackLink extends StatelessWidget {
               onTap: onTap,
               child: Text(
                 linkText,
-                style: TextStyle(
-                  fontSize: 13,
+                style: style?.copyWith(
                   color: DpdColors.primaryText,
                   fontWeight: FontWeight.w700,
                 ),
