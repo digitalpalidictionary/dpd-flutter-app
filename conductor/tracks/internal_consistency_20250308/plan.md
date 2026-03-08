@@ -75,7 +75,7 @@
     - [x] Replace custom `boldRegex` parsing with `Text.rich` using `TextSpan` children.
 - [ ] Task: Conductor - User Manual Verification 'Phase 4: Styling & Containers' (Protocol in workflow.md)
 
-## Phase 5: Minimize HTML Widget Usage
+## Phase 5: Minimize HTML Widget Usage [checkpoint: a389978]
 
 - [x] Task: Audit all `Html()` widget usage
     - [x] `GrammarTable`: assess which fields need `Html` vs. can use `Text.rich`.
@@ -84,4 +84,4 @@
 - [x] Task: Replace simple `Html()` calls with native widgets (88ba6c2)
     - [x] Replace `Html` for simple bold/italic/linebreak content with `Text.rich`.
     - [x] Keep `Html` only where database content has complex nested HTML, links, or tables.
-- [ ] Task: Conductor - User Manual Verification 'Phase 5: HTML Minimization' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 5: HTML Minimization' (Protocol in workflow.md)
