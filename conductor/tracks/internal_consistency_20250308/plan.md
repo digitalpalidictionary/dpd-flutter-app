@@ -63,10 +63,10 @@
     - [x] Move date generation and URL building into `DpdFooter`.
     - [x] Update all 7 call sites to use simplified `DpdFooter` constructor.
     - [x] Standardize footer spacing (pick one value, e.g., `SizedBox(height: 12)`).
-- [ ] Task: Standardize link styling
-    - [ ] Replace all `InkWell` text-link wrappers with `GestureDetector` (or vice versa — pick one).
-    - [ ] Remove underline from `SuttaInfoSection` links (or add it everywhere — pick one).
-    - [ ] Replace `Colors.blue` in `GrammarTable` web link with `DpdColors.primaryText`.
+- [x] Task: Standardize link styling (b416d86)
+    - [x] Replace all `InkWell` text-link wrappers with `GestureDetector` (or vice versa — pick one).
+    - [x] Remove underline from `SuttaInfoSection` links (or add it everywhere — pick one).
+    - [x] Replace `Colors.blue` in `GrammarTable` web link with `DpdColors.primaryText`.
 - [ ] Task: Replace hardcoded font sizes with theme values
     - [ ] `FrequencyTable`: replace `fontSize: 11.2` and `12` with `bodySmall`.
     - [ ] `FeedbackSection`: replace `fontSize: 13` with `bodyMedium`.
