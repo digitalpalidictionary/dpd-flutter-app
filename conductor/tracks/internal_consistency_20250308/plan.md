@@ -11,28 +11,28 @@
     - [x] Update `GrammarTable` IPA row to use `DpdPlayButton(compact: true)`.
 - [x] Task: Cache `parseFrequencyData()` result
     - [x] Move parse call from `build()` to lazy-init pattern (like family/sutta data).
-- [ ] Task: Conductor - User Manual Verification 'Phase 1: Quick Wins' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 1: Quick Wins' (Protocol in workflow.md)
 
 ## Phase 2: Entry Card State & Logic Unification
 
-- [ ] Task: Simplify Expansion State Management
-    - [ ] Create `Set<String> openSections` replacing individual booleans in `InlineEntryCard` (6 bools) and `AccordionCard` (4 bools).
-    - [ ] Implement `toggleSection(String sectionId, bool oneButtonAtATime)` that clears set + adds new section.
-- [ ] Task: Extract shared card logic into mixin/widget
-    - [ ] Create `EntrySectionsManager` mixin (or similar) containing:
+- [x] Task: Simplify Expansion State Management (49a18f9)
+    - [x] Create `Set<String> openSections` replacing individual booleans in `InlineEntryCard` (6 bools) and `AccordionCard` (4 bools).
+    - [x] Implement `toggleSection(String sectionId, bool oneButtonAtATime)` that clears set + adds new section.
+- [x] Task: Extract shared card logic into mixin/widget (49a18f9)
+    - [x] Create `EntrySectionsManager` mixin (or similar) containing:
         - `openSections` state and `toggleSection()` method
         - `_loadSuttaInfo()` (currently triplicated)
         - Button row building logic
         - Section content rendering logic
-    - [ ] Refactor `InlineEntryCard` to use the shared logic.
-    - [ ] Refactor `AccordionCard` to use the shared logic.
-- [ ] Task: Unify `EntryScreen` toggle paradigm
-    - [ ] Replace `ExpansionTile` with `DpdSectionButton` in `EntryScreen`.
-    - [ ] Integrate `EntryScreen` with `EntrySectionsManager`.
-    - [ ] Add one-button-at-a-time support to `EntryScreen`.
-    - [ ] Gate examples behind toggle (like cards) or document why always-visible is intentional.
-- [ ] Task: Move `ref.listen` out of `build()` in both card widgets
-    - [ ] Relocate settings listener setup to appropriate lifecycle method.
+    - [x] Refactor `InlineEntryCard` to use the shared logic.
+    - [x] Refactor `AccordionCard` to use the shared logic.
+- [x] Task: Unify `EntryScreen` toggle paradigm (49a18f9)
+    - [x] Replace `ExpansionTile` with `DpdSectionButton` in `EntryScreen`.
+    - [x] Integrate `EntryScreen` with `EntrySectionsManager`.
+    - [x] Add one-button-at-a-time support to `EntryScreen`.
+    - [x] Gate examples behind toggle (like cards) or document why always-visible is intentional.
+- [x] Task: Move `ref.listen` out of `build()` in both card widgets (49a18f9)
+    - [x] Relocate settings listener setup to appropriate lifecycle method.
 - [ ] Task: Conductor - User Manual Verification 'Phase 2: Card Unification' (Protocol in workflow.md)
 
 ## Phase 3: Table Consolidation
