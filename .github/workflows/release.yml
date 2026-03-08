@@ -60,7 +60,7 @@ jobs:
           storePassword=${{ secrets.STORE_PASSWORD }}
           keyPassword=${{ secrets.KEY_PASSWORD }}
           keyAlias=${{ secrets.KEY_ALIAS }}
-          storeFile=keystore.jks
+          storeFile=$GITHUB_WORKSPACE/android/keystore.jks
           EOF
 
       - name: Install dependencies
