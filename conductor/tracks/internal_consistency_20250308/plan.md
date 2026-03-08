@@ -49,7 +49,7 @@
     - [x] Refactor `RootInfoTable` to use the shared builders.
 - [x] Task: Conductor - User Manual Verification 'Phase 3: Table Consolidation' (Protocol in workflow.md)
 
-## Phase 4: Standardize Styling & Containers
+## Phase 4: Standardize Styling & Containers [checkpoint: 400eecf]
 
 - [x] Task: Standardize `DpdSectionContainer` wrapping [6c20c3e]
     - [x] Make `GrammarTable` self-wrap in `DpdSectionContainer`.
