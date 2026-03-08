@@ -25,7 +25,6 @@
 ### UI
 | Package | Purpose |
 |---------|---------|
-| flutter_html | Render pre-built HTML content (inflection tables, frequency charts, examples) |
 | google_fonts | Inter and Noto Serif font loading |
 | percent_indicator | Progress bar for database download |
 | cupertino_icons | iOS-style icons |
