@@ -29,7 +29,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           PUBSPEC_VER=$(grep '^version:' pubspec.yaml | sed 's/version: //' | cut -d'+' -f1)
-          LAST_TAG=$(gh release list --limit 1 --json tagName --jq '.[0].tagName' 2>/dev/null || echo "v0.0.0")
+          LAST_TAG=$(gh release list --limit 1 --json tagName --jq '.[0].tagName // "v0.0.0"' 2>/dev/null || echo "v0.0.0")
           LAST_VER=${LAST_TAG#v}
 
           if [ "$(printf '%s\n' "$PUBSPEC_VER" "$LAST_VER" | sort -V | tail -1)" = "$PUBSPEC_VER" ] && [ "$PUBSPEC_VER" != "$LAST_VER" ]; then
