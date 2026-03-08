@@ -41,12 +41,12 @@
     - [x] Extract shared `FamilyEntryTable` widget from `_FamilyTable` in `family_table.dart`.
     - [x] Remove `_FamilySubTable` from `multi_family_section.dart`.
     - [x] Update `FamilyTableWidget` and `MultiFamilySection` to use `FamilyEntryTable`.
-- [ ] Task: Centralize Key-Value Table Row Builders
-    - [ ] Create shared row builder functions (`buildTextRow`, `buildLinkRow`, `buildHtmlRow`) in `entry_content.dart` or a new `dpd_table_builders.dart`.
-    - [ ] Standardize cell padding with shared constant (currently 5.0/7.0/8.0/10.0 across widgets).
-    - [ ] Refactor `GrammarTable` to use the shared builders.
-    - [ ] Refactor `SuttaInfoSection` to use the shared builders.
-    - [ ] Refactor `RootInfoTable` to use the shared builders.
+- [x] Task: Centralize Key-Value Table Row Builders (9f16259)
+    - [x] Create shared row builder functions (`buildTextRow`, `buildLinkRow`, `buildHtmlRow`) in `entry_content.dart` or a new `dpd_table_builders.dart`.
+    - [x] Standardize cell padding with shared constant (currently 5.0/7.0/8.0/10.0 across widgets).
+    - [x] Refactor `GrammarTable` to use the shared builders.
+    - [x] Refactor `SuttaInfoSection` to use the shared builders.
+    - [x] Refactor `RootInfoTable` to use the shared builders.
 - [ ] Task: Conductor - User Manual Verification 'Phase 3: Table Consolidation' (Protocol in workflow.md)
 
 ## Phase 4: Standardize Styling & Containers
