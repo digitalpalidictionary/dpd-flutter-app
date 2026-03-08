@@ -63,6 +63,13 @@ jobs:
           storeFile=$GITHUB_WORKSPACE/android/keystore.jks
           EOF
 
+      - name: Verify keystore
+        run: |
+          keytool -list \
+            -keystore android/keystore.jks \
+            -storepass "${{ secrets.STORE_PASSWORD }}" \
+            -alias "${{ secrets.KEY_ALIAS }}"
+
       - name: Install dependencies
         run: flutter pub get
 
