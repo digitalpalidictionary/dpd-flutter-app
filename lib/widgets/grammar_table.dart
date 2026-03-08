@@ -7,9 +7,9 @@ import '../database/dpd_headword_extensions.dart';
 import '../providers/internet_provider.dart';
 import '../providers/settings_provider.dart';
 import '../theme/dpd_colors.dart';
-import '../utils/date_utils.dart';
 import '../utils/text_filters.dart';
 import 'entry_content.dart';
+import 'feedback_type.dart';
 
 class GrammarTable extends ConsumerWidget {
   final DpdHeadwordWithRoot headword;
@@ -70,7 +70,6 @@ class GrammarTable extends ConsumerWidget {
               },
               children: rows,
             ),
-            const SizedBox(height: 16.0),
             _buildFooter(context, headword),
           ],
         ),
@@ -79,12 +78,12 @@ class GrammarTable extends ConsumerWidget {
   }
 
   Widget _buildFooter(BuildContext context, DpdHeadwordWithRoot headword) {
-    final encodedLemma = Uri.encodeComponent(headword.lemma1);
     return DpdFooter(
       messagePrefix: 'Did you spot a mistake?',
       linkText: 'Correct it here',
-      urlBuilder: () =>
-          'https://docs.google.com/forms/d/e/1FAIpQLSf9boBe7k5tCwq7LdWgBHHGIPVc4ROO5yjVDo1X5LDAxkmGWQ/viewform?usp=pp_url&entry.438735500=$encodedLemma&entry.326955045=Grammar&entry.1433863141=${dpdAppLabel()}',
+      feedbackType: FeedbackType.grammar,
+      word: headword.lemma1,
+      headwordId: headword.id,
     );
   }
 

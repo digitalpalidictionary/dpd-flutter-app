@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../database/database.dart';
 import '../theme/dpd_colors.dart';
-import '../utils/date_utils.dart';
 import 'entry_content.dart';
+import 'feedback_type.dart';
 
 const Map<int, String> _rootGroupPali = {
   1: 'bhūvādigaṇa',
@@ -238,8 +238,6 @@ class RootInfoTable extends StatelessWidget {
       );
     }
 
-    final encodedRoot = Uri.encodeComponent(root.root);
-
     return DpdSectionContainer(
       child: Padding(
         padding: DpdColors.sectionPadding,
@@ -258,8 +256,8 @@ class RootInfoTable extends StatelessWidget {
             DpdFooter(
               messagePrefix: 'Something out of place?',
               linkText: 'Report it here',
-              urlBuilder: () =>
-                  'https://docs.google.com/forms/d/e/1FAIpQLSf9boBe7k5tCwq7LdWgBHHGIPVc4ROO5yjVDo1X5LDAxkmGWQ/viewform?usp=pp_url&entry.438735500=$encodedRoot&entry.326955045=Root+Info&entry.1433863141=${dpdAppLabel()}',
+              feedbackType: FeedbackType.rootInfo,
+              word: root.root,
             ),
           ],
         ),

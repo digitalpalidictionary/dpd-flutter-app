@@ -50,14 +50,20 @@ class _MultiFamilySectionState extends State<MultiFamilySection> {
   void _scrollToSection(int index) {
     final ctx = _sectionKeys[index].currentContext;
     if (ctx != null) {
-      Scrollable.ensureVisible(ctx, duration: const Duration(milliseconds: 300));
+      Scrollable.ensureVisible(
+        ctx,
+        duration: const Duration(milliseconds: 300),
+      );
     }
   }
 
   void _scrollToTop() {
     final ctx = _topKey.currentContext;
     if (ctx != null) {
-      Scrollable.ensureVisible(ctx, duration: const Duration(milliseconds: 300));
+      Scrollable.ensureVisible(
+        ctx,
+        duration: const Duration(milliseconds: 300),
+      );
     }
   }
 
@@ -98,12 +104,12 @@ class _MultiFamilySectionState extends State<MultiFamilySection> {
                     _HeadingDoublelined(
                       child: i > 0
                           ? (widget.subSections[i].header is RichText
-                              ? _cloneWithJump(
-                                  context,
-                                  widget.subSections[i].header as RichText,
-                                  _scrollToTop,
-                                )
-                              : widget.subSections[i].header)
+                                ? _cloneWithJump(
+                                    context,
+                                    widget.subSections[i].header as RichText,
+                                    _scrollToTop,
+                                  )
+                                : widget.subSections[i].header)
                           : widget.subSections[i].header,
                     ),
                     const SizedBox(height: 8),
@@ -112,18 +118,19 @@ class _MultiFamilySectionState extends State<MultiFamilySection> {
                   ],
                 ),
               ),
-              if (i < widget.subSections.length - 1)
-                const SizedBox(height: 16),
+              if (i < widget.subSections.length - 1) const SizedBox(height: 16),
             ],
 
             // Single back-to-top + single footer at the very bottom
             const SizedBox(height: 8),
             _BackToTopLink(onTap: _scrollToTop),
-            const SizedBox(height: 4),
             DpdFooter(
-              messagePrefix: widget.subSections.first.footerConfig.messagePrefix,
+              messagePrefix:
+                  widget.subSections.first.footerConfig.messagePrefix,
               linkText: widget.subSections.first.footerConfig.linkText,
-              urlBuilder: widget.subSections.first.footerConfig.urlBuilder,
+              feedbackType: widget.subSections.first.footerConfig.feedbackType,
+              word: widget.subSections.first.footerConfig.word,
+              headwordId: widget.subSections.first.footerConfig.headwordId,
             ),
           ],
         ),
@@ -133,7 +140,11 @@ class _MultiFamilySectionState extends State<MultiFamilySection> {
 }
 
 /// Helper to add the jump link to an existing RichText header
-Widget _cloneWithJump(BuildContext context, RichText header, VoidCallback onJump) {
+Widget _cloneWithJump(
+  BuildContext context,
+  RichText header,
+  VoidCallback onJump,
+) {
   final oldSpan = header.text as TextSpan;
   final color = Theme.of(context).colorScheme.primary;
   return RichText(
@@ -243,4 +254,3 @@ class _BackToTopLink extends StatelessWidget {
     );
   }
 }
-

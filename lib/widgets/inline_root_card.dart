@@ -5,10 +5,10 @@ import '../database/database.dart';
 import '../models/family_data.dart';
 import '../providers/database_provider.dart';
 import '../theme/dpd_colors.dart';
-import '../utils/date_utils.dart';
 import 'entry_content.dart';
 import 'family_section_builders.dart';
 import 'family_table.dart';
+import 'feedback_type.dart';
 import 'root_info_table.dart';
 import 'root_matrix_table.dart';
 
@@ -147,12 +147,11 @@ class _InlineRootCardState extends ConsumerState<InlineRootCard> {
   }
 
   FamilyFooterConfig _buildRootFooterConfig(FamilyRootData fam) {
-    final encodedRoot = Uri.encodeComponent(widget.rwf.root.root);
     return FamilyFooterConfig(
       messagePrefix: 'Something out of place?',
       linkText: 'Report it here',
-      urlBuilder: () =>
-          'https://docs.google.com/forms/d/e/1FAIpQLSf9boBe7k5tCwq7LdWgBHHGIPVc4ROO5yjVDo1X5LDAxkmGWQ/viewform?usp=pp_url&entry.438735500=$encodedRoot&entry.326955045=Root+Family&entry.1433863141=${dpdAppLabel()}',
+      feedbackType: FeedbackType.rootFamily,
+      word: widget.rwf.root.root,
     );
   }
 }
@@ -340,12 +339,11 @@ class _AccordionRootCardState extends ConsumerState<AccordionRootCard> {
   }
 
   FamilyFooterConfig _buildRootFooterConfig(FamilyRootData fam) {
-    final encodedRoot = Uri.encodeComponent(widget.rwf.root.root);
     return FamilyFooterConfig(
       messagePrefix: 'Something out of place?',
       linkText: 'Report it here',
-      urlBuilder: () =>
-          'https://docs.google.com/forms/d/e/1FAIpQLSf9boBe7k5tCwq7LdWgBHHGIPVc4ROO5yjVDo1X5LDAxkmGWQ/viewform?usp=pp_url&entry.438735500=$encodedRoot&entry.326955045=Root+Family&entry.1433863141=${dpdAppLabel()}',
+      feedbackType: FeedbackType.rootFamily,
+      word: widget.rwf.root.root,
     );
   }
 }

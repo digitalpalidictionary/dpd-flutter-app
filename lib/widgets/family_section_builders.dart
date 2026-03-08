@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../database/database.dart';
-import '../utils/date_utils.dart';
 import 'family_table.dart';
-
-const String _feedbackFormUrl =
-    'https://docs.google.com/forms/d/e/1FAIpQLSf9boBe7k5tCwq7LdWgBHHGIPVc4ROO5yjVDo1X5LDAxkmGWQ/viewform?usp=pp_url';
+import 'feedback_type.dart';
 
 // ── Header builders ──────────────────────────────────────────────────────────
 // Each builder returns a RichText with only count and name bolded,
@@ -44,8 +41,10 @@ Widget _richHeader(
   );
 }
 
-TextSpan _bold(String text, TextStyle? base) =>
-    TextSpan(text: text, style: base?.copyWith(fontWeight: FontWeight.w700));
+TextSpan _bold(String text, TextStyle? base) => TextSpan(
+  text: text,
+  style: base?.copyWith(fontWeight: FontWeight.w700),
+);
 
 TextSpan _normal(String text) => TextSpan(text: text);
 
@@ -83,15 +82,11 @@ Widget buildCompoundFamilyHeader(
   final compound = n == 1 ? 'compound' : 'compounds';
   final contains = n == 1 ? 'contains' : 'contain';
   final base = Theme.of(context).textTheme.bodyMedium;
-  return _richHeader(
-    context,
-    [
-      _bold('$n', base),
-      _normal(' $compound which $contains '),
-      _bold(data.compoundFamily, base),
-    ],
-    onJumpTop: onJumpTop,
-  );
+  return _richHeader(context, [
+    _bold('$n', base),
+    _normal(' $compound which $contains '),
+    _bold(data.compoundFamily, base),
+  ], onJumpTop: onJumpTop);
 }
 
 /// Idiom: "(bold N) idiomatic expression(s) which contain(s) (bold X)"
@@ -104,15 +99,11 @@ Widget buildIdiomHeader(
   final expr = n == 1 ? 'idiomatic expression' : 'idiomatic expressions';
   final contains = n == 1 ? 'contains' : 'contain';
   final base = Theme.of(context).textTheme.bodyMedium;
-  return _richHeader(
-    context,
-    [
-      _bold('$n', base),
-      _normal(' $expr which $contains '),
-      _bold(data.idiom, base),
-    ],
-    onJumpTop: onJumpTop,
-  );
+  return _richHeader(context, [
+    _bold('$n', base),
+    _normal(' $expr which $contains '),
+    _bold(data.idiom, base),
+  ], onJumpTop: onJumpTop);
 }
 
 /// Set: "(bold lemma) belongs to the set of (bold X)"
@@ -123,65 +114,61 @@ Widget buildSetHeader(
   VoidCallback? onJumpTop,
 }) {
   final base = Theme.of(context).textTheme.bodyMedium;
-  return _richHeader(
-    context,
-    [
-      _bold(lemma, base),
-      _normal(' belongs to the set of '),
-      _bold(data.set_, base),
-    ],
-    onJumpTop: onJumpTop,
-  );
+  return _richHeader(context, [
+    _bold(lemma, base),
+    _normal(' belongs to the set of '),
+    _bold(data.set_, base),
+  ], onJumpTop: onJumpTop);
 }
 
 // ── Footer configs ────────────────────────────────────────────────────────────
 
 FamilyFooterConfig buildRootFamilyFooter(int headwordId, String lemma1) {
-  final encoded = Uri.encodeComponent(lemma1);
   return FamilyFooterConfig(
     messagePrefix: 'Something out of place?',
     linkText: 'Report it here',
-    urlBuilder: () =>
-        '$_feedbackFormUrl&entry.438735500=$headwordId%20$encoded&entry.326955045=Root+Family&entry.1433863141=${dpdAppLabel()}',
+    feedbackType: FeedbackType.rootFamily,
+    word: lemma1,
+    headwordId: headwordId,
   );
 }
 
 FamilyFooterConfig buildWordFamilyFooter(int headwordId, String lemma1) {
-  final encoded = Uri.encodeComponent(lemma1);
   return FamilyFooterConfig(
     messagePrefix: 'Something out of place?',
     linkText: 'Report it here',
-    urlBuilder: () =>
-        '$_feedbackFormUrl&entry.438735500=$headwordId%20$encoded&entry.326955045=Word+Family&entry.1433863141=${dpdAppLabel()}',
+    feedbackType: FeedbackType.wordFamily,
+    word: lemma1,
+    headwordId: headwordId,
   );
 }
 
 FamilyFooterConfig buildCompoundFamilyFooter(int headwordId, String lemma1) {
-  final encoded = Uri.encodeComponent(lemma1);
   return FamilyFooterConfig(
     messagePrefix: 'Spot a mistake?',
     linkText: 'Fix it here',
-    urlBuilder: () =>
-        '$_feedbackFormUrl&entry.438735500=$headwordId%20$encoded&entry.326955045=Compound+Family&entry.1433863141=${dpdAppLabel()}',
+    feedbackType: FeedbackType.compoundFamily,
+    word: lemma1,
+    headwordId: headwordId,
   );
 }
 
 FamilyFooterConfig buildIdiomFooter(int headwordId, String lemma1) {
-  final encoded = Uri.encodeComponent(lemma1);
   return FamilyFooterConfig(
     messagePrefix: 'Please add more idioms',
     linkText: 'here',
-    urlBuilder: () =>
-        '$_feedbackFormUrl&entry.438735500=$headwordId%20$encoded&entry.326955045=Idioms&entry.1433863141=${dpdAppLabel()}',
+    feedbackType: FeedbackType.idioms,
+    word: lemma1,
+    headwordId: headwordId,
   );
 }
 
 FamilyFooterConfig buildSetFooter(int headwordId, String lemma1) {
-  final encoded = Uri.encodeComponent(lemma1);
   return FamilyFooterConfig(
     messagePrefix: 'Spot a mistake?',
     linkText: 'Fix it here',
-    urlBuilder: () =>
-        '$_feedbackFormUrl&entry.438735500=$headwordId%20$encoded&entry.326955045=Set&entry.1433863141=${dpdAppLabel()}',
+    feedbackType: FeedbackType.set,
+    word: lemma1,
+    headwordId: headwordId,
   );
 }

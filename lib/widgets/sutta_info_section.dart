@@ -4,8 +4,8 @@ import 'package:url_launcher/url_launcher.dart';
 import '../database/database.dart';
 import '../database/sutta_info_extensions.dart';
 import '../theme/dpd_colors.dart';
-import '../utils/date_utils.dart';
 import 'entry_content.dart';
+import 'feedback_type.dart';
 
 class SuttaInfoSection extends StatelessWidget {
   const SuttaInfoSection({
@@ -123,10 +123,16 @@ class SuttaInfoSection extends StatelessWidget {
         _heading(context, 'Websites using BJT'),
         _table(context, [
           _linkRow(context, 'tipiṭaka.lk (Sinhala)', s.bjtTipitakaLkLink),
-          _linkRow(context, 'open.tipiṭaka.lk (Roman)',
-              s.bjtOpenTipitakaLkLink),
-          _linkRow(context, 'open.tipiṭaka.lk (Devanagari)',
-              s.bjtOpenTipitakaLkDevanagariLink),
+          _linkRow(
+            context,
+            'open.tipiṭaka.lk (Roman)',
+            s.bjtOpenTipitakaLkLink,
+          ),
+          _linkRow(
+            context,
+            'open.tipiṭaka.lk (Devanagari)',
+            s.bjtOpenTipitakaLkDevanagariLink,
+          ),
         ]),
       ],
 
@@ -150,8 +156,11 @@ class SuttaInfoSection extends StatelessWidget {
           _textRow(context, 'Sutta Length', s.dvLength),
           _textRow(context, 'Prominence', s.dvProminence),
           _textRow(context, 'Suggested Reading', s.dvSuggestedSuttas),
-          _linkRow(context, 'GitHub',
-              'https://github.com/dhammavinaya-tools/dhamma-vinaya-catalogue'),
+          _linkRow(
+            context,
+            'GitHub',
+            'https://github.com/dhammavinaya-tools/dhamma-vinaya-catalogue',
+          ),
         ]),
       ],
 
@@ -176,11 +185,7 @@ class SuttaInfoSection extends StatelessWidget {
         padding: DpdColors.sectionPadding,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            ...sections,
-            const SizedBox(height: 16.0),
-            _buildFooter(),
-          ],
+          children: [...sections, _buildFooter()],
         ),
       ),
     );
@@ -199,10 +204,7 @@ class SuttaInfoSection extends StatelessWidget {
           : Colors.black.withValues(alpha: 0.05),
       child: Text(
         title,
-        style: const TextStyle(
-          fontWeight: FontWeight.bold,
-          fontSize: 13,
-        ),
+        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
       ),
     );
   }
@@ -211,10 +213,7 @@ class SuttaInfoSection extends StatelessWidget {
     final filtered = rows.whereType<TableRow>().toList();
     if (filtered.isEmpty) return const SizedBox.shrink();
     return Table(
-      columnWidths: const {
-        0: FixedColumnWidth(220),
-        1: FlexColumnWidth(),
-      },
+      columnWidths: const {0: FixedColumnWidth(220), 1: FlexColumnWidth()},
       children: filtered,
     );
   }
@@ -225,8 +224,11 @@ class SuttaInfoSection extends StatelessWidget {
       buildKvTextRow(label, value);
 
   TableRow? _italicRow(BuildContext context, String label, String? value) =>
-      buildKvTextRow(label, value,
-          valueStyle: const TextStyle(fontStyle: FontStyle.italic));
+      buildKvTextRow(
+        label,
+        value,
+        valueStyle: const TextStyle(fontStyle: FontStyle.italic),
+      );
 
   TableRow? _linkRow(BuildContext context, String label, String? url) =>
       buildKvLinkRow(label, url, onOpen: _openUrl);
@@ -268,8 +270,7 @@ class SuttaInfoSection extends StatelessWidget {
                     ),
                   ),
                 ),
-                if (i < validLinks.length - 1)
-                  const Text(','),
+                if (i < validLinks.length - 1) const Text(','),
               ],
             ],
           ),
@@ -279,13 +280,12 @@ class SuttaInfoSection extends StatelessWidget {
   }
 
   Widget _buildFooter() {
-    final encodedLemma = Uri.encodeComponent(lemma1);
-
     return DpdFooter(
       messagePrefix: 'Did you spot a mistake?',
       linkText: 'Correct it here.',
-      urlBuilder: () =>
-          'https://docs.google.com/forms/d/e/1FAIpQLSf9boBe7k5tCwq7LdWgBHHGIPVc4ROO5yjVDo1X5LDAxkmGWQ/viewform?usp=pp_url&entry.438735500=$headwordId%20$encodedLemma&entry.326955045=Sutta+Info&entry.1433863141=${dpdAppLabel()}',
+      feedbackType: FeedbackType.suttaInfo,
+      word: lemma1,
+      headwordId: headwordId,
     );
   }
 }

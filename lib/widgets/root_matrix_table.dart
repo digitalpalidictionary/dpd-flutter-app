@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../theme/dpd_colors.dart';
-import '../utils/date_utils.dart';
 import 'entry_content.dart';
+import 'feedback_type.dart';
 import 'root_matrix_builder.dart';
 
 class RootMatrixTable extends StatelessWidget {
@@ -27,7 +27,6 @@ class RootMatrixTable extends StatelessWidget {
     // Measure the widest label across all non-empty subcategories so every
     // label cell uses the same fixed width — matching table column behaviour.
     final labelWidth = _measureMaxLabelWidth(context, labelStyle);
-    final encodedRoot = Uri.encodeComponent(root);
 
     final children = <Widget>[];
 
@@ -100,8 +99,8 @@ class RootMatrixTable extends StatelessWidget {
       DpdFooter(
         messagePrefix: 'Something out of place?',
         linkText: 'Report it here',
-        urlBuilder: () =>
-            'https://docs.google.com/forms/d/e/1FAIpQLSf9boBe7k5tCwq7LdWgBHHGIPVc4ROO5yjVDo1X5LDAxkmGWQ/viewform?usp=pp_url&entry.438735500=$encodedRoot&entry.326955045=Root+Matrix&entry.1433863141=${dpdAppLabel()}',
+        feedbackType: FeedbackType.rootMatrix,
+        word: root,
       ),
     );
 

@@ -3,8 +3,8 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../models/frequency_data.dart';
 import '../theme/dpd_colors.dart';
-import '../utils/date_utils.dart';
 import 'entry_content.dart';
+import 'feedback_type.dart';
 import 'frequency_table.dart';
 
 class FrequencySection extends StatelessWidget {
@@ -176,13 +176,12 @@ class FrequencySection extends StatelessWidget {
   }
 
   Widget _buildFooter() {
-    final encodedLemma = Uri.encodeComponent(lemma1);
-
     return DpdFooter(
       messagePrefix: 'If something looks out of place,',
       linkText: 'log it here.',
-      urlBuilder: () =>
-          'https://docs.google.com/forms/d/e/1FAIpQLSf9boBe7k5tCwq7LdWgBHHGIPVc4ROO5yjVDo1X5LDAxkmGWQ/viewform?usp=pp_url&entry.438735500=$headwordId%20$encodedLemma&entry.326955045=Frequency&entry.1433863141=${dpdAppLabel()}',
+      feedbackType: FeedbackType.frequency,
+      word: lemma1,
+      headwordId: headwordId,
     );
   }
 }

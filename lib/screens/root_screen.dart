@@ -8,7 +8,7 @@ import '../theme/dpd_colors.dart';
 import '../widgets/entry_content.dart';
 import '../widgets/family_section_builders.dart';
 import '../widgets/family_table.dart';
-import '../utils/date_utils.dart';
+import '../widgets/feedback_type.dart';
 import '../widgets/root_info_table.dart';
 import '../widgets/root_matrix_table.dart';
 
@@ -227,15 +227,14 @@ class _RootViewState extends ConsumerState<_RootView> {
   }
 
   Widget _buildFamilySection(FamilyRootData fam) {
-    final encodedRoot = Uri.encodeComponent(widget.rwf.root.root);
     return FamilyTableWidget(
       header: buildRootFamilyHeader(context, fam),
       entries: parseFamilyData(fam.data),
       footerConfig: FamilyFooterConfig(
         messagePrefix: 'Something out of place?',
         linkText: 'Report it here',
-        urlBuilder: () =>
-            'https://docs.google.com/forms/d/e/1FAIpQLSf9boBe7k5tCwq7LdWgBHHGIPVc4ROO5yjVDo1X5LDAxkmGWQ/viewform?usp=pp_url&entry.438735500=$encodedRoot&entry.326955045=Root+Family&entry.1433863141=${dpdAppLabel()}',
+        feedbackType: FeedbackType.rootFamily,
+        word: widget.rwf.root.root,
       ),
     );
   }

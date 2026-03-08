@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:dpd_flutter_app/widgets/feedback_type.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -113,19 +114,48 @@ TableRow? buildKvLinkRow(
 class DpdFooter extends StatelessWidget {
   const DpdFooter({
     super.key,
-    required this.messagePrefix,
-    required this.linkText,
-    required this.urlBuilder,
-  });
+    this.messagePrefix = 'Did you spot a mistake?',
+    this.linkText = 'Correct it here',
+    this.feedbackType,
+    this.word,
+    this.headwordId,
+    this.customUrlBuilder,
+  }) : assert(
+         customUrlBuilder != null || (feedbackType != null && word != null),
+         'Must provide either customUrlBuilder or feedbackType and word',
+       );
 
   final String messagePrefix;
   final String linkText;
-  final String Function() urlBuilder;
+  final FeedbackType? feedbackType;
+  final String? word;
+  final int? headwordId;
+  final String Function()? customUrlBuilder;
+
+  String _buildUrl() {
+    if (customUrlBuilder != null) {
+      return customUrlBuilder!();
+    }
+
+    final encodedWord = Uri.encodeComponent(word!);
+    final wordIdentifier = headwordId != null
+        ? '$headwordId%20$encodedWord'
+        : encodedWord;
+
+    final type = Uri.encodeComponent(feedbackType!.value);
+    final appLabel = Uri.encodeComponent(dpdAppLabel());
+
+    return 'https://docs.google.com/forms/d/e/1FAIpQLSf9boBe7k5tCwq7LdWgBHHGIPVc4ROO5yjVDo1X5LDAxkmGWQ/viewform'
+        '?usp=pp_url'
+        '&entry.438735500=$wordIdentifier'
+        '&entry.326955045=$type'
+        '&entry.1433863141=$appLabel';
+  }
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(top: 5.0),
+      margin: const EdgeInsets.only(top: 12.0),
       padding: const EdgeInsets.symmetric(vertical: 5.0),
       decoration: BoxDecoration(
         border: Border(top: BorderSide(color: DpdColors.primary, width: 1)),
@@ -135,7 +165,7 @@ class DpdFooter extends StatelessWidget {
         child: InkWell(
           onTap: () async {
             await launchUrl(
-              Uri.parse(urlBuilder()),
+              Uri.parse(_buildUrl()),
               mode: LaunchMode.platformDefault,
             );
           },
@@ -540,13 +570,12 @@ class EntryExampleFooter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final encodedLemma = Uri.encodeComponent(lemma1);
-
     return DpdFooter(
       messagePrefix: 'Can you think of a better example?',
       linkText: 'Add it here.',
-      urlBuilder: () =>
-          'https://docs.google.com/forms/d/e/1FAIpQLSf9boBe7k5tCwq7LdWgBHHGIPVc4ROO5yjVDo1X5LDAxkmGWQ/viewform?usp=pp_url&entry.438735500=$headwordId%20$encodedLemma&entry.326955045=Examples&entry.1433863141=${dpdAppLabel()}',
+      feedbackType: FeedbackType.examples,
+      word: lemma1,
+      headwordId: headwordId,
     );
   }
 }

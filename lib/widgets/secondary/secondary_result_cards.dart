@@ -82,30 +82,38 @@ class _DeconstructorFooter extends StatelessWidget {
           style: footerStyle,
           children: [
             const TextSpan(
-                text: 'These word breakups are code-generated. For more information, '),
+              text:
+                  'These word breakups are code-generated. For more information, ',
+            ),
             WidgetSpan(
               child: InkWell(
-                onTap: () => launchUrl(Uri.parse(docsUrl),
-                    mode: LaunchMode.platformDefault),
+                onTap: () => launchUrl(
+                  Uri.parse(docsUrl),
+                  mode: LaunchMode.platformDefault,
+                ),
                 child: Text('read the docs', style: linkStyle),
               ),
             ),
             const TextSpan(text: '. Please '),
             WidgetSpan(
               child: InkWell(
-                onTap: () => launchUrl(Uri.parse(suggestUrl),
-                    mode: LaunchMode.platformDefault),
-                child: Text('suggest any improvements here',
-                    style: linkStyle),
+                onTap: () => launchUrl(
+                  Uri.parse(suggestUrl),
+                  mode: LaunchMode.platformDefault,
+                ),
+                child: Text('suggest any improvements here', style: linkStyle),
               ),
             ),
             const TextSpan(
-                text:
-                    '. Mistakes in deconstruction are usually caused by a word missing from the dictionary. You can '),
+              text:
+                  '. Mistakes in deconstruction are usually caused by a word missing from the dictionary. You can ',
+            ),
             WidgetSpan(
               child: InkWell(
-                onTap: () => launchUrl(Uri.parse(addWordsUrl),
-                    mode: LaunchMode.platformDefault),
+                onTap: () => launchUrl(
+                  Uri.parse(addWordsUrl),
+                  mode: LaunchMode.platformDefault,
+                ),
                 child: Text('add missing words here', style: linkStyle),
               ),
             ),
@@ -135,7 +143,7 @@ class GrammarDictCard extends StatelessWidget {
       footer: DpdFooter(
         messagePrefix: 'For more information, please',
         linkText: 'read the docs',
-        urlBuilder: () => docsUrl,
+        customUrlBuilder: () => docsUrl,
       ),
     );
   }
@@ -172,8 +180,9 @@ class _GrammarDictTableState extends State<_GrammarDictTable> {
 
   @override
   Widget build(BuildContext context) {
-    final bodyStyle =
-        Theme.of(context).textTheme.bodyMedium?.copyWith(height: _lineHeight);
+    final bodyStyle = Theme.of(
+      context,
+    ).textTheme.bodyMedium?.copyWith(height: _lineHeight);
     final boldStyle = bodyStyle?.copyWith(fontWeight: FontWeight.w700);
 
     int maxComps = 0;
@@ -282,16 +291,18 @@ class AbbreviationCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return TertiaryCard(
       title: result.headword,
-      content: _HelpStyleTable(rows: [
-        ('Abbreviation', result.headword, true),
-        ('Meaning', result.meaning, false),
-        if (result.pali != null && result.pali!.isNotEmpty)
-          ('Pāḷi', result.pali!, false),
-        if (result.example != null && result.example!.isNotEmpty)
-          ('Example', result.example!, false),
-        if (result.explanation != null && result.explanation!.isNotEmpty)
-          ('Information', result.explanation!, false),
-      ]),
+      content: _HelpStyleTable(
+        rows: [
+          ('Abbreviation', result.headword, true),
+          ('Meaning', result.meaning, false),
+          if (result.pali != null && result.pali!.isNotEmpty)
+            ('Pāḷi', result.pali!, false),
+          if (result.example != null && result.example!.isNotEmpty)
+            ('Example', result.example!, false),
+          if (result.explanation != null && result.explanation!.isNotEmpty)
+            ('Information', result.explanation!, false),
+        ],
+      ),
     );
   }
 }
@@ -307,10 +318,12 @@ class HelpCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return TertiaryCard(
       title: result.headword,
-      content: _HelpStyleTable(rows: [
-        ('Help', result.headword, true),
-        ('Meaning', result.helpText, false),
-      ]),
+      content: _HelpStyleTable(
+        rows: [
+          ('Help', result.headword, true),
+          ('Meaning', result.helpText, false),
+        ],
+      ),
     );
   }
 }
@@ -323,38 +336,38 @@ class _HelpStyleTable extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bodyStyle =
-        Theme.of(context).textTheme.bodyMedium?.copyWith(height: _lineHeight);
+    final bodyStyle = Theme.of(
+      context,
+    ).textTheme.bodyMedium?.copyWith(height: _lineHeight);
 
     return Table(
-      columnWidths: const {
-        0: IntrinsicColumnWidth(),
-        1: FlexColumnWidth(),
-      },
+      columnWidths: const {0: IntrinsicColumnWidth(), 1: FlexColumnWidth()},
       defaultVerticalAlignment: TableCellVerticalAlignment.top,
       children: rows.map(((String, String, bool) row) {
         final (label, value, bold) = row;
-        return TableRow(children: [
-          Padding(
-            padding: const EdgeInsets.only(right: 5),
-            child: Text(
-              label,
-              style: bodyStyle?.copyWith(
-                color: DpdColors.secondary,
-                fontWeight: FontWeight.w700,
+        return TableRow(
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(right: 5),
+              child: Text(
+                label,
+                style: bodyStyle?.copyWith(
+                  color: DpdColors.secondary,
+                  fontWeight: FontWeight.w700,
+                ),
               ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(right: 5),
-            child: Text(
-              value,
-              style: bold
-                  ? bodyStyle?.copyWith(fontWeight: FontWeight.w700)
-                  : bodyStyle,
+            Padding(
+              padding: const EdgeInsets.only(right: 5),
+              child: Text(
+                value,
+                style: bold
+                    ? bodyStyle?.copyWith(fontWeight: FontWeight.w700)
+                    : bodyStyle,
+              ),
             ),
-          ),
-        ]);
+          ],
+        );
       }).toList(),
     );
   }
@@ -369,8 +382,9 @@ class EpdCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bodyStyle =
-        Theme.of(context).textTheme.bodyMedium?.copyWith(height: _lineHeight);
+    final bodyStyle = Theme.of(
+      context,
+    ).textTheme.bodyMedium?.copyWith(height: _lineHeight);
 
     return DpdSecondaryCard(
       title: 'English: ${result.headword}',
@@ -409,7 +423,8 @@ class VariantCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const docsUrl = 'https://digitalpalidictionary.github.io/features/variants/';
+    const docsUrl =
+        'https://digitalpalidictionary.github.io/features/variants/';
 
     return DpdSecondaryCard(
       title: 'variants: ${result.headword}',
@@ -417,7 +432,7 @@ class VariantCard extends StatelessWidget {
       footer: DpdFooter(
         messagePrefix: 'For details on how to use this, please',
         linkText: 'read the docs',
-        urlBuilder: () => docsUrl,
+        customUrlBuilder: () => docsUrl,
       ),
     );
   }
@@ -430,42 +445,53 @@ class _VariantTable extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bodyStyle =
-        Theme.of(context).textTheme.bodyMedium?.copyWith(height: _lineHeight);
+    final bodyStyle = Theme.of(
+      context,
+    ).textTheme.bodyMedium?.copyWith(height: _lineHeight);
     final headerStyle = bodyStyle?.copyWith(fontWeight: FontWeight.w700);
 
     final corpusList = variants.keys.toList();
     final rows = <TableRow>[];
 
     // Header row
-    rows.add(TableRow(children: [
-      for (final h in ['source', 'filename', 'context', 'variant'])
-        _cell(h, style: headerStyle),
-    ]));
+    rows.add(
+      TableRow(
+        children: [
+          for (final h in ['source', 'filename', 'context', 'variant'])
+            _cell(h, style: headerStyle),
+        ],
+      ),
+    );
 
     for (int ci = 0; ci < corpusList.length; ci++) {
       final corpus = corpusList[ci];
 
       // Separator row between corpus groups (1px height so decoration renders)
       if (ci > 0) {
-        rows.add(TableRow(
-          decoration: BoxDecoration(
-            border: Border(
-              top: BorderSide(color: DpdColors.grayTransparent, width: 1),
+        rows.add(
+          TableRow(
+            decoration: BoxDecoration(
+              border: Border(
+                top: BorderSide(color: DpdColors.grayTransparent, width: 1),
+              ),
             ),
+            children: List.generate(4, (_) => const SizedBox(height: 1)),
           ),
-          children: List.generate(4, (_) => const SizedBox(height: 1)),
-        ));
+        );
       }
 
       for (final book in variants[corpus]!.keys) {
         for (final entry in variants[corpus]![book]!) {
-          rows.add(TableRow(children: [
-            _cell(corpus, style: bodyStyle, noWrap: true),
-            _cell(book, style: bodyStyle, noWrap: true),
-            _cell(entry[0], style: bodyStyle),
-            _cell(entry[1], style: bodyStyle),
-          ]));
+          rows.add(
+            TableRow(
+              children: [
+                _cell(corpus, style: bodyStyle, noWrap: true),
+                _cell(book, style: bodyStyle, noWrap: true),
+                _cell(entry[0], style: bodyStyle),
+                _cell(entry[1], style: bodyStyle),
+              ],
+            ),
+          );
         }
       }
     }
@@ -501,8 +527,9 @@ class SpellingCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bodyStyle =
-        Theme.of(context).textTheme.bodyMedium?.copyWith(height: _lineHeight);
+    final bodyStyle = Theme.of(
+      context,
+    ).textTheme.bodyMedium?.copyWith(height: _lineHeight);
     return DpdSecondaryCard(
       title: 'spelling: ${result.headword}',
       content: Text.rich(
@@ -518,8 +545,7 @@ class SpellingCard extends StatelessWidget {
                   fontStyle: FontStyle.italic,
                 ),
               ),
-              if (i < result.spellings.length - 1)
-                const TextSpan(text: '\n'),
+              if (i < result.spellings.length - 1) const TextSpan(text: '\n'),
             ],
           ],
         ),
@@ -537,8 +563,9 @@ class SeeCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bodyStyle =
-        Theme.of(context).textTheme.bodyMedium?.copyWith(height: _lineHeight);
+    final bodyStyle = Theme.of(
+      context,
+    ).textTheme.bodyMedium?.copyWith(height: _lineHeight);
     return DpdSecondaryCard(
       title: 'see: ${result.headword}',
       content: Text.rich(
@@ -563,4 +590,3 @@ class SeeCard extends StatelessWidget {
     );
   }
 }
-

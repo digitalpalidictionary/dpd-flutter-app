@@ -51,14 +51,14 @@
 
 ## Phase 4: Standardize Styling & Containers
 
-- [~] Task: Standardize `DpdSectionContainer` wrapping
-    - [ ] Make `GrammarTable` self-wrap in `DpdSectionContainer`.
-    - [ ] Make `InflectionSection` self-wrap.
-    - [ ] Make `EntryExampleBlock` self-wrap.
-    - [ ] Make `RootInfoTable` self-wrap.
-    - [ ] Make `RootMatrixTable` self-wrap.
-    - [ ] Remove redundant `DpdSectionContainer` wrapping from callers (`InlineEntryCard`, `AccordionCard`, `EntryScreen`, `InlineRootCard`).
-- [ ] Task: Centralize Google Form URL generation in `DpdFooter`
+- [x] Task: Standardize `DpdSectionContainer` wrapping [6c20c3e]
+    - [x] Make `GrammarTable` self-wrap in `DpdSectionContainer`.
+    - [x] Make `InflectionSection` self-wrap.
+    - [x] Make `EntryExampleBlock` self-wrap.
+    - [x] Make `RootInfoTable` self-wrap.
+    - [x] Make `RootMatrixTable` self-wrap.
+    - [x] Remove redundant `DpdSectionContainer` wrapping from callers (`InlineEntryCard`, `AccordionCard`, `EntryScreen`, `InlineRootCard`).
+- [~] Task: Centralize Google Form URL generation in `DpdFooter`
     - [ ] Add `FeedbackType` enum.
     - [ ] Move date generation and URL building into `DpdFooter`.
     - [ ] Update all 7 call sites to use simplified `DpdFooter` constructor.
