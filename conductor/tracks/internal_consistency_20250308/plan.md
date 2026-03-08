@@ -81,7 +81,7 @@
     - [x] `GrammarTable`: assess which fields need `Html` vs. can use `Text.rich`.
     - [x] `EntryExampleBlock`: assess whether examples contain complex HTML or just `<br>` + `<b>`.
     - [x] `DpdHtmlTable`: assess if still used anywhere; remove if dead code.
-- [~] Task: Replace simple `Html()` calls with native widgets
-    - [ ] Replace `Html` for simple bold/italic/linebreak content with `Text.rich`.
-    - [ ] Keep `Html` only where database content has complex nested HTML, links, or tables.
+- [x] Task: Replace simple `Html()` calls with native widgets (88ba6c2)
+    - [x] Replace `Html` for simple bold/italic/linebreak content with `Text.rich`.
+    - [x] Keep `Html` only where database content has complex nested HTML, links, or tables.
 - [ ] Task: Conductor - User Manual Verification 'Phase 5: HTML Minimization' (Protocol in workflow.md)
