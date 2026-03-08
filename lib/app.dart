@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import 'providers/app_update_provider.dart';
 import 'providers/autocomplete_provider.dart';
 import 'providers/database_provider.dart';
 import 'providers/database_update_provider.dart';
@@ -45,6 +46,7 @@ class _DpdAppState extends ConsumerState<DpdApp> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(dbUpdateProvider.notifier).checkForUpdates();
+      ref.read(appUpdateProvider.notifier).checkForUpdates();
     });
 
     _intentSub = IntentService.intentStream.listen((text) {
@@ -191,6 +193,38 @@ class _DbGateState extends ConsumerState<_DbGate> {
   @override
   Widget build(BuildContext context) {
     final updateState = ref.watch(dbUpdateProvider);
+
+    ref.listen<AppUpdateState>(appUpdateProvider, (previous, next) {
+      if (next.status == AppUpdateStatus.readyToInstall &&
+          previous?.status != AppUpdateStatus.readyToInstall) {
+        final theme = Theme.of(context);
+        ScaffoldMessenger.of(context).showMaterialBanner(
+          MaterialBanner(
+            backgroundColor: theme.colorScheme.surfaceContainerHighest,
+            content: Text(
+              'App update ${next.latestTag ?? ""} ready to install',
+              style: TextStyle(color: theme.colorScheme.onSurface),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  ScaffoldMessenger.of(context).hideCurrentMaterialBanner();
+                  ref.read(appUpdateProvider.notifier).installUpdate();
+                },
+                child: const Text('Install'),
+              ),
+              TextButton(
+                onPressed: () {
+                  ScaffoldMessenger.of(context).hideCurrentMaterialBanner();
+                  ref.read(appUpdateProvider.notifier).dismiss();
+                },
+                child: const Text('Later'),
+              ),
+            ],
+          ),
+        );
+      }
+    });
 
     ref.listen<DbUpdateState>(dbUpdateProvider, (previous, next) {
       if (previous == null || !next.hasLocalDatabase) return;

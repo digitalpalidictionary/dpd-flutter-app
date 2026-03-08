@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../providers/app_update_provider.dart';
 import '../providers/database_update_provider.dart';
 import '../providers/settings_provider.dart';
 import '../services/database_update_service.dart';
@@ -13,6 +14,7 @@ class SettingsScreen extends ConsumerWidget {
     final settings = ref.watch(settingsProvider);
     final notifier = ref.read(settingsProvider.notifier);
     final updateState = ref.watch(dbUpdateProvider);
+    final appUpdateState = ref.watch(appUpdateProvider);
 
     return Scaffold(
       appBar: AppBar(title: const Text('Settings')),
@@ -108,6 +110,28 @@ class SettingsScreen extends ConsumerWidget {
           ListTile(
             title: const Text('App version'),
             trailing: Text(ref.watch(appVersionProvider).valueOrNull ?? '…'),
+          ),
+          ListTile(
+            title: const Text('Check for app update'),
+            trailing: appUpdateState.status == AppUpdateStatus.checking ||
+                    appUpdateState.status == AppUpdateStatus.downloading
+                ? const SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  )
+                : appUpdateState.status == AppUpdateStatus.readyToInstall
+                    ? FilledButton.tonal(
+                        onPressed: () => ref
+                            .read(appUpdateProvider.notifier)
+                            .installUpdate(),
+                        child: const Text('Install'),
+                      )
+                    : const Icon(Icons.refresh),
+            onTap: appUpdateState.status == AppUpdateStatus.checking ||
+                    appUpdateState.status == AppUpdateStatus.downloading
+                ? null
+                : () => ref.read(appUpdateProvider.notifier).manualCheck(),
           ),
           ListTile(
             title: const Text('dpdict.net'),
