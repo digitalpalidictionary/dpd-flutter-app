@@ -71,8 +71,8 @@
     - [x] `FrequencyTable`: replace `fontSize: 11.2` and `12` with `bodySmall`.
     - [x] `FeedbackSection`: replace `fontSize: 13` with `bodyMedium`.
     - [x] `SuttaInfoSection` headings: replace `fontSize: 13` with `bodyMedium`.
-- [ ] Task: Standardize `FrequencySection` heading
-    - [ ] Replace custom `boldRegex` parsing with `Text.rich` using `TextSpan` children.
+- [x] Task: Standardize `FrequencySection` heading (c1c77c8)
+    - [x] Replace custom `boldRegex` parsing with `Text.rich` using `TextSpan` children.
 - [ ] Task: Conductor - User Manual Verification 'Phase 4: Styling & Containers' (Protocol in workflow.md)
 
 ## Phase 5: Minimize HTML Widget Usage
