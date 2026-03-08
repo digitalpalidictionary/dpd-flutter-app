@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../providers/database_update_provider.dart';
 import '../providers/settings_provider.dart';
 import '../theme/dpd_colors.dart';
 
@@ -11,6 +12,7 @@ class SettingsContent extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final settings = ref.watch(settingsProvider);
     final notifier = ref.read(settingsProvider.notifier);
+    final updateState = ref.watch(dbUpdateProvider);
     final theme = Theme.of(context);
 
     return ListView(
@@ -110,6 +112,11 @@ class SettingsContent extends ConsumerWidget {
             onChanged: notifier.setAudioGender,
           ),
         ),
+        _ToggleRow(
+          title: 'WiFi-only updates',
+          value: settings.wifiOnlyUpdates,
+          onChanged: notifier.setWifiOnlyUpdates,
+        ),
         const SizedBox(height: 16),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -118,7 +125,7 @@ class SettingsContent extends ConsumerWidget {
         ListTile(
           dense: true,
           title: Text(
-            'Version 0.1.0',
+            'App ${ref.watch(appVersionProvider).valueOrNull ?? "…"}  ·  Database ${updateState.localVersion ?? "unknown"}',
             style: theme.textTheme.bodySmall?.copyWith(
               color: theme.colorScheme.onSurfaceVariant,
             ),

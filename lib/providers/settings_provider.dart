@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 enum DisplayMode { classic, compact }
@@ -21,6 +22,7 @@ class Settings {
     this.showSummary = true,
     this.showSandhiApostrophe = true,
     this.audioGender = AudioGender.male,
+    this.wifiOnlyUpdates = false,
   });
 
   final ThemeMode themeMode;
@@ -34,6 +36,7 @@ class Settings {
   final bool showSummary;
   final bool showSandhiApostrophe;
   final AudioGender audioGender;
+  final bool wifiOnlyUpdates;
 
   Settings copyWith({
     ThemeMode? themeMode,
@@ -47,6 +50,7 @@ class Settings {
     bool? showSummary,
     bool? showSandhiApostrophe,
     AudioGender? audioGender,
+    bool? wifiOnlyUpdates,
   }) {
     return Settings(
       themeMode: themeMode ?? this.themeMode,
@@ -60,6 +64,7 @@ class Settings {
       showSummary: showSummary ?? this.showSummary,
       showSandhiApostrophe: showSandhiApostrophe ?? this.showSandhiApostrophe,
       audioGender: audioGender ?? this.audioGender,
+      wifiOnlyUpdates: wifiOnlyUpdates ?? this.wifiOnlyUpdates,
     );
   }
 
@@ -77,7 +82,8 @@ class Settings {
         other.niggahitaMode == niggahitaMode &&
         other.showSummary == showSummary &&
         other.showSandhiApostrophe == showSandhiApostrophe &&
-        other.audioGender == audioGender;
+        other.audioGender == audioGender &&
+        other.wifiOnlyUpdates == wifiOnlyUpdates;
   }
 
   @override
@@ -93,6 +99,7 @@ class Settings {
     showSummary,
     showSandhiApostrophe,
     audioGender,
+    wifiOnlyUpdates,
   );
 }
 
@@ -133,6 +140,7 @@ class SettingsNotifier extends StateNotifier<Settings> {
       (g) => g.name == audioGenderName,
       orElse: () => AudioGender.male,
     );
+    final wifiOnlyUpdates = _prefs.getBool('wifi_only_updates') ?? false;
     state = Settings(
       themeMode: themeMode,
       fontSize: fontSize,
@@ -145,6 +153,7 @@ class SettingsNotifier extends StateNotifier<Settings> {
       showSummary: showSummary,
       showSandhiApostrophe: showSandhiApostrophe,
       audioGender: audioGender,
+      wifiOnlyUpdates: wifiOnlyUpdates,
     );
   }
 
@@ -202,6 +211,11 @@ class SettingsNotifier extends StateNotifier<Settings> {
     await _prefs.setString('audio_gender', gender.name);
     state = state.copyWith(audioGender: gender);
   }
+
+  Future<void> setWifiOnlyUpdates(bool value) async {
+    await _prefs.setBool('wifi_only_updates', value);
+    state = state.copyWith(wifiOnlyUpdates: value);
+  }
 }
 
 final sharedPreferencesProvider = Provider<SharedPreferences>((ref) {
@@ -211,4 +225,9 @@ final sharedPreferencesProvider = Provider<SharedPreferences>((ref) {
 final settingsProvider = StateNotifierProvider<SettingsNotifier, Settings>((ref) {
   final prefs = ref.watch(sharedPreferencesProvider);
   return SettingsNotifier(prefs);
+});
+
+final appVersionProvider = FutureProvider<String>((ref) async {
+  final info = await PackageInfo.fromPlatform();
+  return info.version;
 });

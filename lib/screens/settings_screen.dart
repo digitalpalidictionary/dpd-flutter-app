@@ -98,10 +98,16 @@ class SettingsScreen extends ConsumerWidget {
                     .read(dbUpdateProvider.notifier)
                     .manualCheckForUpdates(),
           ),
+          SwitchListTile(
+            title: const Text('WiFi-only updates'),
+            subtitle: const Text('Only download updates over WiFi'),
+            value: settings.wifiOnlyUpdates,
+            onChanged: (v) => notifier.setWifiOnlyUpdates(v),
+          ),
           const _SectionHeader('About'),
           ListTile(
-            title: const Text('Version'),
-            trailing: const Text('0.1.0'),
+            title: const Text('App version'),
+            trailing: Text(ref.watch(appVersionProvider).valueOrNull ?? '…'),
           ),
           ListTile(
             title: const Text('dpdict.net'),
