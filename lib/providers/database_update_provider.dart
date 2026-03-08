@@ -1,3 +1,4 @@
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../services/database_update_service.dart';
@@ -68,7 +69,7 @@ class DbUpdateNotifier extends StateNotifier<DbUpdateState> {
       ReleaseInfo? release;
       try {
         release = await _service.fetchLatestRelease().timeout(
-          const Duration(seconds: 10),
+          const Duration(seconds: 30),
         );
       } catch (e) {
         state = const DbUpdateState(
@@ -152,7 +153,7 @@ class DbUpdateNotifier extends StateNotifier<DbUpdateState> {
     ReleaseInfo? release;
     try {
       release = await _service.fetchLatestRelease().timeout(
-        const Duration(seconds: 10),
+        const Duration(seconds: 30),
       );
     } catch (_) {
       return;
@@ -164,6 +165,13 @@ class DbUpdateNotifier extends StateNotifier<DbUpdateState> {
     if (installedTag == release.tagName) {
       state = state.copyWith(releaseInfo: release);
       return;
+    }
+
+    // Skip download on mobile data if WiFi-only is enabled
+    final wifiOnly = _ref.read(settingsProvider).wifiOnlyUpdates;
+    if (wifiOnly) {
+      final connectivity = await Connectivity().checkConnectivity();
+      if (!connectivity.contains(ConnectivityResult.wifi)) return;
     }
 
     await _backgroundDownload(release);

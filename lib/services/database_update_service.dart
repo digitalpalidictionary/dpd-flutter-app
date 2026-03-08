@@ -32,8 +32,8 @@ class DatabaseUpdateService {
   DatabaseUpdateService({Dio? dio})
       : _dio = dio ??
             Dio(BaseOptions(
-              connectTimeout: const Duration(seconds: 10),
-              receiveTimeout: const Duration(seconds: 10),
+              connectTimeout: const Duration(seconds: 30),
+              receiveTimeout: const Duration(seconds: 30),
             ));
 
   Future<bool> databaseExists() async {

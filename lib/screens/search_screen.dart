@@ -244,6 +244,8 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
             child: UnconstrainedBox(
               alignment: Alignment.topRight,
               child: _InfoPopup(
+                appVersion: ref.read(appVersionProvider).valueOrNull,
+                dbVersion: ref.read(dbUpdateProvider).localVersion,
                 onSelect: (content) {
                   _removeInfoOverlay();
                   setState(() => _activeInfo = content);
@@ -285,6 +287,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     });
 
     return Scaffold(
+      bottomNavigationBar: const _DownloadFooter(),
       body: SafeArea(
         child: Column(
           children: [
@@ -325,8 +328,6 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                 ],
               ),
             ),
-
-            const _UpdateBanner(),
 
             const SizedBox(height: 8),
 
@@ -502,10 +503,17 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
 // ── Info popup ────────────────────────────────────────────────────────────────
 
 class _InfoPopup extends StatelessWidget {
-  const _InfoPopup({required this.onSelect, required this.onExternalLink});
+  const _InfoPopup({
+    required this.onSelect,
+    required this.onExternalLink,
+    this.appVersion,
+    this.dbVersion,
+  });
 
   final void Function(_InfoContent) onSelect;
   final void Function(String url) onExternalLink;
+  final String? appVersion;
+  final String? dbVersion;
 
   @override
   Widget build(BuildContext context) {
@@ -526,6 +534,36 @@ class _InfoPopup extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.phone_android, size: 16, color: theme.textTheme.bodyMedium?.color),
+                  const SizedBox(width: 8),
+                  Text(
+                    'App ${appVersion ?? "…"}',
+                    style: theme.textTheme.bodyMedium,
+                  ),
+                ],
+              ),
+            ),
+            divider,
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.storage_outlined, size: 16, color: theme.textTheme.bodyMedium?.color),
+                  const SizedBox(width: 8),
+                  Text(
+                    'Database ${dbVersion ?? "unknown"}',
+                    style: theme.textTheme.bodyMedium,
+                  ),
+                ],
+              ),
+            ),
+            divider,
             _InfoMenuItem(
               label: 'Bibliography',
               icon: Icons.menu_book_outlined,
@@ -1177,8 +1215,8 @@ class _NoResults extends StatelessWidget {
 
 
 
-class _UpdateBanner extends ConsumerWidget {
-  const _UpdateBanner();
+class _DownloadFooter extends ConsumerWidget {
+  const _DownloadFooter();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -1190,32 +1228,36 @@ class _UpdateBanner extends ConsumerWidget {
       return const SizedBox.shrink();
     }
 
-    final percent = updateState.progress;
+    final percent = updateState.progress.clamp(0.0, 1.0);
+    final release = updateState.releaseInfo;
+    final sizeLabel = release != null
+        ? ' (${DatabaseUpdateService().formatBytes(release.size)})'
+        : '';
     final label = status == DbStatus.extracting
         ? 'Applying update…'
-        : 'Updating database… ${(percent * 100).toStringAsFixed(0)}%';
+        : 'Downloading… ${(percent * 100).toStringAsFixed(0)}%$sizeLabel';
 
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(8, 4, 8, 0),
-      child: Card(
-        color: DpdColors.primary.withValues(alpha: 0.1),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-          child: Row(
-            children: [
-              const SizedBox(
-                width: 20,
-                height: 20,
-                child: CircularProgressIndicator(strokeWidth: 2),
-              ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: Text(label, style: theme.textTheme.bodySmall),
-              ),
-            ],
+    final bottomPadding = MediaQuery.of(context).padding.bottom;
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        LinearProgressIndicator(
+          value: status == DbStatus.extracting ? null : percent,
+          backgroundColor: theme.colorScheme.outlineVariant,
+          color: DpdColors.primary,
+          minHeight: 3,
+        ),
+        Padding(
+          padding: EdgeInsets.only(top: 6, bottom: 6 + bottomPadding),
+          child: Text(
+            label,
+            style: theme.textTheme.labelSmall?.copyWith(
+              color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
+            ),
           ),
         ),
-      ),
+      ],
     );
   }
 }
