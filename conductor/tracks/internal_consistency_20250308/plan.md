@@ -13,7 +13,7 @@
     - [x] Move parse call from `build()` to lazy-init pattern (like family/sutta data).
 - [x] Task: Conductor - User Manual Verification 'Phase 1: Quick Wins' (Protocol in workflow.md)
 
-## Phase 2: Entry Card State & Logic Unification
+## Phase 2: Entry Card State & Logic Unification [checkpoint: 47fb2f2]
 
 - [x] Task: Simplify Expansion State Management (49a18f9)
     - [x] Create `Set<String> openSections` replacing individual booleans in `InlineEntryCard` (6 bools) and `AccordionCard` (4 bools).
@@ -33,7 +33,7 @@
     - [x] Gate examples behind toggle (like cards) or document why always-visible is intentional.
 - [x] Task: Move `ref.listen` out of `build()` in both card widgets (49a18f9)
     - [x] Relocate settings listener setup to appropriate lifecycle method.
-- [ ] Task: Conductor - User Manual Verification 'Phase 2: Card Unification' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 2: Card Unification' (Protocol in workflow.md)
 
 ## Phase 3: Table Consolidation
 
