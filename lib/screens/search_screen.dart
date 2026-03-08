@@ -44,6 +44,7 @@ class SearchScreen extends ConsumerStatefulWidget {
 
 class _SearchScreenState extends ConsumerState<SearchScreen> {
   final _controller = TextEditingController();
+  final _focusNode = FocusNode();
   final _layerLink = LayerLink();
   final _helpLayerLink = LayerLink();
   final _infoLayerLink = LayerLink();
@@ -60,6 +61,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     _removeOverlay();
     _removeHelpOverlay();
     _removeInfoOverlay();
+    _focusNode.dispose();
     _controller.dispose();
     _debounce?.cancel();
     _autocompleteDebounce?.cancel();
@@ -109,6 +111,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     ref.read(searchQueryProvider.notifier).state = '';
     ref.read(historyProvider.notifier).resetPosition();
     setState(() {});
+    _focusNode.requestFocus();
   }
 
   void _updateAutocomplete(String query) {
@@ -339,6 +342,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                         link: _helpLayerLink,
                         child: TextField(
                           controller: _controller,
+                          focusNode: _focusNode,
                           autofocus: false,
                           onChanged: _onChanged,
                           onSubmitted: (_) => _onSearch(),
