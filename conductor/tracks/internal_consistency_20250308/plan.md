@@ -58,11 +58,11 @@
     - [x] Make `RootInfoTable` self-wrap.
     - [x] Make `RootMatrixTable` self-wrap.
     - [x] Remove redundant `DpdSectionContainer` wrapping from callers (`InlineEntryCard`, `AccordionCard`, `EntryScreen`, `InlineRootCard`).
-- [~] Task: Centralize Google Form URL generation in `DpdFooter`
-    - [ ] Add `FeedbackType` enum.
-    - [ ] Move date generation and URL building into `DpdFooter`.
-    - [ ] Update all 7 call sites to use simplified `DpdFooter` constructor.
-    - [ ] Standardize footer spacing (pick one value, e.g., `SizedBox(height: 12)`).
+- [x] Task: Centralize Google Form URL generation in `DpdFooter` [37b8c15]
+    - [x] Add `FeedbackType` enum.
+    - [x] Move date generation and URL building into `DpdFooter`.
+    - [x] Update all 7 call sites to use simplified `DpdFooter` constructor.
+    - [x] Standardize footer spacing (pick one value, e.g., `SizedBox(height: 12)`).
 - [ ] Task: Standardize link styling
     - [ ] Replace all `InkWell` text-link wrappers with `GestureDetector` (or vice versa — pick one).
     - [ ] Remove underline from `SuttaInfoSection` links (or add it everywhere — pick one).
