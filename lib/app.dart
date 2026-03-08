@@ -192,17 +192,51 @@ class _DbGateState extends ConsumerState<_DbGate> {
   Widget build(BuildContext context) {
     final updateState = ref.watch(dbUpdateProvider);
 
-    switch (updateState.status) {
-      case DbStatus.checking:
-      case DbStatus.noDatabase:
-      case DbStatus.downloading:
-      case DbStatus.extracting:
-      case DbStatus.error:
-        return const DownloadScreen();
-      case DbStatus.upToDate:
-      case DbStatus.updateAvailable:
-        _eagerLoadProviders();
-        return const SearchScreen();
+    ref.listen<DbUpdateState>(dbUpdateProvider, (previous, next) {
+      if (previous == null || !next.hasLocalDatabase) return;
+
+      if (previous.status != DbStatus.downloading &&
+          next.status == DbStatus.downloading) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Downloading database update — please stay online'),
+            duration: Duration(seconds: 4),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      }
+
+      if (previous.status == DbStatus.extracting &&
+          next.status == DbStatus.ready) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'Database updated to ${next.localVersion ?? "latest version"}',
+            ),
+            duration: const Duration(seconds: 3),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      }
+
+      if (next.errorMessage != null &&
+          previous.errorMessage != next.errorMessage &&
+          next.status == DbStatus.ready) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Update failed. Will retry later.'),
+            duration: Duration(seconds: 3),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      }
+    });
+
+    if (!updateState.hasLocalDatabase) {
+      return const DownloadScreen();
     }
+
+    _eagerLoadProviders();
+    return const SearchScreen();
   }
 }

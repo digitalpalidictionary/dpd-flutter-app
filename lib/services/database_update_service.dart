@@ -7,8 +7,7 @@ import '../database/database.dart';
 
 enum DbStatus {
   noDatabase,
-  upToDate,
-  updateAvailable,
+  ready,
   checking,
   downloading,
   extracting,
@@ -46,7 +45,7 @@ class DatabaseUpdateService {
     try {
       final response = await _dio.get<List<dynamic>>(
         'https://api.github.com/repos/digitalpalidictionary/dpd-db/releases',
-        queryParameters: {'per_page': 1},
+        queryParameters: {'per_page': 10},
         options: Options(
           headers: {'Accept': 'application/vnd.github.v3+json'},
         ),
@@ -55,22 +54,26 @@ class DatabaseUpdateService {
       final releases = response.data;
       if (releases == null || releases.isEmpty) return null;
 
-      final data = releases.first as Map<String, dynamic>;
-      final tagName = data['tag_name'] as String;
-      final assets = data['assets'] as List<dynamic>;
+      // Find the most recent release that contains dpd-mobile-db.zip
+      for (final release in releases) {
+        final data = release as Map<String, dynamic>;
+        final assets = data['assets'] as List<dynamic>;
 
-      final dbAsset = assets.cast<Map<String, dynamic>>().firstWhere(
-        (a) => (a['name'] as String) == 'dpd-mobile-db.zip',
-        orElse: () => <String, dynamic>{},
-      );
+        final dbAsset = assets.cast<Map<String, dynamic>>().firstWhere(
+          (a) => (a['name'] as String) == 'dpd-mobile-db.zip',
+          orElse: () => <String, dynamic>{},
+        );
 
-      if (dbAsset.isEmpty) return null;
+        if (dbAsset.isNotEmpty) {
+          return ReleaseInfo(
+            tagName: data['tag_name'] as String,
+            downloadUrl: dbAsset['browser_download_url'] as String,
+            size: dbAsset['size'] as int,
+          );
+        }
+      }
 
-      return ReleaseInfo(
-        tagName: tagName,
-        downloadUrl: dbAsset['browser_download_url'] as String,
-        size: dbAsset['size'] as int,
-      );
+      return null;
     } on DioException catch (e) {
       if (e.response?.statusCode == 403) {
         throw Exception('GitHub API rate limit exceeded. Try again later.');

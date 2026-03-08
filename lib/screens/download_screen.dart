@@ -95,8 +95,7 @@ class DownloadScreen extends ConsumerWidget {
           ],
         );
 
-      case DbStatus.upToDate:
-      case DbStatus.updateAvailable:
+      case DbStatus.ready:
         return const SizedBox.shrink();
     }
   }

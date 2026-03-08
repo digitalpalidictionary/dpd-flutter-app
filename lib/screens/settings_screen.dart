@@ -83,16 +83,20 @@ class SettingsScreen extends ConsumerWidget {
           ),
           ListTile(
             title: const Text('Check for updates'),
-            trailing: updateState.status == DbStatus.checking
+            trailing: updateState.status == DbStatus.downloading ||
+                    updateState.status == DbStatus.extracting
                 ? const SizedBox(
                     width: 20,
                     height: 20,
                     child: CircularProgressIndicator(strokeWidth: 2),
                   )
                 : const Icon(Icons.refresh),
-            onTap: updateState.status == DbStatus.checking
+            onTap: updateState.status == DbStatus.downloading ||
+                    updateState.status == DbStatus.extracting
                 ? null
-                : () => ref.read(dbUpdateProvider.notifier).checkForUpdates(),
+                : () => ref
+                    .read(dbUpdateProvider.notifier)
+                    .manualCheckForUpdates(),
           ),
           const _SectionHeader('About'),
           ListTile(
