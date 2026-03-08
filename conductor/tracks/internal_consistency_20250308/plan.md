@@ -77,11 +77,11 @@
 
 ## Phase 5: Minimize HTML Widget Usage
 
-- [ ] Task: Audit all `Html()` widget usage
-    - [ ] `GrammarTable`: assess which fields need `Html` vs. can use `Text.rich`.
-    - [ ] `EntryExampleBlock`: assess whether examples contain complex HTML or just `<br>` + `<b>`.
-    - [ ] `DpdHtmlTable`: assess if still used anywhere; remove if dead code.
-- [ ] Task: Replace simple `Html()` calls with native widgets
+- [x] Task: Audit all `Html()` widget usage
+    - [x] `GrammarTable`: assess which fields need `Html` vs. can use `Text.rich`.
+    - [x] `EntryExampleBlock`: assess whether examples contain complex HTML or just `<br>` + `<b>`.
+    - [x] `DpdHtmlTable`: assess if still used anywhere; remove if dead code.
+- [~] Task: Replace simple `Html()` calls with native widgets
     - [ ] Replace `Html` for simple bold/italic/linebreak content with `Text.rich`.
     - [ ] Keep `Html` only where database content has complex nested HTML, links, or tables.
 - [ ] Task: Conductor - User Manual Verification 'Phase 5: HTML Minimization' (Protocol in workflow.md)

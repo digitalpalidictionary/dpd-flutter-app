@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:dpd_flutter_app/widgets/feedback_type.dart';
-import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -56,22 +55,80 @@ TableRow? buildKvTextRow(
   );
 }
 
-/// Builds a nullable HTML [TableRow]; returns null when [html] is empty or null.
-TableRow? buildKvHtmlRow(
+/// Parses simple markup (`<b>`, `<i>`, `<a href>`, `<br>`) into [InlineSpan]s.
+///
+/// Handles non-nested tags as found in DPD database fields (phonetic, commentary,
+/// notes). Links are rendered as styled tap targets when [onLinkTap] is provided.
+List<InlineSpan> parseSimpleMarkup(
+  String html, {
+  TextStyle? boldStyle,
+  TextStyle? italicStyle,
+  TextStyle? linkStyle,
+  void Function(String url)? onLinkTap,
+}) {
+  final spans = <InlineSpan>[];
+  final normalized = html
+      .replaceAll(RegExp(r'<br\s*/?>'), '\n')
+      .replaceAll('\n\n', '\n');
+  final pattern = RegExp(
+    r'<b>(.*?)</b>|<i>(.*?)</i>|<a\s+href="([^"]*)"[^>]*>(.*?)</a>|([^<]+)',
+    dotAll: true,
+  );
+  for (final m in pattern.allMatches(normalized)) {
+    if (m.group(1) != null) {
+      spans.add(TextSpan(text: m.group(1), style: boldStyle));
+    } else if (m.group(2) != null) {
+      spans.add(TextSpan(text: m.group(2), style: italicStyle));
+    } else if (m.group(3) != null) {
+      final url = m.group(3)!;
+      final text = m.group(4)!;
+      spans.add(
+        WidgetSpan(
+          alignment: PlaceholderAlignment.baseline,
+          baseline: TextBaseline.alphabetic,
+          child: GestureDetector(
+            onTap: onLinkTap != null ? () => onLinkTap(url) : null,
+            child: Text(text, style: linkStyle),
+          ),
+        ),
+      );
+    } else if (m.group(5) != null) {
+      spans.add(TextSpan(text: m.group(5)));
+    }
+  }
+  return spans;
+}
+
+/// Builds a nullable rich-text [TableRow] parsing simple markup (`<b>`, `<i>`, `<a href>`).
+/// Returns null when [html] is empty or null.
+TableRow? buildKvRichRow(
   String label,
   String? html, {
   String Function(String)? filter,
   TextStyle? labelStyle,
+  void Function(String url)? onLinkTap,
 }) {
   if (html == null || html.isEmpty) return null;
-  final data = (filter != null ? filter(html) : html).replaceAll('\n', '<br>');
+  final data = filter != null ? filter(html) : html;
   return buildKvRow(
     label,
-    Html(
-      data: data,
-      style: {
-        'body': Style(margin: Margins.zero, padding: HtmlPaddings.zero),
-        'p': Style(margin: Margins.zero, padding: HtmlPaddings.zero),
+    Builder(
+      builder: (context) {
+        final theme = Theme.of(context);
+        final base = theme.textTheme.bodyMedium;
+        final spans = parseSimpleMarkup(
+          data,
+          boldStyle: base?.copyWith(fontWeight: FontWeight.bold),
+          italicStyle: base?.copyWith(fontStyle: FontStyle.italic),
+          linkStyle: TextStyle(
+            color: DpdColors.primaryText,
+            fontWeight: FontWeight.w700,
+            decoration: TextDecoration.underline,
+            decorationColor: DpdColors.primaryText,
+          ),
+          onLinkTap: onLinkTap,
+        );
+        return Text.rich(TextSpan(style: base, children: spans));
       },
     ),
     labelStyle: labelStyle,
@@ -273,6 +330,24 @@ class EntryExampleBlock extends ConsumerWidget {
   }
 }
 
+/// Parses a string containing `<b>...</b>` tags into a list of [InlineSpan]s.
+/// Newline characters are preserved as-is (not converted to `<br>`).
+List<InlineSpan> _parseBoldSpans(String text, {TextStyle? boldStyle}) {
+  final spans = <InlineSpan>[];
+  text.splitMapJoin(
+    RegExp(r'<b>(.*?)</b>'),
+    onMatch: (m) {
+      spans.add(TextSpan(text: m.group(1), style: boldStyle));
+      return '';
+    },
+    onNonMatch: (s) {
+      if (s.isNotEmpty) spans.add(TextSpan(text: s));
+      return '';
+    },
+  );
+  return spans;
+}
+
 class _SingleExampleBlock extends ConsumerWidget {
   const _SingleExampleBlock({required this.example, this.sutta, this.source});
 
@@ -294,48 +369,30 @@ class _SingleExampleBlock extends ConsumerWidget {
       mode: filterMode,
     );
     final theme = Theme.of(context);
+    final boldStyle = theme.textTheme.bodyMedium?.copyWith(
+      fontWeight: FontWeight.bold,
+    );
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Html(
-          data: n(example).replaceAll('\n', '<br>'),
-          shrinkWrap: true,
-          style: {
-            'body': Style(margin: Margins.zero, padding: HtmlPaddings.zero),
-            'p': Style(margin: Margins.zero),
-          },
-        ),
-        if (sutta != null || source != null) ...[
-          Html(
-            data:
-                '<p class="sutta">${[source, sutta].whereType<String>().map(n).join(' ')}</p>',
-            style: {
-              'body': Style(margin: Margins.zero, padding: HtmlPaddings.zero),
-              'p.sutta': Style(
-                color: DpdColors.primaryText,
-                fontStyle: FontStyle.italic,
-                fontSize: FontSize(theme.textTheme.bodySmall?.fontSize ?? 12.0),
-                margin: Margins.zero,
-                padding: HtmlPaddings.only(bottom: 3),
-              ),
-              'a.sutta_link': Style(
-                color: DpdColors.primaryText,
-                fontStyle: FontStyle.italic,
-                fontWeight: FontWeight.bold,
-                textDecoration: TextDecoration.none,
-              ),
-            },
-            onLinkTap: (url, attributes, element) async {
-              if (url != null) {
-                await launchUrl(
-                  Uri.parse(url),
-                  mode: LaunchMode.externalApplication,
-                );
-              }
-            },
+        Text.rich(
+          TextSpan(
+            style: theme.textTheme.bodyMedium,
+            children: _parseBoldSpans(n(example), boldStyle: boldStyle),
           ),
-        ],
+        ),
+        if (sutta != null || source != null)
+          Padding(
+            padding: const EdgeInsets.only(bottom: 3),
+            child: Text(
+              [source, sutta].whereType<String>().map(n).join(' '),
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: DpdColors.primaryText,
+                fontStyle: FontStyle.italic,
+              ),
+            ),
+          ),
       ],
     );
   }

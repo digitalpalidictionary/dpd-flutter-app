@@ -174,7 +174,7 @@ class GrammarTable extends ConsumerWidget {
     DpdHeadwordWithRoot headword,
     String Function(String) n,
   ) {
-    return buildKvHtmlRow(
+    return buildKvTextRow(
       'Construction',
       headword.headword.cleanConstruction(),
       filter: n,
@@ -194,7 +194,12 @@ class GrammarTable extends ConsumerWidget {
     DpdHeadwordWithRoot headword,
     String Function(String) n,
   ) {
-    return buildKvHtmlRow('Phonetic Change', headword.phonetic, filter: n);
+    return buildKvRichRow(
+      'Phonetic Change',
+      headword.phonetic,
+      filter: n,
+      onLinkTap: _openUrl,
+    );
   }
 
   TableRow? _buildCompoundRow(
@@ -212,7 +217,7 @@ class GrammarTable extends ConsumerWidget {
       if (type != null && type.isNotEmpty) type,
       if (construction != null && construction.isNotEmpty) '($construction)',
     ].join(' ').trim();
-    return buildKvHtmlRow('Compound', text, filter: n);
+    return buildKvTextRow('Compound', text, filter: n);
   }
 
   TableRow? _buildAntonymRow(
@@ -244,14 +249,14 @@ class GrammarTable extends ConsumerWidget {
     if (commentary == null || commentary.isEmpty || commentary == '-') {
       return null;
     }
-    return buildKvHtmlRow('Commentary', commentary, filter: n);
+    return buildKvRichRow('Commentary', commentary, filter: n, onLinkTap: _openUrl);
   }
 
   TableRow? _buildNotesRow(
     DpdHeadwordWithRoot headword,
     String Function(String) n,
   ) {
-    return buildKvHtmlRow('Notes', headword.notes, filter: n);
+    return buildKvRichRow('Notes', headword.notes, filter: n, onLinkTap: _openUrl);
   }
 
   TableRow? _buildCognateRow(
