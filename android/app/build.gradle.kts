@@ -48,8 +48,13 @@ android {
         }
     }
     buildTypes {
+        debug {
+            applicationIdSuffix = ".debug"
+            resValue("string", "app_name", "DPD Debug")
+        }
         release {
             signingConfig = signingConfigs.getByName("release")
+            resValue("string", "app_name", "DPD")
         }
     }
 }
