@@ -37,10 +37,10 @@
 
 ## Phase 3: Table Consolidation
 
-- [ ] Task: Consolidate Family Tables
-    - [ ] Extract shared `FamilyEntryTable` widget from `_FamilyTable` in `family_table.dart`.
-    - [ ] Remove `_FamilySubTable` from `multi_family_section.dart`.
-    - [ ] Update `FamilyTableWidget` and `MultiFamilySection` to use `FamilyEntryTable`.
+- [x] Task: Consolidate Family Tables (0f3a624)
+    - [x] Extract shared `FamilyEntryTable` widget from `_FamilyTable` in `family_table.dart`.
+    - [x] Remove `_FamilySubTable` from `multi_family_section.dart`.
+    - [x] Update `FamilyTableWidget` and `MultiFamilySection` to use `FamilyEntryTable`.
 - [ ] Task: Centralize Key-Value Table Row Builders
     - [ ] Create shared row builder functions (`buildTextRow`, `buildLinkRow`, `buildHtmlRow`) in `entry_content.dart` or a new `dpd_table_builders.dart`.
     - [ ] Standardize cell padding with shared constant (currently 5.0/7.0/8.0/10.0 across widgets).
