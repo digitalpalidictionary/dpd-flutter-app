@@ -11,6 +11,102 @@ import '../theme/dpd_colors.dart';
 import '../utils/date_utils.dart';
 import '../utils/text_filters.dart';
 
+/// Padding for the label cell in a key-value table row.
+const kDpdTableLabelPadding = EdgeInsets.only(right: 5.0, bottom: 2.0);
+
+/// Padding for the value cell in a key-value table row.
+const kDpdTableValuePadding = EdgeInsets.only(bottom: 2.0);
+
+/// Builds a [TableRow] with a bold primary-coloured label and arbitrary [content].
+TableRow buildKvRow(String label, Widget content, {TextStyle? labelStyle}) {
+  return TableRow(
+    children: [
+      Padding(
+        padding: kDpdTableLabelPadding,
+        child: Text(
+          label,
+          style: labelStyle ??
+              TextStyle(
+                fontWeight: FontWeight.bold,
+                color: DpdColors.primaryText,
+              ),
+        ),
+      ),
+      Padding(padding: kDpdTableValuePadding, child: content),
+    ],
+  );
+}
+
+/// Builds a nullable text [TableRow]; returns null when [text] is empty or null.
+TableRow? buildKvTextRow(
+  String label,
+  String? text, {
+  String Function(String)? filter,
+  TextStyle? valueStyle,
+  TextStyle? labelStyle,
+}) {
+  if (text == null || text.isEmpty) return null;
+  final display = filter != null ? filter(text) : text;
+  return buildKvRow(label, Text(display, style: valueStyle),
+      labelStyle: labelStyle);
+}
+
+/// Builds a nullable HTML [TableRow]; returns null when [html] is empty or null.
+TableRow? buildKvHtmlRow(
+  String label,
+  String? html, {
+  String Function(String)? filter,
+  TextStyle? labelStyle,
+}) {
+  if (html == null || html.isEmpty) return null;
+  final data =
+      (filter != null ? filter(html) : html).replaceAll('\n', '<br>');
+  return buildKvRow(
+    label,
+    Html(
+      data: data,
+      style: {
+        'body': Style(margin: Margins.zero, padding: HtmlPaddings.zero),
+        'p': Style(margin: Margins.zero, padding: HtmlPaddings.zero),
+      },
+    ),
+    labelStyle: labelStyle,
+  );
+}
+
+/// Builds a nullable link [TableRow]; returns null when [url] is empty or null.
+///
+/// Tapping calls [onOpen] with the resolved URL.
+TableRow? buildKvLinkRow(
+  String label,
+  String? url, {
+  required void Function(String) onOpen,
+  TextStyle? labelStyle,
+}) {
+  if (url == null || url.isEmpty) return null;
+  return buildKvRow(
+    label,
+    SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: GestureDetector(
+        onTap: () => onOpen(url),
+        child: Text(
+          url,
+          maxLines: 1,
+          softWrap: false,
+          style: TextStyle(
+            color: DpdColors.primaryText,
+            fontWeight: FontWeight.w700,
+            decoration: TextDecoration.underline,
+            decorationColor: DpdColors.primaryText,
+          ),
+        ),
+      ),
+    ),
+    labelStyle: labelStyle,
+  );
+}
+
 class DpdFooter extends StatelessWidget {
   const DpdFooter({
     super.key,

@@ -221,91 +221,15 @@ class SuttaInfoSection extends StatelessWidget {
 
   // ── Row builders ─────────────────────────────────────────────────────────
 
-  TableRow? _textRow(BuildContext context, String label, String? value) {
-    if (!_notEmpty(value)) return null;
-    return TableRow(
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(right: 5.0, bottom: 2.0),
-          child: Text(
-            label,
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              color: DpdColors.primaryText,
-            ),
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(bottom: 2.0),
-          child: Text(value!),
-        ),
-      ],
-    );
-  }
+  TableRow? _textRow(BuildContext context, String label, String? value) =>
+      buildKvTextRow(label, value);
 
-  TableRow? _italicRow(BuildContext context, String label, String? value) {
-    if (!_notEmpty(value)) return null;
-    return TableRow(
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(right: 5.0, bottom: 2.0),
-          child: Text(
-            label,
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              color: DpdColors.primaryText,
-            ),
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(bottom: 2.0),
-          child: Text(
-            value!,
-            style: const TextStyle(fontStyle: FontStyle.italic),
-          ),
-        ),
-      ],
-    );
-  }
+  TableRow? _italicRow(BuildContext context, String label, String? value) =>
+      buildKvTextRow(label, value,
+          valueStyle: const TextStyle(fontStyle: FontStyle.italic));
 
-  TableRow? _linkRow(BuildContext context, String label, String? url) {
-    if (!_notEmpty(url)) return null;
-    final resolvedUrl = url!;
-    return TableRow(
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(right: 5.0, bottom: 2.0),
-          child: Text(
-            label,
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              color: DpdColors.primaryText,
-            ),
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(bottom: 2.0),
-          child: SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: GestureDetector(
-              onTap: () => _openUrl(resolvedUrl),
-              child: Text(
-                resolvedUrl,
-                maxLines: 1,
-                softWrap: false,
-                style: TextStyle(
-                  color: DpdColors.primaryText,
-                  fontWeight: FontWeight.w700,
-                  decoration: TextDecoration.underline,
-                  decorationColor: DpdColors.primaryText,
-                ),
-              ),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
+  TableRow? _linkRow(BuildContext context, String label, String? url) =>
+      buildKvLinkRow(label, url, onOpen: _openUrl);
 
   TableRow? _multiLinkRow(
     BuildContext context,
