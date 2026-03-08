@@ -51,7 +51,7 @@
 
 ## Phase 4: Standardize Styling & Containers
 
-- [ ] Task: Standardize `DpdSectionContainer` wrapping
+- [~] Task: Standardize `DpdSectionContainer` wrapping
     - [ ] Make `GrammarTable` self-wrap in `DpdSectionContainer`.
     - [ ] Make `InflectionSection` self-wrap.
     - [ ] Make `EntryExampleBlock` self-wrap.

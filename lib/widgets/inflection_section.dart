@@ -84,17 +84,19 @@ class _InflectionSectionState extends ConsumerState<InflectionSection> {
           )
         : null;
 
-    return Padding(
-      padding: DpdColors.sectionPadding,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          if (tableData != null) ...[
-            InflectionTable(data: tableData, lookupKey: widget.lookupKey),
-            const SizedBox(height: 12),
+    return DpdSectionContainer(
+      child: Padding(
+        padding: DpdColors.sectionPadding,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (tableData != null) ...[
+              InflectionTable(data: tableData, lookupKey: widget.lookupKey),
+              const SizedBox(height: 12),
+            ],
+            _InflectionFooter(headwordId: h.id, lemma1: h.lemma1),
           ],
-          _InflectionFooter(headwordId: h.id, lemma1: h.lemma1),
-        ],
+        ),
       ),
     );
   }
@@ -118,4 +120,3 @@ class _InflectionFooter extends StatelessWidget {
     );
   }
 }
-

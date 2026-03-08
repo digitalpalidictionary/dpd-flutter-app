@@ -14,8 +14,8 @@ import '../widgets/root_matrix_table.dart';
 
 final _rootProvider = FutureProvider.autoDispose
     .family<RootWithFamilies?, String>((ref, rootKey) {
-  return ref.watch(daoProvider).getRootWithFamilies(rootKey);
-});
+      return ref.watch(daoProvider).getRootWithFamilies(rootKey);
+    });
 
 class RootScreen extends ConsumerWidget {
   const RootScreen({super.key, required this.rootKey});
@@ -90,8 +90,7 @@ class _RootViewState extends ConsumerState<_RootView> {
                 Text(
                   root.rootMeaning,
                   style: theme.textTheme.bodySmall?.copyWith(
-                    color:
-                        theme.colorScheme.onSurface.withValues(alpha: 0.6),
+                    color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
                   ),
                 ),
               ],
@@ -112,8 +111,10 @@ class _RootViewState extends ConsumerState<_RootView> {
                     ),
                     borderRadius: DpdColors.borderRadius,
                   ),
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 7,
+                    vertical: 3,
+                  ),
                   child: RichText(
                     text: TextSpan(
                       style: baseStyle,
@@ -172,8 +173,7 @@ class _RootViewState extends ConsumerState<_RootView> {
                 const SizedBox(height: 8),
 
                 // Content sections
-                if (_activeSection == 'info' && true)
-                  _buildRootInfoSection(),
+                if (_activeSection == 'info' && true) _buildRootInfoSection(),
 
                 if (_activeSection == 'matrix' && (root.rootCount ?? 0) > 0)
                   _buildRootMatrixSection(),
@@ -199,63 +199,30 @@ class _RootViewState extends ConsumerState<_RootView> {
 
   Widget _buildRootInfoSection() {
     final root = widget.rwf.root;
-    final encodedRoot = Uri.encodeComponent(root.root);
     final basesAsync = ref.watch(basesForRootProvider(root.root));
     final bases = basesAsync.whenOrNull(data: (b) => b);
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8),
-      child: DpdSectionContainer(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            RootInfoTable(root: root, bases: bases),
-            Padding(
-              padding: DpdColors.sectionPadding,
-              child: DpdFooter(
-                messagePrefix: 'Something out of place?',
-                linkText: 'Report it here',
-                urlBuilder: () =>
-                    'https://docs.google.com/forms/d/e/1FAIpQLSf9boBe7k5tCwq7LdWgBHHGIPVc4ROO5yjVDo1X5LDAxkmGWQ/viewform?usp=pp_url&entry.438735500=$encodedRoot&entry.326955045=Root+Info&entry.1433863141=${dpdAppLabel()}',
-              ),
-            ),
-          ],
-        ),
-      ),
+      child: RootInfoTable(root: root, bases: bases),
     );
   }
 
   Widget _buildRootMatrixSection() {
     final root = widget.rwf.root;
-    final encodedRoot = Uri.encodeComponent(root.root);
     final matrixAsync = ref.watch(rootMatrixProvider(root.root));
     final matrix = matrixAsync.whenOrNull(data: (m) => m);
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8),
-      child: DpdSectionContainer(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (matrix != null)
-              RootMatrixTable(data: matrix)
-            else
-              Padding(
+      child: matrix != null
+          ? RootMatrixTable(root: root.root, data: matrix)
+          : DpdSectionContainer(
+              child: Padding(
                 padding: DpdColors.sectionPadding,
                 child: const CircularProgressIndicator(),
               ),
-            Padding(
-              padding: DpdColors.sectionPadding,
-              child: DpdFooter(
-                messagePrefix: 'Something out of place?',
-                linkText: 'Report it here',
-                urlBuilder: () =>
-                    'https://docs.google.com/forms/d/e/1FAIpQLSf9boBe7k5tCwq7LdWgBHHGIPVc4ROO5yjVDo1X5LDAxkmGWQ/viewform?usp=pp_url&entry.438735500=$encodedRoot&entry.326955045=Root+Matrix&entry.1433863141=${dpdAppLabel()}',
-              ),
             ),
-          ],
-        ),
-      ),
     );
   }
 

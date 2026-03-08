@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 
 import '../theme/dpd_colors.dart';
+import '../utils/date_utils.dart';
+import 'entry_content.dart';
 import 'root_matrix_builder.dart';
 
 class RootMatrixTable extends StatelessWidget {
-  const RootMatrixTable({super.key, required this.data});
+  const RootMatrixTable({super.key, required this.root, required this.data});
 
+  final String root;
   final RootMatrixData data;
 
   @override
@@ -24,13 +27,15 @@ class RootMatrixTable extends StatelessWidget {
     // Measure the widest label across all non-empty subcategories so every
     // label cell uses the same fixed width — matching table column behaviour.
     final labelWidth = _measureMaxLabelWidth(context, labelStyle);
+    final encodedRoot = Uri.encodeComponent(root);
 
     final children = <Widget>[];
 
     for (final categoryEntry in data.entries) {
       final subcats = categoryEntry.value;
-      final nonEmpty =
-          subcats.entries.where((e) => e.value.isNotEmpty).toList();
+      final nonEmpty = subcats.entries
+          .where((e) => e.value.isNotEmpty)
+          .toList();
       if (nonEmpty.isEmpty) continue;
 
       // Category header — full-width, primary border
@@ -80,20 +85,33 @@ class RootMatrixTable extends StatelessWidget {
     }
 
     if (children.isEmpty) {
-      return Padding(
-        padding: DpdColors.sectionPadding,
-        child: Text(
-          'No matrix data',
-          style: textStyle?.copyWith(color: Colors.grey),
+      return DpdSectionContainer(
+        child: Padding(
+          padding: DpdColors.sectionPadding,
+          child: Text(
+            'No matrix data',
+            style: textStyle?.copyWith(color: Colors.grey),
+          ),
         ),
       );
     }
 
-    return Padding(
-      padding: DpdColors.sectionPadding,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: children,
+    children.add(
+      DpdFooter(
+        messagePrefix: 'Something out of place?',
+        linkText: 'Report it here',
+        urlBuilder: () =>
+            'https://docs.google.com/forms/d/e/1FAIpQLSf9boBe7k5tCwq7LdWgBHHGIPVc4ROO5yjVDo1X5LDAxkmGWQ/viewform?usp=pp_url&entry.438735500=$encodedRoot&entry.326955045=Root+Matrix&entry.1433863141=${dpdAppLabel()}',
+      ),
+    );
+
+    return DpdSectionContainer(
+      child: Padding(
+        padding: DpdColors.sectionPadding,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: children,
+        ),
       ),
     );
   }

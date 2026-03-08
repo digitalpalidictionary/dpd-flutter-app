@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../database/database.dart';
 import '../theme/dpd_colors.dart';
+import '../utils/date_utils.dart';
 import 'entry_content.dart';
 
 const Map<int, String> _rootGroupPali = {
@@ -68,13 +69,25 @@ class RootInfoTable extends StatelessWidget {
     final b = bases;
     final basesLabel = (b != null && b.length > 1) ? 'Bases:' : 'Base:';
     final basesValue = b == null ? '…' : (b.isEmpty ? '-' : b.join(', '));
-    rows.add(buildKvTextRow(basesLabel, basesValue,
-        labelStyle: labelStyle, valueStyle: valueStyle)!);
+    rows.add(
+      buildKvTextRow(
+        basesLabel,
+        basesValue,
+        labelStyle: labelStyle,
+        valueStyle: valueStyle,
+      )!,
+    );
 
     // Root in Compounds (optional)
     if (root.rootInComps.isNotEmpty) {
-      rows.add(buildKvTextRow('Root in Compounds:', root.rootInComps,
-          labelStyle: labelStyle, valueStyle: valueStyle)!);
+      rows.add(
+        buildKvTextRow(
+          'Root in Compounds:',
+          root.rootInComps,
+          labelStyle: labelStyle,
+          valueStyle: valueStyle,
+        )!,
+      );
     }
 
     // Dhātupātha
@@ -98,8 +111,14 @@ class RootInfoTable extends StatelessWidget {
         ),
       );
     } else {
-      rows.add(buildKvTextRow('Dhātupātha:', '-',
-          labelStyle: labelStyle, valueStyle: valueStyle)!);
+      rows.add(
+        buildKvTextRow(
+          'Dhātupātha:',
+          '-',
+          labelStyle: labelStyle,
+          valueStyle: valueStyle,
+        )!,
+      );
     }
 
     // Dhātumañjūsa
@@ -124,8 +143,14 @@ class RootInfoTable extends StatelessWidget {
         ),
       );
     } else {
-      rows.add(buildKvTextRow('Dhātumañjūsa:', '-',
-          labelStyle: labelStyle, valueStyle: valueStyle)!);
+      rows.add(
+        buildKvTextRow(
+          'Dhātumañjūsa:',
+          '-',
+          labelStyle: labelStyle,
+          valueStyle: valueStyle,
+        )!,
+      );
     }
 
     // Saddanīti
@@ -147,8 +172,14 @@ class RootInfoTable extends StatelessWidget {
         ),
       );
     } else {
-      rows.add(buildKvTextRow('Saddanīti:', '-',
-          labelStyle: labelStyle, valueStyle: valueStyle)!);
+      rows.add(
+        buildKvTextRow(
+          'Saddanīti:',
+          '-',
+          labelStyle: labelStyle,
+          valueStyle: valueStyle,
+        )!,
+      );
     }
 
     // Sanskrit Root (gray)
@@ -185,25 +216,54 @@ class RootInfoTable extends StatelessWidget {
         ),
       );
     } else {
-      rows.add(buildKvTextRow('Pāṇinīya Dhātupāṭha:', '-',
-          labelStyle: labelStyle, valueStyle: valueStyle)!);
+      rows.add(
+        buildKvTextRow(
+          'Pāṇinīya Dhātupāṭha:',
+          '-',
+          labelStyle: labelStyle,
+          valueStyle: valueStyle,
+        )!,
+      );
     }
 
     // Notes (optional)
     if (root.note.isNotEmpty) {
-      rows.add(buildKvTextRow('Notes:', root.note,
-          labelStyle: labelStyle, valueStyle: valueStyle)!);
+      rows.add(
+        buildKvTextRow(
+          'Notes:',
+          root.note,
+          labelStyle: labelStyle,
+          valueStyle: valueStyle,
+        )!,
+      );
     }
 
-    return Padding(
-      padding: DpdColors.sectionPadding,
-      child: Table(
-        columnWidths: const {0: IntrinsicColumnWidth(), 1: FlexColumnWidth()},
-        defaultVerticalAlignment: TableCellVerticalAlignment.baseline,
-        textBaseline: TextBaseline.alphabetic,
-        children: rows,
+    final encodedRoot = Uri.encodeComponent(root.root);
+
+    return DpdSectionContainer(
+      child: Padding(
+        padding: DpdColors.sectionPadding,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Table(
+              columnWidths: const {
+                0: IntrinsicColumnWidth(),
+                1: FlexColumnWidth(),
+              },
+              defaultVerticalAlignment: TableCellVerticalAlignment.baseline,
+              textBaseline: TextBaseline.alphabetic,
+              children: rows,
+            ),
+            DpdFooter(
+              messagePrefix: 'Something out of place?',
+              linkText: 'Report it here',
+              urlBuilder: () =>
+                  'https://docs.google.com/forms/d/e/1FAIpQLSf9boBe7k5tCwq7LdWgBHHGIPVc4ROO5yjVDo1X5LDAxkmGWQ/viewform?usp=pp_url&entry.438735500=$encodedRoot&entry.326955045=Root+Info&entry.1433863141=${dpdAppLabel()}',
+            ),
+          ],
+        ),
       ),
     );
   }
-
 }

@@ -9,7 +9,6 @@ import '../providers/internet_provider.dart';
 import '../providers/search_provider.dart';
 import '../providers/settings_provider.dart';
 import '../providers/template_cache_provider.dart';
-import '../theme/dpd_colors.dart';
 import 'entry_content.dart';
 import 'family_state_mixin.dart';
 import 'feedback_section.dart';
@@ -91,8 +90,9 @@ mixin EntrySectionsMixin<T extends ConsumerStatefulWidget>
   }
 
   Future<void> _loadSuttaInfo() async {
-    final info =
-        await ref.read(daoProvider).getSuttaInfo(sectionHeadword.lemma1);
+    final info = await ref
+        .read(daoProvider)
+        .getSuttaInfo(sectionHeadword.lemma1);
     if (mounted) {
       setState(() {
         _suttaInfo = info;
@@ -105,7 +105,9 @@ mixin EntrySectionsMixin<T extends ConsumerStatefulWidget>
   /// family buttons. All three contexts use these.
   List<Widget> buildCoreSectionButtons(DpdHeadwordWithRoot h) {
     final hasInternet = ref.watch(hasInternetProvider).valueOrNull ?? true;
-    final audioGender = ref.watch(settingsProvider.select((s) => s.audioGender));
+    final audioGender = ref.watch(
+      settingsProvider.select((s) => s.audioGender),
+    );
     return [
       if (hasInternet)
         DpdPlayButton(
@@ -161,8 +163,7 @@ mixin EntrySectionsMixin<T extends ConsumerStatefulWidget>
 
   /// Core section content: sutta, grammar, examples, inflections, families.
   List<Widget> buildCoreSections(DpdHeadwordWithRoot h) {
-    final templateCache =
-        ref.watch(templateCacheProvider).valueOrNull ?? {};
+    final templateCache = ref.watch(templateCacheProvider).valueOrNull ?? {};
     final lookupKey = ref.watch(searchQueryProvider);
     return [
       if (isOpen('sutta') && suttaInfo != null)
@@ -171,43 +172,14 @@ mixin EntrySectionsMixin<T extends ConsumerStatefulWidget>
           headwordId: h.id,
           lemma1: h.lemma1,
         ),
-      if (isOpen('grammar') && h.needsGrammarButton)
-        DpdSectionContainer(
-          child: Padding(
-            padding: DpdColors.sectionPadding,
-            child: GrammarTable(headword: h),
-          ),
-        ),
+      if (isOpen('grammar') && h.needsGrammarButton) GrammarTable(headword: h),
       if (isOpen('examples') && (h.needsExampleButton || h.needsExamplesButton))
-        DpdSectionContainer(
-          child: Padding(
-            padding: DpdColors.sectionPadding,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                EntryExampleBlock(
-                  example: h.example1!,
-                  sutta: h.sutta1,
-                  source: h.source1,
-                ),
-                if (h.needsExamplesButton)
-                  EntryExampleBlock(
-                    example: h.example2!,
-                    sutta: h.sutta2,
-                    source: h.source2,
-                  ),
-                EntryExampleFooter(headwordId: h.id, lemma1: h.lemma1),
-              ],
-            ),
-          ),
-        ),
+        EntryExampleBlock(headword: h),
       if (isOpen('inflections') && h.needsInflectionButton)
-        DpdSectionContainer(
-          child: InflectionSection(
-            headword: h,
-            templateCache: templateCache,
-            lookupKey: lookupKey,
-          ),
+        InflectionSection(
+          headword: h,
+          templateCache: templateCache,
+          lookupKey: lookupKey,
         ),
       ...buildFamilySections(),
     ];
@@ -223,7 +195,8 @@ mixin EntrySectionsMixin<T extends ConsumerStatefulWidget>
           headwordId: h.id,
           lemma1: h.lemma1,
         ),
-      if (isOpen('feedback')) FeedbackSection(headwordId: h.id, lemma1: h.lemma1),
+      if (isOpen('feedback'))
+        FeedbackSection(headwordId: h.id, lemma1: h.lemma1),
     ];
   }
 }

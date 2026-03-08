@@ -25,7 +25,8 @@ TableRow buildKvRow(String label, Widget content, {TextStyle? labelStyle}) {
         padding: kDpdTableLabelPadding,
         child: Text(
           label,
-          style: labelStyle ??
+          style:
+              labelStyle ??
               TextStyle(
                 fontWeight: FontWeight.bold,
                 color: DpdColors.primaryText,
@@ -47,8 +48,11 @@ TableRow? buildKvTextRow(
 }) {
   if (text == null || text.isEmpty) return null;
   final display = filter != null ? filter(text) : text;
-  return buildKvRow(label, Text(display, style: valueStyle),
-      labelStyle: labelStyle);
+  return buildKvRow(
+    label,
+    Text(display, style: valueStyle),
+    labelStyle: labelStyle,
+  );
 }
 
 /// Builds a nullable HTML [TableRow]; returns null when [html] is empty or null.
@@ -59,8 +63,7 @@ TableRow? buildKvHtmlRow(
   TextStyle? labelStyle,
 }) {
   if (html == null || html.isEmpty) return null;
-  final data =
-      (filter != null ? filter(html) : html).replaceAll('\n', '<br>');
+  final data = (filter != null ? filter(html) : html).replaceAll('\n', '<br>');
   return buildKvRow(
     label,
     Html(
@@ -217,12 +220,40 @@ class EntryLabelValue extends StatelessWidget {
 }
 
 class EntryExampleBlock extends ConsumerWidget {
-  const EntryExampleBlock({
-    super.key,
-    required this.example,
-    this.sutta,
-    this.source,
-  });
+  const EntryExampleBlock({super.key, required this.headword});
+
+  final DpdHeadwordWithRoot headword;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final h = headword;
+    return DpdSectionContainer(
+      child: Padding(
+        padding: DpdColors.sectionPadding,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _SingleExampleBlock(
+              example: h.example1!,
+              sutta: h.sutta1,
+              source: h.source1,
+            ),
+            if (h.needsExamplesButton)
+              _SingleExampleBlock(
+                example: h.example2!,
+                sutta: h.sutta2,
+                source: h.source2,
+              ),
+            EntryExampleFooter(headwordId: h.id, lemma1: h.lemma1),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _SingleExampleBlock extends ConsumerWidget {
+  const _SingleExampleBlock({required this.example, this.sutta, this.source});
 
   final String example;
   final String? sutta;
@@ -306,9 +337,7 @@ class EntrySummaryBox extends ConsumerWidget {
     final h = headword.headword;
     final baseStyle = theme.textTheme.bodyMedium?.copyWith(height: 1.5);
     final boldStyle = baseStyle?.copyWith(fontWeight: FontWeight.w700);
-    final grayStyle = baseStyle?.copyWith(
-      color: Colors.grey,
-    );
+    final grayStyle = baseStyle?.copyWith(color: Colors.grey);
 
     String f(String? text) => filterNiggahita(
       filterApostrophe(text ?? '', show: showApostrophe),
@@ -484,7 +513,9 @@ class _DpdPlayButtonState extends State<DpdPlayButton> {
       onTap: _errored ? null : _play,
       child: Container(
         margin: compact ? null : const EdgeInsets.fromLTRB(1, 1, 1, 2),
-        padding: compact ? const EdgeInsets.all(3) : const EdgeInsets.fromLTRB(5, 2, 5, 2),
+        padding: compact
+            ? const EdgeInsets.all(3)
+            : const EdgeInsets.fromLTRB(5, 2, 5, 2),
         decoration: BoxDecoration(
           color: bg,
           border: compact ? null : Border.all(color: bg, width: 1),
