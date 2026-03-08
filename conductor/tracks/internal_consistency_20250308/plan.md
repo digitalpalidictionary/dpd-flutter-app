@@ -35,7 +35,7 @@
     - [x] Relocate settings listener setup to appropriate lifecycle method.
 - [x] Task: Conductor - User Manual Verification 'Phase 2: Card Unification' (Protocol in workflow.md)
 
-## Phase 3: Table Consolidation
+## Phase 3: Table Consolidation [checkpoint: 7e60f3c]
 
 - [x] Task: Consolidate Family Tables (0f3a624)
     - [x] Extract shared `FamilyEntryTable` widget from `_FamilyTable` in `family_table.dart`.
@@ -47,7 +47,7 @@
     - [x] Refactor `GrammarTable` to use the shared builders.
     - [x] Refactor `SuttaInfoSection` to use the shared builders.
     - [x] Refactor `RootInfoTable` to use the shared builders.
-- [ ] Task: Conductor - User Manual Verification 'Phase 3: Table Consolidation' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 3: Table Consolidation' (Protocol in workflow.md)
 
 ## Phase 4: Standardize Styling & Containers
 
