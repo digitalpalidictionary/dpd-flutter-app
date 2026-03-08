@@ -1,0 +1,84 @@
+name: Release APK
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_notes:
+        description: 'Release notes (optional)'
+        required: false
+        default: ''
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+
+      - name: Compute version
+        id: version
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          PUBSPEC_VER=$(grep '^version:' pubspec.yaml | sed 's/version: //' | cut -d'+' -f1)
+          LAST_TAG=$(gh release list --limit 1 --json tagName --jq '.[0].tagName' 2>/dev/null || echo "v0.0.0")
+          LAST_VER=${LAST_TAG#v}
+
+          if [ "$(printf '%s\n' "$PUBSPEC_VER" "$LAST_VER" | sort -V | tail -1)" = "$PUBSPEC_VER" ] && [ "$PUBSPEC_VER" != "$LAST_VER" ]; then
+            RELEASE_VER="$PUBSPEC_VER"
+          else
+            IFS='.' read -r major minor patch <<< "$LAST_VER"
+            RELEASE_VER="$major.$minor.$((patch + 1))"
+          fi
+
+          echo "version=$RELEASE_VER" >> "$GITHUB_OUTPUT"
+          echo "tag=v$RELEASE_VER" >> "$GITHUB_OUTPUT"
+          echo "build_number=${{ github.run_number }}" >> "$GITHUB_OUTPUT"
+          echo "Release: v$RELEASE_VER (build ${{ github.run_number }})"
+
+      - name: Restore keystore
+        run: |
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > android/keystore.jks
+          cat > android/key.properties <<EOF
+          storePassword=${{ secrets.STORE_PASSWORD }}
+          keyPassword=${{ secrets.KEY_PASSWORD }}
+          keyAlias=${{ secrets.KEY_ALIAS }}
+          storeFile=keystore.jks
+          EOF
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Build release APK
+        run: |
+          flutter build apk --release \
+            --build-name=${{ steps.version.outputs.version }} \
+            --build-number=${{ steps.version.outputs.build_number }}
+
+      - name: Rename APK
+        run: |
+          cp build/app/outputs/flutter-apk/app-release.apk \
+             build/app/outputs/flutter-apk/dpd-${{ steps.version.outputs.version }}.apk
+
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          NOTES="${{ github.event.inputs.release_notes }}"
+          [ -z "$NOTES" ] && NOTES="DPD Flutter App ${{ steps.version.outputs.tag }}"
+
+          gh release create ${{ steps.version.outputs.tag }} \
+            "build/app/outputs/flutter-apk/dpd-${{ steps.version.outputs.version }}.apk" \
+            --title "${{ steps.version.outputs.tag }}" \
+            --notes "$NOTES"
