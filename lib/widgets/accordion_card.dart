@@ -3,18 +3,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../database/database.dart';
 import '../database/dpd_headword_extensions.dart';
-import '../providers/search_provider.dart';
 import '../providers/settings_provider.dart';
-import '../providers/template_cache_provider.dart';
-import '../theme/dpd_colors.dart';
 import '../utils/text_filters.dart';
 import 'entry_content.dart';
+import 'entry_sections_mixin.dart';
 import 'family_state_mixin.dart';
-import 'grammar_table.dart';
-import 'inflection_section.dart';
-import 'sutta_info_section.dart';
-import '../providers/database_provider.dart';
-import '../providers/internet_provider.dart';
 
 enum _CardState { compact, buttonsVisible }
 
@@ -28,64 +21,20 @@ class AccordionCard extends ConsumerStatefulWidget {
 }
 
 class _AccordionCardState extends ConsumerState<AccordionCard>
-    with FamilyStateMixin<AccordionCard> {
+    with FamilyStateMixin<AccordionCard>, EntrySectionsMixin<AccordionCard> {
   _CardState _cardState = _CardState.compact;
-  bool _grammarOpen = false;
-  bool _suttaOpen = false;
-  bool _examplesOpen = false;
-  bool _inflectionsOpen = false;
-
-  SuttaInfoData? _suttaInfo;
-  bool _suttaLoaded = false;
 
   @override
   DpdHeadwordWithRoot get familyHeadword => widget.headword;
 
   @override
-  void initState() {
-    super.initState();
-    final settings = ref.read(settingsProvider);
-    _grammarOpen = settings.grammarOpen;
-    _examplesOpen = settings.examplesOpen;
-    _loadSuttaInfo();
-  }
-
-  Future<void> _loadSuttaInfo() async {
-    final info = await ref
-        .read(daoProvider)
-        .getSuttaInfo(widget.headword.lemma1);
-    if (mounted) {
-      setState(() {
-        _suttaInfo = info;
-        _suttaLoaded = true;
-      });
-    }
-  }
-
-  void _toggleSection({required bool isOpen, required void Function(bool) setter}) {
-    setState(() {
-      if (!isOpen && ref.read(settingsProvider).oneButtonAtATime) {
-        _suttaOpen = false;
-        _grammarOpen = false;
-        _examplesOpen = false;
-        _inflectionsOpen = false;
-        familyResetAll();
-      }
-      setter(!isOpen);
-    });
-  }
+  DpdHeadwordWithRoot get sectionHeadword => widget.headword;
 
   @override
-  void onBeforeOpenFamilySection() {
-    if (ref.read(settingsProvider).oneButtonAtATime) {
-      setState(() {
-        _suttaOpen = false;
-        _grammarOpen = false;
-        _examplesOpen = false;
-        _inflectionsOpen = false;
-        familyResetAll();
-      });
-    }
+  void initState() {
+    super.initState();
+    ref.listenManual(settingsProvider, handleSettingsChange);
+    initSectionState();
   }
 
   void _toggleCard() {
@@ -98,23 +47,13 @@ class _AccordionCardState extends ConsumerState<AccordionCard>
 
   @override
   Widget build(BuildContext context) {
-    ref.listen<Settings>(settingsProvider, (prev, next) {
-      if (prev?.grammarOpen != next.grammarOpen) {
-        setState(() => _grammarOpen = next.grammarOpen);
-      }
-      if (prev?.examplesOpen != next.examplesOpen) {
-        setState(() => _examplesOpen = next.examplesOpen);
-      }
-    });
-
-    final niggahitaMode = ref.watch(settingsProvider.select((s) => s.niggahitaMode));
+    final niggahitaMode =
+        ref.watch(settingsProvider.select((s) => s.niggahitaMode));
     final filterMode = NiggahitaFilterMode.values[niggahitaMode.index];
     String n(String t) => filterNiggahita(t, mode: filterMode);
     final theme = Theme.of(context);
     final h = widget.headword;
     final isExpanded = _cardState == _CardState.buttonsVisible;
-
-    final templateCache = ref.watch(templateCacheProvider).valueOrNull ?? {};
 
     final showApostrophe = ref.watch(
       settingsProvider.select((s) => s.showSandhiApostrophe),
@@ -136,7 +75,6 @@ class _AccordionCardState extends ConsumerState<AccordionCard>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Tappable header: one-liner when compact, lemma+summary box when expanded
           Material(
             color: Colors.transparent,
             child: InkWell(
@@ -194,118 +132,19 @@ class _AccordionCardState extends ConsumerState<AccordionCard>
             ),
           ),
 
-          // Expanded section: buttons + sections (outside InkWell)
           if (isExpanded) ...[
-                // Unified button row
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(7, 2, 7, 3),
-                  child: Wrap(
-                    spacing: 0,
-                    runSpacing: 0,
-                    children: [
-                      if (ref.watch(hasInternetProvider).valueOrNull ?? true)
-                        DpdPlayButton(
-                          key: ValueKey(ref.watch(settingsProvider.select((s) => s.audioGender))),
-                          lemma: h.lemma1,
-                          gender: ref.watch(settingsProvider.select((s) => s.audioGender)).name,
-                        ),
-                      if (_suttaLoaded && _suttaInfo != null)
-                        DpdSectionButton(
-                          label: 'sutta',
-                          isActive: _suttaOpen,
-                          onTap: () => _toggleSection(
-                            isOpen: _suttaOpen,
-                            setter: (v) => _suttaOpen = v,
-                          ),
-                        ),
-                      if (h.needsGrammarButton)
-                        DpdSectionButton(
-                          label: 'grammar',
-                          isActive: _grammarOpen,
-                          onTap: () => _toggleSection(
-                            isOpen: _grammarOpen,
-                            setter: (v) => _grammarOpen = v,
-                          ),
-                        ),
-                      if (h.needsExampleButton || h.needsExamplesButton)
-                        DpdSectionButton(
-                          label: h.needsExamplesButton ? 'examples' : 'example',
-                          isActive: _examplesOpen,
-                          onTap: () => _toggleSection(
-                            isOpen: _examplesOpen,
-                            setter: (v) => _examplesOpen = v,
-                          ),
-                        ),
-                      if (h.needsInflectionButton)
-                        DpdSectionButton(
-                          label: h.inflectionButtonLabel,
-                          isActive: _inflectionsOpen,
-                          onTap: () => _toggleSection(
-                            isOpen: _inflectionsOpen,
-                            setter: (v) => _inflectionsOpen = v,
-                          ),
-                        ),
-                      ...buildFamilyButtons(),
-                    ],
-                  ),
-                ),
-
-                if (_suttaOpen && _suttaInfo != null)
-                  SuttaInfoSection(
-                    suttaInfo: _suttaInfo!,
-                    headwordId: h.id,
-                    lemma1: h.lemma1,
-                  ),
-
-                if (_grammarOpen && h.needsGrammarButton)
-                  DpdSectionContainer(
-                    child: Padding(
-                      padding: DpdColors.sectionPadding,
-                      child: GrammarTable(headword: h),
-                    ),
-                  ),
-
-                if (_examplesOpen && (h.needsExampleButton || h.needsExamplesButton))
-                  DpdSectionContainer(
-                    child: Padding(
-                      padding: DpdColors.sectionPadding,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          if (h.needsExampleButton || h.needsExamplesButton)
-                            EntryExampleBlock(
-                              example: h.example1!,
-                              sutta: h.sutta1,
-                              source: h.source1,
-                            ),
-                          if (h.needsExamplesButton)
-                            EntryExampleBlock(
-                              example: h.example2!,
-                              sutta: h.sutta2,
-                              source: h.source2,
-                            ),
-                          EntryExampleFooter(
-                            headwordId: h.id,
-                            lemma1: h.lemma1,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-
-                if (_inflectionsOpen && h.needsInflectionButton)
-                  DpdSectionContainer(
-                    child: InflectionSection(
-                      headword: h,
-                      templateCache: templateCache,
-                      lookupKey: ref.watch(searchQueryProvider),
-                    ),
-                  ),
-
-                ...buildFamilySections(),
-              ],
-            ],
-          ),
-        );
+            Padding(
+              padding: const EdgeInsets.fromLTRB(7, 2, 7, 3),
+              child: Wrap(
+                spacing: 0,
+                runSpacing: 0,
+                children: buildCoreSectionButtons(h),
+              ),
+            ),
+            ...buildCoreSections(h),
+          ],
+        ],
+      ),
+    );
   }
 }

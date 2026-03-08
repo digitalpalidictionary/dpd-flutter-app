@@ -2,17 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../database/database.dart';
-import '../database/dpd_headword_extensions.dart';
 import '../providers/database_provider.dart';
-import '../providers/search_provider.dart';
 import '../providers/settings_provider.dart';
-import '../providers/template_cache_provider.dart';
 import '../widgets/double_tap_search_wrapper.dart';
 import '../widgets/entry_content.dart';
-import '../widgets/family_toggle_section.dart';
-import '../widgets/grammar_table.dart';
-import '../widgets/inflection_section.dart';
-import '../widgets/sutta_info_section.dart';
+import '../widgets/entry_sections_mixin.dart';
+import '../widgets/family_state_mixin.dart';
 
 final _entryProvider = FutureProvider.autoDispose
     .family<DpdHeadwordWithRoot?, int>((ref, id) {
@@ -57,34 +52,24 @@ class _EntryView extends ConsumerStatefulWidget {
   ConsumerState<_EntryView> createState() => _EntryViewState();
 }
 
-class _EntryViewState extends ConsumerState<_EntryView> {
-  bool _suttaOpen = false;
-  SuttaInfoData? _suttaInfo;
-  bool _suttaLoaded = false;
+class _EntryViewState extends ConsumerState<_EntryView>
+    with FamilyStateMixin<_EntryView>, EntrySectionsMixin<_EntryView> {
+  @override
+  DpdHeadwordWithRoot get familyHeadword => widget.headword;
+
+  @override
+  DpdHeadwordWithRoot get sectionHeadword => widget.headword;
 
   @override
   void initState() {
     super.initState();
-    _loadSuttaInfo();
-  }
-
-  Future<void> _loadSuttaInfo() async {
-    final info =
-        await ref.read(daoProvider).getSuttaInfo(widget.headword.lemma1);
-    if (mounted) {
-      setState(() {
-        _suttaInfo = info;
-        _suttaLoaded = true;
-      });
-    }
+    ref.listenManual(settingsProvider, handleSettingsChange);
+    initSectionState();
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final settings = ref.watch(settingsProvider);
-    final templateCache = ref.watch(templateCacheProvider).valueOrNull ?? {};
-
     final h = widget.headword;
 
     return Scaffold(
@@ -119,100 +104,29 @@ class _EntryViewState extends ConsumerState<_EntryView> {
                 children: [
                   EntrySummaryBox(headword: h),
                   Padding(
-                    padding: const EdgeInsets.only(left: 8, top: 4),
-                    child: DpdPlayButton(
-                      key: ValueKey(settings.audioGender),
-                      lemma: h.lemma1,
-                      gender: settings.audioGender.name,
+                    padding: const EdgeInsets.fromLTRB(7, 4, 7, 3),
+                    child: Wrap(
+                      spacing: 0,
+                      runSpacing: 0,
+                      children: [
+                        ...buildCoreSectionButtons(h),
+                        if (h.notes != null && h.notes!.isNotEmpty)
+                          DpdSectionButton(
+                            label: 'notes',
+                            isActive: isOpen('notes'),
+                            onTap: () => toggleSection('notes'),
+                          ),
+                      ],
                     ),
                   ),
-
-                  // Sutta info section
-                  if (_suttaLoaded && _suttaInfo != null)
-                    ExpansionTile(
-                      title: const Text('Sutta'),
-                      initiallyExpanded: _suttaOpen,
-                      onExpansionChanged: (v) =>
-                          setState(() => _suttaOpen = v),
-                      children: [
-                        SuttaInfoSection(
-                          suttaInfo: _suttaInfo!,
-                          headwordId: h.id,
-                          lemma1: h.lemma1,
-                        ),
-                      ],
-                    ),
-
-                  // Grammar section
-                  if (h.needsGrammarButton)
-                    ExpansionTile(
-                      title: const Text('Grammar'),
-                      initiallyExpanded: settings.grammarOpen,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: GrammarTable(headword: h),
-                        ),
-                      ],
-                    ),
-
-                  // Examples section
-                  if (h.needsExampleButton || h.needsExamplesButton)
-                    Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          if (h.needsExampleButton || h.needsExamplesButton)
-                            EntryExampleBlock(
-                              example: h.example1!,
-                              sutta: h.sutta1,
-                              source: h.source1,
-                            ),
-                          if (h.needsExamplesButton)
-                            EntryExampleBlock(
-                              example: h.example2!,
-                              sutta: h.sutta2,
-                              source: h.source2,
-                            ),
-                          EntryExampleFooter(
-                            headwordId: h.id,
-                            lemma1: h.lemma1,
-                          ),
-                        ],
+                  ...buildCoreSections(h),
+                  if (isOpen('notes') && h.notes != null && h.notes!.isNotEmpty)
+                    DpdSectionContainer(
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
+                        child: Text(h.notes!),
                       ),
                     ),
-
-                  // Inflections section
-                  if (h.needsInflectionButton)
-                    ExpansionTile(
-                      title: Text(h.inflectionButtonLabel),
-                      initiallyExpanded: false,
-                      children: [
-                        InflectionSection(
-                          headword: h,
-                          templateCache: templateCache,
-                          lookupKey: ref.watch(searchQueryProvider),
-                        ),
-                      ],
-                    ),
-
-                  // Family buttons and sections (one button per family type)
-                  FamilyToggleSection(headword: h),
-
-                  // Notes section
-                  if (h.notes != null && h.notes!.isNotEmpty)
-                    ExpansionTile(
-                      title: const Text('Notes'),
-                      initiallyExpanded: false,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-                          child: Text(h.notes!),
-                        ),
-                      ],
-                    ),
-
                   const SizedBox(height: 24),
                 ],
               ),
