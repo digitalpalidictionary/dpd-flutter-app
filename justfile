@@ -12,7 +12,7 @@ install:
 
 # Fresh install: wipe data, install APK, create storage dir, push DB
 install-fresh:
-    flutter build apk --debug && flutter install && adb shell mkdir -p /storage/emulated/0/Android/data/net.dpdict.dpd_flutter_app.debug/files && adb push ../dpd-db/exporter/share/dpd-mobile.db /storage/emulated/0/Android/data/net.dpdict.dpd_flutter_app.debug/files/dpd-mobile.db
+    flutter build apk --debug && adb install -r build/app/outputs/flutter-apk/app-debug.apk && adb shell mkdir -p /storage/emulated/0/Android/data/net.dpdict.dpd_flutter_app.debug/files && adb push ../dpd-db/exporter/share/dpd-mobile.db /storage/emulated/0/Android/data/net.dpdict.dpd_flutter_app.debug/files/dpd-mobile.db
 
 # Build debug APK
 build:
