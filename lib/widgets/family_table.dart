@@ -45,7 +45,7 @@ class FamilyTableWidget extends StatelessWidget {
           children: [
             HeadingUnderlined(child: header),
             const SizedBox(height: 8),
-            if (entries.isNotEmpty) _FamilyTable(entries: entries),
+            if (entries.isNotEmpty) FamilyEntryTable(entries: entries),
             const SizedBox(height: 4),
             DpdFooter(
               messagePrefix: footerConfig.messagePrefix,
@@ -80,8 +80,11 @@ class HeadingUnderlined extends StatelessWidget {
   }
 }
 
-class _FamilyTable extends StatelessWidget {
-  const _FamilyTable({required this.entries});
+/// Shared table widget for family entries (lemma / pos / meaning / completion).
+///
+/// Used by both [FamilyTableWidget] and [MultiFamilySection].
+class FamilyEntryTable extends StatelessWidget {
+  const FamilyEntryTable({super.key, required this.entries});
 
   final List<FamilyEntry> entries;
 

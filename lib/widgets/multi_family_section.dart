@@ -108,7 +108,7 @@ class _MultiFamilySectionState extends State<MultiFamilySection> {
                     ),
                     const SizedBox(height: 8),
                     if (widget.subSections[i].entries.isNotEmpty)
-                      _FamilySubTable(entries: widget.subSections[i].entries),
+                      FamilyEntryTable(entries: widget.subSections[i].entries),
                   ],
                 ),
               ),
@@ -244,56 +244,3 @@ class _BackToTopLink extends StatelessWidget {
   }
 }
 
-class _FamilySubTable extends StatelessWidget {
-  const _FamilySubTable({required this.entries});
-
-  final List<FamilyEntry> entries;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final lemmaStyle = theme.textTheme.bodyMedium?.copyWith(
-      fontWeight: FontWeight.bold,
-      color: DpdColors.primaryText,
-    );
-    final boldStyle = theme.textTheme.bodyMedium?.copyWith(
-      fontWeight: FontWeight.bold,
-    );
-    final regularStyle = theme.textTheme.bodyMedium;
-
-    return Table(
-      columnWidths: const {
-        0: IntrinsicColumnWidth(),
-        1: IntrinsicColumnWidth(),
-        2: FlexColumnWidth(),
-        3: IntrinsicColumnWidth(),
-      },
-      defaultVerticalAlignment: TableCellVerticalAlignment.top,
-      children: entries.map((entry) {
-        return TableRow(
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(right: 7, bottom: 2),
-              child: Text(entry.lemma, style: lemmaStyle),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(right: 7, bottom: 2),
-              child: Text(entry.pos, style: boldStyle),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(right: 7, bottom: 2),
-              child: Text(entry.meaning, style: regularStyle),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(bottom: 2),
-              child: Text(
-                entry.completion,
-                style: regularStyle?.copyWith(color: DpdColors.gray),
-              ),
-            ),
-          ],
-        );
-      }).toList(),
-    );
-  }
-}
