@@ -44,6 +44,12 @@ dependencies:
   # Zip extraction for DB download
   archive: ^4.0.4
 
+  # Network connectivity check (WiFi-only updates)
+  connectivity_plus: ^6.1.4
+
+  # App version info
+  package_info_plus: ^8.3.0
+
   # SVG rendering (logo)
   flutter_svg: ^2.0.17
   just_audio: ^0.10.5
