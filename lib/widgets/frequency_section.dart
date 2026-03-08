@@ -4,6 +4,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../models/frequency_data.dart';
 import '../theme/dpd_colors.dart';
 import 'entry_content.dart';
+import 'feedback_type.dart';
 import 'frequency_table.dart';
 
 class FrequencySection extends StatelessWidget {
@@ -49,26 +50,21 @@ class FrequencySection extends StatelessWidget {
 
   Widget _buildHeading(BuildContext context) {
     final heading = data.freqHeading;
+    final baseStyle = DefaultTextStyle.of(context).style;
+    final boldStyle = baseStyle.copyWith(fontWeight: FontWeight.bold);
 
-    final parts = <InlineSpan>[];
-    final boldRegex = RegExp(r'<b>(.*?)</b>');
-    var lastEnd = 0;
-
-    for (final match in boldRegex.allMatches(heading)) {
-      if (match.start > lastEnd) {
-        parts.add(TextSpan(text: heading.substring(lastEnd, match.start)));
-      }
-      parts.add(
-        TextSpan(
-          text: match.group(1),
-          style: const TextStyle(fontWeight: FontWeight.bold),
-        ),
-      );
-      lastEnd = match.end;
-    }
-    if (lastEnd < heading.length) {
-      parts.add(TextSpan(text: heading.substring(lastEnd)));
-    }
+    final spans = <InlineSpan>[];
+    heading.splitMapJoin(
+      RegExp(r'<b>(.*?)</b>'),
+      onMatch: (m) {
+        spans.add(TextSpan(text: m.group(1), style: boldStyle));
+        return '';
+      },
+      onNonMatch: (s) {
+        if (s.isNotEmpty) spans.add(TextSpan(text: s));
+        return '';
+      },
+    );
 
     return Container(
       width: double.infinity,
@@ -77,12 +73,7 @@ class FrequencySection extends StatelessWidget {
         border: Border(bottom: BorderSide(color: DpdColors.primary, width: 1)),
       ),
       margin: const EdgeInsets.only(bottom: 5),
-      child: RichText(
-        text: TextSpan(
-          style: DefaultTextStyle.of(context).style,
-          children: parts,
-        ),
-      ),
+      child: Text.rich(TextSpan(style: baseStyle, children: spans)),
     );
   }
 
@@ -175,16 +166,12 @@ class FrequencySection extends StatelessWidget {
   }
 
   Widget _buildFooter() {
-    final now = DateTime.now();
-    final date =
-        '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}';
-    final encodedLemma = Uri.encodeComponent(lemma1);
-
     return DpdFooter(
       messagePrefix: 'If something looks out of place,',
       linkText: 'log it here.',
-      urlBuilder: () =>
-          'https://docs.google.com/forms/d/e/1FAIpQLSf9boBe7k5tCwq7LdWgBHHGIPVc4ROO5yjVDo1X5LDAxkmGWQ/viewform?usp=pp_url&entry.438735500=$headwordId%20$encodedLemma&entry.326955045=Frequency&entry.1433863141=DPD+$date',
+      feedbackType: FeedbackType.frequency,
+      word: lemma1,
+      headwordId: headwordId,
     );
   }
 }

@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../database/database.dart';
 import '../database/dpd_headword_extensions.dart';
 import '../providers/internet_provider.dart';
 import '../providers/settings_provider.dart';
-import '../services/audio_service.dart';
 import '../theme/dpd_colors.dart';
 import '../utils/text_filters.dart';
 import 'entry_content.dart';
+import 'feedback_type.dart';
 
 class GrammarTable extends ConsumerWidget {
   final DpdHeadwordWithRoot headword;
@@ -57,101 +57,88 @@ class GrammarTable extends ConsumerWidget {
       _buildSanskritRootDetailsRow(headword, n),
     ].whereType<TableRow>().toList();
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Table(
-          columnWidths: const {0: IntrinsicColumnWidth(), 1: FlexColumnWidth()},
-          children: rows,
-        ),
-        const SizedBox(height: 16.0),
-        _buildFooter(context, headword),
-      ],
-    );
-  }
-
-  Widget _buildFooter(BuildContext context, DpdHeadwordWithRoot headword) {
-    final encodedLemma = Uri.encodeComponent(headword.lemma1);
-    return DpdFooter(
-      messagePrefix: 'Did you spot a mistake?',
-      linkText: 'Correct it here',
-      urlBuilder: () =>
-          'https://docs.google.com/forms/d/e/1FAIpQLSf9boBe7k5tCwq7LdWgBHHGIPVc4ROO5yjVDo1X5LDAxkmGWQ/viewform?usp=pp_url&entry.438735500=$encodedLemma&entry.326955045=Grammar',
-    );
-  }
-
-  TableRow _buildRow(String label, Widget content) {
-    return TableRow(
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(right: 5.0, bottom: 2.0),
-          child: Text(
-            label,
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              color: DpdColors.primaryText,
+    return DpdSectionContainer(
+      child: Padding(
+        padding: DpdColors.sectionPadding,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Table(
+              columnWidths: const {
+                0: IntrinsicColumnWidth(),
+                1: FlexColumnWidth(),
+              },
+              children: rows,
             ),
-          ),
+            _buildFooter(context, headword),
+          ],
         ),
-        Padding(padding: const EdgeInsets.only(bottom: 2.0), child: content),
-      ],
-    );
-  }
-
-  TableRow? _buildTextRow(String label, String? text, [String Function(String)? f]) {
-    if (text == null || text.isEmpty) return null;
-    final display = f != null ? f(text) : text;
-    return _buildRow(label, Text(display));
-  }
-
-  TableRow? _buildHtmlRow(String label, String? htmlData, [String Function(String)? f]) {
-    if (htmlData == null || htmlData.isEmpty) return null;
-    final data = (f != null ? f(htmlData) : htmlData).replaceAll('\n', '<br>');
-    return _buildRow(
-      label,
-      Html(
-        data: data,
-        style: {
-          "body": Style(margin: Margins.zero, padding: HtmlPaddings.zero),
-          "p": Style(margin: Margins.zero, padding: HtmlPaddings.zero),
-        },
       ),
     );
   }
 
-  TableRow? _buildLemmaRow(DpdHeadwordWithRoot headword, String Function(String) n) {
-    final lemma = headword.headword.lemmaClean;
-    if (lemma.isEmpty) return null;
-    return _buildTextRow('Lemma', lemma, n);
+  Widget _buildFooter(BuildContext context, DpdHeadwordWithRoot headword) {
+    return DpdFooter(
+      messagePrefix: 'Did you spot a mistake?',
+      linkText: 'Correct it here',
+      feedbackType: FeedbackType.grammar,
+      word: headword.lemma1,
+      headwordId: headword.id,
+    );
   }
 
-  TableRow? _buildLemmaTradRow(DpdHeadwordWithRoot headword, String Function(String) n) {
+  TableRow? _buildLemmaRow(
+    DpdHeadwordWithRoot headword,
+    String Function(String) n,
+  ) {
+    final lemma = headword.headword.lemmaClean;
+    if (lemma.isEmpty) return null;
+    return buildKvTextRow('Lemma', lemma, filter: n);
+  }
+
+  TableRow? _buildLemmaTradRow(
+    DpdHeadwordWithRoot headword,
+    String Function(String) n,
+  ) {
     final lemmaTrad = headword.headword.lemmaTradClean;
     if (lemmaTrad.isEmpty) return null;
     if (lemmaTrad == headword.headword.lemmaClean) return null;
-    return _buildTextRow('Traditional Lemma', lemmaTrad, n);
+    return buildKvTextRow('Traditional Lemma', lemmaTrad, filter: n);
   }
 
   TableRow? _buildLemmaIpaRow(DpdHeadwordWithRoot headword, bool hasInternet) {
     final ipa = headword.headword.lemmaIpa;
     if (ipa == null || ipa.isEmpty) return null;
-    return _buildRow(
+    return buildKvRow(
       'IPA',
-      _IpaRowContent(ipa: ipa, lemma: headword.headword.lemma1, hasInternet: hasInternet),
+      _IpaRowContent(
+        ipa: ipa,
+        lemma: headword.headword.lemma1,
+        hasInternet: hasInternet,
+      ),
     );
   }
 
-  TableRow? _buildGrammarRow(DpdHeadwordWithRoot headword, String Function(String) n) {
+  TableRow? _buildGrammarRow(
+    DpdHeadwordWithRoot headword,
+    String Function(String) n,
+  ) {
     final grammar = headword.headword.grammarLine;
     if (grammar.isEmpty) return null;
-    return _buildTextRow('Grammar', grammar, n);
+    return buildKvTextRow('Grammar', grammar, filter: n);
   }
 
-  TableRow? _buildFamilyRootRow(DpdHeadwordWithRoot headword, String Function(String) n) {
-    return _buildTextRow('Root Family', headword.familyRoot, n);
+  TableRow? _buildFamilyRootRow(
+    DpdHeadwordWithRoot headword,
+    String Function(String) n,
+  ) {
+    return buildKvTextRow('Root Family', headword.familyRoot, filter: n);
   }
 
-  TableRow? _buildRootDetailsRow(DpdHeadwordWithRoot headword, String Function(String) n) {
+  TableRow? _buildRootDetailsRow(
+    DpdHeadwordWithRoot headword,
+    String Function(String) n,
+  ) {
     final root = headword.root;
     if (root == null) return null;
     final parts = [
@@ -162,36 +149,63 @@ class GrammarTable extends ConsumerWidget {
     ];
     final details = parts.join(' ').trim();
     if (details.isEmpty) return null;
-    return _buildTextRow('Root', details, n);
+    return buildKvTextRow('Root', details, filter: n);
   }
 
-  TableRow? _buildRootInCompsRow(DpdHeadwordWithRoot headword, String Function(String) n) {
+  TableRow? _buildRootInCompsRow(
+    DpdHeadwordWithRoot headword,
+    String Function(String) n,
+  ) {
     final root = headword.root;
     if (root == null) return null;
     final inComps = root.rootInComps;
     if (inComps.isEmpty) return null;
-    return _buildTextRow('√ In Sandhi', inComps, n);
+    return buildKvTextRow('√ In Sandhi', inComps, filter: n);
   }
 
-  TableRow? _buildBaseRow(DpdHeadwordWithRoot headword, String Function(String) n) {
-    return _buildTextRow('Base', headword.rootBase, n);
+  TableRow? _buildBaseRow(
+    DpdHeadwordWithRoot headword,
+    String Function(String) n,
+  ) {
+    return buildKvTextRow('Base', headword.rootBase, filter: n);
   }
 
-  TableRow? _buildConstructionRow(DpdHeadwordWithRoot headword, String Function(String) n) {
-    return _buildHtmlRow('Construction', headword.headword.cleanConstruction(), n);
+  TableRow? _buildConstructionRow(
+    DpdHeadwordWithRoot headword,
+    String Function(String) n,
+  ) {
+    return buildKvTextRow(
+      'Construction',
+      headword.headword.cleanConstruction(),
+      filter: n,
+    );
   }
 
-  TableRow? _buildDerivativeRow(DpdHeadwordWithRoot headword, String Function(String) n) {
+  TableRow? _buildDerivativeRow(
+    DpdHeadwordWithRoot headword,
+    String Function(String) n,
+  ) {
     final suffix = headword.suffix;
     if (suffix == null || suffix.isEmpty) return null;
-    return _buildTextRow('Derivative', '($suffix)', n);
+    return buildKvTextRow('Derivative', '($suffix)', filter: n);
   }
 
-  TableRow? _buildPhoneticRow(DpdHeadwordWithRoot headword, String Function(String) n) {
-    return _buildHtmlRow('Phonetic Change', headword.phonetic, n);
+  TableRow? _buildPhoneticRow(
+    DpdHeadwordWithRoot headword,
+    String Function(String) n,
+  ) {
+    return buildKvRichRow(
+      'Phonetic Change',
+      headword.phonetic,
+      filter: n,
+      onLinkTap: _openUrl,
+    );
   }
 
-  TableRow? _buildCompoundRow(DpdHeadwordWithRoot headword, String Function(String) n) {
+  TableRow? _buildCompoundRow(
+    DpdHeadwordWithRoot headword,
+    String Function(String) n,
+  ) {
     final type = headword.compoundType;
     final construction = headword.compoundConstruction;
     if ((type == null || type.isEmpty) &&
@@ -203,68 +217,86 @@ class GrammarTable extends ConsumerWidget {
       if (type != null && type.isNotEmpty) type,
       if (construction != null && construction.isNotEmpty) '($construction)',
     ].join(' ').trim();
-    return _buildHtmlRow('Compound', text, n);
+    return buildKvTextRow('Compound', text, filter: n);
   }
 
-  TableRow? _buildAntonymRow(DpdHeadwordWithRoot headword, String Function(String) n) {
-    return _buildTextRow('Antonym', headword.antonym, n);
+  TableRow? _buildAntonymRow(
+    DpdHeadwordWithRoot headword,
+    String Function(String) n,
+  ) {
+    return buildKvTextRow('Antonym', headword.antonym, filter: n);
   }
 
-  TableRow? _buildSynonymRow(DpdHeadwordWithRoot headword, String Function(String) n) {
-    return _buildTextRow('Synonym', headword.synonym, n);
+  TableRow? _buildSynonymRow(
+    DpdHeadwordWithRoot headword,
+    String Function(String) n,
+  ) {
+    return buildKvTextRow('Synonym', headword.synonym, filter: n);
   }
 
-  TableRow? _buildVariantRow(DpdHeadwordWithRoot headword, String Function(String) n) {
-    return _buildTextRow('Variant', headword.variant, n);
+  TableRow? _buildVariantRow(
+    DpdHeadwordWithRoot headword,
+    String Function(String) n,
+  ) {
+    return buildKvTextRow('Variant', headword.variant, filter: n);
   }
 
-  TableRow? _buildCommentaryRow(DpdHeadwordWithRoot headword, String Function(String) n) {
+  TableRow? _buildCommentaryRow(
+    DpdHeadwordWithRoot headword,
+    String Function(String) n,
+  ) {
     final commentary = headword.commentary;
     if (commentary == null || commentary.isEmpty || commentary == '-') {
       return null;
     }
-    return _buildHtmlRow('Commentary', commentary, n);
+    return buildKvRichRow('Commentary', commentary, filter: n, onLinkTap: _openUrl);
   }
 
-  TableRow? _buildNotesRow(DpdHeadwordWithRoot headword, String Function(String) n) {
-    return _buildHtmlRow('Notes', headword.notes, n);
+  TableRow? _buildNotesRow(
+    DpdHeadwordWithRoot headword,
+    String Function(String) n,
+  ) {
+    return buildKvRichRow('Notes', headword.notes, filter: n, onLinkTap: _openUrl);
   }
 
-  TableRow? _buildCognateRow(DpdHeadwordWithRoot headword, String Function(String) n) {
-    return _buildTextRow('English Cognate', headword.cognate, n);
+  TableRow? _buildCognateRow(
+    DpdHeadwordWithRoot headword,
+    String Function(String) n,
+  ) {
+    return buildKvTextRow('English Cognate', headword.cognate, filter: n);
+  }
+
+  static Future<void> _openUrl(String url) async {
+    await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
   }
 
   TableRow? _buildLinkRow(DpdHeadwordWithRoot headword) {
-    final link = headword.link;
-    if (link == null || link.isEmpty) return null;
-    return _buildRow(
-      'Web Link',
-      Html(
-        data: '<a href="$link" target="_blank">$link</a>',
-        style: {
-          "a": Style(
-            color: Colors.blue,
-            textDecoration: TextDecoration.underline,
-          ),
-        },
-      ),
-    );
+    return buildKvLinkRow('Web Link', headword.link, onOpen: _openUrl);
   }
 
-  TableRow? _buildNonIaRow(DpdHeadwordWithRoot headword, String Function(String) n) {
-    return _buildTextRow('Non IA', headword.nonIa, n);
+  TableRow? _buildNonIaRow(
+    DpdHeadwordWithRoot headword,
+    String Function(String) n,
+  ) {
+    return buildKvTextRow('Non IA', headword.nonIa, filter: n);
   }
 
-  TableRow? _buildSanskritRow(DpdHeadwordWithRoot headword, String Function(String) n) {
+  TableRow? _buildSanskritRow(
+    DpdHeadwordWithRoot headword,
+    String Function(String) n,
+  ) {
     final sanskrit = headword.sanskrit;
     if (sanskrit == null || sanskrit.isEmpty) return null;
-    return _buildRow(
+    return buildKvRow(
       'Sanskrit',
       Text(n(sanskrit), style: const TextStyle(fontStyle: FontStyle.italic)),
     );
   }
 
-  TableRow? _buildSanskritRootDetailsRow(DpdHeadwordWithRoot headword, String Function(String) n) {
+  TableRow? _buildSanskritRootDetailsRow(
+    DpdHeadwordWithRoot headword,
+    String Function(String) n,
+  ) {
     final root = headword.root;
     if (root == null) return null;
     final sr = root.sanskritRoot;
@@ -276,7 +308,7 @@ class GrammarTable extends ConsumerWidget {
     ];
     final details = parts.join(' ').trim();
     if (details.isEmpty) return null;
-    return _buildRow(
+    return buildKvRow(
       'Sanskrit Root',
       Text(n(details), style: const TextStyle(fontStyle: FontStyle.italic)),
     );
@@ -302,62 +334,11 @@ class _IpaRowContent extends StatelessWidget {
       children: [
         Text('/$ipa/'),
         if (hasInternet) ...[
-          _SmallAudioButton(lemma: lemma, gender: 'male1'),
-          _SmallAudioButton(lemma: lemma, gender: 'male2'),
-          _SmallAudioButton(lemma: lemma, gender: 'female1'),
+          DpdPlayButton(lemma: lemma, gender: 'male1', compact: true),
+          DpdPlayButton(lemma: lemma, gender: 'male2', compact: true),
+          DpdPlayButton(lemma: lemma, gender: 'female1', compact: true),
         ],
       ],
-    );
-  }
-}
-
-class _SmallAudioButton extends StatefulWidget {
-  const _SmallAudioButton({required this.lemma, required this.gender});
-
-  final String lemma;
-  final String gender;
-
-  @override
-  State<_SmallAudioButton> createState() => _SmallAudioButtonState();
-}
-
-class _SmallAudioButtonState extends State<_SmallAudioButton> {
-  bool _playing = false;
-  bool _errored = false;
-
-  Future<void> _play() async {
-    if (_errored) return;
-    setState(() => _playing = true);
-    final ok = await AudioService.instance.play(widget.lemma, widget.gender);
-    if (!mounted) return;
-    setState(() {
-      _playing = false;
-      if (!ok) _errored = true;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final Color bg;
-    final Color fg;
-    if (_errored) {
-      bg = theme.colorScheme.onSurface.withValues(alpha: 0.12);
-      fg = theme.colorScheme.onSurface.withValues(alpha: 0.38);
-    } else if (_playing) {
-      bg = theme.colorScheme.secondary;
-      fg = theme.colorScheme.onSecondary;
-    } else {
-      bg = theme.colorScheme.primary;
-      fg = theme.colorScheme.onPrimary;
-    }
-    return GestureDetector(
-      onTap: _errored ? null : _play,
-      child: Container(
-        padding: const EdgeInsets.all(3),
-        decoration: BoxDecoration(color: bg, borderRadius: DpdColors.borderRadius),
-        child: Icon(Icons.play_arrow, color: fg, size: 12),
-      ),
     );
   }
 }

@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 
 import '../theme/dpd_colors.dart';
+import 'entry_content.dart';
+import 'feedback_type.dart';
 import 'root_matrix_builder.dart';
 
 class RootMatrixTable extends StatelessWidget {
-  const RootMatrixTable({super.key, required this.data});
+  const RootMatrixTable({super.key, required this.root, required this.data});
 
+  final String root;
   final RootMatrixData data;
 
   @override
@@ -29,8 +32,9 @@ class RootMatrixTable extends StatelessWidget {
 
     for (final categoryEntry in data.entries) {
       final subcats = categoryEntry.value;
-      final nonEmpty =
-          subcats.entries.where((e) => e.value.isNotEmpty).toList();
+      final nonEmpty = subcats.entries
+          .where((e) => e.value.isNotEmpty)
+          .toList();
       if (nonEmpty.isEmpty) continue;
 
       // Category header — full-width, primary border
@@ -80,20 +84,33 @@ class RootMatrixTable extends StatelessWidget {
     }
 
     if (children.isEmpty) {
-      return Padding(
-        padding: DpdColors.sectionPadding,
-        child: Text(
-          'No matrix data',
-          style: textStyle?.copyWith(color: Colors.grey),
+      return DpdSectionContainer(
+        child: Padding(
+          padding: DpdColors.sectionPadding,
+          child: Text(
+            'No matrix data',
+            style: textStyle?.copyWith(color: Colors.grey),
+          ),
         ),
       );
     }
 
-    return Padding(
-      padding: DpdColors.sectionPadding,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: children,
+    children.add(
+      DpdFooter(
+        messagePrefix: 'Something out of place?',
+        linkText: 'Report it here',
+        feedbackType: FeedbackType.rootMatrix,
+        word: root,
+      ),
+    );
+
+    return DpdSectionContainer(
+      child: Padding(
+        padding: DpdColors.sectionPadding,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: children,
+        ),
       ),
     );
   }

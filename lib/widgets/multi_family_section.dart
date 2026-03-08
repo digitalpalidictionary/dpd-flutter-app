@@ -50,14 +50,20 @@ class _MultiFamilySectionState extends State<MultiFamilySection> {
   void _scrollToSection(int index) {
     final ctx = _sectionKeys[index].currentContext;
     if (ctx != null) {
-      Scrollable.ensureVisible(ctx, duration: const Duration(milliseconds: 300));
+      Scrollable.ensureVisible(
+        ctx,
+        duration: const Duration(milliseconds: 300),
+      );
     }
   }
 
   void _scrollToTop() {
     final ctx = _topKey.currentContext;
     if (ctx != null) {
-      Scrollable.ensureVisible(ctx, duration: const Duration(milliseconds: 300));
+      Scrollable.ensureVisible(
+        ctx,
+        duration: const Duration(milliseconds: 300),
+      );
     }
   }
 
@@ -98,32 +104,33 @@ class _MultiFamilySectionState extends State<MultiFamilySection> {
                     _HeadingDoublelined(
                       child: i > 0
                           ? (widget.subSections[i].header is RichText
-                              ? _cloneWithJump(
-                                  context,
-                                  widget.subSections[i].header as RichText,
-                                  _scrollToTop,
-                                )
-                              : widget.subSections[i].header)
+                                ? _cloneWithJump(
+                                    context,
+                                    widget.subSections[i].header as RichText,
+                                    _scrollToTop,
+                                  )
+                                : widget.subSections[i].header)
                           : widget.subSections[i].header,
                     ),
                     const SizedBox(height: 8),
                     if (widget.subSections[i].entries.isNotEmpty)
-                      _FamilySubTable(entries: widget.subSections[i].entries),
+                      FamilyEntryTable(entries: widget.subSections[i].entries),
                   ],
                 ),
               ),
-              if (i < widget.subSections.length - 1)
-                const SizedBox(height: 16),
+              if (i < widget.subSections.length - 1) const SizedBox(height: 16),
             ],
 
             // Single back-to-top + single footer at the very bottom
             const SizedBox(height: 8),
             _BackToTopLink(onTap: _scrollToTop),
-            const SizedBox(height: 4),
             DpdFooter(
-              messagePrefix: widget.subSections.first.footerConfig.messagePrefix,
+              messagePrefix:
+                  widget.subSections.first.footerConfig.messagePrefix,
               linkText: widget.subSections.first.footerConfig.linkText,
-              urlBuilder: widget.subSections.first.footerConfig.urlBuilder,
+              feedbackType: widget.subSections.first.footerConfig.feedbackType,
+              word: widget.subSections.first.footerConfig.word,
+              headwordId: widget.subSections.first.footerConfig.headwordId,
             ),
           ],
         ),
@@ -133,7 +140,11 @@ class _MultiFamilySectionState extends State<MultiFamilySection> {
 }
 
 /// Helper to add the jump link to an existing RichText header
-Widget _cloneWithJump(BuildContext context, RichText header, VoidCallback onJump) {
+Widget _cloneWithJump(
+  BuildContext context,
+  RichText header,
+  VoidCallback onJump,
+) {
   final oldSpan = header.text as TextSpan;
   final color = Theme.of(context).colorScheme.primary;
   return RichText(
@@ -240,60 +251,6 @@ class _BackToTopLink extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-}
-
-class _FamilySubTable extends StatelessWidget {
-  const _FamilySubTable({required this.entries});
-
-  final List<FamilyEntry> entries;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final lemmaStyle = theme.textTheme.bodyMedium?.copyWith(
-      fontWeight: FontWeight.bold,
-      color: DpdColors.primaryText,
-    );
-    final boldStyle = theme.textTheme.bodyMedium?.copyWith(
-      fontWeight: FontWeight.bold,
-    );
-    final regularStyle = theme.textTheme.bodyMedium;
-
-    return Table(
-      columnWidths: const {
-        0: IntrinsicColumnWidth(),
-        1: IntrinsicColumnWidth(),
-        2: FlexColumnWidth(),
-        3: IntrinsicColumnWidth(),
-      },
-      defaultVerticalAlignment: TableCellVerticalAlignment.top,
-      children: entries.map((entry) {
-        return TableRow(
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(right: 7, bottom: 2),
-              child: Text(entry.lemma, style: lemmaStyle),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(right: 7, bottom: 2),
-              child: Text(entry.pos, style: boldStyle),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(right: 7, bottom: 2),
-              child: Text(entry.meaning, style: regularStyle),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(bottom: 2),
-              child: Text(
-                entry.completion,
-                style: regularStyle?.copyWith(color: DpdColors.gray),
-              ),
-            ),
-          ],
-        );
-      }).toList(),
     );
   }
 }

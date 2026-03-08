@@ -6,6 +6,7 @@ import '../models/inflection_table_builder.dart';
 import '../providers/database_provider.dart';
 import '../theme/dpd_colors.dart';
 import '../widgets/entry_content.dart';
+import 'feedback_type.dart';
 import 'inflection_table.dart';
 
 /// Renders the complete inflection section: dynamic table + footer.
@@ -83,17 +84,18 @@ class _InflectionSectionState extends ConsumerState<InflectionSection> {
           )
         : null;
 
-    return Padding(
-      padding: DpdColors.sectionPadding,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          if (tableData != null) ...[
-            InflectionTable(data: tableData, lookupKey: widget.lookupKey),
-            const SizedBox(height: 12),
+    return DpdSectionContainer(
+      child: Padding(
+        padding: DpdColors.sectionPadding,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (tableData != null) ...[
+              InflectionTable(data: tableData, lookupKey: widget.lookupKey),
+            ],
+            _InflectionFooter(headwordId: h.id, lemma1: h.lemma1),
           ],
-          _InflectionFooter(headwordId: h.id, lemma1: h.lemma1),
-        ],
+        ),
       ),
     );
   }
@@ -107,17 +109,12 @@ class _InflectionFooter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final now = DateTime.now();
-    final date =
-        '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}';
-    final encodedLemma = Uri.encodeComponent(lemma1);
-
     return DpdFooter(
       messagePrefix: 'Did you spot a mistake?',
       linkText: 'Correct it here',
-      urlBuilder: () =>
-          'https://docs.google.com/forms/d/e/1FAIpQLSf9boBe7k5tCwq7LdWgBHHGIPVc4ROO5yjVDo1X5LDAxkmGWQ/viewform?usp=pp_url&entry.438735500=$headwordId%20$encodedLemma&entry.326955045=Inflection&entry.1433863141=DPD+$date',
+      feedbackType: FeedbackType.inflection,
+      word: lemma1,
+      headwordId: headwordId,
     );
   }
 }
-

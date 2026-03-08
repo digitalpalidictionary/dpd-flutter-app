@@ -5,6 +5,7 @@ import '../database/database.dart';
 import '../database/sutta_info_extensions.dart';
 import '../theme/dpd_colors.dart';
 import 'entry_content.dart';
+import 'feedback_type.dart';
 
 class SuttaInfoSection extends StatelessWidget {
   const SuttaInfoSection({
@@ -122,10 +123,16 @@ class SuttaInfoSection extends StatelessWidget {
         _heading(context, 'Websites using BJT'),
         _table(context, [
           _linkRow(context, 'tipiṭaka.lk (Sinhala)', s.bjtTipitakaLkLink),
-          _linkRow(context, 'open.tipiṭaka.lk (Roman)',
-              s.bjtOpenTipitakaLkLink),
-          _linkRow(context, 'open.tipiṭaka.lk (Devanagari)',
-              s.bjtOpenTipitakaLkDevanagariLink),
+          _linkRow(
+            context,
+            'open.tipiṭaka.lk (Roman)',
+            s.bjtOpenTipitakaLkLink,
+          ),
+          _linkRow(
+            context,
+            'open.tipiṭaka.lk (Devanagari)',
+            s.bjtOpenTipitakaLkDevanagariLink,
+          ),
         ]),
       ],
 
@@ -149,8 +156,11 @@ class SuttaInfoSection extends StatelessWidget {
           _textRow(context, 'Sutta Length', s.dvLength),
           _textRow(context, 'Prominence', s.dvProminence),
           _textRow(context, 'Suggested Reading', s.dvSuggestedSuttas),
-          _linkRow(context, 'GitHub',
-              'https://github.com/dhammavinaya-tools/dhamma-vinaya-catalogue'),
+          _linkRow(
+            context,
+            'GitHub',
+            'https://github.com/dhammavinaya-tools/dhamma-vinaya-catalogue',
+          ),
         ]),
       ],
 
@@ -175,11 +185,7 @@ class SuttaInfoSection extends StatelessWidget {
         padding: DpdColors.sectionPadding,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            ...sections,
-            const SizedBox(height: 16.0),
-            _buildFooter(),
-          ],
+          children: [...sections, _buildFooter()],
         ),
       ),
     );
@@ -198,9 +204,8 @@ class SuttaInfoSection extends StatelessWidget {
           : Colors.black.withValues(alpha: 0.05),
       child: Text(
         title,
-        style: const TextStyle(
+        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
           fontWeight: FontWeight.bold,
-          fontSize: 13,
         ),
       ),
     );
@@ -210,101 +215,25 @@ class SuttaInfoSection extends StatelessWidget {
     final filtered = rows.whereType<TableRow>().toList();
     if (filtered.isEmpty) return const SizedBox.shrink();
     return Table(
-      columnWidths: const {
-        0: FixedColumnWidth(220),
-        1: FlexColumnWidth(),
-      },
+      columnWidths: const {0: FixedColumnWidth(220), 1: FlexColumnWidth()},
       children: filtered,
     );
   }
 
   // ── Row builders ─────────────────────────────────────────────────────────
 
-  TableRow? _textRow(BuildContext context, String label, String? value) {
-    if (!_notEmpty(value)) return null;
-    return TableRow(
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(right: 5.0, bottom: 2.0),
-          child: Text(
-            label,
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              color: DpdColors.primaryText,
-            ),
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(bottom: 2.0),
-          child: Text(value!),
-        ),
-      ],
-    );
-  }
+  TableRow? _textRow(BuildContext context, String label, String? value) =>
+      buildKvTextRow(label, value);
 
-  TableRow? _italicRow(BuildContext context, String label, String? value) {
-    if (!_notEmpty(value)) return null;
-    return TableRow(
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(right: 5.0, bottom: 2.0),
-          child: Text(
-            label,
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              color: DpdColors.primaryText,
-            ),
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(bottom: 2.0),
-          child: Text(
-            value!,
-            style: const TextStyle(fontStyle: FontStyle.italic),
-          ),
-        ),
-      ],
-    );
-  }
+  TableRow? _italicRow(BuildContext context, String label, String? value) =>
+      buildKvTextRow(
+        label,
+        value,
+        valueStyle: const TextStyle(fontStyle: FontStyle.italic),
+      );
 
-  TableRow? _linkRow(BuildContext context, String label, String? url) {
-    if (!_notEmpty(url)) return null;
-    final resolvedUrl = url!;
-    return TableRow(
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(right: 5.0, bottom: 2.0),
-          child: Text(
-            label,
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              color: DpdColors.primaryText,
-            ),
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(bottom: 2.0),
-          child: SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: GestureDetector(
-              onTap: () => _openUrl(resolvedUrl),
-              child: Text(
-                resolvedUrl,
-                maxLines: 1,
-                softWrap: false,
-                style: TextStyle(
-                  color: DpdColors.primaryText,
-                  fontWeight: FontWeight.w700,
-                  decoration: TextDecoration.underline,
-                  decorationColor: DpdColors.primaryText,
-                ),
-              ),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
+  TableRow? _linkRow(BuildContext context, String label, String? url) =>
+      buildKvLinkRow(label, url, onOpen: _openUrl);
 
   TableRow? _multiLinkRow(
     BuildContext context,
@@ -343,8 +272,7 @@ class SuttaInfoSection extends StatelessWidget {
                     ),
                   ),
                 ),
-                if (i < validLinks.length - 1)
-                  const Text(','),
+                if (i < validLinks.length - 1) const Text(','),
               ],
             ],
           ),
@@ -354,16 +282,12 @@ class SuttaInfoSection extends StatelessWidget {
   }
 
   Widget _buildFooter() {
-    final now = DateTime.now();
-    final date =
-        '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}';
-    final encodedLemma = Uri.encodeComponent(lemma1);
-
     return DpdFooter(
       messagePrefix: 'Did you spot a mistake?',
       linkText: 'Correct it here.',
-      urlBuilder: () =>
-          'https://docs.google.com/forms/d/e/1FAIpQLSf9boBe7k5tCwq7LdWgBHHGIPVc4ROO5yjVDo1X5LDAxkmGWQ/viewform?usp=pp_url&entry.438735500=$headwordId%20$encodedLemma&entry.326955045=Sutta+Info&entry.1433863141=DPD+$date',
+      feedbackType: FeedbackType.suttaInfo,
+      word: lemma1,
+      headwordId: headwordId,
     );
   }
 }

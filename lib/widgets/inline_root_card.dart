@@ -8,6 +8,7 @@ import '../theme/dpd_colors.dart';
 import 'entry_content.dart';
 import 'family_section_builders.dart';
 import 'family_table.dart';
+import 'feedback_type.dart';
 import 'root_info_table.dart';
 import 'root_matrix_table.dart';
 
@@ -98,15 +99,13 @@ class _InlineRootCardState extends ConsumerState<InlineRootCard> {
           ),
 
           // Content sections
-          if (_activeSection == 'info' && true)
-            _buildRootInfoSection(),
+          if (_activeSection == 'info' && true) _buildRootInfoSection(),
 
           if (_activeSection == 'matrix' && (root.rootCount ?? 0) > 0)
             _buildRootMatrixSection(),
 
           for (final fam in families)
-            if (_activeSection == fam.rootFamilyKey)
-              _buildFamilySection(fam),
+            if (_activeSection == fam.rootFamilyKey) _buildFamilySection(fam),
 
           const SizedBox(height: 4),
         ],
@@ -116,58 +115,27 @@ class _InlineRootCardState extends ConsumerState<InlineRootCard> {
 
   Widget _buildRootInfoSection() {
     final root = widget.rwf.root;
-    final encodedRoot = Uri.encodeComponent(root.root);
     final basesAsync = ref.watch(basesForRootProvider(root.root));
     final bases = basesAsync.whenOrNull(data: (b) => b);
 
-    return DpdSectionContainer(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          RootInfoTable(root: root, bases: bases),
-          Padding(
-            padding: DpdColors.sectionPadding,
-            child: DpdFooter(
-              messagePrefix: 'Something out of place?',
-              linkText: 'Report it here',
-              urlBuilder: () =>
-                  'https://docs.google.com/forms/d/e/1FAIpQLSf9boBe7k5tCwq7LdWgBHHGIPVc4ROO5yjVDo1X5LDAxkmGWQ/viewform?usp=pp_url&entry.438735500=$encodedRoot&entry.326955045=Root+Info',
-            ),
-          ),
-        ],
-      ),
-    );
+    return RootInfoTable(root: root, bases: bases);
   }
 
   Widget _buildRootMatrixSection() {
     final root = widget.rwf.root;
-    final encodedRoot = Uri.encodeComponent(root.root);
     final matrixAsync = ref.watch(rootMatrixProvider(root.root));
     final matrix = matrixAsync.whenOrNull(data: (m) => m);
 
-    return DpdSectionContainer(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          if (matrix != null)
-            RootMatrixTable(data: matrix)
-          else
-            Padding(
-              padding: DpdColors.sectionPadding,
-              child: const CircularProgressIndicator(),
-            ),
-          Padding(
-            padding: DpdColors.sectionPadding,
-            child: DpdFooter(
-              messagePrefix: 'Something out of place?',
-              linkText: 'Report it here',
-              urlBuilder: () =>
-                  'https://docs.google.com/forms/d/e/1FAIpQLSf9boBe7k5tCwq7LdWgBHHGIPVc4ROO5yjVDo1X5LDAxkmGWQ/viewform?usp=pp_url&entry.438735500=$encodedRoot&entry.326955045=Root+Matrix',
-            ),
-          ),
-        ],
-      ),
-    );
+    if (matrix != null) {
+      return RootMatrixTable(root: root.root, data: matrix);
+    } else {
+      return DpdSectionContainer(
+        child: Padding(
+          padding: DpdColors.sectionPadding,
+          child: const CircularProgressIndicator(),
+        ),
+      );
+    }
   }
 
   Widget _buildFamilySection(FamilyRootData fam) {
@@ -179,12 +147,11 @@ class _InlineRootCardState extends ConsumerState<InlineRootCard> {
   }
 
   FamilyFooterConfig _buildRootFooterConfig(FamilyRootData fam) {
-    final encodedRoot = Uri.encodeComponent(widget.rwf.root.root);
     return FamilyFooterConfig(
       messagePrefix: 'Something out of place?',
       linkText: 'Report it here',
-      urlBuilder: () =>
-          'https://docs.google.com/forms/d/e/1FAIpQLSf9boBe7k5tCwq7LdWgBHHGIPVc4ROO5yjVDo1X5LDAxkmGWQ/viewform?usp=pp_url&entry.438735500=$encodedRoot&entry.326955045=Root+Family',
+      feedbackType: FeedbackType.rootFamily,
+      word: widget.rwf.root.root,
     );
   }
 }
@@ -238,57 +205,62 @@ class _AccordionRootCardState extends ConsumerState<AccordionRootCard> {
             child: InkWell(
               onTap: _toggleCard,
               child: _isExpanded
-                ? Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(12, 10, 12, 1),
-                        child: Text(
-                          'root: $_rootClean',
-                          style: theme.textTheme.titleLarge?.copyWith(
-                            fontWeight: FontWeight.w700,
+                  ? Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(12, 10, 12, 1),
+                          child: Text(
+                            'root: $_rootClean',
+                            style: theme.textTheme.titleLarge?.copyWith(
+                              fontWeight: FontWeight.w700,
+                            ),
                           ),
                         ),
-                      ),
-                      _RootSummaryBox(
-                        rootClean: _rootClean,
-                        root: root,
-                        count: widget.rwf.count,
-                        baseStyle: baseStyle,
-                        boldStyle: boldStyle,
-                        grayStyle: grayStyle,
-                      ),
-                    ],
-                  )
-                : Padding(
-                    padding: const EdgeInsets.fromLTRB(12, 6, 12, 6),
-                    child: RichText(
-                      text: TextSpan(
-                        style: baseStyle,
-                        children: [
-                          TextSpan(
-                            text: '$_rootClean  ',
-                            style: boldStyle?.copyWith(
-                              color: theme.colorScheme.primary,
-                            ),
-                          ),
-                          const TextSpan(text: 'root. '),
-                          if (root.rootHasVerb.isNotEmpty)
+                        _RootSummaryBox(
+                          rootClean: _rootClean,
+                          root: root,
+                          count: widget.rwf.count,
+                          baseStyle: baseStyle,
+                          boldStyle: boldStyle,
+                          grayStyle: grayStyle,
+                        ),
+                      ],
+                    )
+                  : Padding(
+                      padding: const EdgeInsets.fromLTRB(12, 6, 12, 6),
+                      child: RichText(
+                        text: TextSpan(
+                          style: baseStyle,
+                          children: [
                             TextSpan(
-                              text: root.rootHasVerb,
-                              style: baseStyle?.copyWith(
-                                fontSize: (baseStyle.fontSize ?? 14) * 0.7,
-                                fontFeatures: [const FontFeature.superscripts()],
+                              text: '$_rootClean  ',
+                              style: boldStyle?.copyWith(
+                                color: theme.colorScheme.primary,
                               ),
                             ),
-                          TextSpan(text: ' ${root.rootGroup} '),
-                          TextSpan(text: root.rootSign),
-                          TextSpan(text: ' (${root.rootMeaning})'),
-                          TextSpan(text: ' ${widget.rwf.count}', style: grayStyle),
-                        ],
+                            const TextSpan(text: 'root. '),
+                            if (root.rootHasVerb.isNotEmpty)
+                              TextSpan(
+                                text: root.rootHasVerb,
+                                style: baseStyle?.copyWith(
+                                  fontSize: (baseStyle.fontSize ?? 14) * 0.7,
+                                  fontFeatures: [
+                                    const FontFeature.superscripts(),
+                                  ],
+                                ),
+                              ),
+                            TextSpan(text: ' ${root.rootGroup} '),
+                            TextSpan(text: root.rootSign),
+                            TextSpan(text: ' (${root.rootMeaning})'),
+                            TextSpan(
+                              text: ' ${widget.rwf.count}',
+                              style: grayStyle,
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
             ),
           ),
 
@@ -318,15 +290,13 @@ class _AccordionRootCardState extends ConsumerState<AccordionRootCard> {
               ),
             ),
 
-            if (_activeSection == 'info')
-              _buildRootInfoSection(),
+            if (_activeSection == 'info') _buildRootInfoSection(),
 
             if (_activeSection == 'matrix' && (root.rootCount ?? 0) > 0)
               _buildRootMatrixSection(),
 
             for (final fam in families)
-              if (_activeSection == fam.rootFamilyKey)
-                _buildFamilySection(fam),
+              if (_activeSection == fam.rootFamilyKey) _buildFamilySection(fam),
 
             const SizedBox(height: 4),
           ],
@@ -337,58 +307,27 @@ class _AccordionRootCardState extends ConsumerState<AccordionRootCard> {
 
   Widget _buildRootInfoSection() {
     final root = widget.rwf.root;
-    final encodedRoot = Uri.encodeComponent(root.root);
     final basesAsync = ref.watch(basesForRootProvider(root.root));
     final bases = basesAsync.whenOrNull(data: (b) => b);
 
-    return DpdSectionContainer(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          RootInfoTable(root: root, bases: bases),
-          Padding(
-            padding: DpdColors.sectionPadding,
-            child: DpdFooter(
-              messagePrefix: 'Something out of place?',
-              linkText: 'Report it here',
-              urlBuilder: () =>
-                  'https://docs.google.com/forms/d/e/1FAIpQLSf9boBe7k5tCwq7LdWgBHHGIPVc4ROO5yjVDo1X5LDAxkmGWQ/viewform?usp=pp_url&entry.438735500=$encodedRoot&entry.326955045=Root+Info',
-            ),
-          ),
-        ],
-      ),
-    );
+    return RootInfoTable(root: root, bases: bases);
   }
 
   Widget _buildRootMatrixSection() {
     final root = widget.rwf.root;
-    final encodedRoot = Uri.encodeComponent(root.root);
     final matrixAsync = ref.watch(rootMatrixProvider(root.root));
     final matrix = matrixAsync.whenOrNull(data: (m) => m);
 
-    return DpdSectionContainer(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          if (matrix != null)
-            RootMatrixTable(data: matrix)
-          else
-            Padding(
-              padding: DpdColors.sectionPadding,
-              child: const CircularProgressIndicator(),
-            ),
-          Padding(
-            padding: DpdColors.sectionPadding,
-            child: DpdFooter(
-              messagePrefix: 'Something out of place?',
-              linkText: 'Report it here',
-              urlBuilder: () =>
-                  'https://docs.google.com/forms/d/e/1FAIpQLSf9boBe7k5tCwq7LdWgBHHGIPVc4ROO5yjVDo1X5LDAxkmGWQ/viewform?usp=pp_url&entry.438735500=$encodedRoot&entry.326955045=Root+Matrix',
-            ),
-          ),
-        ],
-      ),
-    );
+    if (matrix != null) {
+      return RootMatrixTable(root: root.root, data: matrix);
+    } else {
+      return DpdSectionContainer(
+        child: Padding(
+          padding: DpdColors.sectionPadding,
+          child: const CircularProgressIndicator(),
+        ),
+      );
+    }
   }
 
   Widget _buildFamilySection(FamilyRootData fam) {
@@ -400,12 +339,11 @@ class _AccordionRootCardState extends ConsumerState<AccordionRootCard> {
   }
 
   FamilyFooterConfig _buildRootFooterConfig(FamilyRootData fam) {
-    final encodedRoot = Uri.encodeComponent(widget.rwf.root.root);
     return FamilyFooterConfig(
       messagePrefix: 'Something out of place?',
       linkText: 'Report it here',
-      urlBuilder: () =>
-          'https://docs.google.com/forms/d/e/1FAIpQLSf9boBe7k5tCwq7LdWgBHHGIPVc4ROO5yjVDo1X5LDAxkmGWQ/viewform?usp=pp_url&entry.438735500=$encodedRoot&entry.326955045=Root+Family',
+      feedbackType: FeedbackType.rootFamily,
+      word: widget.rwf.root.root,
     );
   }
 }

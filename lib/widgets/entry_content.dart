@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_html/flutter_html.dart';
+import 'package:dpd_flutter_app/widgets/feedback_type.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -8,34 +8,212 @@ import '../database/dpd_headword_extensions.dart';
 import '../providers/settings_provider.dart';
 import '../services/audio_service.dart';
 import '../theme/dpd_colors.dart';
+import '../utils/feedback_urls.dart';
 import '../utils/text_filters.dart';
+
+/// Padding for the label cell in a key-value table row.
+const kDpdTableLabelPadding = EdgeInsets.only(right: 5.0, bottom: 2.0);
+
+/// Padding for the value cell in a key-value table row.
+const kDpdTableValuePadding = EdgeInsets.only(bottom: 2.0);
+
+/// Builds a [TableRow] with a bold primary-coloured label and arbitrary [content].
+TableRow buildKvRow(String label, Widget content, {TextStyle? labelStyle}) {
+  return TableRow(
+    children: [
+      Padding(
+        padding: kDpdTableLabelPadding,
+        child: Text(
+          label,
+          style:
+              labelStyle ??
+              TextStyle(
+                fontWeight: FontWeight.bold,
+                color: DpdColors.primaryText,
+              ),
+        ),
+      ),
+      Padding(padding: kDpdTableValuePadding, child: content),
+    ],
+  );
+}
+
+/// Builds a nullable text [TableRow]; returns null when [text] is empty or null.
+TableRow? buildKvTextRow(
+  String label,
+  String? text, {
+  String Function(String)? filter,
+  TextStyle? valueStyle,
+  TextStyle? labelStyle,
+}) {
+  if (text == null || text.isEmpty) return null;
+  final display = filter != null ? filter(text) : text;
+  return buildKvRow(
+    label,
+    Text(display, style: valueStyle),
+    labelStyle: labelStyle,
+  );
+}
+
+/// Parses simple markup (`<b>`, `<i>`, `<a href>`, `<br>`) into [InlineSpan]s.
+///
+/// Handles non-nested tags as found in DPD database fields (phonetic, commentary,
+/// notes). Links are rendered as styled tap targets when [onLinkTap] is provided.
+List<InlineSpan> parseSimpleMarkup(
+  String html, {
+  TextStyle? boldStyle,
+  TextStyle? italicStyle,
+  TextStyle? linkStyle,
+  void Function(String url)? onLinkTap,
+}) {
+  final spans = <InlineSpan>[];
+  final normalized = html
+      .replaceAll(RegExp(r'<br\s*/?>'), '\n')
+      .replaceAll('\n\n', '\n');
+  final pattern = RegExp(
+    r'<b>(.*?)</b>|<i>(.*?)</i>|<a\s+href="([^"]*)"[^>]*>(.*?)</a>|([^<]+)',
+    dotAll: true,
+  );
+  for (final m in pattern.allMatches(normalized)) {
+    if (m.group(1) != null) {
+      spans.add(TextSpan(text: m.group(1), style: boldStyle));
+    } else if (m.group(2) != null) {
+      spans.add(TextSpan(text: m.group(2), style: italicStyle));
+    } else if (m.group(3) != null) {
+      final url = m.group(3)!;
+      final text = m.group(4)!;
+      spans.add(
+        WidgetSpan(
+          alignment: PlaceholderAlignment.baseline,
+          baseline: TextBaseline.alphabetic,
+          child: GestureDetector(
+            onTap: onLinkTap != null ? () => onLinkTap(url) : null,
+            child: Text(text, style: linkStyle),
+          ),
+        ),
+      );
+    } else if (m.group(5) != null) {
+      spans.add(TextSpan(text: m.group(5)));
+    }
+  }
+  return spans;
+}
+
+/// Builds a nullable rich-text [TableRow] parsing simple markup (`<b>`, `<i>`, `<a href>`).
+/// Returns null when [html] is empty or null.
+TableRow? buildKvRichRow(
+  String label,
+  String? html, {
+  String Function(String)? filter,
+  TextStyle? labelStyle,
+  void Function(String url)? onLinkTap,
+}) {
+  if (html == null || html.isEmpty) return null;
+  final data = filter != null ? filter(html) : html;
+  return buildKvRow(
+    label,
+    Builder(
+      builder: (context) {
+        final theme = Theme.of(context);
+        final base = theme.textTheme.bodyMedium;
+        final spans = parseSimpleMarkup(
+          data,
+          boldStyle: base?.copyWith(fontWeight: FontWeight.bold),
+          italicStyle: base?.copyWith(fontStyle: FontStyle.italic),
+          linkStyle: TextStyle(
+            color: DpdColors.primaryText,
+            fontWeight: FontWeight.w700,
+            decoration: TextDecoration.underline,
+            decorationColor: DpdColors.primaryText,
+          ),
+          onLinkTap: onLinkTap,
+        );
+        return Text.rich(TextSpan(style: base, children: spans));
+      },
+    ),
+    labelStyle: labelStyle,
+  );
+}
+
+/// Builds a nullable link [TableRow]; returns null when [url] is empty or null.
+///
+/// Tapping calls [onOpen] with the resolved URL.
+TableRow? buildKvLinkRow(
+  String label,
+  String? url, {
+  required void Function(String) onOpen,
+  TextStyle? labelStyle,
+}) {
+  if (url == null || url.isEmpty) return null;
+  return buildKvRow(
+    label,
+    SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: GestureDetector(
+        onTap: () => onOpen(url),
+        child: Text(
+          url,
+          maxLines: 1,
+          softWrap: false,
+          style: TextStyle(
+            color: DpdColors.primaryText,
+            fontWeight: FontWeight.w700,
+            decoration: TextDecoration.underline,
+            decorationColor: DpdColors.primaryText,
+          ),
+        ),
+      ),
+    ),
+    labelStyle: labelStyle,
+  );
+}
 
 class DpdFooter extends StatelessWidget {
   const DpdFooter({
     super.key,
-    required this.messagePrefix,
-    required this.linkText,
-    required this.urlBuilder,
-  });
+    this.messagePrefix = 'Did you spot a mistake?',
+    this.linkText = 'Correct it here',
+    this.feedbackType,
+    this.word,
+    this.headwordId,
+    this.customUrlBuilder,
+  }) : assert(
+         customUrlBuilder != null || (feedbackType != null && word != null),
+         'Must provide either customUrlBuilder or feedbackType and word',
+       );
 
   final String messagePrefix;
   final String linkText;
-  final String Function() urlBuilder;
+  final FeedbackType? feedbackType;
+  final String? word;
+  final int? headwordId;
+  final String Function()? customUrlBuilder;
+
+  String _buildUrl() {
+    if (customUrlBuilder != null) {
+      return customUrlBuilder!();
+    }
+    return buildMistakeUrl(
+      word: word,
+      headwordId: headwordId,
+      feedbackType: feedbackType?.value,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(top: 5.0),
+      margin: const EdgeInsets.only(top: 12.0),
       padding: const EdgeInsets.symmetric(vertical: 5.0),
       decoration: BoxDecoration(
         border: Border(top: BorderSide(color: DpdColors.primary, width: 1)),
       ),
       child: Align(
         alignment: Alignment.centerLeft,
-        child: InkWell(
+        child: GestureDetector(
           onTap: () async {
             await launchUrl(
-              Uri.parse(urlBuilder()),
+              Uri.parse(_buildUrl()),
               mode: LaunchMode.platformDefault,
             );
           },
@@ -120,12 +298,58 @@ class EntryLabelValue extends StatelessWidget {
 }
 
 class EntryExampleBlock extends ConsumerWidget {
-  const EntryExampleBlock({
-    super.key,
-    required this.example,
-    this.sutta,
-    this.source,
-  });
+  const EntryExampleBlock({super.key, required this.headword});
+
+  final DpdHeadwordWithRoot headword;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final h = headword;
+    return DpdSectionContainer(
+      child: Padding(
+        padding: DpdColors.sectionPadding,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _SingleExampleBlock(
+              example: h.example1!,
+              sutta: h.sutta1,
+              source: h.source1,
+            ),
+            if (h.needsExamplesButton)
+              _SingleExampleBlock(
+                example: h.example2!,
+                sutta: h.sutta2,
+                source: h.source2,
+              ),
+            EntryExampleFooter(headwordId: h.id, lemma1: h.lemma1),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Parses a string containing `<b>...</b>` tags into a list of [InlineSpan]s.
+/// Newline characters are preserved as-is (not converted to `<br>`).
+List<InlineSpan> _parseBoldSpans(String text, {TextStyle? boldStyle}) {
+  final spans = <InlineSpan>[];
+  text.splitMapJoin(
+    RegExp(r'<b>(.*?)</b>'),
+    onMatch: (m) {
+      spans.add(TextSpan(text: m.group(1), style: boldStyle));
+      return '';
+    },
+    onNonMatch: (s) {
+      if (s.isNotEmpty) spans.add(TextSpan(text: s));
+      return '';
+    },
+  );
+  return spans;
+}
+
+class _SingleExampleBlock extends ConsumerWidget {
+  const _SingleExampleBlock({required this.example, this.sutta, this.source});
 
   final String example;
   final String? sutta;
@@ -145,48 +369,30 @@ class EntryExampleBlock extends ConsumerWidget {
       mode: filterMode,
     );
     final theme = Theme.of(context);
+    final boldStyle = theme.textTheme.bodyMedium?.copyWith(
+      fontWeight: FontWeight.bold,
+    );
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Html(
-          data: n(example).replaceAll('\n', '<br>'),
-          shrinkWrap: true,
-          style: {
-            'body': Style(margin: Margins.zero, padding: HtmlPaddings.zero),
-            'p': Style(margin: Margins.zero),
-          },
-        ),
-        if (sutta != null || source != null) ...[
-          Html(
-            data:
-                '<p class="sutta">${[source, sutta].whereType<String>().map(n).join(' ')}</p>',
-            style: {
-              'body': Style(margin: Margins.zero, padding: HtmlPaddings.zero),
-              'p.sutta': Style(
-                color: DpdColors.primaryText,
-                fontStyle: FontStyle.italic,
-                fontSize: FontSize(theme.textTheme.bodySmall?.fontSize ?? 12.0),
-                margin: Margins.zero,
-                padding: HtmlPaddings.only(bottom: 3),
-              ),
-              'a.sutta_link': Style(
-                color: DpdColors.primaryText,
-                fontStyle: FontStyle.italic,
-                fontWeight: FontWeight.bold,
-                textDecoration: TextDecoration.none,
-              ),
-            },
-            onLinkTap: (url, attributes, element) async {
-              if (url != null) {
-                await launchUrl(
-                  Uri.parse(url),
-                  mode: LaunchMode.externalApplication,
-                );
-              }
-            },
+        Text.rich(
+          TextSpan(
+            style: theme.textTheme.bodyMedium,
+            children: _parseBoldSpans(n(example), boldStyle: boldStyle),
           ),
-        ],
+        ),
+        if (sutta != null || source != null)
+          Padding(
+            padding: const EdgeInsets.only(bottom: 3),
+            child: Text(
+              [source, sutta].whereType<String>().map(n).join(' '),
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: DpdColors.primaryText,
+                fontStyle: FontStyle.italic,
+              ),
+            ),
+          ),
       ],
     );
   }
@@ -209,9 +415,7 @@ class EntrySummaryBox extends ConsumerWidget {
     final h = headword.headword;
     final baseStyle = theme.textTheme.bodyMedium?.copyWith(height: 1.5);
     final boldStyle = baseStyle?.copyWith(fontWeight: FontWeight.w700);
-    final grayStyle = baseStyle?.copyWith(
-      color: Colors.grey,
-    );
+    final grayStyle = baseStyle?.copyWith(color: Colors.grey);
 
     String f(String? text) => filterNiggahita(
       filterApostrophe(text ?? '', show: showApostrophe),
@@ -333,10 +537,16 @@ class DpdSectionButton extends StatelessWidget {
 /// Main play button — same visual style as DpdSectionButton but with a play icon.
 /// Shows active color while playing, grays out if audio fetch fails.
 class DpdPlayButton extends StatefulWidget {
-  const DpdPlayButton({super.key, required this.lemma, required this.gender});
+  const DpdPlayButton({
+    super.key,
+    required this.lemma,
+    required this.gender,
+    this.compact = false,
+  });
 
   final String lemma;
   final String gender;
+  final bool compact;
 
   @override
   State<DpdPlayButton> createState() => _DpdPlayButtonState();
@@ -376,18 +586,21 @@ class _DpdPlayButtonState extends State<DpdPlayButton> {
       fg = theme.colorScheme.onPrimary;
       shadow = DpdColors.shadowDefault;
     }
+    final compact = widget.compact;
     return GestureDetector(
       onTap: _errored ? null : _play,
       child: Container(
-        margin: const EdgeInsets.fromLTRB(1, 1, 1, 2),
-        padding: const EdgeInsets.fromLTRB(5, 2, 5, 2),
+        margin: compact ? null : const EdgeInsets.fromLTRB(1, 1, 1, 2),
+        padding: compact
+            ? const EdgeInsets.all(3)
+            : const EdgeInsets.fromLTRB(5, 2, 5, 2),
         decoration: BoxDecoration(
           color: bg,
-          border: Border.all(color: bg, width: 1),
+          border: compact ? null : Border.all(color: bg, width: 1),
           borderRadius: DpdColors.borderRadius,
-          boxShadow: shadow,
+          boxShadow: compact ? null : shadow,
         ),
-        child: Icon(Icons.play_arrow, color: fg, size: 18),
+        child: Icon(Icons.play_arrow, color: fg, size: compact ? 12 : 18),
       ),
     );
   }
@@ -405,16 +618,12 @@ class EntryExampleFooter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final now = DateTime.now();
-    final date =
-        '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}';
-    final encodedLemma = Uri.encodeComponent(lemma1);
-
     return DpdFooter(
       messagePrefix: 'Can you think of a better example?',
       linkText: 'Add it here.',
-      urlBuilder: () =>
-          'https://docs.google.com/forms/d/e/1FAIpQLSf9boBe7k5tCwq7LdWgBHHGIPVc4ROO5yjVDo1X5LDAxkmGWQ/viewform?usp=pp_url&entry.438735500=$headwordId%20$encodedLemma&entry.326955045=Examples&entry.1433863141=DPD+$date',
+      feedbackType: FeedbackType.examples,
+      word: lemma1,
+      headwordId: headwordId,
     );
   }
 }

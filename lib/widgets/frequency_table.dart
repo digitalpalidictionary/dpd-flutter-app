@@ -3,6 +3,10 @@ import 'package:flutter/material.dart';
 import '../models/frequency_data.dart';
 import '../theme/dpd_colors.dart';
 
+/// Font size for FrequencyTable cells/labels — matches Material3 bodySmall (12sp).
+/// Fixed rather than theme-derived because the layout uses pixel-precise positioning.
+const double _kFreqSmallFontSize = 12.0;
+
 /// Native Flutter frequency heatmap table replicating the webapp layout.
 class FrequencyTable extends StatelessWidget {
   const FrequencyTable({super.key, required this.data});
@@ -135,7 +139,7 @@ class FrequencyTable extends StatelessWidget {
         alignment: Alignment.center,
         child: Text(
           '$value',
-          style: TextStyle(color: textColor, fontSize: 11.2),
+          style: TextStyle(color: textColor, fontSize: _kFreqSmallFontSize),
         ),
       ),
     );
@@ -164,7 +168,7 @@ class FrequencyTable extends StatelessWidget {
         alignment: Alignment.center,
         child: Text(
           text,
-          style: const TextStyle(fontSize: 11.2),
+          style: const TextStyle(fontSize: _kFreqSmallFontSize),
           textAlign: TextAlign.center,
           overflow: TextOverflow.ellipsis,
         ),
@@ -186,7 +190,7 @@ class FrequencyTable extends StatelessWidget {
         alignment: Alignment.center,
         child: Text(
           text.split('').join('\n'),
-          style: const TextStyle(fontSize: 11.2, height: 1.1),
+          style: const TextStyle(fontSize: _kFreqSmallFontSize, height: 1.1),
           textAlign: TextAlign.center,
         ),
       ),
@@ -205,7 +209,7 @@ class FrequencyTable extends StatelessWidget {
           child: Center(
             child: Text(
               name,
-              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: _kFreqSmallFontSize),
             ),
           ),
         ),
@@ -226,7 +230,7 @@ class FrequencyTable extends StatelessWidget {
             alignment: Alignment.centerRight,
             child: Padding(
               padding: const EdgeInsets.only(right: 4),
-              child: Text(label, style: const TextStyle(fontSize: 11.2)),
+              child: Text(label, style: const TextStyle(fontSize: _kFreqSmallFontSize)),
             ),
           ),
         ),

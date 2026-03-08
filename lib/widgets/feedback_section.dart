@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../theme/dpd_colors.dart';
+import '../utils/feedback_urls.dart';
 import 'entry_content.dart';
 
 class FeedbackSection extends StatelessWidget {
@@ -14,20 +15,10 @@ class FeedbackSection extends StatelessWidget {
   final int headwordId;
   final String lemma1;
 
-  String get _date {
-    final now = DateTime.now();
-    return '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}';
-  }
+  String get _addWordUrl => buildAddWordUrl();
 
-  String get _appLabel => 'DPD+$_date';
-
-  String get _addWordUrl =>
-      'https://docs.google.com/forms/d/e/1FAIpQLSfResxEUiRCyFITWPkzoQ2HhHEvUS5fyg68Rl28hFH6vhHlaA/viewform?usp=pp_url&entry.1433863141=$_appLabel';
-
-  String get _correctMistakeUrl {
-    final encodedLemma = Uri.encodeComponent(lemma1);
-    return 'https://docs.google.com/forms/d/e/1FAIpQLSf9boBe7k5tCwq7LdWgBHHGIPVc4ROO5yjVDo1X5LDAxkmGWQ/viewform?usp=pp_url&entry.438735500=$headwordId%20$encodedLemma&entry.1433863141=$_appLabel';
-  }
+  String get _correctMistakeUrl =>
+      buildMistakeUrl(word: lemma1, headwordId: headwordId);
 
   static const _docsUrl = 'https://digitalpalidictionary.github.io/';
 
@@ -50,9 +41,7 @@ class FeedbackSection extends StatelessWidget {
           children: [
             RichText(
               text: TextSpan(
-                style: DefaultTextStyle.of(
-                  context,
-                ).style.copyWith(fontSize: 13),
+                style: Theme.of(context).textTheme.bodyMedium,
                 children: [
                   const TextSpan(text: 'ID '),
                   TextSpan(
@@ -63,9 +52,9 @@ class FeedbackSection extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 8),
-            const Text(
+            Text(
               'Digital Pāḷi Dictionary is a work in progress, made available for testing and feedback purposes.',
-              style: TextStyle(fontSize: 13),
+              style: Theme.of(context).textTheme.bodyMedium,
             ),
             const SizedBox(height: 8),
             _FeedbackLink(
@@ -122,7 +111,7 @@ class _FeedbackLink extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final style = DefaultTextStyle.of(context).style.copyWith(fontSize: 13);
+    final style = Theme.of(context).textTheme.bodyMedium;
     return RichText(
       text: TextSpan(
         style: style,
@@ -134,8 +123,7 @@ class _FeedbackLink extends StatelessWidget {
               onTap: onTap,
               child: Text(
                 linkText,
-                style: TextStyle(
-                  fontSize: 13,
+                style: style?.copyWith(
                   color: DpdColors.primaryText,
                   fontWeight: FontWeight.w700,
                 ),

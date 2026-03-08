@@ -3,18 +3,23 @@ import 'package:flutter/material.dart';
 import '../models/family_data.dart';
 import '../theme/dpd_colors.dart';
 import 'entry_content.dart';
+import 'feedback_type.dart';
 
 /// Config for a family section footer feedback link.
 class FamilyFooterConfig {
   const FamilyFooterConfig({
     required this.messagePrefix,
     required this.linkText,
-    required this.urlBuilder,
+    required this.feedbackType,
+    required this.word,
+    this.headwordId,
   });
 
   final String messagePrefix;
   final String linkText;
-  final String Function() urlBuilder;
+  final FeedbackType feedbackType;
+  final String word;
+  final int? headwordId;
 }
 
 /// Reusable widget for rendering any family type table section.
@@ -45,12 +50,13 @@ class FamilyTableWidget extends StatelessWidget {
           children: [
             HeadingUnderlined(child: header),
             const SizedBox(height: 8),
-            if (entries.isNotEmpty) _FamilyTable(entries: entries),
-            const SizedBox(height: 4),
+            if (entries.isNotEmpty) FamilyEntryTable(entries: entries),
             DpdFooter(
               messagePrefix: footerConfig.messagePrefix,
               linkText: footerConfig.linkText,
-              urlBuilder: footerConfig.urlBuilder,
+              feedbackType: footerConfig.feedbackType,
+              word: footerConfig.word,
+              headwordId: footerConfig.headwordId,
             ),
           ],
         ),
@@ -71,17 +77,18 @@ class HeadingUnderlined extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.only(bottom: 4),
       decoration: BoxDecoration(
-        border: Border(
-          bottom: BorderSide(color: DpdColors.primary, width: 1),
-        ),
+        border: Border(bottom: BorderSide(color: DpdColors.primary, width: 1)),
       ),
       child: child,
     );
   }
 }
 
-class _FamilyTable extends StatelessWidget {
-  const _FamilyTable({required this.entries});
+/// Shared table widget for family entries (lemma / pos / meaning / completion).
+///
+/// Used by both [FamilyTableWidget] and [MultiFamilySection].
+class FamilyEntryTable extends StatelessWidget {
+  const FamilyEntryTable({super.key, required this.entries});
 
   final List<FamilyEntry> entries;
 

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../database/database.dart';
 import '../theme/dpd_colors.dart';
+import 'entry_content.dart';
+import 'feedback_type.dart';
 
 const Map<int, String> _rootGroupPali = {
   1: 'bhūvādigaṇa',
@@ -37,10 +39,9 @@ class RootInfoTable extends StatelessWidget {
     final rootClean = root.root.replaceAll('√', '');
     final groupPali = _rootGroupPali[root.rootGroup] ?? '';
     rows.add(
-      _buildRichRow(
-        label: 'Pāḷi Root:',
-        labelStyle: labelStyle,
-        child: Text.rich(
+      buildKvRow(
+        'Pāḷi Root:',
+        Text.rich(
           TextSpan(
             style: valueStyle,
             children: [
@@ -60,6 +61,7 @@ class RootInfoTable extends StatelessWidget {
             ],
           ),
         ),
+        labelStyle: labelStyle,
       ),
     );
 
@@ -67,27 +69,33 @@ class RootInfoTable extends StatelessWidget {
     final b = bases;
     final basesLabel = (b != null && b.length > 1) ? 'Bases:' : 'Base:';
     final basesValue = b == null ? '…' : (b.isEmpty ? '-' : b.join(', '));
-    rows.add(_buildTextRow(basesLabel, basesValue, labelStyle, valueStyle));
+    rows.add(
+      buildKvTextRow(
+        basesLabel,
+        basesValue,
+        labelStyle: labelStyle,
+        valueStyle: valueStyle,
+      )!,
+    );
 
     // Root in Compounds (optional)
     if (root.rootInComps.isNotEmpty) {
       rows.add(
-        _buildTextRow(
+        buildKvTextRow(
           'Root in Compounds:',
           root.rootInComps,
-          labelStyle,
-          valueStyle,
-        ),
+          labelStyle: labelStyle,
+          valueStyle: valueStyle,
+        )!,
       );
     }
 
     // Dhātupātha
     if (root.dhatupathaRoot != '-') {
       rows.add(
-        _buildRichRow(
-          label: 'Dhātupātha:',
-          labelStyle: labelStyle,
-          child: Text.rich(
+        buildKvRow(
+          'Dhātupātha:',
+          Text.rich(
             TextSpan(
               style: valueStyle,
               children: [
@@ -99,19 +107,26 @@ class RootInfoTable extends StatelessWidget {
               ],
             ),
           ),
+          labelStyle: labelStyle,
         ),
       );
     } else {
-      rows.add(_buildTextRow('Dhātupātha:', '-', labelStyle, valueStyle));
+      rows.add(
+        buildKvTextRow(
+          'Dhātupātha:',
+          '-',
+          labelStyle: labelStyle,
+          valueStyle: valueStyle,
+        )!,
+      );
     }
 
     // Dhātumañjūsa
     if (root.dhatumanjusaRoot != '-') {
       rows.add(
-        _buildRichRow(
-          label: 'Dhātumañjūsa:',
-          labelStyle: labelStyle,
-          child: Text.rich(
+        buildKvRow(
+          'Dhātumañjūsa:',
+          Text.rich(
             TextSpan(
               style: valueStyle,
               children: [
@@ -124,19 +139,26 @@ class RootInfoTable extends StatelessWidget {
               ],
             ),
           ),
+          labelStyle: labelStyle,
         ),
       );
     } else {
-      rows.add(_buildTextRow('Dhātumañjūsa:', '-', labelStyle, valueStyle));
+      rows.add(
+        buildKvTextRow(
+          'Dhātumañjūsa:',
+          '-',
+          labelStyle: labelStyle,
+          valueStyle: valueStyle,
+        )!,
+      );
     }
 
     // Saddanīti
     if (root.dhatumalaRoot != '-') {
       rows.add(
-        _buildRichRow(
-          label: 'Saddanīti:',
-          labelStyle: labelStyle,
-          child: Text.rich(
+        buildKvRow(
+          'Saddanīti:',
+          Text.rich(
             TextSpan(
               style: valueStyle,
               children: [
@@ -146,31 +168,38 @@ class RootInfoTable extends StatelessWidget {
               ],
             ),
           ),
+          labelStyle: labelStyle,
         ),
       );
     } else {
-      rows.add(_buildTextRow('Saddanīti:', '-', labelStyle, valueStyle));
+      rows.add(
+        buildKvTextRow(
+          'Saddanīti:',
+          '-',
+          labelStyle: labelStyle,
+          valueStyle: valueStyle,
+        )!,
+      );
     }
 
     // Sanskrit Root (gray)
     rows.add(
-      _buildRichRow(
-        label: 'Sanskrit Root:',
-        labelStyle: labelStyle,
-        child: Text(
+      buildKvRow(
+        'Sanskrit Root:',
+        Text(
           '${root.sanskritRoot} ${root.sanskritRootClass} (${root.sanskritRootMeaning})',
           style: grayStyle,
         ),
+        labelStyle: labelStyle,
       ),
     );
 
     // Pāṇinīya Dhātupāṭha (gray or "-")
     if (root.paniniRoot != '-') {
       rows.add(
-        _buildRichRow(
-          label: 'Pāṇinīya Dhātupāṭha:',
-          labelStyle: labelStyle,
-          child: Text.rich(
+        buildKvRow(
+          'Pāṇinīya Dhātupāṭha:',
+          Text.rich(
             TextSpan(
               style: grayStyle,
               children: [
@@ -183,66 +212,56 @@ class RootInfoTable extends StatelessWidget {
               ],
             ),
           ),
+          labelStyle: labelStyle,
         ),
       );
     } else {
       rows.add(
-        _buildTextRow('Pāṇinīya Dhātupāṭha:', '-', labelStyle, valueStyle),
+        buildKvTextRow(
+          'Pāṇinīya Dhātupāṭha:',
+          '-',
+          labelStyle: labelStyle,
+          valueStyle: valueStyle,
+        )!,
       );
     }
 
     // Notes (optional)
     if (root.note.isNotEmpty) {
-      rows.add(_buildTextRow('Notes:', root.note, labelStyle, valueStyle));
+      rows.add(
+        buildKvTextRow(
+          'Notes:',
+          root.note,
+          labelStyle: labelStyle,
+          valueStyle: valueStyle,
+        )!,
+      );
     }
 
-    return Padding(
-      padding: DpdColors.sectionPadding,
-      child: Table(
-        columnWidths: const {0: IntrinsicColumnWidth(), 1: FlexColumnWidth()},
-        defaultVerticalAlignment: TableCellVerticalAlignment.baseline,
-        textBaseline: TextBaseline.alphabetic,
-        children: rows,
+    return DpdSectionContainer(
+      child: Padding(
+        padding: DpdColors.sectionPadding,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Table(
+              columnWidths: const {
+                0: IntrinsicColumnWidth(),
+                1: FlexColumnWidth(),
+              },
+              defaultVerticalAlignment: TableCellVerticalAlignment.baseline,
+              textBaseline: TextBaseline.alphabetic,
+              children: rows,
+            ),
+            DpdFooter(
+              messagePrefix: 'Something out of place?',
+              linkText: 'Report it here',
+              feedbackType: FeedbackType.rootInfo,
+              word: root.root,
+            ),
+          ],
+        ),
       ),
-    );
-  }
-
-  TableRow _buildTextRow(
-    String label,
-    String value,
-    TextStyle? labelStyle,
-    TextStyle? valueStyle,
-  ) {
-    return TableRow(
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(right: 8, top: 2, bottom: 2),
-          child: Text(label, style: labelStyle),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(top: 2, bottom: 2),
-          child: Text(value, style: valueStyle),
-        ),
-      ],
-    );
-  }
-
-  TableRow _buildRichRow({
-    required String label,
-    required TextStyle? labelStyle,
-    required Widget child,
-  }) {
-    return TableRow(
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(right: 8, top: 2, bottom: 2),
-          child: Text(label, style: labelStyle),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(top: 2, bottom: 2),
-          child: child,
-        ),
-      ],
     );
   }
 }
