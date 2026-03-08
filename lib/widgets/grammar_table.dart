@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../database/database.dart';
 import '../database/dpd_headword_extensions.dart';
@@ -261,21 +261,12 @@ class GrammarTable extends ConsumerWidget {
     return buildKvTextRow('English Cognate', headword.cognate, filter: n);
   }
 
+  static Future<void> _openUrl(String url) async {
+    await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
+  }
+
   TableRow? _buildLinkRow(DpdHeadwordWithRoot headword) {
-    final link = headword.link;
-    if (link == null || link.isEmpty) return null;
-    return buildKvRow(
-      'Web Link',
-      Html(
-        data: '<a href="$link" target="_blank">$link</a>',
-        style: {
-          "a": Style(
-            color: Colors.blue,
-            textDecoration: TextDecoration.underline,
-          ),
-        },
-      ),
-    );
+    return buildKvLinkRow('Web Link', headword.link, onOpen: _openUrl);
   }
 
   TableRow? _buildNonIaRow(

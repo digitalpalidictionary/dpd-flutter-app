@@ -153,7 +153,7 @@ class DpdFooter extends StatelessWidget {
       ),
       child: Align(
         alignment: Alignment.centerLeft,
-        child: InkWell(
+        child: GestureDetector(
           onTap: () async {
             await launchUrl(
               Uri.parse(_buildUrl()),
