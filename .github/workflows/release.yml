@@ -65,6 +65,11 @@ jobs:
 
       - name: Verify keystore
         run: |
+          echo "--- keystore file size ---"
+          wc -c android/keystore.jks
+          echo "--- key.properties content ---"
+          cat android/key.properties
+          echo "--- keytool list ---"
           keytool -list \
             -keystore android/keystore.jks \
             -storepass "${{ secrets.STORE_PASSWORD }}" \
