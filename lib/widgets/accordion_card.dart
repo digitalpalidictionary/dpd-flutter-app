@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../database/database.dart';
 import '../database/dpd_headword_extensions.dart';
 import '../providers/settings_provider.dart';
+import '../theme/dpd_colors.dart';
 import '../utils/text_filters.dart';
 import 'entry_content.dart';
 import 'entry_sections_mixin.dart';
@@ -68,7 +69,7 @@ class _AccordionCardState extends ConsumerState<AccordionCard>
     final summary = hw.constructionSummary;
     final baseStyle = theme.textTheme.bodyMedium?.copyWith(height: 1.5);
     final boldStyle = baseStyle?.copyWith(fontWeight: FontWeight.w700);
-    final grayStyle = baseStyle?.copyWith(color: Colors.grey);
+    final grayStyle = baseStyle?.copyWith(color: DpdColors.gray);
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),

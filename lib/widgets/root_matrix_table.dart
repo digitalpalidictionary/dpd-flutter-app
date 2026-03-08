@@ -89,7 +89,7 @@ class RootMatrixTable extends StatelessWidget {
           padding: DpdColors.sectionPadding,
           child: Text(
             'No matrix data',
-            style: textStyle?.copyWith(color: Colors.grey),
+            style: textStyle?.copyWith(color: DpdColors.gray),
           ),
         ),
       );

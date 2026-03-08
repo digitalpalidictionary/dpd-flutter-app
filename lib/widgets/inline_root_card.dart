@@ -43,7 +43,7 @@ class _InlineRootCardState extends ConsumerState<InlineRootCard> {
     final families = widget.rwf.families;
     final baseStyle = theme.textTheme.bodyMedium?.copyWith(height: 1.5);
     final boldStyle = baseStyle?.copyWith(fontWeight: FontWeight.w700);
-    final grayStyle = baseStyle?.copyWith(color: Colors.grey);
+    final grayStyle = baseStyle?.copyWith(color: DpdColors.gray);
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
@@ -188,7 +188,7 @@ class _AccordionRootCardState extends ConsumerState<AccordionRootCard> {
     final families = widget.rwf.families;
     final baseStyle = theme.textTheme.bodyMedium?.copyWith(height: 1.5);
     final boldStyle = baseStyle?.copyWith(fontWeight: FontWeight.w700);
-    final grayStyle = baseStyle?.copyWith(color: Colors.grey);
+    final grayStyle = baseStyle?.copyWith(color: DpdColors.gray);
 
     if (_isExpanded) {
       ref.watch(basesForRootProvider(root.root));

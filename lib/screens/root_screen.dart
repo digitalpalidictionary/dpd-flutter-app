@@ -71,7 +71,7 @@ class _RootViewState extends ConsumerState<_RootView> {
     final families = widget.rwf.families;
     final baseStyle = theme.textTheme.bodyMedium?.copyWith(height: 1.5);
     final boldStyle = baseStyle?.copyWith(fontWeight: FontWeight.w700);
-    final grayStyle = baseStyle?.copyWith(color: Colors.grey);
+    final grayStyle = baseStyle?.copyWith(color: DpdColors.gray);
 
     return Scaffold(
       body: CustomScrollView(

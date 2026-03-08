@@ -30,7 +30,7 @@ class RootInfoTable extends StatelessWidget {
       fontWeight: FontWeight.w700,
     );
     final valueStyle = theme.textTheme.bodyMedium;
-    final grayStyle = valueStyle?.copyWith(color: Colors.grey);
+    final grayStyle = valueStyle?.copyWith(color: DpdColors.gray);
     final italicStyle = valueStyle?.copyWith(fontStyle: FontStyle.italic);
 
     final rows = <TableRow>[];

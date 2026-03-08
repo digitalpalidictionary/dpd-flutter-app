@@ -194,14 +194,11 @@ class SuttaInfoSection extends StatelessWidget {
   // ── Section builders ────────────────────────────────────────────────────
 
   Widget _heading(BuildContext context, String title) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.fromLTRB(5, 8, 5, 4),
       margin: const EdgeInsets.only(top: 4),
-      color: isDark
-          ? Colors.white.withValues(alpha: 0.1)
-          : Colors.black.withValues(alpha: 0.05),
+      color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.05),
       child: Text(
         title,
         style: Theme.of(context).textTheme.bodyMedium?.copyWith(

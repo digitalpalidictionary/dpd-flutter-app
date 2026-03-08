@@ -219,7 +219,7 @@ class DpdFooter extends StatelessWidget {
           },
           child: Text.rich(
             TextSpan(
-              style: const TextStyle(fontSize: 12.8, color: Colors.grey),
+              style: TextStyle(fontSize: 12.8, color: DpdColors.gray),
               children: [
                 TextSpan(text: '$messagePrefix '),
                 TextSpan(
@@ -415,7 +415,7 @@ class EntrySummaryBox extends ConsumerWidget {
     final h = headword.headword;
     final baseStyle = theme.textTheme.bodyMedium?.copyWith(height: 1.5);
     final boldStyle = baseStyle?.copyWith(fontWeight: FontWeight.w700);
-    final grayStyle = baseStyle?.copyWith(color: Colors.grey);
+    final grayStyle = baseStyle?.copyWith(color: DpdColors.gray);
 
     String f(String? text) => filterNiggahita(
       filterApostrophe(text ?? '', show: showApostrophe),

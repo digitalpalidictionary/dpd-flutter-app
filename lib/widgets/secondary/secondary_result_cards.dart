@@ -62,7 +62,7 @@ class _DeconstructorFooter extends StatelessWidget {
     );
     final addWordsUrl = buildAddWordUrl();
 
-    const footerStyle = TextStyle(fontSize: 12.8, color: Colors.grey);
+    final footerStyle = TextStyle(fontSize: 12.8, color: DpdColors.gray);
     final linkStyle = TextStyle(
       fontSize: 12.8,
       color: DpdColors.primaryText,
