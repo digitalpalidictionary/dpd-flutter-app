@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../database/database.dart';
+import '../utils/date_utils.dart';
 import 'family_table.dart';
 
 const String _feedbackFormUrl =
@@ -141,7 +142,7 @@ FamilyFooterConfig buildRootFamilyFooter(int headwordId, String lemma1) {
     messagePrefix: 'Something out of place?',
     linkText: 'Report it here',
     urlBuilder: () =>
-        '$_feedbackFormUrl&entry.438735500=$headwordId%20$encoded&entry.326955045=Root+Family',
+        '$_feedbackFormUrl&entry.438735500=$headwordId%20$encoded&entry.326955045=Root+Family&entry.1433863141=${dpdAppLabel()}',
   );
 }
 
@@ -151,7 +152,7 @@ FamilyFooterConfig buildWordFamilyFooter(int headwordId, String lemma1) {
     messagePrefix: 'Something out of place?',
     linkText: 'Report it here',
     urlBuilder: () =>
-        '$_feedbackFormUrl&entry.438735500=$headwordId%20$encoded&entry.326955045=Word+Family',
+        '$_feedbackFormUrl&entry.438735500=$headwordId%20$encoded&entry.326955045=Word+Family&entry.1433863141=${dpdAppLabel()}',
   );
 }
 
@@ -161,7 +162,7 @@ FamilyFooterConfig buildCompoundFamilyFooter(int headwordId, String lemma1) {
     messagePrefix: 'Spot a mistake?',
     linkText: 'Fix it here',
     urlBuilder: () =>
-        '$_feedbackFormUrl&entry.438735500=$headwordId%20$encoded&entry.326955045=Compound+Family',
+        '$_feedbackFormUrl&entry.438735500=$headwordId%20$encoded&entry.326955045=Compound+Family&entry.1433863141=${dpdAppLabel()}',
   );
 }
 
@@ -171,7 +172,7 @@ FamilyFooterConfig buildIdiomFooter(int headwordId, String lemma1) {
     messagePrefix: 'Please add more idioms',
     linkText: 'here',
     urlBuilder: () =>
-        '$_feedbackFormUrl&entry.438735500=$headwordId%20$encoded&entry.326955045=Idioms',
+        '$_feedbackFormUrl&entry.438735500=$headwordId%20$encoded&entry.326955045=Idioms&entry.1433863141=${dpdAppLabel()}',
   );
 }
 
@@ -181,6 +182,6 @@ FamilyFooterConfig buildSetFooter(int headwordId, String lemma1) {
     messagePrefix: 'Spot a mistake?',
     linkText: 'Fix it here',
     urlBuilder: () =>
-        '$_feedbackFormUrl&entry.438735500=$headwordId%20$encoded&entry.326955045=Set',
+        '$_feedbackFormUrl&entry.438735500=$headwordId%20$encoded&entry.326955045=Set&entry.1433863141=${dpdAppLabel()}',
   );
 }

@@ -8,6 +8,7 @@ import '../database/dpd_headword_extensions.dart';
 import '../providers/settings_provider.dart';
 import '../services/audio_service.dart';
 import '../theme/dpd_colors.dart';
+import '../utils/date_utils.dart';
 import '../utils/text_filters.dart';
 
 class DpdFooter extends StatelessWidget {
@@ -333,10 +334,16 @@ class DpdSectionButton extends StatelessWidget {
 /// Main play button — same visual style as DpdSectionButton but with a play icon.
 /// Shows active color while playing, grays out if audio fetch fails.
 class DpdPlayButton extends StatefulWidget {
-  const DpdPlayButton({super.key, required this.lemma, required this.gender});
+  const DpdPlayButton({
+    super.key,
+    required this.lemma,
+    required this.gender,
+    this.compact = false,
+  });
 
   final String lemma;
   final String gender;
+  final bool compact;
 
   @override
   State<DpdPlayButton> createState() => _DpdPlayButtonState();
@@ -376,18 +383,19 @@ class _DpdPlayButtonState extends State<DpdPlayButton> {
       fg = theme.colorScheme.onPrimary;
       shadow = DpdColors.shadowDefault;
     }
+    final compact = widget.compact;
     return GestureDetector(
       onTap: _errored ? null : _play,
       child: Container(
-        margin: const EdgeInsets.fromLTRB(1, 1, 1, 2),
-        padding: const EdgeInsets.fromLTRB(5, 2, 5, 2),
+        margin: compact ? null : const EdgeInsets.fromLTRB(1, 1, 1, 2),
+        padding: compact ? const EdgeInsets.all(3) : const EdgeInsets.fromLTRB(5, 2, 5, 2),
         decoration: BoxDecoration(
           color: bg,
-          border: Border.all(color: bg, width: 1),
+          border: compact ? null : Border.all(color: bg, width: 1),
           borderRadius: DpdColors.borderRadius,
-          boxShadow: shadow,
+          boxShadow: compact ? null : shadow,
         ),
-        child: Icon(Icons.play_arrow, color: fg, size: 18),
+        child: Icon(Icons.play_arrow, color: fg, size: compact ? 12 : 18),
       ),
     );
   }
@@ -405,16 +413,13 @@ class EntryExampleFooter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final now = DateTime.now();
-    final date =
-        '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}';
     final encodedLemma = Uri.encodeComponent(lemma1);
 
     return DpdFooter(
       messagePrefix: 'Can you think of a better example?',
       linkText: 'Add it here.',
       urlBuilder: () =>
-          'https://docs.google.com/forms/d/e/1FAIpQLSf9boBe7k5tCwq7LdWgBHHGIPVc4ROO5yjVDo1X5LDAxkmGWQ/viewform?usp=pp_url&entry.438735500=$headwordId%20$encodedLemma&entry.326955045=Examples&entry.1433863141=DPD+$date',
+          'https://docs.google.com/forms/d/e/1FAIpQLSf9boBe7k5tCwq7LdWgBHHGIPVc4ROO5yjVDo1X5LDAxkmGWQ/viewform?usp=pp_url&entry.438735500=$headwordId%20$encodedLemma&entry.326955045=Examples&entry.1433863141=${dpdAppLabel()}',
     );
   }
 }

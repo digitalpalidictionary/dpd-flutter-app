@@ -6,8 +6,8 @@ import '../database/database.dart';
 import '../database/dpd_headword_extensions.dart';
 import '../providers/internet_provider.dart';
 import '../providers/settings_provider.dart';
-import '../services/audio_service.dart';
 import '../theme/dpd_colors.dart';
+import '../utils/date_utils.dart';
 import '../utils/text_filters.dart';
 import 'entry_content.dart';
 
@@ -76,7 +76,7 @@ class GrammarTable extends ConsumerWidget {
       messagePrefix: 'Did you spot a mistake?',
       linkText: 'Correct it here',
       urlBuilder: () =>
-          'https://docs.google.com/forms/d/e/1FAIpQLSf9boBe7k5tCwq7LdWgBHHGIPVc4ROO5yjVDo1X5LDAxkmGWQ/viewform?usp=pp_url&entry.438735500=$encodedLemma&entry.326955045=Grammar',
+          'https://docs.google.com/forms/d/e/1FAIpQLSf9boBe7k5tCwq7LdWgBHHGIPVc4ROO5yjVDo1X5LDAxkmGWQ/viewform?usp=pp_url&entry.438735500=$encodedLemma&entry.326955045=Grammar&entry.1433863141=${dpdAppLabel()}',
     );
   }
 
@@ -302,62 +302,12 @@ class _IpaRowContent extends StatelessWidget {
       children: [
         Text('/$ipa/'),
         if (hasInternet) ...[
-          _SmallAudioButton(lemma: lemma, gender: 'male1'),
-          _SmallAudioButton(lemma: lemma, gender: 'male2'),
-          _SmallAudioButton(lemma: lemma, gender: 'female1'),
+          DpdPlayButton(lemma: lemma, gender: 'male1', compact: true),
+          DpdPlayButton(lemma: lemma, gender: 'male2', compact: true),
+          DpdPlayButton(lemma: lemma, gender: 'female1', compact: true),
         ],
       ],
     );
   }
 }
 
-class _SmallAudioButton extends StatefulWidget {
-  const _SmallAudioButton({required this.lemma, required this.gender});
-
-  final String lemma;
-  final String gender;
-
-  @override
-  State<_SmallAudioButton> createState() => _SmallAudioButtonState();
-}
-
-class _SmallAudioButtonState extends State<_SmallAudioButton> {
-  bool _playing = false;
-  bool _errored = false;
-
-  Future<void> _play() async {
-    if (_errored) return;
-    setState(() => _playing = true);
-    final ok = await AudioService.instance.play(widget.lemma, widget.gender);
-    if (!mounted) return;
-    setState(() {
-      _playing = false;
-      if (!ok) _errored = true;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final Color bg;
-    final Color fg;
-    if (_errored) {
-      bg = theme.colorScheme.onSurface.withValues(alpha: 0.12);
-      fg = theme.colorScheme.onSurface.withValues(alpha: 0.38);
-    } else if (_playing) {
-      bg = theme.colorScheme.secondary;
-      fg = theme.colorScheme.onSecondary;
-    } else {
-      bg = theme.colorScheme.primary;
-      fg = theme.colorScheme.onPrimary;
-    }
-    return GestureDetector(
-      onTap: _errored ? null : _play,
-      child: Container(
-        padding: const EdgeInsets.all(3),
-        decoration: BoxDecoration(color: bg, borderRadius: DpdColors.borderRadius),
-        child: Icon(Icons.play_arrow, color: fg, size: 12),
-      ),
-    );
-  }
-}

@@ -5,6 +5,7 @@ import '../database/database.dart';
 import '../models/inflection_table_builder.dart';
 import '../providers/database_provider.dart';
 import '../theme/dpd_colors.dart';
+import '../utils/date_utils.dart';
 import '../widgets/entry_content.dart';
 import 'inflection_table.dart';
 
@@ -107,16 +108,13 @@ class _InflectionFooter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final now = DateTime.now();
-    final date =
-        '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}';
     final encodedLemma = Uri.encodeComponent(lemma1);
 
     return DpdFooter(
       messagePrefix: 'Did you spot a mistake?',
       linkText: 'Correct it here',
       urlBuilder: () =>
-          'https://docs.google.com/forms/d/e/1FAIpQLSf9boBe7k5tCwq7LdWgBHHGIPVc4ROO5yjVDo1X5LDAxkmGWQ/viewform?usp=pp_url&entry.438735500=$headwordId%20$encodedLemma&entry.326955045=Inflection&entry.1433863141=DPD+$date',
+          'https://docs.google.com/forms/d/e/1FAIpQLSf9boBe7k5tCwq7LdWgBHHGIPVc4ROO5yjVDo1X5LDAxkmGWQ/viewform?usp=pp_url&entry.438735500=$headwordId%20$encodedLemma&entry.326955045=Inflection&entry.1433863141=${dpdAppLabel()}',
     );
   }
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../theme/dpd_colors.dart';
+import '../utils/date_utils.dart';
 import 'entry_content.dart';
 
 class FeedbackSection extends StatelessWidget {
@@ -14,12 +15,7 @@ class FeedbackSection extends StatelessWidget {
   final int headwordId;
   final String lemma1;
 
-  String get _date {
-    final now = DateTime.now();
-    return '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}';
-  }
-
-  String get _appLabel => 'DPD+$_date';
+  String get _appLabel => dpdAppLabel();
 
   String get _addWordUrl =>
       'https://docs.google.com/forms/d/e/1FAIpQLSfResxEUiRCyFITWPkzoQ2HhHEvUS5fyg68Rl28hFH6vhHlaA/viewform?usp=pp_url&entry.1433863141=$_appLabel';

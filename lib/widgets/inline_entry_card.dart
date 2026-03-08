@@ -39,6 +39,7 @@ class _InlineEntryCardState extends ConsumerState<InlineEntryCard>
 
   SuttaInfoData? _suttaInfo;
   bool _suttaLoaded = false;
+  FrequencyData? _cachedFrequencyData;
 
   @override
   DpdHeadwordWithRoot get familyHeadword => widget.headword;
@@ -51,6 +52,17 @@ class _InlineEntryCardState extends ConsumerState<InlineEntryCard>
     _examplesOpen = settings.examplesOpen;
     _loadSuttaInfo();
   }
+
+  @override
+  void didUpdateWidget(InlineEntryCard oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.headword.id != widget.headword.id) {
+      _cachedFrequencyData = null;
+    }
+  }
+
+  FrequencyData? get _frequencyData =>
+      _cachedFrequencyData ??= parseFrequencyData(widget.headword.freqData);
 
   Future<void> _loadSuttaInfo() async {
     final info = await ref
@@ -258,7 +270,7 @@ class _InlineEntryCardState extends ConsumerState<InlineEntryCard>
 
           if (_frequencyOpen && h.needsFrequencyButton)
             FrequencySection(
-              data: parseFrequencyData(h.freqData)!,
+              data: _frequencyData!,
               headwordId: h.id,
               lemma1: h.lemma1,
             ),

@@ -2,15 +2,15 @@
 
 ## Phase 1: Quick Wins (Trivial Deduplication)
 
-- [ ] Task: Extract `dpdDateStamp()` utility
-    - [ ] Create utility function in `lib/utils/` returning `yyyy-MM-dd` string.
-    - [ ] Replace 5 duplicate date constructions: `EntryExampleFooter`, `_InflectionFooter`, `FrequencySection._buildFooter`, `SuttaInfoSection._buildFooter`, `FeedbackSection._date`.
-- [ ] Task: Merge `_SmallAudioButton` into `DpdPlayButton`
-    - [ ] Add `compact` parameter to `DpdPlayButton` (smaller icon, no shadow).
-    - [ ] Remove `_SmallAudioButton` from `grammar_table.dart`.
-    - [ ] Update `GrammarTable` IPA row to use `DpdPlayButton(compact: true)`.
-- [ ] Task: Cache `parseFrequencyData()` result
-    - [ ] Move parse call from `build()` to lazy-init pattern (like family/sutta data).
+- [x] Task: Extract `dpdDateStamp()` utility
+    - [x] Create utility function in `lib/utils/` returning `yyyy-MM-dd` string.
+    - [x] Replace 5 duplicate date constructions: `EntryExampleFooter`, `_InflectionFooter`, `FrequencySection._buildFooter`, `SuttaInfoSection._buildFooter`, `FeedbackSection._date`.
+- [x] Task: Merge `_SmallAudioButton` into `DpdPlayButton`
+    - [x] Add `compact` parameter to `DpdPlayButton` (smaller icon, no shadow).
+    - [x] Remove `_SmallAudioButton` from `grammar_table.dart`.
+    - [x] Update `GrammarTable` IPA row to use `DpdPlayButton(compact: true)`.
+- [x] Task: Cache `parseFrequencyData()` result
+    - [x] Move parse call from `build()` to lazy-init pattern (like family/sutta data).
 - [ ] Task: Conductor - User Manual Verification 'Phase 1: Quick Wins' (Protocol in workflow.md)
 
 ## Phase 2: Entry Card State & Logic Unification

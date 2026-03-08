@@ -8,6 +8,7 @@ import '../theme/dpd_colors.dart';
 import '../widgets/entry_content.dart';
 import '../widgets/family_section_builders.dart';
 import '../widgets/family_table.dart';
+import '../utils/date_utils.dart';
 import '../widgets/root_info_table.dart';
 import '../widgets/root_matrix_table.dart';
 
@@ -215,7 +216,7 @@ class _RootViewState extends ConsumerState<_RootView> {
                 messagePrefix: 'Something out of place?',
                 linkText: 'Report it here',
                 urlBuilder: () =>
-                    'https://docs.google.com/forms/d/e/1FAIpQLSf9boBe7k5tCwq7LdWgBHHGIPVc4ROO5yjVDo1X5LDAxkmGWQ/viewform?usp=pp_url&entry.438735500=$encodedRoot&entry.326955045=Root+Info',
+                    'https://docs.google.com/forms/d/e/1FAIpQLSf9boBe7k5tCwq7LdWgBHHGIPVc4ROO5yjVDo1X5LDAxkmGWQ/viewform?usp=pp_url&entry.438735500=$encodedRoot&entry.326955045=Root+Info&entry.1433863141=${dpdAppLabel()}',
               ),
             ),
           ],
@@ -249,7 +250,7 @@ class _RootViewState extends ConsumerState<_RootView> {
                 messagePrefix: 'Something out of place?',
                 linkText: 'Report it here',
                 urlBuilder: () =>
-                    'https://docs.google.com/forms/d/e/1FAIpQLSf9boBe7k5tCwq7LdWgBHHGIPVc4ROO5yjVDo1X5LDAxkmGWQ/viewform?usp=pp_url&entry.438735500=$encodedRoot&entry.326955045=Root+Matrix',
+                    'https://docs.google.com/forms/d/e/1FAIpQLSf9boBe7k5tCwq7LdWgBHHGIPVc4ROO5yjVDo1X5LDAxkmGWQ/viewform?usp=pp_url&entry.438735500=$encodedRoot&entry.326955045=Root+Matrix&entry.1433863141=${dpdAppLabel()}',
               ),
             ),
           ],
@@ -267,7 +268,7 @@ class _RootViewState extends ConsumerState<_RootView> {
         messagePrefix: 'Something out of place?',
         linkText: 'Report it here',
         urlBuilder: () =>
-            'https://docs.google.com/forms/d/e/1FAIpQLSf9boBe7k5tCwq7LdWgBHHGIPVc4ROO5yjVDo1X5LDAxkmGWQ/viewform?usp=pp_url&entry.438735500=$encodedRoot&entry.326955045=Root+Family',
+            'https://docs.google.com/forms/d/e/1FAIpQLSf9boBe7k5tCwq7LdWgBHHGIPVc4ROO5yjVDo1X5LDAxkmGWQ/viewform?usp=pp_url&entry.438735500=$encodedRoot&entry.326955045=Root+Family&entry.1433863141=${dpdAppLabel()}',
       ),
     );
   }
