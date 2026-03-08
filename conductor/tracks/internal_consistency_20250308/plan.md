@@ -67,10 +67,10 @@
     - [x] Replace all `InkWell` text-link wrappers with `GestureDetector` (or vice versa — pick one).
     - [x] Remove underline from `SuttaInfoSection` links (or add it everywhere — pick one).
     - [x] Replace `Colors.blue` in `GrammarTable` web link with `DpdColors.primaryText`.
-- [ ] Task: Replace hardcoded font sizes with theme values
-    - [ ] `FrequencyTable`: replace `fontSize: 11.2` and `12` with `bodySmall`.
-    - [ ] `FeedbackSection`: replace `fontSize: 13` with `bodyMedium`.
-    - [ ] `SuttaInfoSection` headings: replace `fontSize: 13` with `bodyMedium`.
+- [x] Task: Replace hardcoded font sizes with theme values (022b139)
+    - [x] `FrequencyTable`: replace `fontSize: 11.2` and `12` with `bodySmall`.
+    - [x] `FeedbackSection`: replace `fontSize: 13` with `bodyMedium`.
+    - [x] `SuttaInfoSection` headings: replace `fontSize: 13` with `bodyMedium`.
 - [ ] Task: Standardize `FrequencySection` heading
     - [ ] Replace custom `boldRegex` parsing with `Text.rich` using `TextSpan` children.
 - [ ] Task: Conductor - User Manual Verification 'Phase 4: Styling & Containers' (Protocol in workflow.md)
