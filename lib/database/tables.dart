@@ -73,6 +73,7 @@ class Lookup extends Table {
   TextColumn get abbrev => text().nullable()();
   TextColumn get deconstructor => text().nullable()();
   TextColumn get epd => text().nullable()();
+  TextColumn get fuzzyKey => text().named('fuzzy_key').nullable()();
 
   @override
   Set<Column> get primaryKey => {lookupKey};

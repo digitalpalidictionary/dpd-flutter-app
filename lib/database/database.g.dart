@@ -4138,6 +4138,17 @@ class $LookupTable extends Lookup with TableInfo<$LookupTable, LookupData> {
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _fuzzyKeyMeta = const VerificationMeta(
+    'fuzzyKey',
+  );
+  @override
+  late final GeneratedColumn<String> fuzzyKey = GeneratedColumn<String>(
+    'fuzzy_key',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   @override
   List<GeneratedColumn> get $columns => [
     lookupKey,
@@ -4151,6 +4162,7 @@ class $LookupTable extends Lookup with TableInfo<$LookupTable, LookupData> {
     abbrev,
     deconstructor,
     epd,
+    fuzzyKey,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -4235,6 +4247,12 @@ class $LookupTable extends Lookup with TableInfo<$LookupTable, LookupData> {
         epd.isAcceptableOrUnknown(data['epd']!, _epdMeta),
       );
     }
+    if (data.containsKey('fuzzy_key')) {
+      context.handle(
+        _fuzzyKeyMeta,
+        fuzzyKey.isAcceptableOrUnknown(data['fuzzy_key']!, _fuzzyKeyMeta),
+      );
+    }
     return context;
   }
 
@@ -4288,6 +4306,10 @@ class $LookupTable extends Lookup with TableInfo<$LookupTable, LookupData> {
         DriftSqlType.string,
         data['${effectivePrefix}epd'],
       ),
+      fuzzyKey: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}fuzzy_key'],
+      ),
     );
   }
 
@@ -4309,6 +4331,7 @@ class LookupData extends DataClass implements Insertable<LookupData> {
   final String? abbrev;
   final String? deconstructor;
   final String? epd;
+  final String? fuzzyKey;
   const LookupData({
     required this.lookupKey,
     this.headwords,
@@ -4321,6 +4344,7 @@ class LookupData extends DataClass implements Insertable<LookupData> {
     this.abbrev,
     this.deconstructor,
     this.epd,
+    this.fuzzyKey,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -4356,6 +4380,9 @@ class LookupData extends DataClass implements Insertable<LookupData> {
     if (!nullToAbsent || epd != null) {
       map['epd'] = Variable<String>(epd);
     }
+    if (!nullToAbsent || fuzzyKey != null) {
+      map['fuzzy_key'] = Variable<String>(fuzzyKey);
+    }
     return map;
   }
 
@@ -4386,6 +4413,9 @@ class LookupData extends DataClass implements Insertable<LookupData> {
           ? const Value.absent()
           : Value(deconstructor),
       epd: epd == null && nullToAbsent ? const Value.absent() : Value(epd),
+      fuzzyKey: fuzzyKey == null && nullToAbsent
+          ? const Value.absent()
+          : Value(fuzzyKey),
     );
   }
 
@@ -4406,6 +4436,7 @@ class LookupData extends DataClass implements Insertable<LookupData> {
       abbrev: serializer.fromJson<String?>(json['abbrev']),
       deconstructor: serializer.fromJson<String?>(json['deconstructor']),
       epd: serializer.fromJson<String?>(json['epd']),
+      fuzzyKey: serializer.fromJson<String?>(json['fuzzyKey']),
     );
   }
   @override
@@ -4423,6 +4454,7 @@ class LookupData extends DataClass implements Insertable<LookupData> {
       'abbrev': serializer.toJson<String?>(abbrev),
       'deconstructor': serializer.toJson<String?>(deconstructor),
       'epd': serializer.toJson<String?>(epd),
+      'fuzzyKey': serializer.toJson<String?>(fuzzyKey),
     };
   }
 
@@ -4438,6 +4470,7 @@ class LookupData extends DataClass implements Insertable<LookupData> {
     Value<String?> abbrev = const Value.absent(),
     Value<String?> deconstructor = const Value.absent(),
     Value<String?> epd = const Value.absent(),
+    Value<String?> fuzzyKey = const Value.absent(),
   }) => LookupData(
     lookupKey: lookupKey ?? this.lookupKey,
     headwords: headwords.present ? headwords.value : this.headwords,
@@ -4452,6 +4485,7 @@ class LookupData extends DataClass implements Insertable<LookupData> {
         ? deconstructor.value
         : this.deconstructor,
     epd: epd.present ? epd.value : this.epd,
+    fuzzyKey: fuzzyKey.present ? fuzzyKey.value : this.fuzzyKey,
   );
   LookupData copyWithCompanion(LookupCompanion data) {
     return LookupData(
@@ -4468,6 +4502,7 @@ class LookupData extends DataClass implements Insertable<LookupData> {
           ? data.deconstructor.value
           : this.deconstructor,
       epd: data.epd.present ? data.epd.value : this.epd,
+      fuzzyKey: data.fuzzyKey.present ? data.fuzzyKey.value : this.fuzzyKey,
     );
   }
 
@@ -4484,7 +4519,8 @@ class LookupData extends DataClass implements Insertable<LookupData> {
           ..write('help: $help, ')
           ..write('abbrev: $abbrev, ')
           ..write('deconstructor: $deconstructor, ')
-          ..write('epd: $epd')
+          ..write('epd: $epd, ')
+          ..write('fuzzyKey: $fuzzyKey')
           ..write(')'))
         .toString();
   }
@@ -4502,6 +4538,7 @@ class LookupData extends DataClass implements Insertable<LookupData> {
     abbrev,
     deconstructor,
     epd,
+    fuzzyKey,
   );
   @override
   bool operator ==(Object other) =>
@@ -4517,7 +4554,8 @@ class LookupData extends DataClass implements Insertable<LookupData> {
           other.help == this.help &&
           other.abbrev == this.abbrev &&
           other.deconstructor == this.deconstructor &&
-          other.epd == this.epd);
+          other.epd == this.epd &&
+          other.fuzzyKey == this.fuzzyKey);
 }
 
 class LookupCompanion extends UpdateCompanion<LookupData> {
@@ -4532,6 +4570,7 @@ class LookupCompanion extends UpdateCompanion<LookupData> {
   final Value<String?> abbrev;
   final Value<String?> deconstructor;
   final Value<String?> epd;
+  final Value<String?> fuzzyKey;
   final Value<int> rowid;
   const LookupCompanion({
     this.lookupKey = const Value.absent(),
@@ -4545,6 +4584,7 @@ class LookupCompanion extends UpdateCompanion<LookupData> {
     this.abbrev = const Value.absent(),
     this.deconstructor = const Value.absent(),
     this.epd = const Value.absent(),
+    this.fuzzyKey = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   LookupCompanion.insert({
@@ -4559,6 +4599,7 @@ class LookupCompanion extends UpdateCompanion<LookupData> {
     this.abbrev = const Value.absent(),
     this.deconstructor = const Value.absent(),
     this.epd = const Value.absent(),
+    this.fuzzyKey = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : lookupKey = Value(lookupKey);
   static Insertable<LookupData> custom({
@@ -4573,6 +4614,7 @@ class LookupCompanion extends UpdateCompanion<LookupData> {
     Expression<String>? abbrev,
     Expression<String>? deconstructor,
     Expression<String>? epd,
+    Expression<String>? fuzzyKey,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -4587,6 +4629,7 @@ class LookupCompanion extends UpdateCompanion<LookupData> {
       if (abbrev != null) 'abbrev': abbrev,
       if (deconstructor != null) 'deconstructor': deconstructor,
       if (epd != null) 'epd': epd,
+      if (fuzzyKey != null) 'fuzzy_key': fuzzyKey,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -4603,6 +4646,7 @@ class LookupCompanion extends UpdateCompanion<LookupData> {
     Value<String?>? abbrev,
     Value<String?>? deconstructor,
     Value<String?>? epd,
+    Value<String?>? fuzzyKey,
     Value<int>? rowid,
   }) {
     return LookupCompanion(
@@ -4617,6 +4661,7 @@ class LookupCompanion extends UpdateCompanion<LookupData> {
       abbrev: abbrev ?? this.abbrev,
       deconstructor: deconstructor ?? this.deconstructor,
       epd: epd ?? this.epd,
+      fuzzyKey: fuzzyKey ?? this.fuzzyKey,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -4657,6 +4702,9 @@ class LookupCompanion extends UpdateCompanion<LookupData> {
     if (epd.present) {
       map['epd'] = Variable<String>(epd.value);
     }
+    if (fuzzyKey.present) {
+      map['fuzzy_key'] = Variable<String>(fuzzyKey.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -4677,6 +4725,7 @@ class LookupCompanion extends UpdateCompanion<LookupData> {
           ..write('abbrev: $abbrev, ')
           ..write('deconstructor: $deconstructor, ')
           ..write('epd: $epd, ')
+          ..write('fuzzyKey: $fuzzyKey, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -12057,6 +12106,7 @@ typedef $$LookupTableCreateCompanionBuilder =
       Value<String?> abbrev,
       Value<String?> deconstructor,
       Value<String?> epd,
+      Value<String?> fuzzyKey,
       Value<int> rowid,
     });
 typedef $$LookupTableUpdateCompanionBuilder =
@@ -12072,6 +12122,7 @@ typedef $$LookupTableUpdateCompanionBuilder =
       Value<String?> abbrev,
       Value<String?> deconstructor,
       Value<String?> epd,
+      Value<String?> fuzzyKey,
       Value<int> rowid,
     });
 
@@ -12136,6 +12187,11 @@ class $$LookupTableFilterComposer
 
   ColumnFilters<String> get epd => $composableBuilder(
     column: $table.epd,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get fuzzyKey => $composableBuilder(
+    column: $table.fuzzyKey,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -12203,6 +12259,11 @@ class $$LookupTableOrderingComposer
     column: $table.epd,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<String> get fuzzyKey => $composableBuilder(
+    column: $table.fuzzyKey,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$LookupTableAnnotationComposer
@@ -12248,6 +12309,9 @@ class $$LookupTableAnnotationComposer
 
   GeneratedColumn<String> get epd =>
       $composableBuilder(column: $table.epd, builder: (column) => column);
+
+  GeneratedColumn<String> get fuzzyKey =>
+      $composableBuilder(column: $table.fuzzyKey, builder: (column) => column);
 }
 
 class $$LookupTableTableManager
@@ -12289,6 +12353,7 @@ class $$LookupTableTableManager
                 Value<String?> abbrev = const Value.absent(),
                 Value<String?> deconstructor = const Value.absent(),
                 Value<String?> epd = const Value.absent(),
+                Value<String?> fuzzyKey = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => LookupCompanion(
                 lookupKey: lookupKey,
@@ -12302,6 +12367,7 @@ class $$LookupTableTableManager
                 abbrev: abbrev,
                 deconstructor: deconstructor,
                 epd: epd,
+                fuzzyKey: fuzzyKey,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -12317,6 +12383,7 @@ class $$LookupTableTableManager
                 Value<String?> abbrev = const Value.absent(),
                 Value<String?> deconstructor = const Value.absent(),
                 Value<String?> epd = const Value.absent(),
+                Value<String?> fuzzyKey = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => LookupCompanion.insert(
                 lookupKey: lookupKey,
@@ -12330,6 +12397,7 @@ class $$LookupTableTableManager
                 abbrev: abbrev,
                 deconstructor: deconstructor,
                 epd: epd,
+                fuzzyKey: fuzzyKey,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0
