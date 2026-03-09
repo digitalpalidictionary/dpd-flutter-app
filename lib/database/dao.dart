@@ -4,6 +4,7 @@ import 'package:drift/drift.dart';
 
 import 'database.dart';
 import 'tables.dart';
+import '../utils/diacritics.dart';
 
 part 'dao.g.dart';
 
@@ -73,6 +74,24 @@ class DpdDao extends DatabaseAccessor<AppDatabase> with _$DpdDaoMixin {
                     t.lookupKey.like('$normalized%') &
                     t.lookupKey.equals(normalized).not(),
               )
+              ..limit(limit))
+            .get();
+
+    final idSet = _extractIds(lookupRows);
+    return _fetchHeadwords(idSet);
+  }
+
+  Future<List<DpdHeadwordWithRoot>> searchFuzzy(
+    String query, {
+    int limit = 50,
+  }) async {
+    if (query.isEmpty) return [];
+    final normalized = stripDiacritics(_normalizeQuery(query));
+    if (normalized.isEmpty) return [];
+
+    final lookupRows =
+        await (select(lookup)
+              ..where((t) => t.fuzzyKey.like('$normalized%'))
               ..limit(limit))
             .get();
 
