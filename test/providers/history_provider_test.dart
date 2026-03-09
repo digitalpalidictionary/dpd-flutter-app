@@ -154,8 +154,15 @@ void main() {
     });
 
     test('currentEntry returns correct entry', () {
-      const state = HistoryState(entries: ['a', 'b', 'c'], currentIndex: 1);
-      expect(state.currentEntry, 'b');
+      const state = HistoryState(
+        entries: [
+          HistoryEntry(query: 'a'),
+          HistoryEntry(query: 'b'),
+          HistoryEntry(query: 'c'),
+        ],
+        currentIndex: 1,
+      );
+      expect(state.currentEntry?.query, 'b');
     });
 
     test('canGoBack is false for empty entries', () {
@@ -164,7 +171,10 @@ void main() {
     });
 
     test('canGoForward is false at index 0', () {
-      const state = HistoryState(entries: ['a'], currentIndex: 0);
+      const state = HistoryState(
+        entries: [HistoryEntry(query: 'a')],
+        currentIndex: 0,
+      );
       expect(state.canGoForward, false);
     });
   });
