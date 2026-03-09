@@ -98,9 +98,24 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     final query = _controller.text.trim();
     ref.read(searchQueryProvider.notifier).state = query;
     if (query.isNotEmpty) {
-      ref.read(historyProvider.notifier).add(query);
+      ref.read(historyProvider.notifier).add(
+        query,
+        fuzzy: ref.read(settingsProvider).fuzzyMode,
+      );
     }
     FocusScope.of(context).unfocus();
+  }
+
+  void _onFuzzySearch() {
+    final entering = !ref.read(settingsProvider).fuzzyMode;
+    ref.read(settingsProvider.notifier).setFuzzyMode(entering);
+    if (entering) {
+      _removeOverlay();
+      final query = _controller.text.trim();
+      if (query.isNotEmpty) {
+        ref.read(historyProvider.notifier).add(query, fuzzy: true);
+      }
+    }
   }
 
   void _onClear() {
@@ -115,6 +130,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   }
 
   void _updateAutocomplete(String query) {
+    if (ref.read(settingsProvider).fuzzyMode) return;
     if (query.length < 2) {
       _removeOverlay();
       return;
@@ -389,37 +405,40 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                     ),
                   ),
                   const SizedBox(width: 4),
-                  _BarIconButton(icon: Icons.search, onPressed: _onSearch),
+                  _BarIconButton(icon: Icons.search, onPressed: _onSearch, tooltip: 'Search'),
+                  _FuzzyIconButton(
+                    active: ref.watch(settingsProvider).fuzzyMode,
+                    onPressed: _onFuzzySearch,
+                  ),
                   _BarIconButton(
                     icon: Icons.close,
                     onPressed: _controller.text.isEmpty ? null : _onClear,
+                    tooltip: 'Clear',
                   ),
                   _BarIconButton(
                     icon: Icons.arrow_back,
+                    tooltip: 'Previous search',
                     onPressed: ref.watch(canGoBackProvider)
                         ? () {
                             ref.read(historyProvider.notifier).goBack();
-                            final entry = ref
-                                .read(historyProvider)
-                                .currentEntry;
+                            final entry = ref.read(historyProvider).currentEntry;
                             if (entry != null) {
-                              ref.read(searchQueryProvider.notifier).state =
-                                  entry;
+                              ref.read(searchQueryProvider.notifier).state = entry.query;
+                              ref.read(settingsProvider.notifier).setFuzzyMode(entry.fuzzy);
                             }
                           }
                         : null,
                   ),
                   _BarIconButton(
                     icon: Icons.arrow_forward,
+                    tooltip: 'Next search',
                     onPressed: ref.watch(canGoForwardProvider)
                         ? () {
                             ref.read(historyProvider.notifier).goForward();
-                            final entry = ref
-                                .read(historyProvider)
-                                .currentEntry;
+                            final entry = ref.read(historyProvider).currentEntry;
                             if (entry != null) {
-                              ref.read(searchQueryProvider.notifier).state =
-                                  entry;
+                              ref.read(searchQueryProvider.notifier).state = entry.query;
+                              ref.read(settingsProvider.notifier).setFuzzyMode(entry.fuzzy);
                             }
                           }
                         : null,
@@ -453,6 +472,10 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     AsyncValue<List<DpdHeadwordWithRoot>> exactAsync,
     AsyncValue<List<DpdHeadwordWithRoot>> partialAsync,
   ) {
+    if (ref.watch(settingsProvider).fuzzyMode) {
+      return _buildFuzzyBody(context, query);
+    }
+
     if (query.isEmpty) return const _EmptyPrompt();
 
     final exact = exactAsync.valueOrNull ?? [];
@@ -497,6 +520,17 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
       showSummary: settings.showSummary && settings.displayMode != DisplayMode.compact,
       mode: settings.displayMode,
     );
+  }
+
+  Widget _buildFuzzyBody(BuildContext context, String query) {
+    if (query.isEmpty) return const _EmptyPrompt();
+    final fuzzyAsync = ref.watch(fuzzyResultsProvider(query));
+    if (fuzzyAsync.isLoading) return const Center(child: CircularProgressIndicator());
+    if (fuzzyAsync.hasError) return Center(child: Text('Error: ${fuzzyAsync.error}'));
+    final results = fuzzyAsync.valueOrNull ?? [];
+    if (results.isEmpty) return _NoResults(query: query);
+    final settings = ref.watch(settingsProvider);
+    return _FlatResultsList(results: results, mode: settings.displayMode);
   }
 }
 
@@ -699,38 +733,114 @@ class _InfoContentViewState extends State<_InfoContentView> {
 // ─────────────────────────────────────────────────────────────────────────────
 
 class _BarIconButton extends StatelessWidget {
-  const _BarIconButton({required this.icon, required this.onPressed});
+  const _BarIconButton({required this.icon, required this.onPressed, this.tooltip});
 
   final IconData icon;
   final VoidCallback? onPressed;
+  final String? tooltip;
 
   @override
   Widget build(BuildContext context) {
     final enabled = onPressed != null;
     return Padding(
       padding: const EdgeInsets.only(left: 4),
-      child: SizedBox(
-        width: 40,
-        height: 40,
-        child: Material(
-          color: enabled
-              ? DpdColors.primary
-              : DpdColors.primary.withValues(alpha: 0.4),
+      child: Tooltip(
+        message: tooltip ?? '',
+        decoration: BoxDecoration(
+          color: DpdColors.primaryAlt,
           borderRadius: DpdColors.borderRadius,
-          elevation: enabled ? 2 : 0,
-          child: InkWell(
+        ),
+        textStyle: TextStyle(color: DpdColors.light, fontSize: 12),
+        child: SizedBox(
+          width: 40,
+          height: 40,
+          child: Material(
+            color: enabled
+                ? DpdColors.primary
+                : DpdColors.primary.withValues(alpha: 0.4),
             borderRadius: DpdColors.borderRadius,
-            onTap: onPressed,
-            child: Icon(
-              icon,
-              size: 20,
-              color: enabled
-                  ? DpdColors.light
-                  : DpdColors.light.withValues(alpha: 0.5),
+            elevation: enabled ? 2 : 0,
+            child: InkWell(
+              borderRadius: DpdColors.borderRadius,
+              onTap: onPressed,
+              child: Icon(
+                icon,
+                size: 20,
+                color: enabled
+                    ? DpdColors.light
+                    : DpdColors.light.withValues(alpha: 0.5),
+              ),
             ),
           ),
         ),
       ),
+    );
+  }
+}
+
+class _FuzzyIconButton extends StatelessWidget {
+  const _FuzzyIconButton({required this.active, required this.onPressed});
+
+  final bool active;
+  final VoidCallback? onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 4),
+      child: Tooltip(
+        message: 'Fuzzy search (ignores diacritics)',
+        decoration: BoxDecoration(
+          color: DpdColors.primaryAlt,
+          borderRadius: DpdColors.borderRadius,
+        ),
+        textStyle: TextStyle(color: DpdColors.light, fontSize: 12),
+        child: SizedBox(
+          width: 40,
+          height: 40,
+          child: Material(
+            color: active
+                ? DpdColors.primary
+                : DpdColors.primary.withValues(alpha: 0.4),
+            borderRadius: DpdColors.borderRadius,
+            elevation: active ? 2 : 0,
+            child: InkWell(
+              borderRadius: DpdColors.borderRadius,
+              onTap: onPressed,
+              child: Icon(
+                Icons.abc,
+                size: 20,
+                color: active
+                    ? DpdColors.light
+                    : DpdColors.light.withValues(alpha: 0.5),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _FlatResultsList extends StatelessWidget {
+  const _FlatResultsList({required this.results, required this.mode});
+
+  final List<DpdHeadwordWithRoot> results;
+  final DisplayMode mode;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+      cacheExtent: 5000,
+      itemCount: results.length,
+      itemBuilder: (context, i) {
+        final hw = results[i];
+        return switch (mode) {
+          DisplayMode.classic => InlineEntryCard(headword: hw),
+          DisplayMode.compact => AccordionCard(headword: hw),
+        };
+      },
     );
   }
 }
