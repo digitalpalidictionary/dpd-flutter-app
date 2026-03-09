@@ -66,6 +66,14 @@ The app's visual design must match the DPD webapp dictionary pane as closely as 
 - Network is only required for initial database download and updates
 - Update checks fail silently; manual "Check for updates" button available in settings
 
+### Database Schema Compatibility
+- The app and mobile DB share a schema version contract via `db_schema_version` in the `db_info` table
+- `AppDatabase.requiredDbSchemaVersion` (Flutter) must match `DB_SCHEMA_VERSION` (Python exporter) — bump both when Drift table definitions change
+- On startup, if the on-device DB's `db_schema_version` < the app's required version, the app shows a blocking download screen (same as first install) before allowing any queries
+- If the DB is newer than the app (extra columns), extra columns are silently ignored — no forced download
+- `onUpgrade` migration is a no-op (DB is always replaced wholesale); `beforeOpen` resets `PRAGMA user_version` to prevent Drift downgrade errors
+- Fallback: DBs without `db_schema_version` are treated as version 2 (the version when this mechanism was introduced)
+
 ### Additional Customization (Beyond Webapp)
 - Grammar section default state: open or closed
 - Examples section default state: open or closed

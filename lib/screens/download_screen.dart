@@ -39,7 +39,7 @@ class DownloadScreen extends ConsumerWidget {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'Setting up the dictionary database…',
+                  'Downloading the latest dictionary database…',
                   style: theme.textTheme.bodyMedium?.copyWith(
                     color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
                   ),

@@ -5,6 +5,10 @@ import 'package:dio/dio.dart';
 
 import '../database/database.dart';
 
+/// Default for DBs that predate the schema-version mechanism.
+/// Matches the app's schemaVersion at the time this check was introduced.
+const _fallbackDbSchemaVersion = 2;
+
 enum DbStatus {
   noDatabase,
   ready,
@@ -130,6 +134,23 @@ class DatabaseUpdateService {
     } finally {
       if (tempZip.existsSync()) await tempZip.delete();
       if (tempDb.existsSync()) await tempDb.delete();
+    }
+  }
+
+  /// Returns true when the on-device DB is compatible with the current app.
+  /// Uses raw SQL so it works even when Drift table definitions have changed.
+  Future<bool> isSchemaCompatible(AppDatabase db) async {
+    try {
+      final result = await db.customSelect(
+        "SELECT value FROM db_info WHERE key = 'db_schema_version'",
+      ).getSingleOrNull();
+      final version =
+          int.tryParse(result?.data['value'] as String? ?? '') ??
+              _fallbackDbSchemaVersion;
+      return version >= AppDatabase.requiredDbSchemaVersion;
+    } catch (_) {
+      // db_info table missing or unreadable — assume incompatible.
+      return false;
     }
   }
 

@@ -91,7 +91,51 @@ class DbUpdateNotifier extends StateNotifier<DbUpdateState> {
       return;
     }
 
-    // DB exists — go straight to ready, then check in background
+    // DB exists — check schema compatibility before proceeding
+    bool compatible;
+    try {
+      final db = _ref.read(databaseProvider);
+      compatible = await _service.isSchemaCompatible(db);
+    } catch (_) {
+      compatible = false;
+    }
+
+    if (!compatible) {
+      // Schema mismatch — must download a matching DB before any queries.
+      _ref.invalidate(databaseProvider);
+      await Future<void>.delayed(const Duration(milliseconds: 200));
+
+      state = state.copyWith(status: DbStatus.checking);
+
+      ReleaseInfo? release;
+      try {
+        release = await _service.fetchLatestRelease().timeout(
+          const Duration(seconds: 30),
+        );
+      } catch (e) {
+        state = const DbUpdateState(
+          status: DbStatus.error,
+          errorMessage:
+              'Database update required but could not reach the server.\n'
+              'Check your connection and try again.',
+        );
+        return;
+      }
+      if (release == null) {
+        state = const DbUpdateState(
+          status: DbStatus.error,
+          errorMessage:
+              'Database update required but no release found.\n'
+              'Please try again later.',
+        );
+        return;
+      }
+      state = DbUpdateState(status: DbStatus.noDatabase, releaseInfo: release);
+      await _initialDownload(release);
+      return;
+    }
+
+    // Schema OK — go straight to ready, then check in background
     String? localVersion;
     try {
       final dao = _ref.read(daoProvider);

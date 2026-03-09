@@ -26,6 +26,12 @@ part 'database.g.dart';
   ],
 )
 class AppDatabase extends _$AppDatabase {
+  /// Bump when the Drift schema changes and a matching DB export is required.
+  /// The exported DB must set `db_schema_version` in the `db_info` table to
+  /// the same value. When the on-device DB has a lower value, the app forces
+  /// a blocking re-download before any queries run.
+  static const requiredDbSchemaVersion = 2;
+
   AppDatabase() : super(_openConnection());
 
   AppDatabase.forTesting(super.e);
@@ -37,6 +43,14 @@ class AppDatabase extends _$AppDatabase {
   MigrationStrategy get migration => MigrationStrategy(
     onUpgrade: (m, from, to) async {
       // DB is replaced wholesale on update; migration is a safety no-op.
+    },
+    beforeOpen: (details) async {
+      // A newer DB (from a background update) may have a higher user_version
+      // than the current app expects. Reset it so Drift doesn't choke on a
+      // "downgrade" next time the DB is opened.
+      if (details.versionNow != schemaVersion) {
+        await customStatement('PRAGMA user_version = $schemaVersion');
+      }
     },
   );
 }
