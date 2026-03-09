@@ -25,3 +25,10 @@ final rootResultsProvider = FutureProvider.autoDispose
   final dao = ref.watch(daoProvider);
   return dao.searchRoots(query);
 });
+
+final fuzzyResultsProvider = FutureProvider.autoDispose
+    .family<List<DpdHeadwordWithRoot>, String>((ref, query) async {
+  if (query.isEmpty) return [];
+  final dao = ref.watch(daoProvider);
+  return dao.searchFuzzy(query);
+});

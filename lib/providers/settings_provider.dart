@@ -23,6 +23,7 @@ class Settings {
     this.showSandhiApostrophe = true,
     this.audioGender = AudioGender.male,
     this.wifiOnlyUpdates = false,
+    this.fuzzyMode = false,
   });
 
   final ThemeMode themeMode;
@@ -37,6 +38,7 @@ class Settings {
   final bool showSandhiApostrophe;
   final AudioGender audioGender;
   final bool wifiOnlyUpdates;
+  final bool fuzzyMode;
 
   Settings copyWith({
     ThemeMode? themeMode,
@@ -51,6 +53,7 @@ class Settings {
     bool? showSandhiApostrophe,
     AudioGender? audioGender,
     bool? wifiOnlyUpdates,
+    bool? fuzzyMode,
   }) {
     return Settings(
       themeMode: themeMode ?? this.themeMode,
@@ -65,6 +68,7 @@ class Settings {
       showSandhiApostrophe: showSandhiApostrophe ?? this.showSandhiApostrophe,
       audioGender: audioGender ?? this.audioGender,
       wifiOnlyUpdates: wifiOnlyUpdates ?? this.wifiOnlyUpdates,
+      fuzzyMode: fuzzyMode ?? this.fuzzyMode,
     );
   }
 
@@ -83,7 +87,8 @@ class Settings {
         other.showSummary == showSummary &&
         other.showSandhiApostrophe == showSandhiApostrophe &&
         other.audioGender == audioGender &&
-        other.wifiOnlyUpdates == wifiOnlyUpdates;
+        other.wifiOnlyUpdates == wifiOnlyUpdates &&
+        other.fuzzyMode == fuzzyMode;
   }
 
   @override
@@ -100,6 +105,7 @@ class Settings {
     showSandhiApostrophe,
     audioGender,
     wifiOnlyUpdates,
+    fuzzyMode,
   );
 }
 
@@ -141,6 +147,7 @@ class SettingsNotifier extends StateNotifier<Settings> {
       orElse: () => AudioGender.male,
     );
     final wifiOnlyUpdates = _prefs.getBool('wifi_only_updates') ?? false;
+    final fuzzyMode = _prefs.getBool('fuzzy_mode') ?? false;
     state = Settings(
       themeMode: themeMode,
       fontSize: fontSize,
@@ -154,6 +161,7 @@ class SettingsNotifier extends StateNotifier<Settings> {
       showSandhiApostrophe: showSandhiApostrophe,
       audioGender: audioGender,
       wifiOnlyUpdates: wifiOnlyUpdates,
+      fuzzyMode: fuzzyMode,
     );
   }
 
@@ -215,6 +223,11 @@ class SettingsNotifier extends StateNotifier<Settings> {
   Future<void> setWifiOnlyUpdates(bool value) async {
     await _prefs.setBool('wifi_only_updates', value);
     state = state.copyWith(wifiOnlyUpdates: value);
+  }
+
+  Future<void> setFuzzyMode(bool value) async {
+    await _prefs.setBool('fuzzy_mode', value);
+    state = state.copyWith(fuzzyMode: value);
   }
 }
 
