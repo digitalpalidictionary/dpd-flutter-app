@@ -260,7 +260,6 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
             child: UnconstrainedBox(
               alignment: Alignment.topRight,
               child: _InfoPopup(
-                appVersion: ref.read(appVersionProvider).valueOrNull,
                 dbVersion: ref.read(dbUpdateProvider).localVersion,
                 onSelect: (content) {
                   _removeInfoOverlay();
@@ -536,21 +535,20 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
 
 // ── Info popup ────────────────────────────────────────────────────────────────
 
-class _InfoPopup extends StatelessWidget {
+class _InfoPopup extends ConsumerWidget {
   const _InfoPopup({
     required this.onSelect,
     required this.onExternalLink,
-    this.appVersion,
     this.dbVersion,
   });
 
   final void Function(_InfoContent) onSelect;
   final void Function(String url) onExternalLink;
-  final String? appVersion;
   final String? dbVersion;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final appVersion = ref.watch(appVersionProvider).valueOrNull;
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
     final divider = Divider(height: 1, color: DpdColors.primary.withValues(alpha: 0.3));
@@ -576,7 +574,7 @@ class _InfoPopup extends StatelessWidget {
                   Icon(Icons.phone_android, size: 16, color: theme.textTheme.bodyMedium?.color),
                   const SizedBox(width: 8),
                   Text(
-                    'App ${appVersion ?? "…"}',
+                    'App v${appVersion ?? "…"}',
                     style: theme.textTheme.bodyMedium,
                   ),
                 ],
