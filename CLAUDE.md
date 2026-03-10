@@ -66,6 +66,9 @@ All entry sections (grammar, examples, inflections, families, etc.) MUST use:
 - `DpdSectionContainer` - provides outer border/margin (the "dpd content" div equivalent)
 - Inner content padding: 16px all around (consistent with GrammarTable)
 
+### Theme Colors
+**NEVER** use hardcoded colors (`Colors.white`, `Colors.blue`, etc.). Always use `Theme.of(context).colorScheme` values (e.g. `colorScheme.primary`, `colorScheme.onPrimary`, `colorScheme.surface`). The app's theme is defined in `lib/theme/dpd_colors.dart` and applied via `ColorScheme` in `lib/app.dart`.
+
 ### Footer Widget
 Use `DpdFooter` for all section footers with feedback links:
 - Provides consistent styling matching webapp `.dpd-footer` CSS
