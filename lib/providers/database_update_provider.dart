@@ -270,6 +270,7 @@ class DbUpdateNotifier extends StateNotifier<DbUpdateState> {
   }
 
   Future<void> manualCheckForUpdates() async {
+    if (kDebugMode) return;
     if (!state.hasLocalDatabase) return;
     final localVersion = state.localVersion;
     await _backgroundCheck(localVersion);
