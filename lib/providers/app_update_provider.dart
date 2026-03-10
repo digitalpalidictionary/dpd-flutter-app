@@ -1,4 +1,5 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:open_filex/open_filex.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -45,6 +46,8 @@ class AppUpdateNotifier extends StateNotifier<AppUpdateState> {
         super(const AppUpdateState());
 
   Future<void> checkForUpdates() async {
+    if (kDebugMode) return;
+
     state = state.copyWith(status: AppUpdateStatus.checking);
 
     AppReleaseInfo? release;

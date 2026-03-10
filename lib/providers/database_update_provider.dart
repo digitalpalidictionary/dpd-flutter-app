@@ -1,4 +1,5 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../services/database_update_service.dart';
@@ -150,8 +151,10 @@ class DbUpdateNotifier extends StateNotifier<DbUpdateState> {
       localVersion: localVersion,
     );
 
-    // Fire-and-forget background check
-    _backgroundCheck(localVersion);
+    // Skip background updates in debug — DB is pushed manually via `just push-mobile-db`.
+    if (!kDebugMode) {
+      _backgroundCheck(localVersion);
+    }
   }
 
   Future<void> _initialDownload(ReleaseInfo release) async {
