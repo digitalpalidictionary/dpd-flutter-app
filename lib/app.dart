@@ -14,7 +14,6 @@ import 'screens/download_screen.dart';
 import 'screens/entry_screen.dart';
 import 'screens/root_screen.dart';
 import 'screens/search_screen.dart';
-import 'screens/settings_screen.dart';
 import 'services/database_update_service.dart';
 import 'services/intent_service.dart';
 import 'theme/dpd_colors.dart';
@@ -71,6 +70,8 @@ class _DpdAppState extends ConsumerState<DpdApp> {
       onPrimary: DpdColors.dark,
       secondary: DpdColors.primaryAlt,
       onSecondary: DpdColors.light,
+      secondaryContainer: DpdColors.primary,
+      onSecondaryContainer: DpdColors.dark,
       surface: DpdColors.light,
       onSurface: DpdColors.dark,
       surfaceContainerHighest: DpdColors.lightShade,
@@ -86,6 +87,8 @@ class _DpdAppState extends ConsumerState<DpdApp> {
       onPrimary: DpdColors.dark,
       secondary: DpdColors.primaryAlt,
       onSecondary: DpdColors.light,
+      secondaryContainer: DpdColors.primary,
+      onSecondaryContainer: DpdColors.dark,
       surface: DpdColors.dark,
       onSurface: DpdColors.light,
       surfaceContainerHighest: DpdColors.darkShade,
@@ -163,8 +166,6 @@ class _DpdAppState extends ConsumerState<DpdApp> {
         final rootKey = settings.arguments as String?;
         if (rootKey == null) return null;
         return MaterialPageRoute(builder: (_) => RootScreen(rootKey: rootKey));
-      case '/settings':
-        return MaterialPageRoute(builder: (_) => const SettingsScreen());
       default:
         return null;
     }
