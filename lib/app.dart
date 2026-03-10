@@ -178,6 +178,21 @@ class _DbGate extends ConsumerStatefulWidget {
   ConsumerState<_DbGate> createState() => _DbGateState();
 }
 
+void _showUpdateSnackBar(BuildContext context, String message) {
+  final theme = Theme.of(context);
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      content: Text(
+        message,
+        style: TextStyle(color: theme.colorScheme.onSurface),
+      ),
+      backgroundColor: theme.colorScheme.surfaceContainerHighest,
+      duration: const Duration(seconds: 3),
+      behavior: SnackBarBehavior.floating,
+    ),
+  );
+}
+
 class _DbGateState extends ConsumerState<_DbGate> {
   bool _eagerLoaded = false;
 
@@ -197,32 +212,11 @@ class _DbGateState extends ConsumerState<_DbGate> {
     ref.listen<AppUpdateState>(appUpdateProvider, (previous, next) {
       if (next.status == AppUpdateStatus.readyToInstall &&
           previous?.status != AppUpdateStatus.readyToInstall) {
-        final theme = Theme.of(context);
-        ScaffoldMessenger.of(context).showMaterialBanner(
-          MaterialBanner(
-            backgroundColor: theme.colorScheme.surfaceContainerHighest,
-            content: Text(
-              'App update ${next.latestTag ?? ""} ready to install',
-              style: TextStyle(color: theme.colorScheme.onSurface),
-            ),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  ScaffoldMessenger.of(context).hideCurrentMaterialBanner();
-                  ref.read(appUpdateProvider.notifier).installUpdate();
-                },
-                child: const Text('Install'),
-              ),
-              TextButton(
-                onPressed: () {
-                  ScaffoldMessenger.of(context).hideCurrentMaterialBanner();
-                  ref.read(appUpdateProvider.notifier).dismiss();
-                },
-                child: const Text('Later'),
-              ),
-            ],
-          ),
+        _showUpdateSnackBar(
+          context,
+          'Installing app update ${next.latestTag ?? ""}…',
         );
+        ref.read(appUpdateProvider.notifier).installUpdate();
       }
     });
 
@@ -231,17 +225,9 @@ class _DbGateState extends ConsumerState<_DbGate> {
 
       if (previous.status == DbStatus.extracting &&
           next.status == DbStatus.ready) {
-        final theme = Theme.of(context);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              'Database updated to ${next.localVersion ?? "latest version"}',
-              style: TextStyle(color: theme.colorScheme.onSurface),
-            ),
-            backgroundColor: theme.colorScheme.surfaceContainerHighest,
-            duration: const Duration(seconds: 3),
-            behavior: SnackBarBehavior.floating,
-          ),
+        _showUpdateSnackBar(
+          context,
+          'Database updated to ${next.localVersion ?? "latest version"}',
         );
       }
     });
