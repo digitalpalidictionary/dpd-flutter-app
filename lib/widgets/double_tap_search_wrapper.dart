@@ -48,7 +48,7 @@ class _DoubleTapSearchWrapperState extends ConsumerState<DoubleTapSearchWrapper>
     final now = DateTime.now().millisecondsSinceEpoch;
     final delta = now - _lastTapTime;
 
-    if (delta < 300) {
+    if (delta < 500) {
       _awaitingSelection = true;
       _suppressContextMenu = true;
       _fallbackTimer?.cancel();
@@ -58,8 +58,8 @@ class _DoubleTapSearchWrapperState extends ConsumerState<DoubleTapSearchWrapper>
         _awaitingSelection = false;
         _executeSearch(_currentSelection!.plainText);
       } else {
-        // Fallback: if onSelectionChanged doesn't fire within 300ms, try anyway
-        _fallbackTimer = Timer(const Duration(milliseconds: 300), () {
+        // Fallback: if onSelectionChanged doesn't fire within 400ms, try anyway
+        _fallbackTimer = Timer(const Duration(milliseconds: 400), () {
           if (_awaitingSelection && mounted) {
             _awaitingSelection = false;
             if (_currentSelection != null && _currentSelection!.plainText.isNotEmpty) {
