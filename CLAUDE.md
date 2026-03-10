@@ -12,6 +12,16 @@
 - `docs:` - Documentation only
 - `style:` - Formatting only
 
+### One thing, one commit
+**CRITICAL:** All changes for a single feature, fix, or improvement MUST be grouped into ONE commit — never spread across multiple small commits.
+
+The commit **subject line** must describe the user-facing idea in plain language. Technical details (what changed, why, how) go in the commit **body**.
+
+**BAD:** `fix: delta is now 500ms` — tells a user nothing
+**GOOD:** `fix: improved double-tap word search sensitivity` — instantly meaningful
+
+Commit messages appear in the app's release notes. Users read them. Every commit subject must answer: *"What does this mean for me as a user?"*
+
 ### Examples
 ```bash
 git commit -m "conductor: mark track 'X' as complete"
@@ -19,6 +29,11 @@ git commit -m "conductor: checkpoint end of Phase 1"
 git commit -m "conductor: completed phase 1 of restyle"
 git commit -m "feat: added webapp style parity"
 git commit -m "fix: inflection button naming"
+git commit -m "fix: improved double-tap word search sensitivity
+
+Increased double-tap detection window from 300ms to 500ms and
+fallback timer from 300ms to 400ms to match the OS default and
+accommodate slower devices."
 ```
 
 ## DPD Database Reference
