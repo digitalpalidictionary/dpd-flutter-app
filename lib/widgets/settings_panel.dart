@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../providers/app_update_provider.dart';
 import '../providers/database_update_provider.dart';
 import '../providers/settings_provider.dart';
+import '../services/database_update_service.dart';
 import '../theme/dpd_colors.dart';
 
 class SettingsContent extends ConsumerWidget {
@@ -13,72 +15,137 @@ class SettingsContent extends ConsumerWidget {
     final settings = ref.watch(settingsProvider);
     final notifier = ref.read(settingsProvider.notifier);
     final updateState = ref.watch(dbUpdateProvider);
+    final appUpdateState = ref.watch(appUpdateProvider);
     final theme = Theme.of(context);
 
+    final isUpdating = appUpdateState.status == AppUpdateStatus.checking ||
+        appUpdateState.status == AppUpdateStatus.downloading ||
+        updateState.status == DbStatus.downloading ||
+        updateState.status == DbStatus.extracting;
+
     return ListView(
-      padding: EdgeInsets.zero,
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       children: [
+        Container(
+          decoration: BoxDecoration(
+            border: Border.all(color: theme.colorScheme.primary, width: 2),
+            borderRadius: DpdColors.borderRadius,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
+          child: Text('Settings', style: theme.textTheme.titleLarge),
+        ),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),
+          child: FilledButton.icon(
+            onPressed: isUpdating
+                ? null
+                : () {
+                    ref.read(appUpdateProvider.notifier).manualCheck();
+                    ref
+                        .read(dbUpdateProvider.notifier)
+                        .manualCheckForUpdates();
+                  },
+            icon: isUpdating
+                ? SizedBox(
+                    width: 18,
+                    height: 18,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      color: theme.colorScheme.onPrimary,
+                    ),
+                  )
+                : const Icon(Icons.update),
+            label: Text(isUpdating ? 'Updating…' : 'Update Now'),
+          ),
+        ),
         ListTile(
           title: const Text('Result style'),
-          subtitle: Padding(
-            padding: const EdgeInsets.only(top: 8),
-            child: SegmentedButton<DisplayMode>(
-              segments: const [
-                ButtonSegment(
-                    value: DisplayMode.classic, label: Text('Classic')),
-                ButtonSegment(
-                    value: DisplayMode.compact, label: Text('Compact')),
-              ],
-              selected: {settings.displayMode},
-              onSelectionChanged: (s) => notifier.setDisplayMode(s.first),
-            ),
+          trailing: _CompactSegmented<DisplayMode>(
+            segments: const [
+              ButtonSegment(value: DisplayMode.classic, label: Text('Classic')),
+              ButtonSegment(value: DisplayMode.compact, label: Text('Compact')),
+            ],
+            selected: settings.displayMode,
+            onChanged: notifier.setDisplayMode,
           ),
         ),
         ListTile(
           title: const Text('Theme'),
-          trailing: DropdownButton<ThemeMode>(
-            value: settings.themeMode,
-            underline: const SizedBox.shrink(),
-            onChanged: (mode) {
-              if (mode != null) notifier.setThemeMode(mode);
-            },
-            items: const [
-              DropdownMenuItem(value: ThemeMode.system, child: Text('System')),
-              DropdownMenuItem(value: ThemeMode.light, child: Text('Light')),
-              DropdownMenuItem(value: ThemeMode.dark, child: Text('Dark')),
+          trailing: _CompactSegmented<ThemeMode>(
+            segments: const [
+              ButtonSegment(value: ThemeMode.system, label: Text('System')),
+              ButtonSegment(value: ThemeMode.light, label: Text('Light')),
+              ButtonSegment(value: ThemeMode.dark, label: Text('Dark')),
+            ],
+            selected: settings.themeMode,
+            onChanged: notifier.setThemeMode,
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Row(
+            children: [
+              const Text('Font size'),
+              Expanded(
+                child: Slider(
+                  value: settings.fontSize,
+                  min: 12,
+                  max: 24,
+                  divisions: 12,
+                  label: settings.fontSize.toStringAsFixed(0),
+                  onChanged: notifier.setFontSize,
+                ),
+              ),
             ],
           ),
         ),
         ListTile(
-          title: const Text('Font size'),
-          subtitle: Slider(
-            value: settings.fontSize,
-            min: 12,
-            max: 24,
-            divisions: 12,
-            label: settings.fontSize.toStringAsFixed(0),
-            onChanged: notifier.setFontSize,
+          title: const Text('Font'),
+          trailing: _CompactSegmented<bool>(
+            segments: const [
+              ButtonSegment(value: false, label: Text('Sans')),
+              ButtonSegment(value: true, label: Text('Serif')),
+            ],
+            selected: settings.useSerifFont,
+            onChanged: notifier.setUseSerifFont,
           ),
         ),
-        _ToggleRow(
-          title: 'Serif font',
-          value: settings.useSerifFont,
-          onChanged: notifier.setUseSerifFont,
+        ListTile(
+          title: const Text('Grammar'),
+          trailing: _CompactSegmented<bool>(
+            segments: const [
+              ButtonSegment(value: false, label: Text('Closed')),
+              ButtonSegment(value: true, label: Text('Open')),
+            ],
+            selected: settings.grammarOpen,
+            onChanged: notifier.setGrammarOpen,
+          ),
         ),
-        _ToggleRow(
-          title: 'Grammar open by default',
-          value: settings.grammarOpen,
-          onChanged: notifier.setGrammarOpen,
+        ListTile(
+          title: const Text('Examples'),
+          trailing: _CompactSegmented<bool>(
+            segments: const [
+              ButtonSegment(value: false, label: Text('Closed')),
+              ButtonSegment(value: true, label: Text('Open')),
+            ],
+            selected: settings.examplesOpen,
+            onChanged: notifier.setExamplesOpen,
+          ),
         ),
-        _ToggleRow(
-          title: 'Examples open by default',
-          value: settings.examplesOpen,
-          onChanged: notifier.setExamplesOpen,
-        ),
-        _ToggleRow(
-          title: 'One section at a time',
-          value: settings.oneButtonAtATime,
-          onChanged: notifier.setOneButtonAtATime,
+        ListTile(
+          title: const Text('One section at a time'),
+          trailing: _CompactSegmented<bool>(
+            segments: const [
+              ButtonSegment(value: false, label: Text('Off')),
+              ButtonSegment(value: true, label: Text('On')),
+            ],
+            selected: settings.oneButtonAtATime,
+            onChanged: notifier.setOneButtonAtATime,
+          ),
         ),
         ListTile(
           title: const Text('Niggahīta'),
@@ -91,15 +158,27 @@ class SettingsContent extends ConsumerWidget {
             onChanged: notifier.setNiggahitaMode,
           ),
         ),
-        _ToggleRow(
-          title: 'Show sandhi apostrophes',
-          value: settings.showSandhiApostrophe,
-          onChanged: notifier.setShowSandhiApostrophe,
+        ListTile(
+          title: const Text('Sandhi apostrophes'),
+          trailing: _CompactSegmented<bool>(
+            segments: const [
+              ButtonSegment(value: false, label: Text('Hide')),
+              ButtonSegment(value: true, label: Text('Show')),
+            ],
+            selected: settings.showSandhiApostrophe,
+            onChanged: notifier.setShowSandhiApostrophe,
+          ),
         ),
-        _ToggleRow(
-          title: 'Show summary',
-          value: settings.showSummary,
-          onChanged: notifier.setShowSummary,
+        ListTile(
+          title: const Text('Summary'),
+          trailing: _CompactSegmented<bool>(
+            segments: const [
+              ButtonSegment(value: false, label: Text('Hide')),
+              ButtonSegment(value: true, label: Text('Show')),
+            ],
+            selected: settings.showSummary,
+            onChanged: notifier.setShowSummary,
+          ),
         ),
         ListTile(
           title: const Text('Audio gender'),
@@ -112,10 +191,16 @@ class SettingsContent extends ConsumerWidget {
             onChanged: notifier.setAudioGender,
           ),
         ),
-        _ToggleRow(
-          title: 'WiFi-only updates',
-          value: settings.wifiOnlyUpdates,
-          onChanged: notifier.setWifiOnlyUpdates,
+        ListTile(
+          title: const Text('Updates'),
+          trailing: _CompactSegmented<bool>(
+            segments: const [
+              ButtonSegment(value: false, label: Text('Any')),
+              ButtonSegment(value: true, label: Text('WiFi')),
+            ],
+            selected: settings.wifiOnlyUpdates,
+            onChanged: notifier.setWifiOnlyUpdates,
+          ),
         ),
         const SizedBox(height: 16),
         Padding(
@@ -131,29 +216,10 @@ class SettingsContent extends ConsumerWidget {
             ),
           ),
         ),
+            ],
+          ),
+        ),
       ],
-    );
-  }
-}
-
-/// A simple switch row with no checkmark icon — just a coloured Switch.
-class _ToggleRow extends StatelessWidget {
-  const _ToggleRow({
-    required this.title,
-    required this.value,
-    required this.onChanged,
-  });
-
-  final String title;
-  final bool value;
-  final ValueChanged<bool> onChanged;
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      title: Text(title),
-      trailing: Switch(value: value, onChanged: onChanged),
-      onTap: () => onChanged(!value),
     );
   }
 }
