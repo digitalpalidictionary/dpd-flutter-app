@@ -2,7 +2,7 @@ name: dpd_flutter_app
 description: "Digital Pali Dictionary - offline Flutter app"
 publish_to: 'none'
 
-version: 0.1.0+1
+version: 0.1.1+1
 
 environment:
   sdk: ^3.10.7
