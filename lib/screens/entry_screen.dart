@@ -8,6 +8,7 @@ import '../widgets/double_tap_search_wrapper.dart';
 import '../widgets/entry_content.dart';
 import '../widgets/entry_sections_mixin.dart';
 import '../widgets/family_state_mixin.dart';
+import '../widgets/feedback_footer.dart';
 
 final _entryProvider = FutureProvider.autoDispose
     .family<DpdHeadwordWithRoot?, int>((ref, id) {
@@ -73,6 +74,7 @@ class _EntryViewState extends ConsumerState<_EntryView>
     final h = widget.headword;
 
     return Scaffold(
+      bottomNavigationBar: const FeedbackFooter(),
       body: DoubleTapSearchWrapper(
         shouldPop: true,
         child: CustomScrollView(

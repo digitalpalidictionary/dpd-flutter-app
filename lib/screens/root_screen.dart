@@ -11,6 +11,7 @@ import '../widgets/family_table.dart';
 import '../widgets/feedback_type.dart';
 import '../widgets/root_info_table.dart';
 import '../widgets/root_matrix_table.dart';
+import '../widgets/feedback_footer.dart';
 
 final _rootProvider = FutureProvider.autoDispose
     .family<RootWithFamilies?, String>((ref, rootKey) {
@@ -74,6 +75,7 @@ class _RootViewState extends ConsumerState<_RootView> {
     final grayStyle = baseStyle?.copyWith(color: DpdColors.gray);
 
     return Scaffold(
+      bottomNavigationBar: const FeedbackFooter(),
       body: CustomScrollView(
         slivers: [
           SliverAppBar(

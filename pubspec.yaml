@@ -50,6 +50,9 @@ dependencies:
   # App version info
   package_info_plus: ^8.3.0
 
+  # Device info (feedback form)
+  device_info_plus: ^11.2.2
+
   # APK installer (app self-update)
   open_filex: ^4.7.0
 

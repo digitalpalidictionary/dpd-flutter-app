@@ -21,6 +21,7 @@ import '../utils/velthuis.dart';
 import '../widgets/accordion_card.dart';
 import '../widgets/autocomplete_dropdown.dart';
 import '../widgets/double_tap_search_wrapper.dart';
+import '../widgets/feedback_footer.dart';
 import '../widgets/inline_entry_card.dart';
 import '../widgets/inline_root_card.dart';
 import '../widgets/secondary/bibliography_card.dart';
@@ -302,7 +303,10 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     });
 
     return Scaffold(
-      bottomNavigationBar: const _DownloadFooter(),
+      bottomNavigationBar: const Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [_DownloadFooter(), FeedbackFooter()],
+      ),
       body: SafeArea(
         child: Column(
           children: [
@@ -1345,8 +1349,6 @@ class _DownloadFooter extends ConsumerWidget {
         ? 'Applying update…'
         : 'Downloading… ${(percent * 100).toStringAsFixed(0)}%$sizeLabel';
 
-    final bottomPadding = MediaQuery.of(context).padding.bottom;
-
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -1357,7 +1359,7 @@ class _DownloadFooter extends ConsumerWidget {
           minHeight: 3,
         ),
         Padding(
-          padding: EdgeInsets.only(top: 6, bottom: 6 + bottomPadding),
+          padding: const EdgeInsets.only(top: 6, bottom: 6),
           child: Text(
             label,
             style: theme.textTheme.labelSmall?.copyWith(
