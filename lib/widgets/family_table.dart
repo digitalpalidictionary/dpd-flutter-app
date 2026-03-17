@@ -84,6 +84,22 @@ class HeadingUnderlined extends StatelessWidget {
   }
 }
 
+final _paliDigraph = RegExp(r'[kgcjṭḍtdpb]h', caseSensitive: false);
+
+String _addBreakPoints(String text) {
+  final buf = StringBuffer();
+  for (var i = 0; i < text.length; i++) {
+    if (i > 0) {
+      final digraph = '${text[i - 1]}${text[i]}';
+      if (!_paliDigraph.hasMatch(digraph)) {
+        buf.write('\u200B');
+      }
+    }
+    buf.write(text[i]);
+  }
+  return buf.toString();
+}
+
 /// Shared table widget for family entries (lemma / pos / meaning / completion).
 ///
 /// Used by both [FamilyTableWidget] and [MultiFamilySection].
@@ -106,7 +122,7 @@ class FamilyEntryTable extends StatelessWidget {
 
     return Table(
       columnWidths: const {
-        0: IntrinsicColumnWidth(),
+        0: MinColumnWidth(IntrinsicColumnWidth(), FractionColumnWidth(0.45)),
         1: IntrinsicColumnWidth(),
         2: FlexColumnWidth(),
         3: IntrinsicColumnWidth(),
@@ -117,7 +133,10 @@ class FamilyEntryTable extends StatelessWidget {
           children: [
             Padding(
               padding: const EdgeInsets.only(right: 7, bottom: 2),
-              child: Text(entry.lemma, style: lemmaStyle),
+              child: Text(
+                _addBreakPoints(entry.lemma),
+                style: lemmaStyle,
+              ),
             ),
             Padding(
               padding: const EdgeInsets.only(right: 7, bottom: 2),
