@@ -1,23 +1,25 @@
-/// Strips Pāḷi diacritical marks and aspirate markers to plain ASCII
-/// for fuzzy search matching.
+/// Strips Pāḷi diacritical marks, aspirate markers, and double consonants
+/// to plain ASCII for fuzzy search matching.
 ///
 /// Uses a direct rune map rather than NFD normalization — faster and
-/// correct for the closed Pāḷi character set. After diacritics removal,
-/// strips 'h' after stop consonants (k,g,c,j,t,d,p,b) so aspirate and
-/// non-aspirate pairs are treated as equivalent.
+/// correct for the closed Pāḷi character set. Pipeline:
+/// 1. Strip diacritics (ṭ→t, ā→a, etc.)
+/// 2. Strip 'h' after stop consonants (kh→k, gh→g, etc.)
+/// 3. Collapse repeated consonants (tt→t, cc→c, etc.)
 String stripDiacritics(String text) {
   final clean = text.replaceAll('√', '').replaceAll(' ', '');
   final buffer = StringBuffer();
   for (final rune in clean.runes) {
     buffer.write(_diacriticMap[rune] ?? String.fromCharCode(rune));
   }
-  return buffer.toString().replaceAllMapped(
-    _aspiratePattern,
-    (m) => m.group(1)!,
-  );
+  return buffer
+      .toString()
+      .replaceAllMapped(_aspiratePattern, (m) => m.group(1)!)
+      .replaceAllMapped(_doubleConsonantPattern, (m) => m.group(1)!);
 }
 
 final _aspiratePattern = RegExp(r'([kgcjtdpb])h', caseSensitive: false);
+final _doubleConsonantPattern = RegExp(r'([bcdfghjklmnpqrstvwxyz])\1', caseSensitive: false);
 
 const _diacriticMap = <int, String>{
   0x0101: 'a', // ā
