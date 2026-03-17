@@ -99,24 +99,9 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     final query = _controller.text.trim();
     ref.read(searchQueryProvider.notifier).state = query;
     if (query.isNotEmpty) {
-      ref.read(historyProvider.notifier).add(
-        query,
-        fuzzy: ref.read(settingsProvider).fuzzyMode,
-      );
+      ref.read(historyProvider.notifier).add(query);
     }
     FocusScope.of(context).unfocus();
-  }
-
-  void _onFuzzySearch() {
-    final entering = !ref.read(settingsProvider).fuzzyMode;
-    ref.read(settingsProvider.notifier).setFuzzyMode(entering);
-    if (entering) {
-      _removeOverlay();
-      final query = _controller.text.trim();
-      if (query.isNotEmpty) {
-        ref.read(historyProvider.notifier).add(query, fuzzy: true);
-      }
-    }
   }
 
   void _onClear() {
@@ -131,7 +116,6 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   }
 
   void _updateAutocomplete(String query) {
-    if (ref.read(settingsProvider).fuzzyMode) return;
     if (query.length < 2) {
       _removeOverlay();
       return;
@@ -409,10 +393,6 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                   ),
                   const SizedBox(width: 4),
                   _BarIconButton(icon: Icons.search, onPressed: _onSearch, tooltip: 'Search'),
-                  _FuzzyIconButton(
-                    active: ref.watch(settingsProvider).fuzzyMode,
-                    onPressed: _onFuzzySearch,
-                  ),
                   _BarIconButton(
                     icon: Icons.close,
                     onPressed: _controller.text.isEmpty ? null : _onClear,
@@ -427,7 +407,6 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                             final entry = ref.read(historyProvider).currentEntry;
                             if (entry != null) {
                               ref.read(searchQueryProvider.notifier).state = entry.query;
-                              ref.read(settingsProvider.notifier).setFuzzyMode(entry.fuzzy);
                             }
                           }
                         : null,
@@ -441,7 +420,6 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                             final entry = ref.read(historyProvider).currentEntry;
                             if (entry != null) {
                               ref.read(searchQueryProvider.notifier).state = entry.query;
-                              ref.read(settingsProvider.notifier).setFuzzyMode(entry.fuzzy);
                             }
                           }
                         : null,
@@ -475,10 +453,6 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     AsyncValue<List<DpdHeadwordWithRoot>> exactAsync,
     AsyncValue<List<DpdHeadwordWithRoot>> partialAsync,
   ) {
-    if (ref.watch(settingsProvider).fuzzyMode) {
-      return _buildFuzzyBody(context, query);
-    }
-
     if (query.isEmpty) return const _EmptyPrompt();
 
     final exact = exactAsync.valueOrNull ?? [];
@@ -503,15 +477,16 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
       return Center(child: Text('Error: ${exactAsync.error}'));
     }
 
+    final settings = ref.watch(settingsProvider);
+
     if (exact.isEmpty &&
         partial.isEmpty &&
         roots.isEmpty &&
         secondary.isEmpty &&
         !partialLoading) {
-      return _NoResults(query: query);
+      return _buildFuzzyFallback(context, query, settings.displayMode);
     }
 
-    final settings = ref.watch(settingsProvider);
     final summaryEntries = buildSummaryEntries(exact, roots, secondary);
     return _SplitResultsList(
       exact: exact,
@@ -525,15 +500,35 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     );
   }
 
-  Widget _buildFuzzyBody(BuildContext context, String query) {
-    if (query.isEmpty) return const _EmptyPrompt();
+  Widget _buildFuzzyFallback(BuildContext context, String query, DisplayMode mode) {
     final fuzzyAsync = ref.watch(fuzzyResultsProvider(query));
     if (fuzzyAsync.isLoading) return const Center(child: CircularProgressIndicator());
     if (fuzzyAsync.hasError) return Center(child: Text('Error: ${fuzzyAsync.error}'));
     final results = fuzzyAsync.valueOrNull ?? [];
     if (results.isEmpty) return _NoResults(query: query);
-    final settings = ref.watch(settingsProvider);
-    return _FlatResultsList(results: results, mode: settings.displayMode);
+    final theme = Theme.of(context);
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          child: Row(
+            children: [
+              Icon(Icons.info_outline, size: 16, color: theme.colorScheme.outline),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  'No exact match. Showing similar results.',
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: theme.colorScheme.outline,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        Expanded(child: _FlatResultsList(results: results, mode: mode)),
+      ],
+    );
   }
 }
 
@@ -769,50 +764,6 @@ class _BarIconButton extends StatelessWidget {
                 icon,
                 size: 20,
                 color: enabled
-                    ? DpdColors.light
-                    : DpdColors.light.withValues(alpha: 0.5),
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _FuzzyIconButton extends StatelessWidget {
-  const _FuzzyIconButton({required this.active, required this.onPressed});
-
-  final bool active;
-  final VoidCallback? onPressed;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 4),
-      child: Tooltip(
-        message: 'Fuzzy search (ignores diacritics)',
-        decoration: BoxDecoration(
-          color: DpdColors.primaryAlt,
-          borderRadius: DpdColors.borderRadius,
-        ),
-        textStyle: TextStyle(color: DpdColors.light, fontSize: 12),
-        child: SizedBox(
-          width: 40,
-          height: 40,
-          child: Material(
-            color: active
-                ? DpdColors.primary
-                : DpdColors.primary.withValues(alpha: 0.4),
-            borderRadius: DpdColors.borderRadius,
-            elevation: active ? 2 : 0,
-            child: InkWell(
-              borderRadius: DpdColors.borderRadius,
-              onTap: onPressed,
-              child: Icon(
-                Icons.abc,
-                size: 20,
-                color: active
                     ? DpdColors.light
                     : DpdColors.light.withValues(alpha: 0.5),
               ),

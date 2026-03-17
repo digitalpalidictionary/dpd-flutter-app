@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../providers/history_provider.dart';
 import '../providers/search_provider.dart';
-import '../providers/settings_provider.dart';
 import '../theme/dpd_colors.dart';
 
 class HistoryPanel extends ConsumerStatefulWidget {
@@ -82,9 +81,8 @@ class _HistoryPanelState extends ConsumerState<HistoryPanel> {
                     GestureDetector(
                       onTap: () {
                         final entry = history.entries[i];
-                        ref.read(historyProvider.notifier).add(entry.query, fuzzy: entry.fuzzy);
+                        ref.read(historyProvider.notifier).add(entry.query);
                         ref.read(searchQueryProvider.notifier).state = entry.query;
-                        ref.read(settingsProvider.notifier).setFuzzyMode(entry.fuzzy);
                       },
                       child: Text(
                         history.entries[i].query,

@@ -9,27 +9,23 @@ const _maxEntries = 50;
 const _prefsKey = 'dpd_history';
 
 class HistoryEntry {
-  const HistoryEntry({required this.query, this.fuzzy = false});
+  const HistoryEntry({required this.query});
 
   final String query;
-  final bool fuzzy;
 
-  Map<String, dynamic> toJson() => {'q': query, 'f': fuzzy};
+  Map<String, dynamic> toJson() => {'q': query};
 
   static HistoryEntry fromJson(dynamic json) {
     if (json is String) return HistoryEntry(query: json);
-    return HistoryEntry(
-      query: json['q'] as String,
-      fuzzy: (json['f'] as bool?) ?? false,
-    );
+    return HistoryEntry(query: json['q'] as String);
   }
 
   @override
   bool operator ==(Object other) =>
-      other is HistoryEntry && other.query == query && other.fuzzy == fuzzy;
+      other is HistoryEntry && other.query == query;
 
   @override
-  int get hashCode => Object.hash(query, fuzzy);
+  int get hashCode => query.hashCode;
 }
 
 class HistoryState {
@@ -82,9 +78,9 @@ class HistoryNotifier extends StateNotifier<HistoryState> {
     );
   }
 
-  void add(String term, {bool fuzzy = false}) {
+  void add(String term) {
     if (term.isEmpty) return;
-    final entry = HistoryEntry(query: term, fuzzy: fuzzy);
+    final entry = HistoryEntry(query: term);
     final entries = List<HistoryEntry>.from(state.entries);
     entries.removeWhere((e) => e == entry);
     entries.insert(0, entry);
