@@ -35,6 +35,10 @@ android-build-release:
     @echo "\nRelease APK: build/app/outputs/flutter-apk/dpd.apk"
 
 
+# Rebuild mobile DB in dpd-db repo and copy to share
+build-db:
+    cd ../dpd-db && uv run python exporter/mobile/mobile_exporter.py
+
 # Push dpd-mobile.db to connected Android device (debug build)
 android-push-db:
     adb push ../dpd-db/exporter/share/dpd-mobile.db /storage/emulated/0/Android/data/net.dpdict.dpd_flutter_app.debug/files/dpd-mobile.db
