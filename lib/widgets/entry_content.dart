@@ -86,9 +86,14 @@ List<InlineSpan> parseSimpleMarkup(
         WidgetSpan(
           alignment: PlaceholderAlignment.baseline,
           baseline: TextBaseline.alphabetic,
-          child: GestureDetector(
-            onTap: onLinkTap != null ? () => onLinkTap(url) : null,
-            child: Text(text, style: linkStyle),
+          child: MouseRegion(
+            cursor: SystemMouseCursors.click,
+            child: SelectionContainer.disabled(
+              child: GestureDetector(
+                onTap: onLinkTap != null ? () => onLinkTap(url) : null,
+                child: Text(text, style: linkStyle),
+              ),
+            ),
           ),
         ),
       );
@@ -149,17 +154,22 @@ TableRow? buildKvLinkRow(
     label,
     SingleChildScrollView(
       scrollDirection: Axis.horizontal,
-      child: GestureDetector(
-        onTap: () => onOpen(url),
-        child: Text(
-          url,
-          maxLines: 1,
-          softWrap: false,
-          style: TextStyle(
-            color: DpdColors.primaryText,
-            fontWeight: FontWeight.w700,
-            decoration: TextDecoration.underline,
-            decorationColor: DpdColors.primaryText,
+      child: MouseRegion(
+        cursor: SystemMouseCursors.click,
+        child: SelectionContainer.disabled(
+          child: GestureDetector(
+            onTap: () => onOpen(url),
+            child: Text(
+              url,
+              maxLines: 1,
+              softWrap: false,
+              style: TextStyle(
+                color: DpdColors.primaryText,
+                fontWeight: FontWeight.w700,
+                decoration: TextDecoration.underline,
+                decorationColor: DpdColors.primaryText,
+              ),
+            ),
           ),
         ),
       ),
@@ -210,27 +220,32 @@ class DpdFooter extends StatelessWidget {
       ),
       child: Align(
         alignment: Alignment.centerLeft,
-        child: GestureDetector(
-          onTap: () async {
-            await launchUrl(
-              Uri.parse(_buildUrl()),
-              mode: LaunchMode.platformDefault,
-            );
-          },
-          child: Text.rich(
-            TextSpan(
-              style: TextStyle(fontSize: 12.8, color: DpdColors.gray),
-              children: [
-                TextSpan(text: '$messagePrefix '),
+        child: MouseRegion(
+          cursor: SystemMouseCursors.click,
+          child: SelectionContainer.disabled(
+            child: GestureDetector(
+              onTap: () async {
+                await launchUrl(
+                  Uri.parse(_buildUrl()),
+                  mode: LaunchMode.platformDefault,
+                );
+              },
+              child: Text.rich(
                 TextSpan(
-                  text: linkText,
-                  style: TextStyle(
-                    color: DpdColors.primaryText,
-                    fontWeight: FontWeight.w700,
-                    decoration: TextDecoration.none,
-                  ),
+                  style: TextStyle(fontSize: 12.8, color: DpdColors.gray),
+                  children: [
+                    TextSpan(text: '$messagePrefix '),
+                    TextSpan(
+                      text: linkText,
+                      style: TextStyle(
+                        color: DpdColors.primaryText,
+                        fontWeight: FontWeight.w700,
+                        decoration: TextDecoration.none,
+                      ),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
           ),
         ),
@@ -509,24 +524,29 @@ class DpdSectionButton extends StatelessWidget {
         ? theme.colorScheme.onSecondary
         : theme.colorScheme.onPrimary;
     final shadow = isActive ? DpdColors.shadowHover : DpdColors.shadowDefault;
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        margin: const EdgeInsets.fromLTRB(1, 1, 1, 2),
-        padding: const EdgeInsets.fromLTRB(5, 2, 5, 2),
-        decoration: BoxDecoration(
-          color: bg,
-          border: Border.all(color: bg, width: 1),
-          borderRadius: DpdColors.borderRadius,
-          boxShadow: shadow,
-        ),
-        child: Text(
-          label,
-          style: TextStyle(
-            color: fg,
-            fontSize: 14.0 * 0.8,
-            fontWeight: FontWeight.w400,
-            height: 1.5,
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      child: SelectionContainer.disabled(
+        child: GestureDetector(
+          onTap: onTap,
+          child: Container(
+            margin: const EdgeInsets.fromLTRB(1, 1, 1, 2),
+            padding: const EdgeInsets.fromLTRB(5, 2, 5, 2),
+            decoration: BoxDecoration(
+              color: bg,
+              border: Border.all(color: bg, width: 1),
+              borderRadius: DpdColors.borderRadius,
+              boxShadow: shadow,
+            ),
+            child: Text(
+              label,
+              style: TextStyle(
+                color: fg,
+                fontSize: 14.0 * 0.8,
+                fontWeight: FontWeight.w400,
+                height: 1.5,
+              ),
+            ),
           ),
         ),
       ),
@@ -587,20 +607,23 @@ class _DpdPlayButtonState extends State<DpdPlayButton> {
       shadow = DpdColors.shadowDefault;
     }
     final compact = widget.compact;
-    return GestureDetector(
-      onTap: _errored ? null : _play,
-      child: Container(
-        margin: compact ? null : const EdgeInsets.fromLTRB(1, 1, 1, 2),
-        padding: compact
-            ? const EdgeInsets.all(3)
-            : const EdgeInsets.fromLTRB(5, 2, 5, 2),
-        decoration: BoxDecoration(
-          color: bg,
-          border: compact ? null : Border.all(color: bg, width: 1),
-          borderRadius: DpdColors.borderRadius,
-          boxShadow: compact ? null : shadow,
+    return MouseRegion(
+      cursor: _errored ? SystemMouseCursors.forbidden : SystemMouseCursors.click,
+      child: GestureDetector(
+        onTap: _errored ? null : _play,
+        child: Container(
+          margin: compact ? null : const EdgeInsets.fromLTRB(1, 1, 1, 2),
+          padding: compact
+              ? const EdgeInsets.all(3)
+              : const EdgeInsets.fromLTRB(5, 2, 5, 2),
+          decoration: BoxDecoration(
+            color: bg,
+            border: compact ? null : Border.all(color: bg, width: 1),
+            borderRadius: DpdColors.borderRadius,
+            boxShadow: compact ? null : shadow,
+          ),
+          child: Icon(Icons.play_arrow, color: fg, size: compact ? 12 : 18),
         ),
-        child: Icon(Icons.play_arrow, color: fg, size: compact ? 12 : 18),
       ),
     );
   }
