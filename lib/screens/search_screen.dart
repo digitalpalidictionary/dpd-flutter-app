@@ -325,6 +325,10 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                     ),
                   ),
                   IconButton(
+                    icon: const Icon(Icons.history),
+                    onPressed: () => showHistoryOverlay(context),
+                  ),
+                  IconButton(
                     icon: const Icon(Icons.settings),
                     onPressed: () => showSettingsOverlay(context),
                   ),
@@ -398,32 +402,45 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                     onPressed: _controller.text.isEmpty ? null : _onClear,
                     tooltip: 'Clear',
                   ),
-                  _BarIconButton(
-                    icon: Icons.arrow_back,
-                    tooltip: 'Previous search',
-                    onPressed: ref.watch(canGoBackProvider)
-                        ? () {
-                            ref.read(historyProvider.notifier).goBack();
-                            final entry = ref.read(historyProvider).currentEntry;
-                            if (entry != null) {
-                              ref.read(searchQueryProvider.notifier).state = entry.query;
-                            }
-                          }
-                        : null,
-                  ),
-                  _BarIconButton(
-                    icon: Icons.arrow_forward,
-                    tooltip: 'Next search',
-                    onPressed: ref.watch(canGoForwardProvider)
-                        ? () {
-                            ref.read(historyProvider.notifier).goForward();
-                            final entry = ref.read(historyProvider).currentEntry;
-                            if (entry != null) {
-                              ref.read(searchQueryProvider.notifier).state = entry.query;
-                            }
-                          }
-                        : null,
-                  ),
+                  Builder(builder: (context) {
+                    final history = ref.watch(historyProvider);
+                    final backIndex = history.currentIndex + 1;
+                    final backWord = backIndex < history.entries.length
+                        ? history.entries[backIndex].query
+                        : null;
+                    final fwdIndex = history.currentIndex - 1;
+                    final fwdWord = fwdIndex >= 0 && fwdIndex < history.entries.length
+                        ? history.entries[fwdIndex].query
+                        : null;
+                    return Row(children: [
+                      _BarIconButton(
+                        icon: Icons.arrow_back,
+                        tooltip: backWord != null ? '← $backWord' : 'Previous search',
+                        onPressed: history.canGoBack
+                            ? () {
+                                ref.read(historyProvider.notifier).goBack();
+                                final entry = ref.read(historyProvider).currentEntry;
+                                if (entry != null) {
+                                  ref.read(searchQueryProvider.notifier).state = entry.query;
+                                }
+                              }
+                            : null,
+                      ),
+                      _BarIconButton(
+                        icon: Icons.arrow_forward,
+                        tooltip: fwdWord != null ? '$fwdWord →' : 'Next search',
+                        onPressed: history.canGoForward
+                            ? () {
+                                ref.read(historyProvider.notifier).goForward();
+                                final entry = ref.read(historyProvider).currentEntry;
+                                if (entry != null) {
+                                  ref.read(searchQueryProvider.notifier).state = entry.query;
+                                }
+                              }
+                            : null,
+                      ),
+                    ]);
+                  }),
                 ],
               ),
             ),
@@ -440,7 +457,6 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                     ),
             ),
 
-            const HistoryPanel(),
           ],
         ),
       ),
