@@ -23,6 +23,7 @@ class Settings {
     this.showSandhiApostrophe = true,
     this.audioGender = AudioGender.male,
     this.wifiOnlyUpdates = false,
+    this.lookupHotkey = '',
   });
 
   final ThemeMode themeMode;
@@ -37,6 +38,7 @@ class Settings {
   final bool showSandhiApostrophe;
   final AudioGender audioGender;
   final bool wifiOnlyUpdates;
+  final String lookupHotkey;
 
   Settings copyWith({
     ThemeMode? themeMode,
@@ -51,6 +53,7 @@ class Settings {
     bool? showSandhiApostrophe,
     AudioGender? audioGender,
     bool? wifiOnlyUpdates,
+    String? lookupHotkey,
   }) {
     return Settings(
       themeMode: themeMode ?? this.themeMode,
@@ -65,6 +68,7 @@ class Settings {
       showSandhiApostrophe: showSandhiApostrophe ?? this.showSandhiApostrophe,
       audioGender: audioGender ?? this.audioGender,
       wifiOnlyUpdates: wifiOnlyUpdates ?? this.wifiOnlyUpdates,
+      lookupHotkey: lookupHotkey ?? this.lookupHotkey,
     );
   }
 
@@ -83,7 +87,8 @@ class Settings {
         other.showSummary == showSummary &&
         other.showSandhiApostrophe == showSandhiApostrophe &&
         other.audioGender == audioGender &&
-        other.wifiOnlyUpdates == wifiOnlyUpdates;
+        other.wifiOnlyUpdates == wifiOnlyUpdates &&
+        other.lookupHotkey == lookupHotkey;
   }
 
   @override
@@ -100,6 +105,7 @@ class Settings {
     showSandhiApostrophe,
     audioGender,
     wifiOnlyUpdates,
+    lookupHotkey,
   );
 }
 
@@ -141,6 +147,7 @@ class SettingsNotifier extends StateNotifier<Settings> {
       orElse: () => AudioGender.male,
     );
     final wifiOnlyUpdates = _prefs.getBool('wifi_only_updates') ?? false;
+    final lookupHotkey = _prefs.getString('lookup_hotkey') ?? '';
     state = Settings(
       themeMode: themeMode,
       fontSize: fontSize,
@@ -154,6 +161,7 @@ class SettingsNotifier extends StateNotifier<Settings> {
       showSandhiApostrophe: showSandhiApostrophe,
       audioGender: audioGender,
       wifiOnlyUpdates: wifiOnlyUpdates,
+      lookupHotkey: lookupHotkey,
     );
   }
 
@@ -217,6 +225,10 @@ class SettingsNotifier extends StateNotifier<Settings> {
     state = state.copyWith(wifiOnlyUpdates: value);
   }
 
+  Future<void> setLookupHotkey(String value) async {
+    await _prefs.setString('lookup_hotkey', value);
+    state = state.copyWith(lookupHotkey: value);
+  }
 }
 
 final sharedPreferencesProvider = Provider<SharedPreferences>((ref) {

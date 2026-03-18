@@ -161,5 +161,9 @@ void main() {
     test('default audioGender is male', () {
       expect(const Settings().audioGender, AudioGender.male);
     });
+
+    test('default lookupHotkey is empty', () {
+      expect(const Settings().lookupHotkey, '');
+    });
   });
 }
