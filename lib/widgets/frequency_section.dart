@@ -118,8 +118,8 @@ class FrequencySection extends StatelessWidget {
     TextStyle style,
     TextStyle boldStyle,
   ) {
-    return RichText(
-      text: TextSpan(
+    return Text.rich(
+      TextSpan(
         style: style,
         children: [
           TextSpan(text: abbrev, style: boldStyle),
@@ -132,8 +132,8 @@ class FrequencySection extends StatelessWidget {
   Widget _buildExplanationLink(BuildContext context) {
     final style = DefaultTextStyle.of(context).style;
 
-    return RichText(
-      text: TextSpan(
+    return Text.rich(
+      TextSpan(
         style: style,
         children: [
           const TextSpan(

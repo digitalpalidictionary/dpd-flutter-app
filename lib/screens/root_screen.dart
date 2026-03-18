@@ -117,8 +117,8 @@ class _RootViewState extends ConsumerState<_RootView> {
                     horizontal: 7,
                     vertical: 3,
                   ),
-                  child: RichText(
-                    text: TextSpan(
+                  child: Text.rich(
+                    TextSpan(
                       style: baseStyle,
                       children: [
                         const TextSpan(text: 'root. '),

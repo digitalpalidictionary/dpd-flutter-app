@@ -71,10 +71,8 @@ class _SummaryRow extends StatelessWidget {
         child: Row(
           children: [
             Expanded(
-              child: RichText(
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                text: TextSpan(
+              child: Text.rich(
+                TextSpan(
                   children: [
                     TextSpan(text: entry.label, style: labelStyle),
                     if (entry.typeLabel.isNotEmpty)
@@ -83,6 +81,8 @@ class _SummaryRow extends StatelessWidget {
                       TextSpan(text: ' ${entry.meaning}', style: baseStyle),
                   ],
                 ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
               ),
             ),
             const SizedBox(width: 8),

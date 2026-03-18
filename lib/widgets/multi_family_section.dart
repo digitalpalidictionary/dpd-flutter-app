@@ -103,13 +103,11 @@ class _MultiFamilySectionState extends State<MultiFamilySection> {
                   children: [
                     _HeadingDoublelined(
                       child: i > 0
-                          ? (widget.subSections[i].header is RichText
-                                ? _cloneWithJump(
-                                    context,
-                                    widget.subSections[i].header as RichText,
-                                    _scrollToTop,
-                                  )
-                                : widget.subSections[i].header)
+                          ? _maybeCloneWithJump(
+                              context,
+                              widget.subSections[i].header,
+                              _scrollToTop,
+                            )
                           : widget.subSections[i].header,
                     ),
                     const SizedBox(height: 8),
@@ -139,19 +137,21 @@ class _MultiFamilySectionState extends State<MultiFamilySection> {
   }
 }
 
-/// Helper to add the jump link to an existing RichText header
-Widget _cloneWithJump(
+/// Clones a Text.rich header with a jump-to-top icon appended.
+/// Returns the header unchanged if it is not a Text.rich widget.
+Widget _maybeCloneWithJump(
   BuildContext context,
-  RichText header,
+  Widget header,
   VoidCallback onJump,
 ) {
-  final oldSpan = header.text as TextSpan;
+  if (header is! Text || header.textSpan == null) return header;
+  final oldSpan = header.textSpan! as TextSpan;
   final color = Theme.of(context).colorScheme.primary;
-  return RichText(
-    text: TextSpan(
+  return Text.rich(
+    TextSpan(
       style: oldSpan.style,
       children: [
-        ...oldSpan.children!,
+        ...oldSpan.children ?? [],
         WidgetSpan(
           alignment: PlaceholderAlignment.middle,
           child: GestureDetector(

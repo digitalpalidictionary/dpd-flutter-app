@@ -39,8 +39,8 @@ class FeedbackSection extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            RichText(
-              text: TextSpan(
+            Text.rich(
+              TextSpan(
                 style: Theme.of(context).textTheme.bodyMedium,
                 children: [
                   const TextSpan(text: 'ID '),
@@ -112,8 +112,8 @@ class _FeedbackLink extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final style = Theme.of(context).textTheme.bodyMedium;
-    return RichText(
-      text: TextSpan(
+    return Text.rich(
+      TextSpan(
         style: style,
         children: [
           WidgetSpan(

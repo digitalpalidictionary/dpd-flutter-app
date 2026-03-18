@@ -5,7 +5,7 @@ import 'family_table.dart';
 import 'feedback_type.dart';
 
 // ── Header builders ──────────────────────────────────────────────────────────
-// Each builder returns a RichText with only count and name bolded,
+// Each builder returns a Text.rich with only count and name bolded,
 // matching the webapp's <b>count</b> text <b>name</b> pattern.
 
 Widget _richHeader(
@@ -14,8 +14,8 @@ Widget _richHeader(
   VoidCallback? onJumpTop,
 }) {
   final base = Theme.of(context).textTheme.bodyMedium;
-  return RichText(
-    text: TextSpan(
+  return Text.rich(
+    TextSpan(
       style: base,
       children: [
         ...spans,

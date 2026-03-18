@@ -68,7 +68,7 @@ class InflectionTable extends StatelessWidget {
       ]);
     }
 
-    return RichText(text: TextSpan(children: spans));
+    return Text.rich(TextSpan(children: spans));
   }
 
   Widget _buildTable(BuildContext context, Color headerBg) {

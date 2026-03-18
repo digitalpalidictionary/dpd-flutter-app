@@ -229,8 +229,8 @@ class _AccordionRootCardState extends ConsumerState<AccordionRootCard> {
                     )
                   : Padding(
                       padding: const EdgeInsets.fromLTRB(12, 6, 12, 6),
-                      child: RichText(
-                        text: TextSpan(
+                      child: Text.rich(
+                        TextSpan(
                           style: baseStyle,
                           children: [
                             TextSpan(
@@ -377,8 +377,8 @@ class _RootSummaryBox extends StatelessWidget {
         borderRadius: DpdColors.borderRadius,
       ),
       padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
-      child: RichText(
-        text: TextSpan(
+      child: Text.rich(
+        TextSpan(
           style: baseStyle,
           children: [
             const TextSpan(text: 'root. '),
