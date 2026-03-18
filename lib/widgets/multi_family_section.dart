@@ -154,14 +154,17 @@ Widget _maybeCloneWithJump(
         ...oldSpan.children ?? [],
         WidgetSpan(
           alignment: PlaceholderAlignment.middle,
-          child: GestureDetector(
-            onTap: onJump,
-            child: Padding(
-              padding: const EdgeInsets.only(left: 4),
-              child: Icon(
-                Icons.keyboard_double_arrow_up,
-                size: 14,
-                color: color,
+          child: MouseRegion(
+            cursor: SystemMouseCursors.click,
+            child: GestureDetector(
+              onTap: onJump,
+              child: Padding(
+                padding: const EdgeInsets.only(left: 4),
+                child: Icon(
+                  Icons.keyboard_double_arrow_up,
+                  size: 14,
+                  color: color,
+                ),
               ),
             ),
           ),
@@ -188,15 +191,20 @@ class _JumpToNav extends StatelessWidget {
           style: TextStyle(fontSize: 12, color: DpdColors.primaryText),
         ),
         for (int i = 0; i < keys.length; i++)
-          GestureDetector(
-            onTap: () => onTap(i),
-            child: Text(
-              i < keys.length - 1 ? '${keys[i]}, ' : keys[i],
-              style: TextStyle(
-                fontSize: 12,
-                color: DpdColors.primaryText,
-                fontWeight: FontWeight.w700,
-                decoration: TextDecoration.none,
+          MouseRegion(
+            cursor: SystemMouseCursors.click,
+            child: SelectionContainer.disabled(
+              child: GestureDetector(
+                onTap: () => onTap(i),
+                child: Text(
+                  i < keys.length - 1 ? '${keys[i]}, ' : keys[i],
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: DpdColors.primaryText,
+                    fontWeight: FontWeight.w700,
+                    decoration: TextDecoration.none,
+                  ),
+                ),
               ),
             ),
           ),
@@ -234,22 +242,27 @@ class _BackToTopLink extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final color = Theme.of(context).colorScheme.primary;
-    return GestureDetector(
-      onTap: onTap,
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(Icons.keyboard_double_arrow_up, size: 14, color: color),
-          const SizedBox(width: 4),
-          Text(
-            'back to top',
-            style: TextStyle(
-              fontSize: 12,
-              color: color,
-              fontWeight: FontWeight.w700,
-            ),
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      child: SelectionContainer.disabled(
+        child: GestureDetector(
+          onTap: onTap,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(Icons.keyboard_double_arrow_up, size: 14, color: color),
+              const SizedBox(width: 4),
+              Text(
+                'back to top',
+                style: TextStyle(
+                  fontSize: 12,
+                  color: color,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }

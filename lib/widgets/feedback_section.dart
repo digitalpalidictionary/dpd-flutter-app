@@ -119,13 +119,18 @@ class _FeedbackLink extends StatelessWidget {
           WidgetSpan(
             alignment: PlaceholderAlignment.baseline,
             baseline: TextBaseline.alphabetic,
-            child: GestureDetector(
-              onTap: onTap,
-              child: Text(
-                linkText,
-                style: style?.copyWith(
-                  color: DpdColors.primaryText,
-                  fontWeight: FontWeight.w700,
+            child: MouseRegion(
+              cursor: SystemMouseCursors.click,
+              child: SelectionContainer.disabled(
+                child: GestureDetector(
+                  onTap: onTap,
+                  child: Text(
+                    linkText,
+                    style: style?.copyWith(
+                      color: DpdColors.primaryText,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
                 ),
               ),
             ),

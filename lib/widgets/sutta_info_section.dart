@@ -257,15 +257,20 @@ class SuttaInfoSection extends StatelessWidget {
             spacing: 4,
             children: [
               for (var i = 0; i < validLinks.length; i++) ...[
-                GestureDetector(
-                  onTap: () => _openUrl(validLinks[i].$2!),
-                  child: Text(
-                    validLinks[i].$1,
-                    style: TextStyle(
-                      color: DpdColors.primaryText,
-                      fontWeight: FontWeight.w700,
-                      decoration: TextDecoration.underline,
-                      decorationColor: DpdColors.primaryText,
+                MouseRegion(
+                  cursor: SystemMouseCursors.click,
+                  child: SelectionContainer.disabled(
+                    child: GestureDetector(
+                      onTap: () => _openUrl(validLinks[i].$2!),
+                      child: Text(
+                        validLinks[i].$1,
+                        style: TextStyle(
+                          color: DpdColors.primaryText,
+                          fontWeight: FontWeight.w700,
+                          decoration: TextDecoration.underline,
+                          decorationColor: DpdColors.primaryText,
+                        ),
+                      ),
                     ),
                   ),
                 ),

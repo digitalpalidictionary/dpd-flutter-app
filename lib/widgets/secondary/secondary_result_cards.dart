@@ -228,11 +228,16 @@ class _GrammarDictTableState extends State<_GrammarDictTable> {
     }
 
     Widget sortableHeader(String label, int col, {TextStyle? style}) {
-      return GestureDetector(
-        onTap: () => _onHeaderTap(col),
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(0, 2, 10, 0),
-          child: Text('$label${arrow(col)}', style: style),
+      return MouseRegion(
+        cursor: SystemMouseCursors.click,
+        child: SelectionContainer.disabled(
+          child: GestureDetector(
+            onTap: () => _onHeaderTap(col),
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(0, 2, 10, 0),
+              child: Text('$label${arrow(col)}', style: style),
+            ),
+          ),
         ),
       );
     }

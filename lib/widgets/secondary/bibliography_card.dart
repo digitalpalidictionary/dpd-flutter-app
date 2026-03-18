@@ -87,18 +87,23 @@ class _BibliographyEntryRow extends StatelessWidget {
         WidgetSpan(
           alignment: PlaceholderAlignment.baseline,
           baseline: TextBaseline.alphabetic,
-          child: GestureDetector(
-            onTap: () {
-              final uri = Uri.tryParse(entry.site);
-              if (uri != null) launchUrl(uri, mode: LaunchMode.platformDefault);
-            },
-            child: Text(
-              '[link]',
-              style: bodyStyle?.copyWith(
-                color: linkColor,
-                fontWeight: FontWeight.w700,
-                decoration: TextDecoration.underline,
-                decorationColor: linkColor,
+          child: MouseRegion(
+            cursor: SystemMouseCursors.click,
+            child: SelectionContainer.disabled(
+              child: GestureDetector(
+                onTap: () {
+                  final uri = Uri.tryParse(entry.site);
+                  if (uri != null) launchUrl(uri, mode: LaunchMode.platformDefault);
+                },
+                child: Text(
+                  '[link]',
+                  style: bodyStyle?.copyWith(
+                    color: linkColor,
+                    fontWeight: FontWeight.w700,
+                    decoration: TextDecoration.underline,
+                    decorationColor: linkColor,
+                  ),
+                ),
               ),
             ),
           ),

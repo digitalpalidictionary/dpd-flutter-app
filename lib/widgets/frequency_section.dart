@@ -142,19 +142,24 @@ class FrequencySection extends StatelessWidget {
                 "it's accuracies and inaccuracies, please refer to ",
           ),
           WidgetSpan(
-            child: GestureDetector(
-              onTap: () => launchUrl(
-                Uri.parse(
-                  'https://digitalpalidictionary.github.io/features/frequency/',
-                ),
-                mode: LaunchMode.externalApplication,
-              ),
-              child: Text(
-                'this webpage',
-                style: TextStyle(
-                  color: DpdColors.primaryText,
-                  fontWeight: FontWeight.bold,
-                  decoration: TextDecoration.none,
+            child: MouseRegion(
+              cursor: SystemMouseCursors.click,
+              child: SelectionContainer.disabled(
+                child: GestureDetector(
+                  onTap: () => launchUrl(
+                    Uri.parse(
+                      'https://digitalpalidictionary.github.io/features/frequency/',
+                    ),
+                    mode: LaunchMode.externalApplication,
+                  ),
+                  child: Text(
+                    'this webpage',
+                    style: TextStyle(
+                      color: DpdColors.primaryText,
+                      fontWeight: FontWeight.bold,
+                      decoration: TextDecoration.none,
+                    ),
+                  ),
                 ),
               ),
             ),

@@ -22,28 +22,33 @@ class FeedbackFooter extends ConsumerWidget {
         border: Border.all(color: DpdColors.grayTransparent, width: 2),
         borderRadius: DpdColors.borderRadius,
       ),
-      child: GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTap: () async {
-          final url = await buildFeedbackUrl(dbVersion: dbVersion);
-          await launchUrl(Uri.parse(url), mode: LaunchMode.platformDefault);
-        },
-        child: Center(child: Text.rich(
-          TextSpan(
-            style: TextStyle(fontSize: 12.8, color: DpdColors.gray),
-            children: [
-              const TextSpan(text: 'Having a problem? Report it '),
+      child: MouseRegion(
+        cursor: SystemMouseCursors.click,
+        child: SelectionContainer.disabled(
+          child: GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: () async {
+              final url = await buildFeedbackUrl(dbVersion: dbVersion);
+              await launchUrl(Uri.parse(url), mode: LaunchMode.platformDefault);
+            },
+            child: Center(child: Text.rich(
               TextSpan(
-                text: 'here',
-                style: TextStyle(
-                  color: DpdColors.primaryText,
-                  fontWeight: FontWeight.w700,
-                  decoration: TextDecoration.none,
-                ),
+                style: TextStyle(fontSize: 12.8, color: DpdColors.gray),
+                children: [
+                  const TextSpan(text: 'Having a problem? Report it '),
+                  TextSpan(
+                    text: 'here',
+                    style: TextStyle(
+                      color: DpdColors.primaryText,
+                      fontWeight: FontWeight.w700,
+                      decoration: TextDecoration.none,
+                    ),
+                  ),
+                ],
               ),
-            ],
+            )),
           ),
-        )),
+        ),
       ),
     );
   }

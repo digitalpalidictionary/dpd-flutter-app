@@ -22,15 +22,20 @@ Widget _richHeader(
         if (onJumpTop != null)
           WidgetSpan(
             alignment: PlaceholderAlignment.middle,
-            child: GestureDetector(
-              onTap: onJumpTop,
-              child: Padding(
-                padding: const EdgeInsets.only(left: 4),
-                child: Text(
-                  ' ⤴ ',
-                  style: TextStyle(
-                    color: Theme.of(context).colorScheme.primary,
-                    fontWeight: FontWeight.w700,
+            child: MouseRegion(
+              cursor: SystemMouseCursors.click,
+              child: SelectionContainer.disabled(
+                child: GestureDetector(
+                  onTap: onJumpTop,
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 4),
+                    child: Text(
+                      ' ⤴ ',
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.primary,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
                   ),
                 ),
               ),

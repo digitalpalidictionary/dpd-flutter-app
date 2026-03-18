@@ -48,16 +48,19 @@ class _HistoryPanelState extends ConsumerState<HistoryPanel> {
                 ),
               ],
               const Spacer(),
-              GestureDetector(
-                onTap: () => setState(() => _collapsed = !_collapsed),
-                child: Padding(
-                  padding: const EdgeInsets.all(4),
-                  child: Icon(
-                    _collapsed
-                        ? Icons.expand_more
-                        : Icons.expand_less,
-                    size: 20,
-                    color: theme.colorScheme.onSurfaceVariant,
+              MouseRegion(
+                cursor: SystemMouseCursors.click,
+                child: GestureDetector(
+                  onTap: () => setState(() => _collapsed = !_collapsed),
+                  child: Padding(
+                    padding: const EdgeInsets.all(4),
+                    child: Icon(
+                      _collapsed
+                          ? Icons.expand_more
+                          : Icons.expand_less,
+                      size: 20,
+                      color: theme.colorScheme.onSurfaceVariant,
+                    ),
                   ),
                 ),
               ),
@@ -78,16 +81,21 @@ class _HistoryPanelState extends ConsumerState<HistoryPanel> {
                           color: theme.colorScheme.onSurfaceVariant,
                         ),
                       ),
-                    GestureDetector(
-                      onTap: () {
-                        final entry = history.entries[i];
-                        ref.read(historyProvider.notifier).add(entry.query);
-                        ref.read(searchQueryProvider.notifier).state = entry.query;
-                      },
-                      child: Text(
-                        history.entries[i].query,
-                        style: theme.textTheme.bodyMedium?.copyWith(
-                          color: DpdColors.primaryText,
+                    MouseRegion(
+                      cursor: SystemMouseCursors.click,
+                      child: SelectionContainer.disabled(
+                        child: GestureDetector(
+                          onTap: () {
+                            final entry = history.entries[i];
+                            ref.read(historyProvider.notifier).add(entry.query);
+                            ref.read(searchQueryProvider.notifier).state = entry.query;
+                          },
+                          child: Text(
+                            history.entries[i].query,
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                              color: DpdColors.primaryText,
+                            ),
+                          ),
                         ),
                       ),
                     ),
