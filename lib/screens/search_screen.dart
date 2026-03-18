@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io' show Platform;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -55,6 +56,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   OverlayEntry? _helpOverlayEntry;
   OverlayEntry? _infoOverlayEntry;
   bool _showHelpPopup = false;
+  bool _showSettingsPanel = false;
   _InfoContent? _activeInfo;
 
   @override
@@ -292,7 +294,9 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
         children: [_DownloadFooter(), FeedbackFooter()],
       ),
       body: SafeArea(
-        child: Column(
+        child: Stack(
+          children: [
+            Column(
           children: [
             // Header: logo + title + settings
             Padding(
@@ -329,8 +333,12 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                     onPressed: () => showHistoryOverlay(context),
                   ),
                   IconButton(
-                    icon: const Icon(Icons.settings),
-                    onPressed: () => showSettingsOverlay(context),
+                    icon: Icon(
+                      _showSettingsPanel ? Icons.settings : Icons.settings_outlined,
+                    ),
+                    onPressed: Platform.isLinux
+                        ? () => setState(() => _showSettingsPanel = !_showSettingsPanel)
+                        : () => showSettingsOverlay(context),
                   ),
                 ],
               ),
@@ -457,6 +465,33 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                     ),
             ),
 
+          ],
+            ),
+            if (_showSettingsPanel)
+              Positioned(
+                top: 0,
+                right: 0,
+                bottom: 0,
+                width: 440,
+                child: Material(
+                  elevation: 8,
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(0, 8, 8, 0),
+                        child: Align(
+                          alignment: Alignment.topRight,
+                          child: IconButton(
+                            icon: const Icon(Icons.close),
+                            onPressed: () => setState(() => _showSettingsPanel = false),
+                          ),
+                        ),
+                      ),
+                      const Expanded(child: SettingsContent()),
+                    ],
+                  ),
+                ),
+              ),
           ],
         ),
       ),
