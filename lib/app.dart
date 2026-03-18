@@ -1,6 +1,8 @@
 import 'dart:async';
+import 'dart:io' show Platform;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -52,6 +54,11 @@ class _DpdAppState extends ConsumerState<DpdApp> {
       _navKey.currentState?.popUntil((route) => route.isFirst);
       ref.read(searchQueryProvider.notifier).state = text;
     });
+  }
+
+  void _exitApp() {
+    _intentSub?.cancel();
+    ServicesBinding.instance.exitApplication(AppExitType.cancelable);
   }
 
   @override
@@ -117,7 +124,21 @@ class _DpdAppState extends ConsumerState<DpdApp> {
       );
     }
 
-    return MaterialApp(
+    final isDesktop =
+        Platform.isLinux || Platform.isMacOS || Platform.isWindows;
+
+    return CallbackShortcuts(
+      bindings: <ShortcutActivator, VoidCallback>{
+        if (isDesktop)
+          const SingleActivator(LogicalKeyboardKey.keyQ, control: true):
+              _exitApp,
+        if (Platform.isMacOS)
+          const SingleActivator(LogicalKeyboardKey.keyQ, meta: true):
+              _exitApp,
+      },
+      child: Focus(
+        autofocus: true,
+        child: MaterialApp(
       navigatorKey: _navKey,
       title: 'DPD',
       debugShowCheckedModeBanner: false,
@@ -151,6 +172,7 @@ class _DpdAppState extends ConsumerState<DpdApp> {
       },
       initialRoute: '/',
       onGenerateRoute: _onGenerateRoute,
+    )),
     );
   }
 
