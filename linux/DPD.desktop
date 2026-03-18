@@ -1,7 +1,8 @@
 [Desktop Entry]
 Name=DPD
-Exec=/home/bodhirasa/MyFiles/3_Active/dpd-flutter-app/build/linux/x64/debug/bundle/dpd_flutter_app
-Comment=
+Exec=/home/bodhirasa/MyFiles/3_Active/dpd-flutter-app/build/linux/x64/debug/bundle/dpd_flutter_app %u
+Comment=Digital Pali Dictionary
+Categories=Education;Dictionary;
 Terminal=false
 PrefersNonDefaultGPU=false
 Icon=/home/bodhirasa/MyFiles/3_Active/dpd-flutter-app/assets/images/dpd-logo-dark-512.png

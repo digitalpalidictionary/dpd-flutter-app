@@ -45,9 +45,9 @@ android-push-db:
 
 # ---------- LINUX ----------
 
-# Run on Linux desktop
+# Build and run Linux
 linux-run:
-    flutter run -d linux
+    flutter build linux --debug && flutter run -d linux
 
 # Copy dpd-mobile.db to Linux app support directory (for linux-run)
 linux-push-db:

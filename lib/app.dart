@@ -42,6 +42,7 @@ class DpdApp extends ConsumerStatefulWidget {
 class _DpdAppState extends ConsumerState<DpdApp> {
   final _navKey = GlobalKey<NavigatorState>();
   StreamSubscription<String>? _intentSub;
+  StreamSubscription<String>? _lookupSub;
 
   @override
   void initState() {
@@ -51,20 +52,39 @@ class _DpdAppState extends ConsumerState<DpdApp> {
       ref.read(appUpdateProvider.notifier).checkForUpdates();
     });
 
-    _intentSub = IntentService.intentStream.listen((text) {
-      _navKey.currentState?.popUntil((route) => route.isFirst);
-      ref.read(searchQueryProvider.notifier).state = text;
-    });
+    if (!Platform.isLinux) {
+      _intentSub = IntentService.intentStream.listen((text) {
+        _navKey.currentState?.popUntil((route) => route.isFirst);
+        ref.read(searchQueryProvider.notifier).state = text;
+      });
+    }
+
+    if (Platform.isLinux) {
+      debugPrint('[DPD] app.dart: subscribing to lookupStream');
+      _lookupSub = IntentService.lookupStream.listen((text) {
+        debugPrint('[DPD] app.dart: lookupStream received: "$text"');
+        _navKey.currentState?.popUntil((route) => route.isFirst);
+        ref.read(searchQueryProvider.notifier).state = text;
+      });
+
+      final hotkey = ref.read(settingsProvider).lookupHotkey;
+      debugPrint('[DPD] app.dart: saved lookupHotkey: "$hotkey"');
+      if (hotkey.isNotEmpty) {
+        IntentService.bindHotkey(hotkey);
+      }
+    }
   }
 
   void _exitApp() {
     _intentSub?.cancel();
+    _lookupSub?.cancel();
     ServicesBinding.instance.exitApplication(AppExitType.cancelable);
   }
 
   @override
   void dispose() {
     _intentSub?.cancel();
+    _lookupSub?.cancel();
     super.dispose();
   }
 

@@ -7,11 +7,23 @@ import 'providers/settings_provider.dart';
 import 'providers/search_provider.dart';
 import 'services/intent_service.dart';
 
-void main() async {
+void main(List<String> args) async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  debugPrint('[DPD] main() called with args: $args');
+
   final prefs = await SharedPreferences.getInstance();
-  final intentText = await IntentService.getInitialText();
+
+  String? intentText;
+  if (args.isNotEmpty && args.first.trim().isNotEmpty) {
+    intentText = args.first.trim();
+    debugPrint('[DPD] CLI arg intent text: "$intentText"');
+  }
+  intentText ??= await IntentService.getInitialText();
+  debugPrint('[DPD] Final intent text: "$intentText"');
+
+  IntentService.initLookupHandler();
+  debugPrint('[DPD] Lookup handler initialized');
 
   runApp(
     ProviderScope(
