@@ -9,15 +9,26 @@ const _maxEntries = 50;
 const _prefsKey = 'dpd_history';
 
 class HistoryEntry {
-  const HistoryEntry({required this.query});
+  const HistoryEntry({required this.query, required this.timestamp});
 
   final String query;
+  final DateTime timestamp;
 
-  Map<String, dynamic> toJson() => {'q': query};
+  Map<String, dynamic> toJson() => {
+        'q': query,
+        't': timestamp.millisecondsSinceEpoch,
+      };
 
   static HistoryEntry fromJson(dynamic json) {
-    if (json is String) return HistoryEntry(query: json);
-    return HistoryEntry(query: json['q'] as String);
+    if (json is String) {
+      return HistoryEntry(query: json, timestamp: DateTime.now());
+    }
+    return HistoryEntry(
+      query: json['q'] as String,
+      timestamp: json['t'] != null
+          ? DateTime.fromMillisecondsSinceEpoch(json['t'] as int)
+          : DateTime.now(),
+    );
   }
 
   @override
@@ -78,9 +89,23 @@ class HistoryNotifier extends StateNotifier<HistoryState> {
     );
   }
 
+  void removeAt(int index) {
+    if (index < 0 || index >= state.entries.length) return;
+    final entries = List<HistoryEntry>.from(state.entries);
+    entries.removeAt(index);
+    int newIndex = state.currentIndex;
+    if (entries.isEmpty) {
+      newIndex = -1;
+    } else if (index <= state.currentIndex) {
+      newIndex = (state.currentIndex - 1).clamp(-1, entries.length - 1);
+    }
+    state = HistoryState(entries: entries, currentIndex: newIndex);
+    _persist();
+  }
+
   void add(String term) {
     if (term.isEmpty) return;
-    final entry = HistoryEntry(query: term);
+    final entry = HistoryEntry(query: term, timestamp: DateTime.now());
     final entries = List<HistoryEntry>.from(state.entries);
     entries.removeWhere((e) => e == entry);
     entries.insert(0, entry);
