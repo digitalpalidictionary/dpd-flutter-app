@@ -11,6 +11,7 @@ import '../widgets/family_table.dart';
 import '../widgets/feedback_type.dart';
 import '../widgets/root_info_table.dart';
 import '../widgets/root_matrix_table.dart';
+import '../widgets/double_tap_search_wrapper.dart';
 import '../widgets/feedback_footer.dart';
 
 final _rootProvider = FutureProvider.autoDispose
@@ -76,7 +77,9 @@ class _RootViewState extends ConsumerState<_RootView> {
 
     return Scaffold(
       bottomNavigationBar: const FeedbackFooter(),
-      body: CustomScrollView(
+      body: DoubleTapSearchWrapper(
+        shouldPop: true,
+        child: CustomScrollView(
         slivers: [
           SliverAppBar(
             pinned: true,
@@ -189,6 +192,7 @@ class _RootViewState extends ConsumerState<_RootView> {
             ),
           ),
         ],
+        ),
       ),
     );
   }
