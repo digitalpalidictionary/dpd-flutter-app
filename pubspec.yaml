@@ -58,7 +58,8 @@ dependencies:
 
   # SVG rendering (logo)
   flutter_svg: ^2.0.17
-  just_audio: ^0.10.5
+  # Audio playback
+  audioplayers: ^6.1.0
 
 dev_dependencies:
   flutter_test:

@@ -1,4 +1,4 @@
-import 'package:just_audio/just_audio.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 class AudioService {
   AudioService._();
@@ -7,19 +7,15 @@ class AudioService {
 
   final AudioPlayer _player = AudioPlayer();
 
-static String buildUrl(String lemma, String gender) {
-    final clean = lemma.replaceAll(
-      RegExp(r' \d.*$', unicode: true),
-      '',
-    );
+  static String buildUrl(String lemma, String gender) {
+    final clean = lemma.replaceAll(RegExp(r' \d.*$', unicode: true), '');
     return 'https://dpdict.net/audio/${Uri.encodeComponent(clean)}?gender=$gender';
   }
 
   Future<bool> play(String lemma, String gender) async {
     try {
       await _player.stop();
-      await _player.setUrl(buildUrl(lemma, gender));
-      await _player.play();
+      await _player.play(UrlSource(buildUrl(lemma, gender)));
       return true;
     } catch (_) {
       return false;

@@ -32,7 +32,7 @@
 ### Audio
 | Package | Purpose |
 |---------|---------|
-| just_audio | HTTP audio streaming for word pronunciation playback |
+| audioplayers | HTTP audio streaming for word pronunciation playback |
 
 ### Networking
 | Package | Purpose |
