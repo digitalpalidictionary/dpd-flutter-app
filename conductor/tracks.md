@@ -4,5 +4,5 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-## [ ] Track: External Dictionary Integration (Cone's Dictionary of Pāli)
+## [~] Track: External Dictionary Integration (Cone's Dictionary of Pāli)
 *Link: [./conductor/tracks/dictionary_integration_20260319/](./conductor/tracks/dictionary_integration_20260319/)*

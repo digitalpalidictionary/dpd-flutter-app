@@ -2,13 +2,13 @@
 
 ## Phase 0: HTML Rendering Proof-of-Concept
 
-- [ ] Task: Test `flutter_widget_from_html` with real Cone entries
-  - [ ] Add `flutter_widget_from_html` to `pubspec.yaml`, run `flutter pub get`
-  - [ ] Create a throwaway test screen with hardcoded Cone HTML + CSS
-  - [ ] Test with: (a) a simple entry, (b) a large entry, (c) an entry with Devanagari/Kharosthi spans
-  - [ ] Verify key CSS features render: orange lemma, italic POS, superscript homonyms, bold subsense headwords, small-caps abbreviations
-  - [ ] Identify any CSS that needs stripping or overriding (desktop-only rules like `position: fixed`, `:hover`, `@font-face`)
-  - [ ] Test in both light and dark mode — note any hardcoded colors that clash
+- [x] Task: Test `flutter_widget_from_html` with real Cone entries `45a91ed`
+  - [x] Add `flutter_widget_from_html` to `pubspec.yaml`, run `flutter pub get`
+  - [x] Create a throwaway test screen with hardcoded Cone HTML + CSS
+  - [x] Test with: (a) a simple entry, (b) a large entry, (c) an entry with Devanagari/Kharosthi spans
+  - [x] Verify key CSS features render: orange lemma, italic POS, superscript homonyms, bold subsense headwords, small-caps abbreviations
+  - [x] Identify any CSS that needs stripping or overriding (desktop-only rules like `position: fixed`, `:hover`, `@font-face`)
+  - [x] Test in both light and dark mode — note any hardcoded colors that clash
 
 - [ ] Task: Conductor - User Manual Verification 'Phase 0: HTML Rendering PoC' (Protocol in workflow.md)
 
