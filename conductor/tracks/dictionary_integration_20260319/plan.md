@@ -12,7 +12,7 @@
 
 - [x] Task: Conductor - User Manual Verification 'Phase 0: HTML Rendering PoC' (Protocol in workflow.md)
 
-## Phase 1: Database Export (Python)
+## Phase 1: Database Export (Python) [checkpoint: 2abf918]
 
 - [x] Task: Add `export_other_dictionaries()` to `mobile_exporter.py` `6eee448`
   - [x] Create `dict_meta` table with schema: `dict_id TEXT PK, name TEXT, author TEXT, css TEXT, entry_count INTEGER`
