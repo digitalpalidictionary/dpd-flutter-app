@@ -10,6 +10,7 @@ import '../providers/settings_provider.dart';
 import '../services/database_update_service.dart';
 import '../services/intent_service.dart';
 import '../theme/dpd_colors.dart';
+import 'dict_settings_widget.dart';
 
 class SettingsContent extends ConsumerWidget {
   const SettingsContent({super.key});
@@ -211,6 +212,7 @@ class SettingsContent extends ConsumerWidget {
             hotkey: settings.lookupHotkey,
             onChanged: notifier.setLookupHotkey,
           ),
+        const DictSettingsWidget(),
         const SizedBox(height: 16),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),

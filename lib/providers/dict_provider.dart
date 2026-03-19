@@ -132,61 +132,67 @@ final dictCssProvider =
       }
     });
 
+class DictSearchResults {
+  final List<DictResult> exact;
+  final List<DictResult> fuzzy;
+
+  const DictSearchResults({this.exact = const [], this.fuzzy = const []});
+}
+
 final dictResultsProvider = FutureProvider.autoDispose
-    .family<List<DictResult>, String>((ref, query) async {
-      if (query.isEmpty) return [];
+    .family<DictSearchResults, String>((ref, query) async {
+      if (query.isEmpty) return const DictSearchResults();
 
       final dao = ref.watch(daoProvider);
       final visibility = ref.watch(dictVisibilityProvider);
       final allMeta = await ref.watch(dictMetaAllProvider.future);
-
-      List<DictEntry> entries;
-      try {
-        final fuzzyKey = stripDiacritics(query.toLowerCase());
-        final exact = await dao.searchDictExact(query.toLowerCase());
-        final fuzzy = await dao.searchDictFuzzy(fuzzyKey);
-
-        final seen = <int>{};
-        entries = [];
-        for (final e in exact) {
-          seen.add(e.id);
-          entries.add(e);
-        }
-        for (final e in fuzzy) {
-          if (!seen.contains(e.id)) entries.add(e);
-        }
-      } catch (_) {
-        return [];
-      }
-
-      final grouped = <String, List<DictEntry>>{};
-      for (final entry in entries) {
-        grouped.putIfAbsent(entry.dictId, () => []).add(entry);
-      }
-
       final metaMap = {for (final m in allMeta) m.dictId: m.name};
 
-      final results = <DictResult>[];
-      for (final dictId in visibility.order) {
-        if (!visibility.enabled.contains(dictId)) continue;
-        final group = grouped[dictId];
-        if (group == null || group.isEmpty) continue;
-        results.add(DictResult(
-          dictId: dictId,
-          dictName: metaMap[dictId] ?? dictId,
-          entries: group,
-        ));
+      List<DictResult> toResults(Map<String, List<DictEntry>> grouped) {
+        final results = <DictResult>[];
+        for (final dictId in visibility.order) {
+          if (!visibility.enabled.contains(dictId)) continue;
+          final group = grouped[dictId];
+          if (group == null || group.isEmpty) continue;
+          results.add(DictResult(
+            dictId: dictId,
+            dictName: metaMap[dictId] ?? dictId,
+            entries: group,
+          ));
+        }
+        for (final dictId in grouped.keys) {
+          if (results.any((r) => r.dictId == dictId)) continue;
+          results.add(DictResult(
+            dictId: dictId,
+            dictName: metaMap[dictId] ?? dictId,
+            entries: grouped[dictId]!,
+          ));
+        }
+        return results;
       }
 
-      // Include any dict_ids not yet in the order
-      for (final dictId in grouped.keys) {
-        if (results.any((r) => r.dictId == dictId)) continue;
-        results.add(DictResult(
-          dictId: dictId,
-          dictName: metaMap[dictId] ?? dictId,
-          entries: grouped[dictId]!,
-        ));
-      }
+      try {
+        final exactRows = await dao.searchDictExact(query.toLowerCase());
+        final exactGrouped = <String, List<DictEntry>>{};
+        for (final entry in exactRows) {
+          exactGrouped.putIfAbsent(entry.dictId, () => []).add(entry);
+        }
 
-      return results;
+        final fuzzyKey = stripDiacritics(query.toLowerCase());
+        final fuzzyRows = await dao.searchDictFuzzy(fuzzyKey);
+        final exactIds = exactRows.map((e) => e.id).toSet();
+        final fuzzyGrouped = <String, List<DictEntry>>{};
+        for (final entry in fuzzyRows) {
+          if (!exactIds.contains(entry.id)) {
+            fuzzyGrouped.putIfAbsent(entry.dictId, () => []).add(entry);
+          }
+        }
+
+        return DictSearchResults(
+          exact: toResults(exactGrouped),
+          fuzzy: toResults(fuzzyGrouped),
+        );
+      } catch (_) {
+        return const DictSearchResults();
+      }
     });

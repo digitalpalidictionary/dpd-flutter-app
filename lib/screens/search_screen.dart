@@ -11,6 +11,7 @@ import '../database/database.dart';
 import '../models/help_results.dart';
 import '../models/lookup_results.dart';
 import '../providers/autocomplete_provider.dart';
+import '../providers/dict_provider.dart';
 import '../providers/history_provider.dart';
 import '../providers/search_provider.dart';
 import '../providers/secondary_results_provider.dart';
@@ -33,6 +34,7 @@ import '../widgets/settings_panel.dart';
 import '../widgets/velthuis_help_popup.dart';
 import '../models/summary_entry.dart';
 import '../providers/summary_provider.dart';
+import '../widgets/dict_html_card.dart';
 import '../widgets/summary_section.dart';
 
 enum _InfoContent { bibliography, thanks }
@@ -281,6 +283,13 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     final exactAsync = ref.watch(exactResultsProvider(query));
     final partialAsync = ref.watch(partialResultsProvider(query));
 
+    // Initialize dict visibility from meta (no-op after first run)
+    ref.listen<AsyncValue<List<DictMetaData>>>(dictMetaAllProvider, (_, next) {
+      if (next.hasValue && next.value!.isNotEmpty) {
+        ref.read(dictVisibilityProvider.notifier).initFromMeta(next.value!);
+      }
+    });
+
     // Sync the controller with the provider ONLY when the provider actually changes
     // (e.g. via double-tap search). This avoids fighting with active typing.
     ref.listen<String>(searchQueryProvider, (previous, next) {
@@ -486,11 +495,6 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                       ),
                     ]);
                   }),
-                  _BarIconButton(
-                    icon: Icons.science,
-                    tooltip: 'Cone HTML PoC',
-                    onPressed: () => Navigator.pushNamed(context, '/cone-poc'),
-                  ),
                 ],
               ),
             ),
@@ -602,6 +606,11 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     final secondaryAsync = ref.watch(secondaryResultsProvider(query));
     final secondary = secondaryAsync.valueOrNull ?? [];
 
+    final dictAsync = ref.watch(dictResultsProvider(query));
+    final dictSearch = dictAsync.valueOrNull ?? const DictSearchResults();
+    final dictExact = dictSearch.exact;
+    final dictFuzzy = dictSearch.fuzzy;
+
     if (exactLoading && exact.isEmpty) {
       return const Center(child: CircularProgressIndicator());
     }
@@ -616,6 +625,8 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
         partial.isEmpty &&
         roots.isEmpty &&
         secondary.isEmpty &&
+        dictExact.isEmpty &&
+        dictFuzzy.isEmpty &&
         !partialLoading) {
       return _buildFuzzyFallback(context, query, settings.displayMode);
     }
@@ -627,6 +638,8 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
       partialLoading: partialLoading,
       roots: roots,
       secondary: secondary,
+      dictExact: dictExact,
+      dictFuzzy: dictFuzzy,
       summaryEntries: summaryEntries,
       showSummary: settings.showSummary && settings.displayMode != DisplayMode.compact,
       mode: settings.displayMode,
@@ -635,31 +648,54 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
 
   Widget _buildFuzzyFallback(BuildContext context, String query, DisplayMode mode) {
     final fuzzyAsync = ref.watch(fuzzyResultsProvider(query));
+    final dictAsync = ref.watch(dictResultsProvider(query));
+    final dictSearch = dictAsync.valueOrNull ?? const DictSearchResults();
+    final allDictResults = [...dictSearch.exact, ...dictSearch.fuzzy];
+
     if (fuzzyAsync.isLoading) return const Center(child: CircularProgressIndicator());
     if (fuzzyAsync.hasError) return Center(child: Text('Error: ${fuzzyAsync.error}'));
     final results = fuzzyAsync.valueOrNull ?? [];
-    if (results.isEmpty) return _NoResults(query: query);
+    if (results.isEmpty && allDictResults.isEmpty) return _NoResults(query: query);
     final theme = Theme.of(context);
     return Column(
       children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          child: Row(
-            children: [
-              Icon(Icons.info_outline, size: 16, color: theme.colorScheme.outline),
-              const SizedBox(width: 8),
-              Expanded(
-                child: Text(
-                  'No exact match. Showing similar results.',
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: theme.colorScheme.outline,
+        if (results.isNotEmpty) ...[
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: Row(
+              children: [
+                Icon(Icons.info_outline, size: 16, color: theme.colorScheme.outline),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    'No exact match. Showing similar results.',
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: theme.colorScheme.outline,
+                    ),
                   ),
                 ),
-              ),
+              ],
+            ),
+          ),
+        ],
+        Expanded(
+          child: ListView(
+            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+            cacheExtent: 5000,
+            children: [
+              for (final hw in results)
+                switch (mode) {
+                  DisplayMode.classic => InlineEntryCard(headword: hw),
+                  DisplayMode.compact => AccordionCard(headword: hw),
+                },
+              for (final dr in allDictResults)
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  child: DictHtmlCard(dictName: dr.dictName, entries: dr.entries),
+                ),
             ],
           ),
         ),
-        Expanded(child: _FlatResultsList(results: results, mode: mode)),
       ],
     );
   }
@@ -908,28 +944,6 @@ class _BarIconButton extends StatelessWidget {
   }
 }
 
-class _FlatResultsList extends StatelessWidget {
-  const _FlatResultsList({required this.results, required this.mode});
-
-  final List<DpdHeadwordWithRoot> results;
-  final DisplayMode mode;
-
-  @override
-  Widget build(BuildContext context) {
-    return ListView.builder(
-      keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-      cacheExtent: 5000,
-      itemCount: results.length,
-      itemBuilder: (context, i) {
-        final hw = results[i];
-        return switch (mode) {
-          DisplayMode.classic => InlineEntryCard(headword: hw),
-          DisplayMode.compact => AccordionCard(headword: hw),
-        };
-      },
-    );
-  }
-}
 
 class _SplitResultsList extends StatefulWidget {
   const _SplitResultsList({
@@ -938,6 +952,8 @@ class _SplitResultsList extends StatefulWidget {
     required this.partialLoading,
     required this.roots,
     required this.secondary,
+    required this.dictExact,
+    required this.dictFuzzy,
     required this.summaryEntries,
     required this.showSummary,
     required this.mode,
@@ -948,6 +964,8 @@ class _SplitResultsList extends StatefulWidget {
   final bool partialLoading;
   final List<RootWithFamilies> roots;
   final List<Object> secondary;
+  final List<DictResult> dictExact;
+  final List<DictResult> dictFuzzy;
   final List<SummaryEntry> summaryEntries;
   final bool showSummary;
   final DisplayMode mode;
@@ -989,18 +1007,22 @@ class _SplitResultsListState extends State<_SplitResultsList> {
     final hasPartial = widget.partial.isNotEmpty;
     final hasRoots = widget.roots.isNotEmpty;
     final hasSecondary = widget.secondary.isNotEmpty;
+    final hasDictExact = widget.dictExact.isNotEmpty;
+    final hasDictFuzzy = widget.dictFuzzy.isNotEmpty;
     final showPartialDivider =
-        (hasExact || hasRoots || hasSecondary) &&
-        (hasPartial || widget.partialLoading);
+        (hasExact || hasRoots || hasSecondary || hasDictExact) &&
+        (hasPartial || widget.partialLoading || hasDictFuzzy);
 
     final itemCount =
         (hasSummary ? 1 : 0) +
         widget.exact.length +
         widget.roots.length +
         widget.secondary.length +
+        widget.dictExact.length +
         (showPartialDivider ? 1 : 0) +
         widget.partial.length +
-        (widget.partialLoading ? 1 : 0);
+        (widget.partialLoading ? 1 : 0) +
+        widget.dictFuzzy.length;
 
     return ListView.separated(
       controller: _scrollController,
@@ -1052,6 +1074,16 @@ class _SplitResultsListState extends State<_SplitResultsList> {
         }
         index -= widget.secondary.length;
 
+        // Exact dictionary results (before "more results")
+        if (index < widget.dictExact.length) {
+          final dr = widget.dictExact[index];
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            child: DictHtmlCard(dictName: dr.dictName, entries: dr.entries),
+          );
+        }
+        index -= widget.dictExact.length;
+
         // Partial matches divider
         if (showPartialDivider && index == 0) {
           return _MoreResultsDivider(isCompact: widget.mode == DisplayMode.compact);
@@ -1074,6 +1106,16 @@ class _SplitResultsListState extends State<_SplitResultsList> {
                 child: CircularProgressIndicator(strokeWidth: 2),
               ),
             ),
+          );
+        }
+        if (widget.partialLoading) index -= 1;
+
+        // Fuzzy dictionary results (after partial DPD matches)
+        if (index < widget.dictFuzzy.length) {
+          final dr = widget.dictFuzzy[index];
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            child: DictHtmlCard(dictName: dr.dictName, entries: dr.entries),
           );
         }
 
