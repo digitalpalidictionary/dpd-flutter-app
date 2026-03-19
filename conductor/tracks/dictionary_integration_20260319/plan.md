@@ -1,6 +1,6 @@
 # Plan: External Dictionary Integration (Cone's Dictionary of Pāli)
 
-## Phase 0: HTML Rendering Proof-of-Concept
+## Phase 0: HTML Rendering Proof-of-Concept [checkpoint: e7bc244]
 
 - [x] Task: Test `flutter_widget_from_html` with real Cone entries `45a91ed`
   - [x] Add `flutter_widget_from_html` to `pubspec.yaml`, run `flutter pub get`
