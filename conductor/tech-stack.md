@@ -28,6 +28,8 @@
 | google_fonts | Inter and Noto Serif font loading |
 | percent_indicator | Progress bar for database download |
 | cupertino_icons | iOS-style icons |
+| flutter_widget_from_html | HTML rendering for external dictionary entries (Cone, CPD, etc.) via `DictHtmlCard` widget |
+| html | DOM parsing for `customStylesBuilder` CSS class-to-style mapping |
 
 ### Audio
 | Package | Purpose |
