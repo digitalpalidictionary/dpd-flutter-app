@@ -622,7 +622,24 @@ class _DpdPlayButtonState extends State<DpdPlayButton> {
             borderRadius: DpdColors.borderRadius,
             boxShadow: compact ? null : shadow,
           ),
-          child: Icon(Icons.play_arrow, color: fg, size: compact ? 12 : 18),
+          child: compact
+              ? Icon(Icons.play_arrow, color: fg, size: 12)
+              : Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    Opacity(
+                      opacity: 0,
+                      child: Text(
+                        ' ',
+                        style: TextStyle(
+                          fontSize: 14.0 * 0.8,
+                          height: 1.5,
+                        ),
+                      ),
+                    ),
+                    Icon(Icons.play_arrow, color: fg, size: 18),
+                  ],
+                ),
         ),
       ),
     );
