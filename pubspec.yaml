@@ -61,6 +61,10 @@ dependencies:
   # Audio playback
   audioplayers: ^6.1.0
 
+  # HTML rendering for external dictionaries
+  flutter_widget_from_html: ^0.15.2
+  html: ^0.15.5
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

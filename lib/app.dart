@@ -16,6 +16,7 @@ import 'providers/settings_provider.dart';
 import 'screens/download_screen.dart';
 import 'screens/entry_screen.dart';
 import 'screens/root_screen.dart';
+import 'screens/cone_html_poc_screen.dart';
 import 'screens/search_screen.dart';
 import 'services/database_update_service.dart';
 import 'services/intent_service.dart';
@@ -209,6 +210,8 @@ class _DpdAppState extends ConsumerState<DpdApp> {
         final rootKey = settings.arguments as String?;
         if (rootKey == null) return null;
         return MaterialPageRoute(builder: (_) => RootScreen(rootKey: rootKey));
+      case '/cone-poc':
+        return MaterialPageRoute(builder: (_) => const ConeHtmlPocScreen());
       default:
         return null;
     }

@@ -486,6 +486,11 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                       ),
                     ]);
                   }),
+                  _BarIconButton(
+                    icon: Icons.science,
+                    tooltip: 'Cone HTML PoC',
+                    onPressed: () => Navigator.pushNamed(context, '/cone-poc'),
+                  ),
                 ],
               ),
             ),
