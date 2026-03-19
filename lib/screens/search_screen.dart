@@ -57,6 +57,8 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   OverlayEntry? _infoOverlayEntry;
   bool _showHelpPopup = false;
   bool _showSettingsPanel = false;
+  bool _showHistoryPanel = false;
+  final _historyButtonKey = GlobalKey();
   _InfoContent? _activeInfo;
 
   @override
@@ -337,6 +339,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                     ),
                   ),
                   Tooltip(
+                    key: _historyButtonKey,
                     message: 'Search history',
                     decoration: BoxDecoration(
                       color: DpdColors.primaryAlt,
@@ -344,8 +347,15 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                     ),
                     textStyle: TextStyle(color: DpdColors.light, fontSize: 12),
                     child: IconButton(
-                      icon: const Icon(Icons.history),
-                      onPressed: () => showHistoryOverlay(context),
+                      icon: Icon(
+                        _showHistoryPanel ? Icons.history_toggle_off : Icons.history,
+                      ),
+                      onPressed: Platform.isLinux
+                          ? () => setState(() {
+                              _showHistoryPanel = !_showHistoryPanel;
+                              if (_showHistoryPanel) _showSettingsPanel = false;
+                            })
+                          : () => showHistoryOverlay(context),
                     ),
                   ),
                   Tooltip(
@@ -360,7 +370,10 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                         _showSettingsPanel ? Icons.settings : Icons.settings_outlined,
                       ),
                       onPressed: Platform.isLinux
-                          ? () => setState(() => _showSettingsPanel = !_showSettingsPanel)
+                          ? () => setState(() {
+                              _showSettingsPanel = !_showSettingsPanel;
+                              if (_showSettingsPanel) _showHistoryPanel = false;
+                            })
                           : () => showSettingsOverlay(context),
                     ),
                   ),
@@ -512,6 +525,46 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                         ),
                       ),
                       const Expanded(child: SettingsContent()),
+                    ],
+                  ),
+                ),
+              ),
+            if (_showHistoryPanel)
+              Positioned(
+                top: 0,
+                right: 0,
+                bottom: 0,
+                width: 440,
+                child: Material(
+                  elevation: 8,
+                  child: Column(
+                    children: [
+                      Builder(builder: (context) {
+                        final screenWidth = MediaQuery.of(context).size.width;
+                        final buttonBox = _historyButtonKey.currentContext
+                            ?.findRenderObject() as RenderBox?;
+                        final rightPadding = buttonBox != null
+                            ? screenWidth -
+                                buttonBox.localToGlobal(Offset.zero).dx -
+                                buttonBox.size.width
+                            : 8.0;
+                        return Padding(
+                          padding: EdgeInsets.fromLTRB(0, 8, rightPadding, 0),
+                          child: Align(
+                            alignment: Alignment.topRight,
+                            child: IconButton(
+                              icon: const Icon(Icons.close),
+                              onPressed: () =>
+                                  setState(() => _showHistoryPanel = false),
+                            ),
+                          ),
+                        );
+                      }),
+                      Expanded(
+                        child: HistoryContent(
+                          onClose: () => setState(() => _showHistoryPanel = false),
+                        ),
+                      ),
                     ],
                   ),
                 ),

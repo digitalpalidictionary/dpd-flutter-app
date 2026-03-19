@@ -32,7 +32,7 @@ Future<void> showHistoryOverlay(BuildContext context) {
                 ),
               ),
             ),
-            const Expanded(child: _HistorySheetContent()),
+            const Expanded(child: HistoryContent()),
           ],
         ),
       );
@@ -40,8 +40,10 @@ Future<void> showHistoryOverlay(BuildContext context) {
   );
 }
 
-class _HistorySheetContent extends ConsumerWidget {
-  const _HistorySheetContent();
+class HistoryContent extends ConsumerWidget {
+  const HistoryContent({super.key, this.onClose});
+
+  final VoidCallback? onClose;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -74,7 +76,7 @@ class _HistorySheetContent extends ConsumerWidget {
                     ),
                   ),
                 )
-              : _buildGroupedList(context, ref, history.entries, theme),
+              : _buildGroupedList(context, ref, history.entries, theme, onClose),
         ),
       ],
     );
@@ -85,6 +87,7 @@ class _HistorySheetContent extends ConsumerWidget {
     WidgetRef ref,
     List<HistoryEntry> entries,
     ThemeData theme,
+    VoidCallback? onClose,
   ) {
     final groups = <String, List<MapEntry<int, HistoryEntry>>>{};
     for (var i = 0; i < entries.length; i++) {
@@ -117,6 +120,7 @@ class _HistorySheetContent extends ConsumerWidget {
             return _HistoryTile(
               entry: pair.value,
               absoluteIndex: pair.key,
+              onClose: onClose,
             );
           }
 
@@ -176,10 +180,12 @@ class _HistoryTile extends ConsumerWidget {
   const _HistoryTile({
     required this.entry,
     required this.absoluteIndex,
+    this.onClose,
   });
 
   final HistoryEntry entry;
   final int absoluteIndex;
+  final VoidCallback? onClose;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -214,7 +220,11 @@ class _HistoryTile extends ConsumerWidget {
         onTap: () {
           ref.read(historyProvider.notifier).add(entry.query);
           ref.read(searchQueryProvider.notifier).state = entry.query;
-          Navigator.pop(context);
+          if (onClose != null) {
+            onClose!();
+          } else {
+            Navigator.pop(context);
+          }
         },
       ),
     );
