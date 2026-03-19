@@ -10,7 +10,7 @@
   - [x] Identify any CSS that needs stripping or overriding (desktop-only rules like `position: fixed`, `:hover`, `@font-face`)
   - [x] Test in both light and dark mode — note any hardcoded colors that clash
 
-- [ ] Task: Conductor - User Manual Verification 'Phase 0: HTML Rendering PoC' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 0: HTML Rendering PoC' (Protocol in workflow.md)
 
 ## Phase 1: Database Export (Python)
 
