@@ -272,6 +272,32 @@ class SuttaInfo extends Table {
   Set<Column> get primaryKey => {dpdSutta};
 }
 
+class DictMeta extends Table {
+  @override
+  String get tableName => 'dict_meta';
+
+  TextColumn get dictId => text().named('dict_id')();
+  TextColumn get name => text()();
+  TextColumn get author => text().nullable()();
+  TextColumn get css => text().nullable()();
+  IntColumn get entryCount => integer().named('entry_count').nullable()();
+
+  @override
+  Set<Column> get primaryKey => {dictId};
+}
+
+class DictEntries extends Table {
+  @override
+  String get tableName => 'dict_entries';
+
+  IntColumn get id => integer().autoIncrement()();
+  TextColumn get dictId => text().named('dict_id')();
+  TextColumn get word => text()();
+  TextColumn get wordFuzzy => text().named('word_fuzzy').nullable()();
+  TextColumn get definitionHtml => text().named('definition_html').nullable()();
+  TextColumn get definitionPlain => text().named('definition_plain').nullable()();
+}
+
 class FamilySet extends Table {
   @override
   String get tableName => 'family_set';

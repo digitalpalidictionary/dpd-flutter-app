@@ -16,4 +16,6 @@ mixin _$DpdDaoMixin on DatabaseAccessor<AppDatabase> {
   $FamilyIdiomTable get familyIdiom => attachedDatabase.familyIdiom;
   $FamilySetTable get familySet => attachedDatabase.familySet;
   $SuttaInfoTable get suttaInfo => attachedDatabase.suttaInfo;
+  $DictMetaTable get dictMeta => attachedDatabase.dictMeta;
+  $DictEntriesTable get dictEntries => attachedDatabase.dictEntries;
 }

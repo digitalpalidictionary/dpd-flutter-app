@@ -41,6 +41,8 @@ class RootWithFamilies {
     FamilyIdiom,
     FamilySet,
     SuttaInfo,
+    DictMeta,
+    DictEntries,
   ],
 )
 class DpdDao extends DatabaseAccessor<AppDatabase> with _$DpdDaoMixin {
@@ -427,6 +429,28 @@ class DpdDao extends DatabaseAccessor<AppDatabase> with _$DpdDaoMixin {
       (a, b) => paliSortKey(a.root.root).compareTo(paliSortKey(b.root.root)),
     );
     return results;
+  }
+
+  // ── External dictionaries ────────────────────────────────────────────────
+
+  Future<List<DictEntry>> searchDictExact(String word) {
+    return (select(dictEntries)..where((t) => t.word.equals(word))).get();
+  }
+
+  Future<List<DictEntry>> searchDictFuzzy(String fuzzyKey, {int limit = 50}) {
+    return (select(dictEntries)
+          ..where((t) => t.wordFuzzy.like('$fuzzyKey%'))
+          ..limit(limit))
+        .get();
+  }
+
+  Future<DictMetaData?> getDictMeta(String dictId) {
+    return (select(dictMeta)..where((t) => t.dictId.equals(dictId)))
+        .getSingleOrNull();
+  }
+
+  Future<List<DictMetaData>> getAllDictMeta() {
+    return select(dictMeta).get();
   }
 
   // ── Helpers ───────────────────────────────────────────────────────────────

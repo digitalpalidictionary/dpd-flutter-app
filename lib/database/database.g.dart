@@ -10147,6 +10147,775 @@ class SuttaInfoCompanion extends UpdateCompanion<SuttaInfoData> {
   }
 }
 
+class $DictMetaTable extends DictMeta
+    with TableInfo<$DictMetaTable, DictMetaData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $DictMetaTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _dictIdMeta = const VerificationMeta('dictId');
+  @override
+  late final GeneratedColumn<String> dictId = GeneratedColumn<String>(
+    'dict_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _authorMeta = const VerificationMeta('author');
+  @override
+  late final GeneratedColumn<String> author = GeneratedColumn<String>(
+    'author',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _cssMeta = const VerificationMeta('css');
+  @override
+  late final GeneratedColumn<String> css = GeneratedColumn<String>(
+    'css',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _entryCountMeta = const VerificationMeta(
+    'entryCount',
+  );
+  @override
+  late final GeneratedColumn<int> entryCount = GeneratedColumn<int>(
+    'entry_count',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [dictId, name, author, css, entryCount];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'dict_meta';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<DictMetaData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('dict_id')) {
+      context.handle(
+        _dictIdMeta,
+        dictId.isAcceptableOrUnknown(data['dict_id']!, _dictIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_dictIdMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('author')) {
+      context.handle(
+        _authorMeta,
+        author.isAcceptableOrUnknown(data['author']!, _authorMeta),
+      );
+    }
+    if (data.containsKey('css')) {
+      context.handle(
+        _cssMeta,
+        css.isAcceptableOrUnknown(data['css']!, _cssMeta),
+      );
+    }
+    if (data.containsKey('entry_count')) {
+      context.handle(
+        _entryCountMeta,
+        entryCount.isAcceptableOrUnknown(data['entry_count']!, _entryCountMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {dictId};
+  @override
+  DictMetaData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return DictMetaData(
+      dictId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}dict_id'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      author: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}author'],
+      ),
+      css: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}css'],
+      ),
+      entryCount: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}entry_count'],
+      ),
+    );
+  }
+
+  @override
+  $DictMetaTable createAlias(String alias) {
+    return $DictMetaTable(attachedDatabase, alias);
+  }
+}
+
+class DictMetaData extends DataClass implements Insertable<DictMetaData> {
+  final String dictId;
+  final String name;
+  final String? author;
+  final String? css;
+  final int? entryCount;
+  const DictMetaData({
+    required this.dictId,
+    required this.name,
+    this.author,
+    this.css,
+    this.entryCount,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['dict_id'] = Variable<String>(dictId);
+    map['name'] = Variable<String>(name);
+    if (!nullToAbsent || author != null) {
+      map['author'] = Variable<String>(author);
+    }
+    if (!nullToAbsent || css != null) {
+      map['css'] = Variable<String>(css);
+    }
+    if (!nullToAbsent || entryCount != null) {
+      map['entry_count'] = Variable<int>(entryCount);
+    }
+    return map;
+  }
+
+  DictMetaCompanion toCompanion(bool nullToAbsent) {
+    return DictMetaCompanion(
+      dictId: Value(dictId),
+      name: Value(name),
+      author: author == null && nullToAbsent
+          ? const Value.absent()
+          : Value(author),
+      css: css == null && nullToAbsent ? const Value.absent() : Value(css),
+      entryCount: entryCount == null && nullToAbsent
+          ? const Value.absent()
+          : Value(entryCount),
+    );
+  }
+
+  factory DictMetaData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return DictMetaData(
+      dictId: serializer.fromJson<String>(json['dictId']),
+      name: serializer.fromJson<String>(json['name']),
+      author: serializer.fromJson<String?>(json['author']),
+      css: serializer.fromJson<String?>(json['css']),
+      entryCount: serializer.fromJson<int?>(json['entryCount']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'dictId': serializer.toJson<String>(dictId),
+      'name': serializer.toJson<String>(name),
+      'author': serializer.toJson<String?>(author),
+      'css': serializer.toJson<String?>(css),
+      'entryCount': serializer.toJson<int?>(entryCount),
+    };
+  }
+
+  DictMetaData copyWith({
+    String? dictId,
+    String? name,
+    Value<String?> author = const Value.absent(),
+    Value<String?> css = const Value.absent(),
+    Value<int?> entryCount = const Value.absent(),
+  }) => DictMetaData(
+    dictId: dictId ?? this.dictId,
+    name: name ?? this.name,
+    author: author.present ? author.value : this.author,
+    css: css.present ? css.value : this.css,
+    entryCount: entryCount.present ? entryCount.value : this.entryCount,
+  );
+  DictMetaData copyWithCompanion(DictMetaCompanion data) {
+    return DictMetaData(
+      dictId: data.dictId.present ? data.dictId.value : this.dictId,
+      name: data.name.present ? data.name.value : this.name,
+      author: data.author.present ? data.author.value : this.author,
+      css: data.css.present ? data.css.value : this.css,
+      entryCount: data.entryCount.present
+          ? data.entryCount.value
+          : this.entryCount,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('DictMetaData(')
+          ..write('dictId: $dictId, ')
+          ..write('name: $name, ')
+          ..write('author: $author, ')
+          ..write('css: $css, ')
+          ..write('entryCount: $entryCount')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(dictId, name, author, css, entryCount);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is DictMetaData &&
+          other.dictId == this.dictId &&
+          other.name == this.name &&
+          other.author == this.author &&
+          other.css == this.css &&
+          other.entryCount == this.entryCount);
+}
+
+class DictMetaCompanion extends UpdateCompanion<DictMetaData> {
+  final Value<String> dictId;
+  final Value<String> name;
+  final Value<String?> author;
+  final Value<String?> css;
+  final Value<int?> entryCount;
+  final Value<int> rowid;
+  const DictMetaCompanion({
+    this.dictId = const Value.absent(),
+    this.name = const Value.absent(),
+    this.author = const Value.absent(),
+    this.css = const Value.absent(),
+    this.entryCount = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  DictMetaCompanion.insert({
+    required String dictId,
+    required String name,
+    this.author = const Value.absent(),
+    this.css = const Value.absent(),
+    this.entryCount = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : dictId = Value(dictId),
+       name = Value(name);
+  static Insertable<DictMetaData> custom({
+    Expression<String>? dictId,
+    Expression<String>? name,
+    Expression<String>? author,
+    Expression<String>? css,
+    Expression<int>? entryCount,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (dictId != null) 'dict_id': dictId,
+      if (name != null) 'name': name,
+      if (author != null) 'author': author,
+      if (css != null) 'css': css,
+      if (entryCount != null) 'entry_count': entryCount,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  DictMetaCompanion copyWith({
+    Value<String>? dictId,
+    Value<String>? name,
+    Value<String?>? author,
+    Value<String?>? css,
+    Value<int?>? entryCount,
+    Value<int>? rowid,
+  }) {
+    return DictMetaCompanion(
+      dictId: dictId ?? this.dictId,
+      name: name ?? this.name,
+      author: author ?? this.author,
+      css: css ?? this.css,
+      entryCount: entryCount ?? this.entryCount,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (dictId.present) {
+      map['dict_id'] = Variable<String>(dictId.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (author.present) {
+      map['author'] = Variable<String>(author.value);
+    }
+    if (css.present) {
+      map['css'] = Variable<String>(css.value);
+    }
+    if (entryCount.present) {
+      map['entry_count'] = Variable<int>(entryCount.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('DictMetaCompanion(')
+          ..write('dictId: $dictId, ')
+          ..write('name: $name, ')
+          ..write('author: $author, ')
+          ..write('css: $css, ')
+          ..write('entryCount: $entryCount, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $DictEntriesTable extends DictEntries
+    with TableInfo<$DictEntriesTable, DictEntry> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $DictEntriesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _dictIdMeta = const VerificationMeta('dictId');
+  @override
+  late final GeneratedColumn<String> dictId = GeneratedColumn<String>(
+    'dict_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _wordMeta = const VerificationMeta('word');
+  @override
+  late final GeneratedColumn<String> word = GeneratedColumn<String>(
+    'word',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _wordFuzzyMeta = const VerificationMeta(
+    'wordFuzzy',
+  );
+  @override
+  late final GeneratedColumn<String> wordFuzzy = GeneratedColumn<String>(
+    'word_fuzzy',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _definitionHtmlMeta = const VerificationMeta(
+    'definitionHtml',
+  );
+  @override
+  late final GeneratedColumn<String> definitionHtml = GeneratedColumn<String>(
+    'definition_html',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _definitionPlainMeta = const VerificationMeta(
+    'definitionPlain',
+  );
+  @override
+  late final GeneratedColumn<String> definitionPlain = GeneratedColumn<String>(
+    'definition_plain',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    dictId,
+    word,
+    wordFuzzy,
+    definitionHtml,
+    definitionPlain,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'dict_entries';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<DictEntry> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('dict_id')) {
+      context.handle(
+        _dictIdMeta,
+        dictId.isAcceptableOrUnknown(data['dict_id']!, _dictIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_dictIdMeta);
+    }
+    if (data.containsKey('word')) {
+      context.handle(
+        _wordMeta,
+        word.isAcceptableOrUnknown(data['word']!, _wordMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_wordMeta);
+    }
+    if (data.containsKey('word_fuzzy')) {
+      context.handle(
+        _wordFuzzyMeta,
+        wordFuzzy.isAcceptableOrUnknown(data['word_fuzzy']!, _wordFuzzyMeta),
+      );
+    }
+    if (data.containsKey('definition_html')) {
+      context.handle(
+        _definitionHtmlMeta,
+        definitionHtml.isAcceptableOrUnknown(
+          data['definition_html']!,
+          _definitionHtmlMeta,
+        ),
+      );
+    }
+    if (data.containsKey('definition_plain')) {
+      context.handle(
+        _definitionPlainMeta,
+        definitionPlain.isAcceptableOrUnknown(
+          data['definition_plain']!,
+          _definitionPlainMeta,
+        ),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  DictEntry map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return DictEntry(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      dictId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}dict_id'],
+      )!,
+      word: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}word'],
+      )!,
+      wordFuzzy: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}word_fuzzy'],
+      ),
+      definitionHtml: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}definition_html'],
+      ),
+      definitionPlain: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}definition_plain'],
+      ),
+    );
+  }
+
+  @override
+  $DictEntriesTable createAlias(String alias) {
+    return $DictEntriesTable(attachedDatabase, alias);
+  }
+}
+
+class DictEntry extends DataClass implements Insertable<DictEntry> {
+  final int id;
+  final String dictId;
+  final String word;
+  final String? wordFuzzy;
+  final String? definitionHtml;
+  final String? definitionPlain;
+  const DictEntry({
+    required this.id,
+    required this.dictId,
+    required this.word,
+    this.wordFuzzy,
+    this.definitionHtml,
+    this.definitionPlain,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['dict_id'] = Variable<String>(dictId);
+    map['word'] = Variable<String>(word);
+    if (!nullToAbsent || wordFuzzy != null) {
+      map['word_fuzzy'] = Variable<String>(wordFuzzy);
+    }
+    if (!nullToAbsent || definitionHtml != null) {
+      map['definition_html'] = Variable<String>(definitionHtml);
+    }
+    if (!nullToAbsent || definitionPlain != null) {
+      map['definition_plain'] = Variable<String>(definitionPlain);
+    }
+    return map;
+  }
+
+  DictEntriesCompanion toCompanion(bool nullToAbsent) {
+    return DictEntriesCompanion(
+      id: Value(id),
+      dictId: Value(dictId),
+      word: Value(word),
+      wordFuzzy: wordFuzzy == null && nullToAbsent
+          ? const Value.absent()
+          : Value(wordFuzzy),
+      definitionHtml: definitionHtml == null && nullToAbsent
+          ? const Value.absent()
+          : Value(definitionHtml),
+      definitionPlain: definitionPlain == null && nullToAbsent
+          ? const Value.absent()
+          : Value(definitionPlain),
+    );
+  }
+
+  factory DictEntry.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return DictEntry(
+      id: serializer.fromJson<int>(json['id']),
+      dictId: serializer.fromJson<String>(json['dictId']),
+      word: serializer.fromJson<String>(json['word']),
+      wordFuzzy: serializer.fromJson<String?>(json['wordFuzzy']),
+      definitionHtml: serializer.fromJson<String?>(json['definitionHtml']),
+      definitionPlain: serializer.fromJson<String?>(json['definitionPlain']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'dictId': serializer.toJson<String>(dictId),
+      'word': serializer.toJson<String>(word),
+      'wordFuzzy': serializer.toJson<String?>(wordFuzzy),
+      'definitionHtml': serializer.toJson<String?>(definitionHtml),
+      'definitionPlain': serializer.toJson<String?>(definitionPlain),
+    };
+  }
+
+  DictEntry copyWith({
+    int? id,
+    String? dictId,
+    String? word,
+    Value<String?> wordFuzzy = const Value.absent(),
+    Value<String?> definitionHtml = const Value.absent(),
+    Value<String?> definitionPlain = const Value.absent(),
+  }) => DictEntry(
+    id: id ?? this.id,
+    dictId: dictId ?? this.dictId,
+    word: word ?? this.word,
+    wordFuzzy: wordFuzzy.present ? wordFuzzy.value : this.wordFuzzy,
+    definitionHtml: definitionHtml.present
+        ? definitionHtml.value
+        : this.definitionHtml,
+    definitionPlain: definitionPlain.present
+        ? definitionPlain.value
+        : this.definitionPlain,
+  );
+  DictEntry copyWithCompanion(DictEntriesCompanion data) {
+    return DictEntry(
+      id: data.id.present ? data.id.value : this.id,
+      dictId: data.dictId.present ? data.dictId.value : this.dictId,
+      word: data.word.present ? data.word.value : this.word,
+      wordFuzzy: data.wordFuzzy.present ? data.wordFuzzy.value : this.wordFuzzy,
+      definitionHtml: data.definitionHtml.present
+          ? data.definitionHtml.value
+          : this.definitionHtml,
+      definitionPlain: data.definitionPlain.present
+          ? data.definitionPlain.value
+          : this.definitionPlain,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('DictEntry(')
+          ..write('id: $id, ')
+          ..write('dictId: $dictId, ')
+          ..write('word: $word, ')
+          ..write('wordFuzzy: $wordFuzzy, ')
+          ..write('definitionHtml: $definitionHtml, ')
+          ..write('definitionPlain: $definitionPlain')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, dictId, word, wordFuzzy, definitionHtml, definitionPlain);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is DictEntry &&
+          other.id == this.id &&
+          other.dictId == this.dictId &&
+          other.word == this.word &&
+          other.wordFuzzy == this.wordFuzzy &&
+          other.definitionHtml == this.definitionHtml &&
+          other.definitionPlain == this.definitionPlain);
+}
+
+class DictEntriesCompanion extends UpdateCompanion<DictEntry> {
+  final Value<int> id;
+  final Value<String> dictId;
+  final Value<String> word;
+  final Value<String?> wordFuzzy;
+  final Value<String?> definitionHtml;
+  final Value<String?> definitionPlain;
+  const DictEntriesCompanion({
+    this.id = const Value.absent(),
+    this.dictId = const Value.absent(),
+    this.word = const Value.absent(),
+    this.wordFuzzy = const Value.absent(),
+    this.definitionHtml = const Value.absent(),
+    this.definitionPlain = const Value.absent(),
+  });
+  DictEntriesCompanion.insert({
+    this.id = const Value.absent(),
+    required String dictId,
+    required String word,
+    this.wordFuzzy = const Value.absent(),
+    this.definitionHtml = const Value.absent(),
+    this.definitionPlain = const Value.absent(),
+  }) : dictId = Value(dictId),
+       word = Value(word);
+  static Insertable<DictEntry> custom({
+    Expression<int>? id,
+    Expression<String>? dictId,
+    Expression<String>? word,
+    Expression<String>? wordFuzzy,
+    Expression<String>? definitionHtml,
+    Expression<String>? definitionPlain,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (dictId != null) 'dict_id': dictId,
+      if (word != null) 'word': word,
+      if (wordFuzzy != null) 'word_fuzzy': wordFuzzy,
+      if (definitionHtml != null) 'definition_html': definitionHtml,
+      if (definitionPlain != null) 'definition_plain': definitionPlain,
+    });
+  }
+
+  DictEntriesCompanion copyWith({
+    Value<int>? id,
+    Value<String>? dictId,
+    Value<String>? word,
+    Value<String?>? wordFuzzy,
+    Value<String?>? definitionHtml,
+    Value<String?>? definitionPlain,
+  }) {
+    return DictEntriesCompanion(
+      id: id ?? this.id,
+      dictId: dictId ?? this.dictId,
+      word: word ?? this.word,
+      wordFuzzy: wordFuzzy ?? this.wordFuzzy,
+      definitionHtml: definitionHtml ?? this.definitionHtml,
+      definitionPlain: definitionPlain ?? this.definitionPlain,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (dictId.present) {
+      map['dict_id'] = Variable<String>(dictId.value);
+    }
+    if (word.present) {
+      map['word'] = Variable<String>(word.value);
+    }
+    if (wordFuzzy.present) {
+      map['word_fuzzy'] = Variable<String>(wordFuzzy.value);
+    }
+    if (definitionHtml.present) {
+      map['definition_html'] = Variable<String>(definitionHtml.value);
+    }
+    if (definitionPlain.present) {
+      map['definition_plain'] = Variable<String>(definitionPlain.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('DictEntriesCompanion(')
+          ..write('id: $id, ')
+          ..write('dictId: $dictId, ')
+          ..write('word: $word, ')
+          ..write('wordFuzzy: $wordFuzzy, ')
+          ..write('definitionHtml: $definitionHtml, ')
+          ..write('definitionPlain: $definitionPlain')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -10162,6 +10931,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $FamilyIdiomTable familyIdiom = $FamilyIdiomTable(this);
   late final $FamilySetTable familySet = $FamilySetTable(this);
   late final $SuttaInfoTable suttaInfo = $SuttaInfoTable(this);
+  late final $DictMetaTable dictMeta = $DictMetaTable(this);
+  late final $DictEntriesTable dictEntries = $DictEntriesTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -10178,6 +10949,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     familyIdiom,
     familySet,
     suttaInfo,
+    dictMeta,
+    dictEntries,
   ];
 }
 
@@ -14992,6 +15765,422 @@ typedef $$SuttaInfoTableProcessedTableManager =
       SuttaInfoData,
       PrefetchHooks Function()
     >;
+typedef $$DictMetaTableCreateCompanionBuilder =
+    DictMetaCompanion Function({
+      required String dictId,
+      required String name,
+      Value<String?> author,
+      Value<String?> css,
+      Value<int?> entryCount,
+      Value<int> rowid,
+    });
+typedef $$DictMetaTableUpdateCompanionBuilder =
+    DictMetaCompanion Function({
+      Value<String> dictId,
+      Value<String> name,
+      Value<String?> author,
+      Value<String?> css,
+      Value<int?> entryCount,
+      Value<int> rowid,
+    });
+
+class $$DictMetaTableFilterComposer
+    extends Composer<_$AppDatabase, $DictMetaTable> {
+  $$DictMetaTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get dictId => $composableBuilder(
+    column: $table.dictId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get author => $composableBuilder(
+    column: $table.author,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get css => $composableBuilder(
+    column: $table.css,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get entryCount => $composableBuilder(
+    column: $table.entryCount,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$DictMetaTableOrderingComposer
+    extends Composer<_$AppDatabase, $DictMetaTable> {
+  $$DictMetaTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get dictId => $composableBuilder(
+    column: $table.dictId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get author => $composableBuilder(
+    column: $table.author,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get css => $composableBuilder(
+    column: $table.css,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get entryCount => $composableBuilder(
+    column: $table.entryCount,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$DictMetaTableAnnotationComposer
+    extends Composer<_$AppDatabase, $DictMetaTable> {
+  $$DictMetaTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get dictId =>
+      $composableBuilder(column: $table.dictId, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get author =>
+      $composableBuilder(column: $table.author, builder: (column) => column);
+
+  GeneratedColumn<String> get css =>
+      $composableBuilder(column: $table.css, builder: (column) => column);
+
+  GeneratedColumn<int> get entryCount => $composableBuilder(
+    column: $table.entryCount,
+    builder: (column) => column,
+  );
+}
+
+class $$DictMetaTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $DictMetaTable,
+          DictMetaData,
+          $$DictMetaTableFilterComposer,
+          $$DictMetaTableOrderingComposer,
+          $$DictMetaTableAnnotationComposer,
+          $$DictMetaTableCreateCompanionBuilder,
+          $$DictMetaTableUpdateCompanionBuilder,
+          (
+            DictMetaData,
+            BaseReferences<_$AppDatabase, $DictMetaTable, DictMetaData>,
+          ),
+          DictMetaData,
+          PrefetchHooks Function()
+        > {
+  $$DictMetaTableTableManager(_$AppDatabase db, $DictMetaTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$DictMetaTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$DictMetaTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$DictMetaTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> dictId = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<String?> author = const Value.absent(),
+                Value<String?> css = const Value.absent(),
+                Value<int?> entryCount = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => DictMetaCompanion(
+                dictId: dictId,
+                name: name,
+                author: author,
+                css: css,
+                entryCount: entryCount,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String dictId,
+                required String name,
+                Value<String?> author = const Value.absent(),
+                Value<String?> css = const Value.absent(),
+                Value<int?> entryCount = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => DictMetaCompanion.insert(
+                dictId: dictId,
+                name: name,
+                author: author,
+                css: css,
+                entryCount: entryCount,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$DictMetaTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $DictMetaTable,
+      DictMetaData,
+      $$DictMetaTableFilterComposer,
+      $$DictMetaTableOrderingComposer,
+      $$DictMetaTableAnnotationComposer,
+      $$DictMetaTableCreateCompanionBuilder,
+      $$DictMetaTableUpdateCompanionBuilder,
+      (
+        DictMetaData,
+        BaseReferences<_$AppDatabase, $DictMetaTable, DictMetaData>,
+      ),
+      DictMetaData,
+      PrefetchHooks Function()
+    >;
+typedef $$DictEntriesTableCreateCompanionBuilder =
+    DictEntriesCompanion Function({
+      Value<int> id,
+      required String dictId,
+      required String word,
+      Value<String?> wordFuzzy,
+      Value<String?> definitionHtml,
+      Value<String?> definitionPlain,
+    });
+typedef $$DictEntriesTableUpdateCompanionBuilder =
+    DictEntriesCompanion Function({
+      Value<int> id,
+      Value<String> dictId,
+      Value<String> word,
+      Value<String?> wordFuzzy,
+      Value<String?> definitionHtml,
+      Value<String?> definitionPlain,
+    });
+
+class $$DictEntriesTableFilterComposer
+    extends Composer<_$AppDatabase, $DictEntriesTable> {
+  $$DictEntriesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get dictId => $composableBuilder(
+    column: $table.dictId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get word => $composableBuilder(
+    column: $table.word,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get wordFuzzy => $composableBuilder(
+    column: $table.wordFuzzy,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get definitionHtml => $composableBuilder(
+    column: $table.definitionHtml,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get definitionPlain => $composableBuilder(
+    column: $table.definitionPlain,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$DictEntriesTableOrderingComposer
+    extends Composer<_$AppDatabase, $DictEntriesTable> {
+  $$DictEntriesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get dictId => $composableBuilder(
+    column: $table.dictId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get word => $composableBuilder(
+    column: $table.word,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get wordFuzzy => $composableBuilder(
+    column: $table.wordFuzzy,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get definitionHtml => $composableBuilder(
+    column: $table.definitionHtml,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get definitionPlain => $composableBuilder(
+    column: $table.definitionPlain,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$DictEntriesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $DictEntriesTable> {
+  $$DictEntriesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get dictId =>
+      $composableBuilder(column: $table.dictId, builder: (column) => column);
+
+  GeneratedColumn<String> get word =>
+      $composableBuilder(column: $table.word, builder: (column) => column);
+
+  GeneratedColumn<String> get wordFuzzy =>
+      $composableBuilder(column: $table.wordFuzzy, builder: (column) => column);
+
+  GeneratedColumn<String> get definitionHtml => $composableBuilder(
+    column: $table.definitionHtml,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get definitionPlain => $composableBuilder(
+    column: $table.definitionPlain,
+    builder: (column) => column,
+  );
+}
+
+class $$DictEntriesTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $DictEntriesTable,
+          DictEntry,
+          $$DictEntriesTableFilterComposer,
+          $$DictEntriesTableOrderingComposer,
+          $$DictEntriesTableAnnotationComposer,
+          $$DictEntriesTableCreateCompanionBuilder,
+          $$DictEntriesTableUpdateCompanionBuilder,
+          (
+            DictEntry,
+            BaseReferences<_$AppDatabase, $DictEntriesTable, DictEntry>,
+          ),
+          DictEntry,
+          PrefetchHooks Function()
+        > {
+  $$DictEntriesTableTableManager(_$AppDatabase db, $DictEntriesTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$DictEntriesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$DictEntriesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$DictEntriesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> dictId = const Value.absent(),
+                Value<String> word = const Value.absent(),
+                Value<String?> wordFuzzy = const Value.absent(),
+                Value<String?> definitionHtml = const Value.absent(),
+                Value<String?> definitionPlain = const Value.absent(),
+              }) => DictEntriesCompanion(
+                id: id,
+                dictId: dictId,
+                word: word,
+                wordFuzzy: wordFuzzy,
+                definitionHtml: definitionHtml,
+                definitionPlain: definitionPlain,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required String dictId,
+                required String word,
+                Value<String?> wordFuzzy = const Value.absent(),
+                Value<String?> definitionHtml = const Value.absent(),
+                Value<String?> definitionPlain = const Value.absent(),
+              }) => DictEntriesCompanion.insert(
+                id: id,
+                dictId: dictId,
+                word: word,
+                wordFuzzy: wordFuzzy,
+                definitionHtml: definitionHtml,
+                definitionPlain: definitionPlain,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$DictEntriesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $DictEntriesTable,
+      DictEntry,
+      $$DictEntriesTableFilterComposer,
+      $$DictEntriesTableOrderingComposer,
+      $$DictEntriesTableAnnotationComposer,
+      $$DictEntriesTableCreateCompanionBuilder,
+      $$DictEntriesTableUpdateCompanionBuilder,
+      (DictEntry, BaseReferences<_$AppDatabase, $DictEntriesTable, DictEntry>),
+      DictEntry,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -15018,4 +16207,8 @@ class $AppDatabaseManager {
       $$FamilySetTableTableManager(_db, _db.familySet);
   $$SuttaInfoTableTableManager get suttaInfo =>
       $$SuttaInfoTableTableManager(_db, _db.suttaInfo);
+  $$DictMetaTableTableManager get dictMeta =>
+      $$DictMetaTableTableManager(_db, _db.dictMeta);
+  $$DictEntriesTableTableManager get dictEntries =>
+      $$DictEntriesTableTableManager(_db, _db.dictEntries);
 }

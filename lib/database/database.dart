@@ -23,6 +23,8 @@ part 'database.g.dart';
     FamilyIdiom,
     FamilySet,
     SuttaInfo,
+    DictMeta,
+    DictEntries,
   ],
 )
 class AppDatabase extends _$AppDatabase {
@@ -30,14 +32,14 @@ class AppDatabase extends _$AppDatabase {
   /// The exported DB must set `db_schema_version` in the `db_info` table to
   /// the same value. When the on-device DB has a lower value, the app forces
   /// a blocking re-download before any queries run.
-  static const requiredDbSchemaVersion = 2;
+  static const requiredDbSchemaVersion = 3;
 
   AppDatabase() : super(_openConnection());
 
   AppDatabase.forTesting(super.e);
 
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 3;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
