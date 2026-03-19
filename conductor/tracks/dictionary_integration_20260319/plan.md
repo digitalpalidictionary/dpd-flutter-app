@@ -33,25 +33,25 @@
 
 ## Phase 2: Flutter Database Layer
 
-- [ ] Task: Add Drift table definitions for `DictMeta` and `DictEntries`
-  - [ ] Add `DictMeta` table class to `lib/database/tables.dart`
-  - [ ] Add `DictEntries` table class to `lib/database/tables.dart`
-  - [ ] Register both tables in `@DriftDatabase(tables: [...])` in `database.dart`
-  - [ ] Bump `schemaVersion` and `requiredDbSchemaVersion` to 3
-  - [ ] Register both tables in `@DriftAccessor(tables: [...])` in `dao.dart`
+- [x] Task: Add Drift table definitions for `DictMeta` and `DictEntries` `99139b7`
+  - [x] Add `DictMeta` table class to `lib/database/tables.dart`
+  - [x] Add `DictEntries` table class to `lib/database/tables.dart`
+  - [x] Register both tables in `@DriftDatabase(tables: [...])` in `database.dart`
+  - [x] Bump `schemaVersion` and `requiredDbSchemaVersion` to 3
+  - [x] Register both tables in `@DriftAccessor(tables: [...])` in `dao.dart`
 
-- [ ] Task: Add DAO query methods for dictionary lookups
-  - [ ] Add `searchDictExact(String word)` method returning `List<DictEntryData>`
-  - [ ] Add `searchDictFuzzy(String fuzzyKey, {int limit = 50})` method — prefix match on `word_fuzzy` column with LIMIT clause
-  - [ ] Add `getDictMeta(String dictId)` method returning `DictMetaData?`
-  - [ ] Add `getAllDictMeta()` method returning `List<DictMetaData>` (for settings widget)
-  - [ ] Results grouped by `dict_id` so provider can apply user's order/visibility preferences
+- [x] Task: Add DAO query methods for dictionary lookups `99139b7`
+  - [x] Add `searchDictExact(String word)` method returning `List<DictEntryData>`
+  - [x] Add `searchDictFuzzy(String fuzzyKey, {int limit = 50})` method — prefix match on `word_fuzzy` column with LIMIT clause
+  - [x] Add `getDictMeta(String dictId)` method returning `DictMetaData?`
+  - [x] Add `getAllDictMeta()` method returning `List<DictMetaData>` (for settings widget)
+  - [x] Results grouped by `dict_id` so provider can apply user's order/visibility preferences
 
-- [ ] Task: Run Drift code generation
-  - [ ] Run `dart run build_runner build --delete-conflicting-outputs`
-  - [ ] Verify generated files compile without errors
+- [x] Task: Run Drift code generation `99139b7`
+  - [x] Run `dart run build_runner build --delete-conflicting-outputs`
+  - [x] Verify generated files compile without errors
 
-- [ ] Task: Conductor - User Manual Verification 'Phase 2: Flutter Database Layer' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 2: Flutter Database Layer' (Protocol in workflow.md)
 
 ## Phase 3: Providers and HTML Rendering
 
