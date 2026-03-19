@@ -31,7 +31,7 @@
 
 - [x] Task: Conductor - User Manual Verification 'Phase 1: Database Export' (Protocol in workflow.md)
 
-## Phase 2: Flutter Database Layer
+## Phase 2: Flutter Database Layer [checkpoint: 767ffe8]
 
 - [x] Task: Add Drift table definitions for `DictMeta` and `DictEntries` `99139b7`
   - [x] Add `DictMeta` table class to `lib/database/tables.dart`
