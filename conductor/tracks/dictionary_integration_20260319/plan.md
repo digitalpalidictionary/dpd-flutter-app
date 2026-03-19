@@ -53,24 +53,24 @@
 
 - [x] Task: Conductor - User Manual Verification 'Phase 2: Flutter Database Layer' (Protocol in workflow.md)
 
-## Phase 3: Providers and HTML Rendering
+## Phase 3: Providers and HTML Rendering [checkpoint: 0567890]
 
-- [ ] Task: Create dictionary Riverpod providers
-  - [ ] Create `lib/providers/dict_provider.dart`
-  - [ ] Implement `dictResultsProvider(query)` — exact match on `dict_entries.word` + fuzzy match on `word_fuzzy`
-  - [ ] Group results by `dict_id`, apply user's order and visibility preferences
-  - [ ] Implement `dictCssProvider(dictId)` — cached CSS from `dict_meta`
-  - [ ] Implement `dictOrderProvider` — reads/writes order and visibility JSON from SharedPreferences
-  - [ ] Handle graceful degradation if dict tables don't exist (try/catch on query)
+- [x] Task: Create dictionary Riverpod providers `0567890`
+  - [x] Create `lib/providers/dict_provider.dart`
+  - [x] Implement `dictResultsProvider(query)` — exact match on `dict_entries.word` + fuzzy match on `word_fuzzy`
+  - [x] Group results by `dict_id`, apply user's order and visibility preferences
+  - [x] Implement `dictCssProvider(dictId)` — cached CSS from `dict_meta`
+  - [x] Implement `dictOrderProvider` — reads/writes order and visibility JSON from SharedPreferences
+  - [x] Handle graceful degradation if dict tables don't exist (try/catch on query)
 
-- [ ] Task: Create `DictHtmlCard` widget
-  - [ ] Create `lib/widgets/dict_html_card.dart`
-  - [ ] Wrap HTML with `<style>{css}</style>{definition_html}`
-  - [ ] Render via `HtmlWidget` from `flutter_widget_from_html`
-  - [ ] Use `DpdSectionContainer` + `HeadingUnderlined` for layout
-  - [ ] Add to tech-stack.md UI section
+- [x] Task: Create `DictHtmlCard` widget `0567890`
+  - [x] Create `lib/widgets/dict_html_card.dart`
+  - [x] Wrap HTML with `<style>{css}</style>{definition_html}` (uses `customStylesBuilder` instead — validated in Phase 0 PoC)
+  - [x] Render via `HtmlWidget` from `flutter_widget_from_html`
+  - [x] Use `DpdSectionContainer` + `HeadingUnderlined` for layout
+  - [x] Add to tech-stack.md UI section
 
-- [ ] Task: Conductor - User Manual Verification 'Phase 3: Providers and HTML Rendering' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 3: Providers and HTML Rendering' — deferred to Phase 4 (no visible UI yet)
 
 ## Phase 4: Search Integration and Settings
 
