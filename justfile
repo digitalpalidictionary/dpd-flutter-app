@@ -16,13 +16,30 @@ test:
 
 # ---------- ANDROID ----------
 
+_android_pkg := "net.dpdict.dpd_flutter_app.debug"
+_android_db_dir := "/storage/emulated/0/Android/data/" + _android_pkg + "/files"
+_android_db_path := _android_db_dir + "/dpd-mobile.db"
+_local_db := "../dpd-db/exporter/share/dpd-mobile.db"
+
+# Build, install debug APK, push DB, then launch — all in one
+android-run:
+    flutter build apk --debug
+    adb install -r build/app/outputs/flutter-apk/app-debug.apk
+    adb shell mkdir -p {{_android_db_dir}}
+    adb push {{_local_db}} {{_android_db_path}}
+    adb shell am start -n {{_android_pkg}}/net.dpdict.dpd_flutter_app.MainActivity
+
 # Build and install debug APK without clearing app data
 android-install:
     flutter build apk --debug && adb install -r build/app/outputs/flutter-apk/app-debug.apk
 
-# Fresh install: wipe data, install APK, create storage dir, push DB
-android-install-fresh:
-    flutter build apk --debug && adb install -r build/app/outputs/flutter-apk/app-debug.apk && adb shell mkdir -p /storage/emulated/0/Android/data/net.dpdict.dpd_flutter_app.debug/files && adb push ../dpd-db/exporter/share/dpd-mobile.db /storage/emulated/0/Android/data/net.dpdict.dpd_flutter_app.debug/files/dpd-mobile.db
+# Push DB and restart the running app
+android-push-db:
+    adb shell mkdir -p {{_android_db_dir}}
+    adb push {{_local_db}} {{_android_db_path}}
+    adb shell am force-stop {{_android_pkg}}
+    adb shell am start -n {{_android_pkg}}/net.dpdict.dpd_flutter_app.MainActivity
+    @echo "DB pushed and app restarted."
 
 # Build debug APK
 android-build:
@@ -34,14 +51,9 @@ android-build-release:
     cp build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/dpd.apk
     @echo "\nRelease APK: build/app/outputs/flutter-apk/dpd.apk"
 
-
-# Rebuild mobile DB in dpd-db repo and copy to share
+# Rebuild mobile DB in dpd-db repo
 build-db:
     cd ../dpd-db && uv run python exporter/mobile/mobile_exporter.py
-
-# Push dpd-mobile.db to connected Android device (debug build)
-android-push-db:
-    adb push ../dpd-db/exporter/share/dpd-mobile.db /storage/emulated/0/Android/data/net.dpdict.dpd_flutter_app.debug/files/dpd-mobile.db
 
 # ---------- LINUX ----------
 
