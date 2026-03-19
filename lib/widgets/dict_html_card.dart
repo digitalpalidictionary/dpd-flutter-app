@@ -5,14 +5,29 @@ import 'package:html/dom.dart' as dom;
 import '../database/database.dart';
 import '../theme/dpd_colors.dart';
 
+final _linkRe = RegExp(r'<a\b[^>]*>(.*?)</a>', dotAll: true);
+final _hTagRe = RegExp(r'\(H\d[A-Z]?\)\s*');
+final _lnumRe = RegExp(r'<span class="lnum">.*?</span>.*?</span>', dotAll: true);
+final _hrefdataRe = RegExp(r'<span class="hrefdata">.*?</span>.*?</span>.*?</span>', dotAll: true);
+
+String _cleanMwHtml(String html) {
+  html = html.replaceAll(_lnumRe, '');
+  html = html.replaceAll(_hrefdataRe, '');
+  html = html.replaceAllMapped(_linkRe, (m) => m[1] ?? '');
+  html = html.replaceAll(_hTagRe, '');
+  return html;
+}
+
 class DictHtmlCard extends StatelessWidget {
   const DictHtmlCard({
     super.key,
     required this.dictName,
+    required this.dictId,
     required this.entries,
   });
 
   final String dictName;
+  final String dictId;
   final List<DictEntry> entries;
 
   @override
@@ -20,6 +35,7 @@ class DictHtmlCard extends StatelessWidget {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
     final stylesBuilder = _buildStylesBuilder(isDark);
+    final isMw = dictId == 'mw';
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -35,12 +51,19 @@ class DictHtmlCard extends StatelessWidget {
         Divider(height: 1, color: DpdColors.primary.withValues(alpha: 0.3)),
         const SizedBox(height: 8),
         for (final entry in entries) ...[
+          Text(
+            entry.word,
+            style: theme.textTheme.titleLarge?.copyWith(
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+          const SizedBox(height: 4),
           HtmlWidget(
-            entry.definitionHtml ?? '',
+            isMw ? _cleanMwHtml(entry.definitionHtml ?? '') : entry.definitionHtml ?? '',
             customStylesBuilder: stylesBuilder,
             textStyle: DefaultTextStyle.of(context).style,
           ),
-          if (entry != entries.last) const Divider(height: 24),
+          if (entry != entries.last) const SizedBox(height: 16),
         ],
       ],
     );
@@ -138,6 +161,27 @@ Map<String, String>? Function(dom.Element) _buildStylesBuilder(bool isDark) {
     if (classes.contains('more')) {
       return {'color': 'gray', 'font-style': 'italic', 'font-size': '12px'};
     }
+
+    // MW (Monier-Williams) specific styles
+    if (classes.contains('lnum') || classes.contains('hrefdata')) {
+      return {'display': 'none'};
+    }
+    if (classes.contains('sdata_italic_iast')) {
+      return {'font-style': 'italic'};
+    }
+    if (classes.contains('hom')) {
+      return {'font-size': '9px', 'vertical-align': 'super', 'color': lemmaColor};
+    }
+    if (classes.contains('ls')) {
+      return {'color': isDark ? '#8bb8e8' : 'rgb(0, 115, 177)'};
+    }
+    if (classes.contains('dotunder')) {
+      return {};
+    }
+    if (classes.contains('cssshade')) {
+      return {'background-color': isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.03)'};
+    }
+
     return null;
   };
 }

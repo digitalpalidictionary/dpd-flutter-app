@@ -25,7 +25,9 @@ _local_db := "../dpd-db/exporter/share/dpd-mobile.db"
 android-run:
     flutter build apk --debug
     adb install -r build/app/outputs/flutter-apk/app-debug.apk
+    adb shell am force-stop {{_android_pkg}}
     adb shell mkdir -p {{_android_db_dir}}
+    adb shell rm -f {{_android_db_path}}-wal {{_android_db_path}}-shm {{_android_db_path}}-journal
     adb push {{_local_db}} {{_android_db_path}}
     adb shell am start -n {{_android_pkg}}/net.dpdict.dpd_flutter_app.MainActivity
 
@@ -33,13 +35,14 @@ android-run:
 android-install:
     flutter build apk --debug && adb install -r build/app/outputs/flutter-apk/app-debug.apk
 
-# Push DB and restart the running app
+# Push DB and restart the running app (cleans stale WAL/SHM files)
 android-push-db:
-    adb shell mkdir -p {{_android_db_dir}}
-    adb push {{_local_db}} {{_android_db_path}}
     adb shell am force-stop {{_android_pkg}}
+    adb shell mkdir -p {{_android_db_dir}}
+    adb shell rm -f {{_android_db_path}}-wal {{_android_db_path}}-shm {{_android_db_path}}-journal
+    adb push {{_local_db}} {{_android_db_path}}
     adb shell am start -n {{_android_pkg}}/net.dpdict.dpd_flutter_app.MainActivity
-    @echo "DB pushed and app restarted."
+    @echo "DB pushed (WAL/SHM cleaned) and app restarted."
 
 # Build debug APK
 android-build:

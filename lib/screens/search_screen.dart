@@ -691,7 +691,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
               for (final dr in allDictResults)
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  child: DictHtmlCard(dictName: dr.dictName, entries: dr.entries),
+                  child: DictHtmlCard(dictId: dr.dictId, dictName: dr.dictName, entries: dr.entries),
                 ),
             ],
           ),
@@ -1079,7 +1079,7 @@ class _SplitResultsListState extends State<_SplitResultsList> {
           final dr = widget.dictExact[index];
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            child: DictHtmlCard(dictName: dr.dictName, entries: dr.entries),
+            child: DictHtmlCard(dictId: dr.dictId, dictName: dr.dictName, entries: dr.entries),
           );
         }
         index -= widget.dictExact.length;
@@ -1115,7 +1115,7 @@ class _SplitResultsListState extends State<_SplitResultsList> {
           final dr = widget.dictFuzzy[index];
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            child: DictHtmlCard(dictName: dr.dictName, entries: dr.entries),
+            child: DictHtmlCard(dictId: dr.dictId, dictName: dr.dictName, entries: dr.entries),
           );
         }
 
