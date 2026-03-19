@@ -321,24 +321,48 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                   ),
                   CompositedTransformTarget(
                     link: _infoLayerLink,
+                    child: Tooltip(
+                      message: 'Information',
+                      decoration: BoxDecoration(
+                        color: DpdColors.primaryAlt,
+                        borderRadius: DpdColors.borderRadius,
+                      ),
+                      textStyle: TextStyle(color: DpdColors.light, fontSize: 12),
+                      child: IconButton(
+                        icon: Icon(
+                          _activeInfo != null ? Icons.info : Icons.info_outline,
+                        ),
+                        onPressed: _onInfoButtonPressed,
+                      ),
+                    ),
+                  ),
+                  Tooltip(
+                    message: 'Search history',
+                    decoration: BoxDecoration(
+                      color: DpdColors.primaryAlt,
+                      borderRadius: DpdColors.borderRadius,
+                    ),
+                    textStyle: TextStyle(color: DpdColors.light, fontSize: 12),
+                    child: IconButton(
+                      icon: const Icon(Icons.history),
+                      onPressed: () => showHistoryOverlay(context),
+                    ),
+                  ),
+                  Tooltip(
+                    message: 'Settings',
+                    decoration: BoxDecoration(
+                      color: DpdColors.primaryAlt,
+                      borderRadius: DpdColors.borderRadius,
+                    ),
+                    textStyle: TextStyle(color: DpdColors.light, fontSize: 12),
                     child: IconButton(
                       icon: Icon(
-                        _activeInfo != null ? Icons.info : Icons.info_outline,
+                        _showSettingsPanel ? Icons.settings : Icons.settings_outlined,
                       ),
-                      onPressed: _onInfoButtonPressed,
+                      onPressed: Platform.isLinux
+                          ? () => setState(() => _showSettingsPanel = !_showSettingsPanel)
+                          : () => showSettingsOverlay(context),
                     ),
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.history),
-                    onPressed: () => showHistoryOverlay(context),
-                  ),
-                  IconButton(
-                    icon: Icon(
-                      _showSettingsPanel ? Icons.settings : Icons.settings_outlined,
-                    ),
-                    onPressed: Platform.isLinux
-                        ? () => setState(() => _showSettingsPanel = !_showSettingsPanel)
-                        : () => showSettingsOverlay(context),
                   ),
                 ],
               ),
