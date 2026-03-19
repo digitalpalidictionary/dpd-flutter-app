@@ -14,20 +14,20 @@
 
 ## Phase 1: Database Export (Python)
 
-- [ ] Task: Add `export_other_dictionaries()` to `mobile_exporter.py`
-  - [ ] Create `dict_meta` table with schema: `dict_id TEXT PK, name TEXT, author TEXT, css TEXT, entry_count INTEGER`
-  - [ ] Create `dict_entries` table with schema: `id INTEGER PK, dict_id TEXT, word TEXT, word_fuzzy TEXT, definition_html TEXT, definition_plain TEXT`
-  - [ ] Add index on `(dict_id, word)` and `(dict_id, word_fuzzy)`
-  - [ ] Generate `word_fuzzy` via `_strip_diacritics_mobile()` (strips diacritics, aspirates, double consonants — same function used for `lookup.fuzzy_key`)
-  - [ ] Load `cone_dict.json` + `cone_front_matter.json`
-  - [ ] Load `cone.css` — strip desktop-only rules (`position: fixed/absolute`, `:hover`, `@font-face`, `cursor`, form/input elements) before storing in `dict_meta.css`
-  - [ ] Sanitize hardcoded `color: black` and `background-color: white` from CSS so dark mode degrades gracefully
-  - [ ] Strip leading digits from Cone keys for `word` column
-  - [ ] Strip DOCTYPE wrapper from HTML, run `remove_links()` on entries with hrefs
-  - [ ] `definition_plain` column: add to schema but leave empty (deferred for future FTS)
-  - [ ] Insert Cone metadata row into `dict_meta`
-  - [ ] Call function from `main()` before `dest.commit()`
-  - [ ] Bump `DB_SCHEMA_VERSION` to 3
+- [x] Task: Add `export_other_dictionaries()` to `mobile_exporter.py` `6eee448`
+  - [x] Create `dict_meta` table with schema: `dict_id TEXT PK, name TEXT, author TEXT, css TEXT, entry_count INTEGER`
+  - [x] Create `dict_entries` table with schema: `id INTEGER PK, dict_id TEXT, word TEXT, word_fuzzy TEXT, definition_html TEXT, definition_plain TEXT`
+  - [x] Add index on `(dict_id, word)` and `(dict_id, word_fuzzy)`
+  - [x] Generate `word_fuzzy` via `_strip_diacritics_mobile()` (strips diacritics, aspirates, double consonants — same function used for `lookup.fuzzy_key`)
+  - [x] Load `cone_dict.json` + `cone_front_matter.json`
+  - [x] Load `cone.css` — strip desktop-only rules (`position: fixed/absolute`, `:hover`, `@font-face`, `cursor`, form/input elements) before storing in `dict_meta.css`
+  - [x] Sanitize hardcoded `color: black` and `background-color: white` from CSS so dark mode degrades gracefully
+  - [x] Strip leading digits from Cone keys for `word` column
+  - [x] Strip DOCTYPE wrapper from HTML, run `remove_links()` on entries with hrefs
+  - [x] `definition_plain` column: add to schema but leave empty (deferred for future FTS)
+  - [x] Insert Cone metadata row into `dict_meta`
+  - [x] Call function from `main()` before `dest.commit()`
+  - [x] Bump `DB_SCHEMA_VERSION` to 3
 
 - [ ] Task: Conductor - User Manual Verification 'Phase 1: Database Export' (Protocol in workflow.md)
 
