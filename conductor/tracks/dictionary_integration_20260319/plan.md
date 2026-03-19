@@ -29,7 +29,7 @@
   - [x] Call function from `main()` before `dest.commit()`
   - [x] Bump `DB_SCHEMA_VERSION` to 3
 
-- [ ] Task: Conductor - User Manual Verification 'Phase 1: Database Export' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 1: Database Export' (Protocol in workflow.md)
 
 ## Phase 2: Flutter Database Layer
 
