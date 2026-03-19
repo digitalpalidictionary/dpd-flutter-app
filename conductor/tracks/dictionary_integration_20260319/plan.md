@@ -72,24 +72,24 @@
 
 - [x] Task: Conductor - User Manual Verification 'Phase 3: Providers and HTML Rendering' — deferred to Phase 4 (no visible UI yet)
 
-## Phase 4: Search Integration and Settings
+## Phase 4: Search Integration and Settings [checkpoint: 15f8fce]
 
-- [ ] Task: Wire dictionary results into search screen
-  - [ ] Modify `lib/screens/search_screen.dart`
-  - [ ] Query `dictResultsProvider` alongside existing DPD providers
-  - [ ] Show dictionary results section after DPD results, in user's chosen order
-  - [ ] Render each result as a `DictHtmlCard`
-  - [ ] Only show results from enabled dictionaries
+- [x] Task: Wire dictionary results into search screen `15f8fce`
+  - [x] Modify `lib/screens/search_screen.dart`
+  - [x] Query `dictResultsProvider` alongside existing DPD providers
+  - [x] Show dictionary results section after DPD results, in user's chosen order
+  - [x] Render each result as a `DictHtmlCard`
+  - [x] Only show results from enabled dictionaries
 
-- [ ] Task: Create dictionary order & visibility settings widget
-  - [ ] Create `lib/widgets/dict_settings_widget.dart` — unified reorderable list
-  - [ ] Each row: drag handle, dictionary name, enable/disable toggle
-  - [ ] Use `ReorderableListView` for drag-to-reorder
-  - [ ] Store order and visibility as JSON in SharedPreferences
-  - [ ] Integrate widget into `lib/widgets/settings_panel.dart`
-  - [ ] Dictionary results in search screen respect user's chosen order and visibility
+- [x] Task: Create dictionary order & visibility settings widget `15f8fce`
+  - [x] Create `lib/widgets/dict_settings_widget.dart` — unified reorderable list
+  - [x] Each row: drag handle, dictionary name, enable/disable toggle
+  - [x] Use `ReorderableListView` for drag-to-reorder
+  - [x] Store order and visibility as JSON in SharedPreferences
+  - [x] Integrate widget into `lib/widgets/settings_panel.dart`
+  - [x] Dictionary results in search screen respect user's chosen order and visibility
 
-- [ ] Task: Conductor - User Manual Verification 'Phase 4: Search Integration and Settings' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 4: Search Integration and Settings' — user confirmed on Android
 
 ## Phase 5: Additional Dictionaries
 
