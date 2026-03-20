@@ -69,6 +69,9 @@ All entry sections (grammar, examples, inflections, families, etc.) MUST use:
 ### Theme Colors
 **NEVER** use hardcoded colors (`Colors.white`, `Colors.blue`, etc.). Always use `Theme.of(context).colorScheme` values (e.g. `colorScheme.primary`, `colorScheme.onPrimary`, `colorScheme.surface`). The app's theme is defined in `lib/theme/dpd_colors.dart` and applied via `ColorScheme` in `lib/app.dart`.
 
+### Reuse Existing Patterns
+**ALWAYS** search the codebase for existing solutions before building new ones. If the app already has a pattern for tooltips, dialogs, popups, or any UI component, copy that exact pattern — same widget, same styling, same configuration. Never reinvent a solution for an already-solved problem.
+
 ### Footer Widget
 Use `DpdFooter` for all section footers with feedback links:
 - Provides consistent styling matching webapp `.dpd-footer` CSS
