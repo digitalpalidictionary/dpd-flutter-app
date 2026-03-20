@@ -114,10 +114,14 @@
   - [ ] Parse entries, generate `word`, `word_fuzzy`, `definition_html`
   - [ ] Insert with `dict_id = 'simsapa'`
 
-- [ ] Task: Add MW (Monier-Williams Sanskrit-English Dictionary, 194,040 entries)
-  - [ ] Load `mw.json`
-  - [ ] Parse entries, generate `word`, `word_fuzzy`, `definition_html`
-  - [ ] Insert with `dict_id = 'mw'`
+- [x] Task: Add MW (Monier-Williams Sanskrit-English Dictionary, 194,040 entries) `f631ca6`
+  - [x] Load `mw.json` from Cologne source exporter
+  - [x] Parse entries, generate `word`, `word_fuzzy`, `definition_html`
+  - [x] Insert with `dict_id = 'mw'`
+  - [x] Adapted rendering for new Cologne XML source format (CSS classes)
+  - [x] Themed colors for all MW CSS classes (light/dark mode)
+  - [x] Tappable literature reference tooltips
+  - [x] Page scan links open in browser
 
 - [ ] Task: Add BHS (Edgerton's Buddhist Hybrid Sanskrit Dictionary, 17,836 entries)
   - [ ] Load `bhs.xml` (XML from Cologne Sanskrit Lexicon)
@@ -157,13 +161,14 @@
 
 ## Phase 6: Polish
 
-- [ ] Task: Dark mode CSS adaptation for dictionary entries
-  - [ ] Override remaining hardcoded colors based on app theme
-  - [ ] Inject theme-aware CSS overrides when rendering HTML
+- [x] Task: Dark mode CSS adaptation for dictionary entries `f631ca6`
+  - [x] Override remaining hardcoded colors based on app theme
+  - [x] All accent colors use DpdColors theme variables (light/dark pairs)
+  - [x] Highlight background and text colors themed for both modes
 
-- [ ] Task: Cross-references between dictionaries and DPD
+- [~] Task: Cross-references between dictionaries and DPD
+  - [x] Add `onTapUrl` handler to `HtmlWidget` (handles tooltips + external links)
   - [ ] Tapping a word in dictionary HTML triggers a DPD search
-  - [ ] Add `onTapUrl` handler to `HtmlWidget`
 
 - [ ] Task: Add dictionary words to DPD `lookup` table for autocomplete
   - [ ] In Python exporter, inject dictionary headwords into `lookup` table
