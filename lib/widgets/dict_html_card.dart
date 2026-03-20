@@ -1,20 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:html/dom.dart' as dom;
+import 'package:url_launcher/url_launcher.dart';
 
 import '../database/database.dart';
 import '../theme/dpd_colors.dart';
 
-final _linkRe = RegExp(r'<a\b[^>]*>(.*?)</a>', dotAll: true);
-final _hTagRe = RegExp(r'\(H\d[A-Z]?\)\s*');
-final _lnumRe = RegExp(r'<span class="lnum">.*?</span>.*?</span>', dotAll: true);
-final _hrefdataRe = RegExp(r'<span class="hrefdata">.*?</span>.*?</span>.*?</span>', dotAll: true);
+final _hTagRe = RegExp(r'<strong>\((?:H\d[A-Z]?|C\d)\)</strong>\s*');
+final _docWrapRe = RegExp(
+  r'<!DOCTYPE[^>]*>.*?<body>|</body>.*?</html>',
+  dotAll: true,
+  caseSensitive: false,
+);
+
+final _tooltipSpanRe = RegExp(
+  r'''<span([^>]*?\bclass="[^"]*\bls\b[^"]*"[^>]*?)\btitle=["']([^"']+)["']([^>]*)>(.*?)</span>''',
+  dotAll: true,
+);
 
 String _cleanMwHtml(String html) {
-  html = html.replaceAll(_lnumRe, '');
-  html = html.replaceAll(_hrefdataRe, '');
-  html = html.replaceAllMapped(_linkRe, (m) => m[1] ?? '');
+  html = html.replaceAll(_docWrapRe, '');
   html = html.replaceAll(_hTagRe, '');
+  html = html.replaceAllMapped(_tooltipSpanRe, (m) {
+    final before = m[1]!;
+    final title = m[2]!;
+    final after = m[3]!;
+    final content = m[4]!;
+    final encoded = Uri.encodeComponent(title);
+    return '<a href="tooltip:$encoded"><span$before$after>$content</span></a>';
+  });
   return html;
 }
 
@@ -61,6 +75,19 @@ class DictHtmlCard extends StatelessWidget {
           HtmlWidget(
             isMw ? _cleanMwHtml(entry.definitionHtml ?? '') : entry.definitionHtml ?? '',
             customStylesBuilder: stylesBuilder,
+            onTapUrl: (url) {
+              if (url.startsWith('tooltip:')) {
+                final text = Uri.decodeComponent(url.substring(8));
+                _showTooltip(context, text);
+                return true;
+              }
+              final uri = Uri.tryParse(url);
+              if (uri != null && uri.hasScheme) {
+                launchUrl(uri, mode: LaunchMode.externalApplication);
+                return true;
+              }
+              return false;
+            },
             textStyle: DefaultTextStyle.of(context).style,
           ),
           if (entry != entries.last) const SizedBox(height: 16),
@@ -74,12 +101,27 @@ Map<String, String>? Function(dom.Element) _buildStylesBuilder(bool isDark) {
   final lemmaColor = _colorToCSS(isDark ? DpdColors.primaryTextDark : DpdColors.primaryText);
   final highlightBg = _colorToCSS(isDark
       ? DpdColors.primaryAlt.withValues(alpha: 0.4)
-      : DpdColors.lightShade);
-  final highlightText = isDark ? 'white' : 'black';
+      : DpdColors.primaryAlt.withValues(alpha: 0.4));
+  final highlightText = isDark ? 'black' : 'white';
+
+  final blueColor = _colorToCSS(isDark ? DpdColors.primaryTextDark : DpdColors.primaryText);
+  final redColor = _colorToCSS(isDark ? DpdColors.accentRedDark : DpdColors.accentRed);
+  final greenColor = _colorToCSS(isDark ? DpdColors.accentGreenDark : DpdColors.accentGreen);
+  final orangeColor = _colorToCSS(isDark ? DpdColors.accentOrangeDark : DpdColors.accentOrange);
+  final purpleColor = _colorToCSS(isDark ? DpdColors.accentPurpleDark : DpdColors.accentPurple);
+  final brownColor = _colorToCSS(isDark ? DpdColors.accentBrownDark : DpdColors.accentBrown);
+  final grayColor = _colorToCSS(isDark ? DpdColors.grayLight : DpdColors.gray);
 
   return (dom.Element element) {
     final classes = element.classes;
     final tag = element.localName;
+
+    if (tag == 'a') {
+      final href = element.attributes['href'] ?? '';
+      if (href.startsWith('tooltip:')) {
+        return {'text-decoration': 'none', 'color': 'inherit'};
+      }
+    }
 
     if (tag == 'div' && classes.contains('lemma')) {
       return {
@@ -135,22 +177,22 @@ Map<String, String>? Function(dom.Element) _buildStylesBuilder(bool isDark) {
       return {'font-variant': 'small-caps'};
     }
     if (classes.contains('blue')) {
-      return {'color': 'rgb(0, 115, 177)'};
+      return {'color': blueColor};
     }
     if (classes.contains('orange')) {
-      return {'color': '#ba4200'};
+      return {'color': orangeColor};
     }
     if (classes.contains('green')) {
-      return {'color': 'green'};
+      return {'color': greenColor};
     }
     if (classes.contains('red')) {
-      return {'color': 'red'};
+      return {'color': redColor};
     }
     if (classes.contains('purple')) {
-      return {'color': 'purple'};
+      return {'color': purpleColor};
     }
     if (classes.contains('dim')) {
-      return {'color': '#648cc8'};
+      return {'color': blueColor};
     }
     if (classes.contains('kharHide')) {
       return {'display': 'none'};
@@ -159,31 +201,99 @@ Map<String, String>? Function(dom.Element) _buildStylesBuilder(bool isDark) {
       return {'font-size': '10px'};
     }
     if (classes.contains('more')) {
-      return {'color': 'gray', 'font-style': 'italic', 'font-size': '12px'};
+      return {'color': grayColor, 'font-style': 'italic', 'font-size': '12px'};
     }
 
-    // MW (Monier-Williams) specific styles
-    if (classes.contains('lnum') || classes.contains('hrefdata')) {
-      return {'display': 'none'};
-    }
-    if (classes.contains('sdata_italic_iast')) {
-      return {'font-style': 'italic'};
+    // MW (Monier-Williams) — themed from mw.css
+    if (classes.contains('sdata')) {
+      return {'color': blueColor, 'font-style': 'italic'};
     }
     if (classes.contains('hom')) {
-      return {'font-size': '9px', 'vertical-align': 'super', 'color': lemmaColor};
+      return {'color': redColor};
     }
     if (classes.contains('ls')) {
-      return {'color': isDark ? '#8bb8e8' : 'rgb(0, 115, 177)'};
+      return {'color': blueColor, 'font-size': '10pt'};
+    }
+    if (classes.contains('gram') || classes.contains('divm') || classes.contains('fn-label')) {
+      return {'font-weight': 'bold'};
+    }
+    if (classes.contains('greek')) {
+      return {'font-style': 'italic'};
     }
     if (classes.contains('dotunder')) {
-      return {};
+      return null;
     }
-    if (classes.contains('cssshade')) {
-      return {'background-color': isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.03)'};
+    if (classes.contains('lnum')) {
+      return {
+        'font-size': 'smaller',
+        'background-color': _colorToCSS(isDark ? DpdColors.darkShade : DpdColors.lightShade),
+      };
+    }
+    if (classes.contains('g') || classes.contains('lang')) {
+      return {'font-size': 'smaller', 'font-style': 'italic'};
+    }
+    if (classes.contains('pb') || classes.contains('footnote') || classes.contains('alt-hw')) {
+      return {'font-size': 'smaller'};
+    }
+    if (classes.contains('foreign')) {
+      return {'color': brownColor};
+    }
+    if (classes.contains('div-sep')) {
+      return {'margin-top': '0.6em'};
+    }
+    if (classes.contains('pcol-ref')) {
+      return {'color': grayColor, 'font-size': 'smaller'};
+    }
+    if (classes.contains('record-id')) {
+      return {'color': grayColor};
     }
 
     return null;
   };
+}
+
+void _showTooltip(BuildContext context, String text) {
+  final overlay = Overlay.of(context);
+  final renderBox = context.findRenderObject() as RenderBox?;
+  if (renderBox == null) return;
+
+  late OverlayEntry entry;
+  entry = OverlayEntry(
+    builder: (ctx) {
+      return GestureDetector(
+        onTap: () => entry.remove(),
+        behavior: HitTestBehavior.translucent,
+        child: Stack(
+          children: [
+            Positioned(
+              left: 16,
+              right: 16,
+              top: 200,
+              child: Center(
+                child: Material(
+                  elevation: 4,
+                  borderRadius: DpdColors.borderRadius,
+                  color: DpdColors.primaryAlt,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    child: Text(
+                      text,
+                      style: TextStyle(color: DpdColors.light, fontSize: 12),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    },
+  );
+
+  overlay.insert(entry);
+  Future.delayed(const Duration(seconds: 3), () {
+    if (entry.mounted) entry.remove();
+  });
 }
 
 String _colorToCSS(Color c) {

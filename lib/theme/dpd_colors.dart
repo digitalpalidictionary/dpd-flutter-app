@@ -99,6 +99,18 @@ abstract final class DpdColors {
     HSLColor.fromAHSL(1, 218, 0.9, 0.5).toColor(), // freq10
   ];
 
+  // Dictionary accent colors (light / dark pairs)
+  static final Color accentRed = const Color(0xFFCC0000);
+  static final Color accentRedDark = const Color(0xFFFF7070);
+  static final Color accentGreen = const Color(0xFF007700);
+  static final Color accentGreenDark = const Color(0xFF66CC66);
+  static final Color accentOrange = const Color(0xFFBA4200);
+  static final Color accentOrangeDark = const Color(0xFFE09050);
+  static final Color accentPurple = const Color(0xFF800080);
+  static final Color accentPurpleDark = const Color(0xFFC88CDC);
+  static final Color accentBrown = const Color(0xFF8B4513);
+  static final Color accentBrownDark = const Color(0xFFD29B69);
+
   // Visual Styling Constants
   // Match the visual weight of webapp's 7px radius.
   static const double borderRadiusValue = 7.0;
