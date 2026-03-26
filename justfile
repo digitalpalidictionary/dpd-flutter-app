@@ -56,7 +56,7 @@ android-build-release:
 
 # Rebuild mobile DB in dpd-db repo
 build-db:
-    cd ../dpd-db && uv run python exporter/mobile/mobile_exporter.py
+    cd ../dpd-db && uv run python exporter/mobile/mobile_exporter.py --cone
 
 # ---------- LINUX ----------
 
