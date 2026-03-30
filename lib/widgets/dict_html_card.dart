@@ -19,16 +19,19 @@ final _tooltipSpanRe = RegExp(
   dotAll: true,
 );
 
-String? _extractConeSubsenseHtml(String html) {
+String _prepareConeHtml(String html) {
   final doc = parse(html);
+  doc.querySelector('div.lemma')?.remove();
   final highlights = doc.querySelectorAll('.subsense.highlight');
-  if (highlights.isEmpty) return null;
-  final buffer = StringBuffer();
-  for (final el in highlights) {
-    el.classes.remove('highlight');
-    buffer.write(el.outerHtml);
+  if (highlights.isNotEmpty) {
+    final buffer = StringBuffer();
+    for (final el in highlights) {
+      el.classes.remove('highlight');
+      buffer.write(el.outerHtml);
+    }
+    return buffer.toString();
   }
-  return buffer.toString();
+  return doc.body?.innerHtml ?? html;
 }
 
 String _cleanMwHtml(String html) {
@@ -78,39 +81,53 @@ class DictHtmlCard extends StatelessWidget {
         Divider(height: 1, color: DpdColors.primary.withValues(alpha: 0.3)),
         const SizedBox(height: 8),
         for (final entry in entries) ...[
-          Text(
-            entry.word,
-            style: theme.textTheme.titleLarge?.copyWith(
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-          const SizedBox(height: 4),
-          HtmlWidget(
-            dictId == 'cone'
-                ? (_extractConeSubsenseHtml(entry.definitionHtml ?? '') ?? entry.definitionHtml ?? '')
-                : isMw
-                    ? _cleanMwHtml(entry.definitionHtml ?? '')
-                    : entry.definitionHtml ?? '',
-            customStylesBuilder: stylesBuilder,
-            onTapUrl: (url) {
-              if (url.startsWith('tooltip:')) {
-                final text = Uri.decodeComponent(url.substring(8));
-                _showTooltip(context, text);
-                return true;
-              }
-              final uri = Uri.tryParse(url);
-              if (uri != null && uri.hasScheme) {
-                launchUrl(uri, mode: LaunchMode.externalApplication);
-                return true;
-              }
-              return false;
-            },
-            textStyle: DefaultTextStyle.of(context).style,
-          ),
+          ..._buildEntryWidgets(context, entry, isMw, stylesBuilder),
           if (entry != entries.last) const SizedBox(height: 16),
         ],
       ],
     );
+  }
+
+  List<Widget> _buildEntryWidgets(
+    BuildContext context,
+    DictEntry entry,
+    bool isMw,
+    Map<String, String>? Function(dom.Element) stylesBuilder,
+  ) {
+    final raw = entry.definitionHtml ?? '';
+    final html = dictId == 'cone'
+        ? _prepareConeHtml(raw)
+        : isMw
+            ? _cleanMwHtml(raw)
+            : raw;
+
+    return [
+      Text(
+        entry.word,
+        style: Theme.of(context).textTheme.titleLarge?.copyWith(
+          fontWeight: FontWeight.w700,
+        ),
+      ),
+      const SizedBox(height: 4),
+      HtmlWidget(
+        html,
+        customStylesBuilder: stylesBuilder,
+        onTapUrl: (url) {
+          if (url.startsWith('tooltip:')) {
+            final text = Uri.decodeComponent(url.substring(8));
+            _showTooltip(context, text);
+            return true;
+          }
+          final uri = Uri.tryParse(url);
+          if (uri != null && uri.hasScheme) {
+            launchUrl(uri, mode: LaunchMode.externalApplication);
+            return true;
+          }
+          return false;
+        },
+        textStyle: DefaultTextStyle.of(context).style,
+      ),
+    ];
   }
 }
 
