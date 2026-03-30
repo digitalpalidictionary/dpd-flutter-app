@@ -19,6 +19,9 @@ final _tooltipSpanRe = RegExp(
   dotAll: true,
 );
 
+final _cpdH2OpenRe = RegExp(r'<h2\b[^>]*>', caseSensitive: false);
+final _cpdH2CloseRe = RegExp(r'</h2>', caseSensitive: false);
+
 String _prepareConeHtml(String html) {
   final doc = parse(html);
   doc.querySelector('div.lemma')?.remove();
@@ -48,6 +51,16 @@ String _cleanMwHtml(String html) {
   return html;
 }
 
+String prepareDictHtml(String dictId, String html) {
+  if (dictId == 'cone') return _prepareConeHtml(html);
+  if (dictId == 'mw') return _cleanMwHtml(html);
+  if (dictId == 'cpd') {
+    html = html.replaceAll(_cpdH2OpenRe, '<strong>');
+    html = html.replaceAll(_cpdH2CloseRe, '</strong>');
+  }
+  return html;
+}
+
 class DictHtmlCard extends StatelessWidget {
   const DictHtmlCard({
     super.key,
@@ -65,7 +78,6 @@ class DictHtmlCard extends StatelessWidget {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
     final stylesBuilder = _buildStylesBuilder(isDark);
-    final isMw = dictId == 'mw';
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -81,7 +93,7 @@ class DictHtmlCard extends StatelessWidget {
         Divider(height: 1, color: DpdColors.primary.withValues(alpha: 0.3)),
         const SizedBox(height: 8),
         for (final entry in entries) ...[
-          ..._buildEntryWidgets(context, entry, isMw, stylesBuilder),
+          ..._buildEntryWidgets(context, entry, stylesBuilder),
           if (entry != entries.last) const SizedBox(height: 16),
         ],
       ],
@@ -91,22 +103,17 @@ class DictHtmlCard extends StatelessWidget {
   List<Widget> _buildEntryWidgets(
     BuildContext context,
     DictEntry entry,
-    bool isMw,
     Map<String, String>? Function(dom.Element) stylesBuilder,
   ) {
     final raw = entry.definitionHtml ?? '';
-    final html = dictId == 'cone'
-        ? _prepareConeHtml(raw)
-        : isMw
-            ? _cleanMwHtml(raw)
-            : raw;
+    final html = prepareDictHtml(dictId, raw);
 
     return [
       Text(
         entry.word,
-        style: Theme.of(context).textTheme.titleLarge?.copyWith(
-          fontWeight: FontWeight.w700,
-        ),
+        style: Theme.of(
+          context,
+        ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
       ),
       const SizedBox(height: 4),
       HtmlWidget(
@@ -132,18 +139,34 @@ class DictHtmlCard extends StatelessWidget {
 }
 
 Map<String, String>? Function(dom.Element) _buildStylesBuilder(bool isDark) {
-  final lemmaColor = _colorToCSS(isDark ? DpdColors.primaryTextDark : DpdColors.primaryText);
-  final highlightBg = _colorToCSS(isDark
-      ? DpdColors.primaryAlt.withValues(alpha: 0.4)
-      : DpdColors.primaryAlt.withValues(alpha: 0.4));
+  final lemmaColor = _colorToCSS(
+    isDark ? DpdColors.primaryTextDark : DpdColors.primaryText,
+  );
+  final highlightBg = _colorToCSS(
+    isDark
+        ? DpdColors.primaryAlt.withValues(alpha: 0.4)
+        : DpdColors.primaryAlt.withValues(alpha: 0.4),
+  );
   final highlightText = isDark ? 'black' : 'white';
 
-  final blueColor = _colorToCSS(isDark ? DpdColors.primaryTextDark : DpdColors.primaryText);
-  final redColor = _colorToCSS(isDark ? DpdColors.accentRedDark : DpdColors.accentRed);
-  final greenColor = _colorToCSS(isDark ? DpdColors.accentGreenDark : DpdColors.accentGreen);
-  final orangeColor = _colorToCSS(isDark ? DpdColors.accentOrangeDark : DpdColors.accentOrange);
-  final purpleColor = _colorToCSS(isDark ? DpdColors.accentPurpleDark : DpdColors.accentPurple);
-  final brownColor = _colorToCSS(isDark ? DpdColors.accentBrownDark : DpdColors.accentBrown);
+  final blueColor = _colorToCSS(
+    isDark ? DpdColors.primaryTextDark : DpdColors.primaryText,
+  );
+  final redColor = _colorToCSS(
+    isDark ? DpdColors.accentRedDark : DpdColors.accentRed,
+  );
+  final greenColor = _colorToCSS(
+    isDark ? DpdColors.accentGreenDark : DpdColors.accentGreen,
+  );
+  final orangeColor = _colorToCSS(
+    isDark ? DpdColors.accentOrangeDark : DpdColors.accentOrange,
+  );
+  final purpleColor = _colorToCSS(
+    isDark ? DpdColors.accentPurpleDark : DpdColors.accentPurple,
+  );
+  final brownColor = _colorToCSS(
+    isDark ? DpdColors.accentBrownDark : DpdColors.accentBrown,
+  );
   final grayColor = _colorToCSS(isDark ? DpdColors.grayLight : DpdColors.gray);
 
   return (dom.Element element) {
@@ -248,7 +271,9 @@ Map<String, String>? Function(dom.Element) _buildStylesBuilder(bool isDark) {
     if (classes.contains('ls')) {
       return {'color': blueColor, 'font-size': '10pt'};
     }
-    if (classes.contains('gram') || classes.contains('divm') || classes.contains('fn-label')) {
+    if (classes.contains('gram') ||
+        classes.contains('divm') ||
+        classes.contains('fn-label')) {
       return {'font-weight': 'bold'};
     }
     if (classes.contains('greek')) {
@@ -260,13 +285,17 @@ Map<String, String>? Function(dom.Element) _buildStylesBuilder(bool isDark) {
     if (classes.contains('lnum')) {
       return {
         'font-size': 'smaller',
-        'background-color': _colorToCSS(isDark ? DpdColors.darkShade : DpdColors.lightShade),
+        'background-color': _colorToCSS(
+          isDark ? DpdColors.darkShade : DpdColors.lightShade,
+        ),
       };
     }
     if (classes.contains('g') || classes.contains('lang')) {
       return {'font-size': 'smaller', 'font-style': 'italic'};
     }
-    if (classes.contains('pb') || classes.contains('footnote') || classes.contains('alt-hw')) {
+    if (classes.contains('pb') ||
+        classes.contains('footnote') ||
+        classes.contains('alt-hw')) {
       return {'font-size': 'smaller'};
     }
     if (classes.contains('foreign')) {
@@ -309,7 +338,10 @@ void _showTooltip(BuildContext context, String text) {
                   borderRadius: DpdColors.borderRadius,
                   color: DpdColors.primaryAlt,
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 8,
+                    ),
                     child: Text(
                       text,
                       style: TextStyle(color: DpdColors.light, fontSize: 12),
