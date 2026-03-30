@@ -217,7 +217,7 @@ class GrammarTable extends ConsumerWidget {
       if (type != null && type.isNotEmpty) type,
       if (construction != null && construction.isNotEmpty) '($construction)',
     ].join(' ').trim();
-    return buildKvTextRow('Compound', text, filter: n);
+    return buildKvRichRow('Compound', text, filter: n, onLinkTap: _openUrl);
   }
 
   TableRow? _buildAntonymRow(
@@ -249,14 +249,24 @@ class GrammarTable extends ConsumerWidget {
     if (commentary == null || commentary.isEmpty || commentary == '-') {
       return null;
     }
-    return buildKvRichRow('Commentary', commentary, filter: n, onLinkTap: _openUrl);
+    return buildKvRichRow(
+      'Commentary',
+      commentary,
+      filter: n,
+      onLinkTap: _openUrl,
+    );
   }
 
   TableRow? _buildNotesRow(
     DpdHeadwordWithRoot headword,
     String Function(String) n,
   ) {
-    return buildKvRichRow('Notes', headword.notes, filter: n, onLinkTap: _openUrl);
+    return buildKvRichRow(
+      'Notes',
+      headword.notes,
+      filter: n,
+      onLinkTap: _openUrl,
+    );
   }
 
   TableRow? _buildCognateRow(
