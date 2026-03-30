@@ -121,16 +121,18 @@ final dictMetaAllProvider = FutureProvider<List<DictMetaData>>((ref) async {
   }
 });
 
-final dictCssProvider =
-    FutureProvider.family<String?, String>((ref, dictId) async {
-      final dao = ref.watch(daoProvider);
-      try {
-        final meta = await dao.getDictMeta(dictId);
-        return meta?.css;
-      } catch (_) {
-        return null;
-      }
-    });
+final dictCssProvider = FutureProvider.family<String?, String>((
+  ref,
+  dictId,
+) async {
+  final dao = ref.watch(daoProvider);
+  try {
+    final meta = await dao.getDictMeta(dictId);
+    return meta?.css;
+  } catch (_) {
+    return null;
+  }
+});
 
 class DictSearchResults {
   final List<DictResult> exact;
@@ -139,60 +141,118 @@ class DictSearchResults {
   const DictSearchResults({this.exact = const [], this.fuzzy = const []});
 }
 
-final dictResultsProvider = FutureProvider.autoDispose
-    .family<DictSearchResults, String>((ref, query) async {
-      if (query.isEmpty) return const DictSearchResults();
+class DictRawSearchResults {
+  final Map<String, String> metaNames;
+  final Map<String, List<DictEntry>> exact;
+  final Map<String, List<DictEntry>> fuzzy;
+
+  const DictRawSearchResults({
+    this.metaNames = const {},
+    this.exact = const {},
+    this.fuzzy = const {},
+  });
+
+  factory DictRawSearchResults.fromRows({
+    List<DictMetaData> meta = const [],
+    List<DictEntry> exactRows = const [],
+    List<DictEntry> fuzzyRows = const [],
+  }) {
+    final exactIds = exactRows.map((entry) => entry.id).toSet();
+    final fuzzyGrouped = <String, List<DictEntry>>{};
+    for (final entry in fuzzyRows) {
+      if (exactIds.contains(entry.id)) continue;
+      fuzzyGrouped.putIfAbsent(entry.dictId, () => []).add(entry);
+    }
+
+    return DictRawSearchResults(
+      metaNames: {for (final item in meta) item.dictId: item.name},
+      exact: _groupDictEntries(exactRows),
+      fuzzy: fuzzyGrouped,
+    );
+  }
+}
+
+Map<String, List<DictEntry>> _groupDictEntries(List<DictEntry> rows) {
+  final grouped = <String, List<DictEntry>>{};
+  for (final entry in rows) {
+    grouped.putIfAbsent(entry.dictId, () => []).add(entry);
+  }
+  return grouped;
+}
+
+DictSearchResults presentDictSearchResults(
+  DictRawSearchResults raw,
+  DictVisibility visibility,
+) {
+  List<DictResult> present(Map<String, List<DictEntry>> grouped) {
+    final results = <DictResult>[];
+    final seen = <String>{};
+
+    void maybeAdd(String dictId) {
+      if (!visibility.enabled.contains(dictId) || seen.contains(dictId)) return;
+      final entries = grouped[dictId];
+      if (entries == null || entries.isEmpty) return;
+      seen.add(dictId);
+      results.add(
+        DictResult(
+          dictId: dictId,
+          dictName: raw.metaNames[dictId] ?? dictId,
+          entries: entries,
+        ),
+      );
+    }
+
+    for (final dictId in visibility.order) {
+      maybeAdd(dictId);
+    }
+    for (final dictId in grouped.keys) {
+      maybeAdd(dictId);
+    }
+
+    return results;
+  }
+
+  return DictSearchResults(
+    exact: present(raw.exact),
+    fuzzy: present(raw.fuzzy),
+  );
+}
+
+final _dictRawResultsProvider = FutureProvider.autoDispose
+    .family<DictRawSearchResults, String>((ref, query) async {
+      if (query.isEmpty) return const DictRawSearchResults();
 
       final dao = ref.watch(daoProvider);
-      final visibility = ref.watch(dictVisibilityProvider);
       final allMeta = await ref.watch(dictMetaAllProvider.future);
-      final metaMap = {for (final m in allMeta) m.dictId: m.name};
 
-      List<DictResult> toResults(Map<String, List<DictEntry>> grouped) {
-        final results = <DictResult>[];
-        for (final dictId in visibility.order) {
-          if (!visibility.enabled.contains(dictId)) continue;
-          final group = grouped[dictId];
-          if (group == null || group.isEmpty) continue;
-          results.add(DictResult(
-            dictId: dictId,
-            dictName: metaMap[dictId] ?? dictId,
-            entries: group,
-          ));
-        }
-        for (final dictId in grouped.keys) {
-          if (results.any((r) => r.dictId == dictId)) continue;
-          results.add(DictResult(
-            dictId: dictId,
-            dictName: metaMap[dictId] ?? dictId,
-            entries: grouped[dictId]!,
-          ));
-        }
-        return results;
-      }
-
+      List<DictEntry> exactRows;
       try {
-        final exactRows = await dao.searchDictExact(query.toLowerCase());
-        final exactGrouped = <String, List<DictEntry>>{};
-        for (final entry in exactRows) {
-          exactGrouped.putIfAbsent(entry.dictId, () => []).add(entry);
-        }
-
-        final fuzzyKey = stripDiacritics(query.toLowerCase());
-        final fuzzyRows = await dao.searchDictFuzzy(fuzzyKey);
-        final exactIds = exactRows.map((e) => e.id).toSet();
-        final fuzzyGrouped = <String, List<DictEntry>>{};
-        for (final entry in fuzzyRows) {
-          if (!exactIds.contains(entry.id)) {
-            fuzzyGrouped.putIfAbsent(entry.dictId, () => []).add(entry);
-          }
-        }
-
-        return DictSearchResults(
-          exact: toResults(exactGrouped),
-          fuzzy: toResults(fuzzyGrouped),
-        );
+        exactRows = await dao.searchDictExact(query.toLowerCase());
       } catch (_) {
-        return const DictSearchResults();
+        exactRows = const [];
       }
+
+      List<DictEntry> fuzzyRows;
+      try {
+        final fuzzyKey = stripDiacritics(query.toLowerCase());
+        fuzzyRows = await dao.searchDictFuzzy(fuzzyKey);
+      } catch (_) {
+        fuzzyRows = const [];
+      }
+
+      return DictRawSearchResults.fromRows(
+        meta: allMeta,
+        exactRows: exactRows,
+        fuzzyRows: fuzzyRows,
+      );
+    });
+
+final dictResultsProvider = Provider.autoDispose
+    .family<AsyncValue<DictSearchResults>, String>((ref, query) {
+      final visibility = ref.watch(dictVisibilityProvider);
+      final rawAsync = ref.watch(_dictRawResultsProvider(query));
+
+      return rawAsync.whenData(
+        (raw) => presentDictSearchResults(raw, visibility),
+      );
     });

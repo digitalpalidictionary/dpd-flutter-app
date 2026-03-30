@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../providers/dict_provider.dart';
-import '../theme/dpd_colors.dart';
+import 'compact_segmented.dart';
 
 class DictSettingsWidget extends ConsumerWidget {
   const DictSettingsWidget({super.key});
@@ -37,6 +37,25 @@ class DictSettingsWidget extends ConsumerWidget {
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           buildDefaultDragHandles: false,
+          proxyDecorator: (child, index, animation) {
+            return AnimatedBuilder(
+              animation: animation,
+              child: child,
+              builder: (context, child) {
+                final t = Curves.easeOut.transform(animation.value);
+                return Transform.scale(
+                  scale: 1 + (0.02 * t),
+                  child: Material(
+                    elevation: 2 + (10 * t),
+                    color: Colors.transparent,
+                    borderRadius: BorderRadius.circular(12),
+                    shadowColor: Theme.of(context).colorScheme.shadow,
+                    child: child,
+                  ),
+                );
+              },
+            );
+          },
           itemCount: orderedIds.length,
           onReorder: (oldIndex, newIndex) {
             if (newIndex > oldIndex) newIndex--;
@@ -54,13 +73,7 @@ class DictSettingsWidget extends ConsumerWidget {
 
             return ListTile(
               key: ValueKey(dictId),
-              leading: ReorderableDragStartListener(
-                index: index,
-                child: Icon(
-                  Icons.drag_handle,
-                  color: theme.colorScheme.onSurfaceVariant,
-                ),
-              ),
+              leading: _ReorderHandle(index: index),
               title: Text(name),
               subtitle: count != null
                   ? Text(
@@ -70,9 +83,12 @@ class DictSettingsWidget extends ConsumerWidget {
                       ),
                     )
                   : null,
-              trailing: Switch(
-                value: enabled,
-                activeThumbColor: DpdColors.primary,
+              trailing: CompactSegmented<bool>(
+                segments: const [
+                  ButtonSegment(value: false, label: Text('Off')),
+                  ButtonSegment(value: true, label: Text('On')),
+                ],
+                selected: enabled,
                 onChanged: (value) {
                   ref
                       .read(dictVisibilityProvider.notifier)
@@ -83,6 +99,40 @@ class DictSettingsWidget extends ConsumerWidget {
           },
         ),
       ],
+    );
+  }
+}
+
+class _ReorderHandle extends StatelessWidget {
+  const _ReorderHandle({required this.index});
+
+  final int index;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
+    return ReorderableDragStartListener(
+      index: index,
+      child: MouseRegion(
+        cursor: SystemMouseCursors.grab,
+        child: Container(
+          width: 40,
+          height: 40,
+          decoration: BoxDecoration(
+            color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.45),
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(color: colorScheme.outlineVariant),
+          ),
+          alignment: Alignment.center,
+          child: Icon(
+            Icons.drag_handle,
+            size: 18,
+            color: colorScheme.onSurfaceVariant,
+          ),
+        ),
+      ),
     );
   }
 }

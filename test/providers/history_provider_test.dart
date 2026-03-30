@@ -125,10 +125,7 @@ void main() {
     });
 
     test('loads from SharedPreferences', () async {
-      await prefs.setString(
-        'dpd_history',
-        jsonEncode(['kamma', 'dhamma']),
-      );
+      await prefs.setString('dpd_history', jsonEncode(['kamma', 'dhamma']));
       final notifier = HistoryNotifier(prefs);
       expect(notifier.state.entries, ['kamma', 'dhamma']);
       expect(notifier.state.currentIndex, -1);
@@ -154,11 +151,11 @@ void main() {
     });
 
     test('currentEntry returns correct entry', () {
-      const state = HistoryState(
+      final state = HistoryState(
         entries: [
-          HistoryEntry(query: 'a'),
-          HistoryEntry(query: 'b'),
-          HistoryEntry(query: 'c'),
+          HistoryEntry(query: 'a', timestamp: DateTime(2024)),
+          HistoryEntry(query: 'b', timestamp: DateTime(2024, 1, 2)),
+          HistoryEntry(query: 'c', timestamp: DateTime(2024, 1, 3)),
         ],
         currentIndex: 1,
       );
@@ -171,8 +168,8 @@ void main() {
     });
 
     test('canGoForward is false at index 0', () {
-      const state = HistoryState(
-        entries: [HistoryEntry(query: 'a')],
+      final state = HistoryState(
+        entries: [HistoryEntry(query: 'a', timestamp: DateTime(2024))],
         currentIndex: 0,
       );
       expect(state.canGoForward, false);
