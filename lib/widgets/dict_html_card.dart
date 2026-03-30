@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:html/dom.dart' as dom;
+import 'package:html/parser.dart' show parse;
 import 'package:url_launcher/url_launcher.dart';
 
 import '../database/database.dart';
@@ -17,6 +18,18 @@ final _tooltipSpanRe = RegExp(
   r'''<span([^>]*?\bclass="[^"]*\bls\b[^"]*"[^>]*?)\btitle=["']([^"']+)["']([^>]*)>(.*?)</span>''',
   dotAll: true,
 );
+
+String? _extractConeSubsenseHtml(String html) {
+  final doc = parse(html);
+  final highlights = doc.querySelectorAll('.subsense.highlight');
+  if (highlights.isEmpty) return null;
+  final buffer = StringBuffer();
+  for (final el in highlights) {
+    el.classes.remove('highlight');
+    buffer.write(el.outerHtml);
+  }
+  return buffer.toString();
+}
 
 String _cleanMwHtml(String html) {
   html = html.replaceAll(_docWrapRe, '');
@@ -73,7 +86,11 @@ class DictHtmlCard extends StatelessWidget {
           ),
           const SizedBox(height: 4),
           HtmlWidget(
-            isMw ? _cleanMwHtml(entry.definitionHtml ?? '') : entry.definitionHtml ?? '',
+            dictId == 'cone'
+                ? (_extractConeSubsenseHtml(entry.definitionHtml ?? '') ?? entry.definitionHtml ?? '')
+                : isMw
+                    ? _cleanMwHtml(entry.definitionHtml ?? '')
+                    : entry.definitionHtml ?? '',
             customStylesBuilder: stylesBuilder,
             onTapUrl: (url) {
               if (url.startsWith('tooltip:')) {
