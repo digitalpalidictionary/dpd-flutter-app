@@ -86,7 +86,7 @@ class InflectionTable extends StatelessWidget {
   TableRow _buildHeaderRow(BuildContext context, Color headerBg) {
     final theme = Theme.of(context);
     final headers = data.headers;
-    final style = theme.textTheme.bodySmall?.copyWith(
+    final style = theme.textTheme.bodyMedium?.copyWith(
       fontWeight: FontWeight.bold,
       color: DpdColors.primaryText,
     );
@@ -110,7 +110,7 @@ class InflectionTable extends StatelessWidget {
   ) {
     final theme = Theme.of(context);
     final surfaceColor = theme.colorScheme.surface;
-    final labelStyle = theme.textTheme.bodySmall?.copyWith(
+    final labelStyle = theme.textTheme.bodyMedium?.copyWith(
       fontWeight: FontWeight.bold,
       color: DpdColors.primaryText,
     );
@@ -164,7 +164,7 @@ class InflectionTable extends StatelessWidget {
   Widget _buildFormText(BuildContext context, InflectionForm form) {
     if (form.ending.isEmpty) return const SizedBox.shrink();
 
-    final base = Theme.of(context).textTheme.bodySmall ?? const TextStyle();
+    final base = Theme.of(context).textTheme.bodyMedium ?? const TextStyle();
     final isMatch =
         lookupKey != null && lookupKey!.isNotEmpty && form.word == lookupKey!.trim();
 
