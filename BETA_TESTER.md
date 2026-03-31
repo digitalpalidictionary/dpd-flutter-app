@@ -11,6 +11,12 @@ This beta version is intended for testing before wider release. If you find bugs
 
 On the latest release page, download the `.apk` file listed under **Assets**.
 
+Your browser may warn that the file might be harmful. This is a standard warning shown for any APK downloaded outside the Play Store — not a sign that the file is actually dangerous. You can safely proceed with the download.
+
+The full source code of this app is publicly available and can be inspected by anyone:
+
+- Source code: <https://github.com/digitalpalidictionary/dpd-flutter-app>
+
 For safety, only download and install the APK from the official GitHub releases page linked above.
 
 ## Install On Android
@@ -87,6 +93,12 @@ Direct feedback form:
 For feedback about specific words, grammar, or definitions, you can also use the `feedback` button at the bottom of any dictionary entry.
 
 ## Quick Troubleshooting
+
+### My browser warns the file might be harmful
+
+This is a standard warning shown for any APK file downloaded outside the Play Store. It does not mean the file is dangerous — it means Android APKs are not verified by Google's systems the way Play Store apps are.
+
+The source code for this app is fully open and can be read by anyone at <https://github.com/digitalpalidictionary/dpd-flutter-app>. There is nothing hidden. Click **Keep** or **Download anyway** to proceed.
 
 ### The APK will not install
 
