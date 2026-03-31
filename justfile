@@ -22,7 +22,7 @@ _android_db_path := _android_db_dir + "/dpd-mobile.db"
 _local_db := "../dpd-db/exporter/share/dpd-mobile.db"
 
 # Build, install debug APK, push DB, then launch — all in one
-android-run:
+android-fresh:
     flutter build apk --debug
     adb install -r build/app/outputs/flutter-apk/app-debug.apk
     adb shell am force-stop {{_android_pkg}}
@@ -32,7 +32,7 @@ android-run:
     adb shell am start -n {{_android_pkg}}/net.dpdict.dpd_flutter_app.MainActivity
 
 # Build and install debug APK without clearing app data
-android-install:
+android-update:
     flutter build apk --debug && adb install -r build/app/outputs/flutter-apk/app-debug.apk
 
 # Push DB and restart the running app (cleans stale WAL/SHM files)
@@ -43,6 +43,13 @@ android-push-db:
     adb push {{_local_db}} {{_android_db_path}}
     adb shell am start -n {{_android_pkg}}/net.dpdict.dpd_flutter_app.MainActivity
     @echo "DB pushed (WAL/SHM cleaned) and app restarted."
+
+# Install debug APK without a DB — triggers the download flow on launch
+android-run-no-db:
+    flutter build apk --debug
+    adb install -r build/app/outputs/flutter-apk/app-debug.apk
+    adb shell pm clear {{_android_pkg}}
+    adb shell am start -n {{_android_pkg}}/net.dpdict.dpd_flutter_app.MainActivity
 
 # Build debug APK
 android-build:
