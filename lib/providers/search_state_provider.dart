@@ -12,7 +12,6 @@ class SearchAggregateState {
   final bool anyLoading;
   final bool anyError;
   final bool hasResults;
-  final bool shouldShowFuzzyFallback;
   final bool shouldShowNoResults;
   final SearchStatus status;
 
@@ -21,7 +20,6 @@ class SearchAggregateState {
     required this.anyLoading,
     required this.anyError,
     required this.hasResults,
-    required this.shouldShowFuzzyFallback,
     required this.shouldShowNoResults,
     required this.status,
   });
@@ -42,7 +40,6 @@ SearchAggregateState computeSearchState({
       anyLoading: false,
       anyError: false,
       hasResults: false,
-      shouldShowFuzzyFallback: false,
       shouldShowNoResults: false,
       status: SearchStatus.initial,
     );
@@ -64,6 +61,7 @@ SearchAggregateState computeSearchState({
   final hasRoot = rootData.isNotEmpty;
   final hasSecondary = secondaryData.isNotEmpty;
   final hasDictExact = dictData.exact.isNotEmpty;
+  final hasDictPartial = dictData.partial.isNotEmpty;
   final hasDictFuzzy = dictData.fuzzy.isNotEmpty;
   final hasFuzzy = fuzzyData.isNotEmpty;
 
@@ -72,6 +70,7 @@ SearchAggregateState computeSearchState({
       hasRoot ||
       hasSecondary ||
       hasDictExact ||
+      hasDictPartial ||
       hasDictFuzzy ||
       hasFuzzy;
 
@@ -86,16 +85,11 @@ SearchAggregateState computeSearchState({
     status = SearchStatus.noResults;
   }
 
-  final primaryEmpty = !hasExact && !hasPartial && !hasRoot;
-  final shouldShowFuzzyFallback =
-      primaryEmpty && hasFuzzy && !fuzzy.isLoading;
-
   return SearchAggregateState(
     query: query,
     anyLoading: anyLoading,
     anyError: anyError,
     hasResults: hasResults,
-    shouldShowFuzzyFallback: shouldShowFuzzyFallback,
     shouldShowNoResults: status == SearchStatus.noResults,
     status: status,
   );

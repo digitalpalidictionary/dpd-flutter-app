@@ -200,6 +200,39 @@ class SettingsContent extends ConsumerWidget {
                 ),
               ),
               ListTile(
+                title: const Text('Exact results'),
+                trailing: CompactSegmented<bool>(
+                  segments: const [
+                    ButtonSegment(value: false, label: Text('Hide')),
+                    ButtonSegment(value: true, label: Text('Show')),
+                  ],
+                  selected: settings.showExactResults,
+                  onChanged: notifier.setShowExactResults,
+                ),
+              ),
+              ListTile(
+                title: const Text('Partial results'),
+                trailing: CompactSegmented<bool>(
+                  segments: const [
+                    ButtonSegment(value: false, label: Text('Hide')),
+                    ButtonSegment(value: true, label: Text('Show')),
+                  ],
+                  selected: settings.showPartialResults,
+                  onChanged: notifier.setShowPartialResults,
+                ),
+              ),
+              ListTile(
+                title: const Text('Fuzzy results'),
+                trailing: CompactSegmented<bool>(
+                  segments: const [
+                    ButtonSegment(value: false, label: Text('Hide')),
+                    ButtonSegment(value: true, label: Text('Show')),
+                  ],
+                  selected: settings.showFuzzyResults,
+                  onChanged: notifier.setShowFuzzyResults,
+                ),
+              ),
+              ListTile(
                 title: const Text('Audio gender'),
                 trailing: CompactSegmented<AudioGender>(
                   segments: const [

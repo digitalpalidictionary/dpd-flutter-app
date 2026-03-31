@@ -29,6 +29,11 @@ class _ThrowingDao extends DpdDao {
   }
 
   @override
+  Future<List<DictEntry>> searchDictPartial(String word, {int limit = 50}) async {
+    throw Exception('partial unavailable');
+  }
+
+  @override
   Future<List<DictEntry>> searchDictFuzzy(
     String fuzzyKey, {
     int limit = 50,
@@ -52,11 +57,13 @@ DictEntry _entry({
 DictRawSearchResults _raw({
   List<DictMetaData> meta = const [],
   List<DictEntry> exact = const [],
+  List<DictEntry> partial = const [],
   List<DictEntry> fuzzy = const [],
 }) {
   return DictRawSearchResults.fromRows(
     meta: meta,
     exactRows: exact,
+    partialRows: partial,
     fuzzyRows: fuzzy,
   );
 }
@@ -365,6 +372,79 @@ void main() {
         );
       },
     );
+  });
+
+  group('partial tier in DictRawSearchResults', () {
+    test('fromRows populates partial bucket from partialRows', () {
+      final raw = _raw(
+        meta: [_meta('cone', 'Cone')],
+        partial: [_entry(id: 2, dictId: 'cone', word: 'buddhakāya')],
+      );
+
+      expect(raw.partial.keys, ['cone']);
+      expect(raw.partial['cone']!.first.word, 'buddhakāya');
+    });
+
+    test('partial bucket does not re-filter against exact (DAO already excluded them)', () {
+      final raw = _raw(
+        meta: [_meta('cone', 'Cone')],
+        exact: [_entry(id: 1, dictId: 'cone', word: 'buddha')],
+        partial: [_entry(id: 2, dictId: 'cone', word: 'buddhakāya')],
+      );
+
+      expect(raw.partial['cone']!.map((e) => e.word), ['buddhakāya']);
+      expect(raw.partial['cone']!.map((e) => e.id), [2]);
+    });
+
+    test('fuzzy rows are deduped against exact + partial IDs', () {
+      final raw = _raw(
+        exact: [_entry(id: 1, dictId: 'cone')],
+        partial: [_entry(id: 2, dictId: 'cone', word: 'buddhakāya')],
+        fuzzy: [
+          _entry(id: 1, dictId: 'cone'),
+          _entry(id: 2, dictId: 'cone', word: 'buddhakāya'),
+          _entry(id: 3, dictId: 'mw', word: 'buddhika'),
+        ],
+      );
+
+      expect(raw.fuzzy.keys, ['mw']);
+      expect(raw.fuzzy['mw']!.first.id, 3);
+    });
+
+    test('presentDictSearchResults includes partial tier with visibility/ordering', () {
+      final raw = _raw(
+        meta: [_meta('cone', 'Cone'), _meta('mw', 'MW')],
+        exact: [_entry(id: 1, dictId: 'cone')],
+        partial: [
+          _entry(id: 2, dictId: 'cone', word: 'buddhakāya'),
+          _entry(id: 3, dictId: 'mw', word: 'buddhaka'),
+        ],
+      );
+
+      final presented = presentDictSearchResults(
+        raw,
+        const DictVisibility(order: ['mw', 'cone'], enabled: {'cone', 'mw'}),
+      );
+
+      expect(presented.partial.map((r) => r.dictId), ['mw', 'cone']);
+    });
+
+    test('presentDictSearchResults hides partial for disabled dict', () {
+      final raw = _raw(
+        meta: [_meta('cone', 'Cone'), _meta('mw', 'MW')],
+        partial: [
+          _entry(id: 2, dictId: 'cone', word: 'buddhakāya'),
+          _entry(id: 3, dictId: 'mw', word: 'buddhaka'),
+        ],
+      );
+
+      final presented = presentDictSearchResults(
+        raw,
+        const DictVisibility(order: ['cone', 'mw'], enabled: {'cone'}),
+      );
+
+      expect(presented.partial.map((r) => r.dictId), ['cone']);
+    });
   });
 
   group('DPD source ordering and migration', () {

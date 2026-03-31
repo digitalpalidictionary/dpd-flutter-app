@@ -24,6 +24,9 @@ class Settings {
     this.audioGender = AudioGender.male,
     this.wifiOnlyUpdates = false,
     this.lookupHotkey = '',
+    this.showExactResults = true,
+    this.showPartialResults = true,
+    this.showFuzzyResults = true,
   });
 
   final ThemeMode themeMode;
@@ -39,6 +42,9 @@ class Settings {
   final AudioGender audioGender;
   final bool wifiOnlyUpdates;
   final String lookupHotkey;
+  final bool showExactResults;
+  final bool showPartialResults;
+  final bool showFuzzyResults;
 
   Settings copyWith({
     ThemeMode? themeMode,
@@ -54,6 +60,9 @@ class Settings {
     AudioGender? audioGender,
     bool? wifiOnlyUpdates,
     String? lookupHotkey,
+    bool? showExactResults,
+    bool? showPartialResults,
+    bool? showFuzzyResults,
   }) {
     return Settings(
       themeMode: themeMode ?? this.themeMode,
@@ -69,6 +78,9 @@ class Settings {
       audioGender: audioGender ?? this.audioGender,
       wifiOnlyUpdates: wifiOnlyUpdates ?? this.wifiOnlyUpdates,
       lookupHotkey: lookupHotkey ?? this.lookupHotkey,
+      showExactResults: showExactResults ?? this.showExactResults,
+      showPartialResults: showPartialResults ?? this.showPartialResults,
+      showFuzzyResults: showFuzzyResults ?? this.showFuzzyResults,
     );
   }
 
@@ -88,7 +100,10 @@ class Settings {
         other.showSandhiApostrophe == showSandhiApostrophe &&
         other.audioGender == audioGender &&
         other.wifiOnlyUpdates == wifiOnlyUpdates &&
-        other.lookupHotkey == lookupHotkey;
+        other.lookupHotkey == lookupHotkey &&
+        other.showExactResults == showExactResults &&
+        other.showPartialResults == showPartialResults &&
+        other.showFuzzyResults == showFuzzyResults;
   }
 
   @override
@@ -106,6 +121,9 @@ class Settings {
     audioGender,
     wifiOnlyUpdates,
     lookupHotkey,
+    showExactResults,
+    showPartialResults,
+    showFuzzyResults,
   );
 }
 
@@ -148,6 +166,9 @@ class SettingsNotifier extends StateNotifier<Settings> {
     );
     final wifiOnlyUpdates = _prefs.getBool('wifi_only_updates') ?? false;
     final lookupHotkey = _prefs.getString('lookup_hotkey') ?? '';
+    final showExactResults = _prefs.getBool('show_exact_results') ?? true;
+    final showPartialResults = _prefs.getBool('show_partial_results') ?? true;
+    final showFuzzyResults = _prefs.getBool('show_fuzzy_results') ?? true;
     state = Settings(
       themeMode: themeMode,
       fontSize: fontSize,
@@ -162,6 +183,9 @@ class SettingsNotifier extends StateNotifier<Settings> {
       audioGender: audioGender,
       wifiOnlyUpdates: wifiOnlyUpdates,
       lookupHotkey: lookupHotkey,
+      showExactResults: showExactResults,
+      showPartialResults: showPartialResults,
+      showFuzzyResults: showFuzzyResults,
     );
   }
 
@@ -228,6 +252,21 @@ class SettingsNotifier extends StateNotifier<Settings> {
   Future<void> setLookupHotkey(String value) async {
     await _prefs.setString('lookup_hotkey', value);
     state = state.copyWith(lookupHotkey: value);
+  }
+
+  Future<void> setShowExactResults(bool value) async {
+    await _prefs.setBool('show_exact_results', value);
+    state = state.copyWith(showExactResults: value);
+  }
+
+  Future<void> setShowPartialResults(bool value) async {
+    await _prefs.setBool('show_partial_results', value);
+    state = state.copyWith(showPartialResults: value);
+  }
+
+  Future<void> setShowFuzzyResults(bool value) async {
+    await _prefs.setBool('show_fuzzy_results', value);
+    state = state.copyWith(showFuzzyResults: value);
   }
 }
 

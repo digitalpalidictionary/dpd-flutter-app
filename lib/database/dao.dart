@@ -437,6 +437,17 @@ class DpdDao extends DatabaseAccessor<AppDatabase> with _$DpdDaoMixin {
     return (select(dictEntries)..where((t) => t.word.equals(word))).get();
   }
 
+  Future<List<DictEntry>> searchDictPartial(String word, {int limit = 50}) {
+    return (select(dictEntries)
+          ..where(
+            (t) =>
+                t.word.like('$word%') &
+                t.word.equals(word).not(),
+          )
+          ..limit(limit))
+        .get();
+  }
+
   Future<List<DictEntry>> searchDictFuzzy(String fuzzyKey, {int limit = 50}) {
     return (select(dictEntries)
           ..where((t) => t.wordFuzzy.like('$fuzzyKey%'))

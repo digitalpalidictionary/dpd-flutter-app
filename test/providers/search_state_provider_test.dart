@@ -34,6 +34,11 @@ AsyncValue<DictSearchResults> _dictWithResults() =>
       exact: [DictResult(dictId: 'cone', dictName: 'Cone', entries: [])],
     ));
 
+AsyncValue<DictSearchResults> _dictWithPartialResults() =>
+    AsyncValue.data(DictSearchResults(
+      partial: [DictResult(dictId: 'cone', dictName: 'Cone', entries: [])],
+    ));
+
 AsyncValue<List<DpdHeadwordWithRoot>> _errorHw() =>
     AsyncValue<List<DpdHeadwordWithRoot>>.error(Exception('fail'), StackTrace.empty);
 
@@ -138,6 +143,40 @@ void main() {
       final state = _compute(dict: _errorDict());
       expect(state.shouldShowNoResults, isFalse);
       expect(state.status, SearchStatus.error);
+    });
+
+    test('hasResults is true when only dictionary partial exists', () {
+      final state = _compute(dict: _dictWithPartialResults());
+      expect(state.hasResults, isTrue);
+      expect(state.status, SearchStatus.hasResults);
+      expect(state.shouldShowNoResults, isFalse);
+    });
+
+    test('hasResults is true when only DPD fuzzy results exist', () {
+      final state = _compute(fuzzy: AsyncValue.data([_dummyHeadword()]));
+      expect(state.hasResults, isTrue);
+      expect(state.status, SearchStatus.hasResults);
+      expect(state.shouldShowNoResults, isFalse);
+    });
+
+    test('shouldShowNoResults is false whenever any tier has content', () {
+      for (final state in [
+        _compute(exact: AsyncValue.data([_dummyHeadword()])),
+        _compute(partial: AsyncValue.data([_dummyHeadword()])),
+        _compute(fuzzy: AsyncValue.data([_dummyHeadword()])),
+        _compute(dict: _dictWithResults()),
+        _compute(dict: _dictWithPartialResults()),
+      ]) {
+        expect(state.shouldShowNoResults, isFalse);
+      }
+    });
+
+    test('SearchAggregateState has no shouldShowFuzzyFallback field', () {
+      final state = _compute();
+      expect(
+        () => (state as dynamic).shouldShowFuzzyFallback,
+        throwsNoSuchMethodError,
+      );
     });
   });
 }

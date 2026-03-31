@@ -14,7 +14,6 @@ import '../providers/autocomplete_provider.dart';
 import '../providers/dict_provider.dart';
 import '../providers/history_provider.dart';
 import '../providers/search_provider.dart';
-import '../providers/search_state_provider.dart';
 import '../providers/secondary_results_provider.dart';
 import '../providers/database_update_provider.dart';
 import '../providers/settings_provider.dart';
@@ -610,6 +609,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     final dictAsync = ref.watch(dictResultsProvider(query));
     final dictSearch = dictAsync.valueOrNull ?? const DictSearchResults();
     final dictExact = dictSearch.exact;
+    final dictPartial = dictSearch.partial;
     final dictFuzzy = dictSearch.fuzzy;
 
     if (exactLoading && exact.isEmpty) {
@@ -622,96 +622,55 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
 
     final settings = ref.watch(settingsProvider);
 
-    if (exact.isEmpty &&
-        partial.isEmpty &&
+    final fuzzyAsync = ref.watch(fuzzyResultsProvider(query));
+    final exactAndPartialIds = {
+      ...exactIds,
+      ...partial.map((e) => e.headword.id),
+    };
+    final fuzzyRaw = (fuzzyAsync.valueOrNull ?? [])
+        .where((e) => !exactAndPartialIds.contains(e.headword.id))
+        .toList();
+
+    final visibleExact = settings.showExactResults ? exact : <DpdHeadwordWithRoot>[];
+    final visiblePartial = settings.showPartialResults ? partial : <DpdHeadwordWithRoot>[];
+    final visibleFuzzy = settings.showFuzzyResults ? fuzzyRaw : <DpdHeadwordWithRoot>[];
+    final visibleDictExact = settings.showExactResults ? dictExact : <DictResult>[];
+    final visibleDictPartial = settings.showPartialResults ? dictPartial : <DictResult>[];
+    final visibleDictFuzzy = settings.showFuzzyResults ? dictFuzzy : <DictResult>[];
+
+    if (visibleExact.isEmpty &&
+        visiblePartial.isEmpty &&
         roots.isEmpty &&
         secondary.isEmpty &&
-        dictExact.isEmpty &&
-        dictFuzzy.isEmpty &&
-        !partialLoading) {
-      return _buildFuzzyFallback(context, query, settings.displayMode);
+        visibleDictExact.isEmpty &&
+        visibleDictPartial.isEmpty &&
+        visibleDictFuzzy.isEmpty &&
+        visibleFuzzy.isEmpty &&
+        !partialLoading &&
+        !fuzzyAsync.isLoading &&
+        !dictAsync.isLoading) {
+      return _NoResults(query: query);
     }
-
-    final dpdEmpty = exact.isEmpty && partial.isEmpty && roots.isEmpty;
-    final fuzzy = dpdEmpty
-        ? (ref.watch(fuzzyResultsProvider(query)).valueOrNull ?? [])
-        : <DpdHeadwordWithRoot>[];
 
     final visibility = ref.watch(dictVisibilityProvider);
     final summaryEntries = ref.watch(summaryEntriesProvider(query));
     return _SplitResultsList(
-      exact: exact,
-      partial: partial,
+      exact: visibleExact,
+      partial: visiblePartial,
       partialLoading: partialLoading,
       roots: roots,
       secondary: secondary,
-      dictExact: dictExact,
-      dictFuzzy: dictFuzzy,
+      dictExact: visibleDictExact,
+      dictPartial: visibleDictPartial,
+      dictFuzzy: visibleDictFuzzy,
       summaryEntries: summaryEntries,
       showSummary: settings.showSummary && settings.displayMode != DisplayMode.compact,
       mode: settings.displayMode,
       visibility: visibility,
-      fuzzy: fuzzy,
+      fuzzy: visibleFuzzy,
     );
   }
 
-  Widget _buildFuzzyFallback(BuildContext context, String query, DisplayMode mode) {
-    final fuzzyAsync = ref.watch(fuzzyResultsProvider(query));
-    final dictAsync = ref.watch(dictResultsProvider(query));
-    final dictSearch = dictAsync.valueOrNull ?? const DictSearchResults();
-    final allDictResults = [...dictSearch.exact, ...dictSearch.fuzzy];
-
-    final searchState = ref.watch(searchAggregateStateProvider(query));
-
-    if (fuzzyAsync.isLoading || dictAsync.isLoading) {
-      return const Center(child: CircularProgressIndicator());
-    }
-    if (fuzzyAsync.hasError) return Center(child: Text('Error: ${fuzzyAsync.error}'));
-    final results = fuzzyAsync.valueOrNull ?? [];
-    if (searchState.shouldShowNoResults) return _NoResults(query: query);
-    final theme = Theme.of(context);
-    return Column(
-      children: [
-        if (results.isNotEmpty) ...[
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: Row(
-              children: [
-                Icon(Icons.info_outline, size: 16, color: theme.colorScheme.outline),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Text(
-                    'No exact match. Showing similar results.',
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      color: theme.colorScheme.outline,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-        Expanded(
-          child: ListView(
-            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-            cacheExtent: 5000,
-            children: [
-              for (final hw in results)
-                switch (mode) {
-                  DisplayMode.classic => InlineEntryCard(headword: hw),
-                  DisplayMode.compact => AccordionCard(headword: hw),
-                },
-              for (final dr in allDictResults)
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  child: DictHtmlCard(dictId: dr.dictId, dictName: dr.dictName, entries: dr.entries),
-                ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
 }
 
 // ── Info popup ────────────────────────────────────────────────────────────────
@@ -966,6 +925,7 @@ class _SplitResultsList extends StatefulWidget {
     required this.roots,
     required this.secondary,
     required this.dictExact,
+    required this.dictPartial,
     required this.dictFuzzy,
     required this.summaryEntries,
     required this.showSummary,
@@ -980,6 +940,7 @@ class _SplitResultsList extends StatefulWidget {
   final List<RootWithFamilies> roots;
   final List<Object> secondary;
   final List<DictResult> dictExact;
+  final List<DictResult> dictPartial;
   final List<DictResult> dictFuzzy;
   final List<SummaryEntry> summaryEntries;
   final bool showSummary;
@@ -1038,6 +999,7 @@ class _SplitResultsListState extends State<_SplitResultsList> {
 
     final tier1 = <Widget>[];
     final tier2 = <Widget>[];
+    final tier3 = <Widget>[];
 
     for (final sourceId in order) {
       if (!enabled.contains(sourceId)) continue;
@@ -1061,7 +1023,7 @@ class _SplitResultsListState extends State<_SplitResultsList> {
             tier2.add(_buildItem(context, hw));
           }
           for (final hw in widget.fuzzy) {
-            tier2.add(_buildItem(context, hw));
+            tier3.add(_buildItem(context, hw));
           }
         case 'dpd_roots':
           for (final rwf in widget.roots) {
@@ -1102,10 +1064,22 @@ class _SplitResultsListState extends State<_SplitResultsList> {
               ),
             ));
           }
+          final partialResult =
+              widget.dictPartial.where((dr) => dr.dictId == sourceId).firstOrNull;
+          if (partialResult != null) {
+            tier2.add(Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              child: DictHtmlCard(
+                dictId: partialResult.dictId,
+                dictName: partialResult.dictName,
+                entries: partialResult.entries,
+              ),
+            ));
+          }
           final fuzzyResult =
               widget.dictFuzzy.where((dr) => dr.dictId == sourceId).firstOrNull;
           if (fuzzyResult != null) {
-            tier2.add(Padding(
+            tier3.add(Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
               child: DictHtmlCard(
                 dictId: fuzzyResult.dictId,
@@ -1119,13 +1093,13 @@ class _SplitResultsListState extends State<_SplitResultsList> {
 
     final showPartialLoading =
         widget.partialLoading && enabled.contains('dpd_headwords');
-    final showDivider =
-        tier1.isNotEmpty && (tier2.isNotEmpty || showPartialLoading);
+    final showPartialDivider = tier2.isNotEmpty || showPartialLoading;
+    final showFuzzyDivider = tier3.isNotEmpty;
 
     final allItems = [
       ...tier1,
-      if (showDivider)
-        _MoreResultsDivider(isCompact: widget.mode == DisplayMode.compact),
+      if (showPartialDivider)
+        _TierDivider(label: 'Partial Results', isCompact: widget.mode == DisplayMode.compact),
       ...tier2,
       if (showPartialLoading)
         const Padding(
@@ -1138,6 +1112,9 @@ class _SplitResultsListState extends State<_SplitResultsList> {
             ),
           ),
         ),
+      if (showFuzzyDivider)
+        _TierDivider(label: 'Fuzzy Results', isCompact: widget.mode == DisplayMode.compact),
+      ...tier3,
     ];
 
     return ListView.separated(
@@ -1243,35 +1220,40 @@ class _SplitResultsListState extends State<_SplitResultsList> {
   }
 }
 
-class _MoreResultsDivider extends StatelessWidget {
-  const _MoreResultsDivider({this.isCompact = false});
+class _TierDivider extends StatelessWidget {
+  const _TierDivider({required this.label, this.isCompact = false});
 
+  final String label;
   final bool isCompact;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    final bgColor = isDark
+        ? HSLColor.fromAHSL(1, 198, 1, 0.18).toColor()
+        : HSLColor.fromAHSL(1, 198, 1, 0.82).toColor();
+    final textColor = theme.colorScheme.onSurface;
     final textStyle = isCompact
-        ? theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.onSurface)
-        : theme.textTheme.titleLarge?.copyWith(color: theme.colorScheme.onSurface);
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(8, 12, 8, 0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Divider(
-            height: 1,
-            color: DpdColors.primary.withValues(alpha: 0.3),
-          ),
-          const SizedBox(height: 12),
-          Text('more results', style: textStyle),
-          const SizedBox(height: 12),
-          Divider(
-            height: 1,
-            color: DpdColors.primary.withValues(alpha: 0.3),
-          ),
-        ],
+        ? theme.textTheme.bodySmall?.copyWith(
+            color: textColor,
+            fontWeight: FontWeight.w600,
+            letterSpacing: 0.5,
+          )
+        : theme.textTheme.bodyMedium?.copyWith(
+            color: textColor,
+            fontWeight: FontWeight.w600,
+            letterSpacing: 0.5,
+          );
+    return Container(
+      width: double.infinity,
+      color: bgColor,
+      margin: const EdgeInsets.symmetric(vertical: 12),
+      padding: EdgeInsets.symmetric(
+        horizontal: 16,
+        vertical: isCompact ? 6 : 8,
       ),
+      child: Text(label, style: textStyle),
     );
   }
 }

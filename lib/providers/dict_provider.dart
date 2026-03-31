@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../database/database.dart';
 import '../utils/diacritics.dart';
+import '../utils/pali_sort.dart';
 import 'database_provider.dart';
 import 'settings_provider.dart';
 
@@ -174,45 +175,63 @@ final dictCssProvider = FutureProvider.family<String?, String>((
 
 class DictSearchResults {
   final List<DictResult> exact;
+  final List<DictResult> partial;
   final List<DictResult> fuzzy;
 
-  const DictSearchResults({this.exact = const [], this.fuzzy = const []});
+  const DictSearchResults({
+    this.exact = const [],
+    this.partial = const [],
+    this.fuzzy = const [],
+  });
 }
 
 class DictRawSearchResults {
   final Map<String, String> metaNames;
   final Map<String, List<DictEntry>> exact;
+  final Map<String, List<DictEntry>> partial;
   final Map<String, List<DictEntry>> fuzzy;
 
   const DictRawSearchResults({
     this.metaNames = const {},
     this.exact = const {},
+    this.partial = const {},
     this.fuzzy = const {},
   });
 
   factory DictRawSearchResults.fromRows({
     List<DictMetaData> meta = const [],
     List<DictEntry> exactRows = const [],
+    List<DictEntry> partialRows = const [],
     List<DictEntry> fuzzyRows = const [],
   }) {
     final exactIds = exactRows.map((entry) => entry.id).toSet();
+    final partialIds = partialRows.map((entry) => entry.id).toSet();
+    final excludedFromFuzzy = exactIds.union(partialIds);
+
+    final fuzzySorted = [...fuzzyRows]..sort(
+      (a, b) => paliSortKey(a.word).compareTo(paliSortKey(b.word)),
+    );
     final fuzzyGrouped = <String, List<DictEntry>>{};
-    for (final entry in fuzzyRows) {
-      if (exactIds.contains(entry.id)) continue;
+    for (final entry in fuzzySorted) {
+      if (excludedFromFuzzy.contains(entry.id)) continue;
       fuzzyGrouped.putIfAbsent(entry.dictId, () => []).add(entry);
     }
 
     return DictRawSearchResults(
       metaNames: {for (final item in meta) item.dictId: item.name},
       exact: _groupDictEntries(exactRows),
+      partial: _groupDictEntries(partialRows),
       fuzzy: fuzzyGrouped,
     );
   }
 }
 
 Map<String, List<DictEntry>> _groupDictEntries(List<DictEntry> rows) {
+  final sorted = [...rows]..sort(
+    (a, b) => paliSortKey(a.word).compareTo(paliSortKey(b.word)),
+  );
   final grouped = <String, List<DictEntry>>{};
-  for (final entry in rows) {
+  for (final entry in sorted) {
     grouped.putIfAbsent(entry.dictId, () => []).add(entry);
   }
   return grouped;
@@ -252,6 +271,7 @@ DictSearchResults presentDictSearchResults(
 
   return DictSearchResults(
     exact: present(raw.exact),
+    partial: present(raw.partial),
     fuzzy: present(raw.fuzzy),
   );
 }
@@ -270,6 +290,13 @@ final _dictRawResultsProvider = FutureProvider.autoDispose
         exactRows = const [];
       }
 
+      List<DictEntry> partialRows;
+      try {
+        partialRows = await dao.searchDictPartial(query.toLowerCase());
+      } catch (_) {
+        partialRows = const [];
+      }
+
       List<DictEntry> fuzzyRows;
       try {
         final fuzzyKey = stripDiacritics(query.toLowerCase());
@@ -281,6 +308,7 @@ final _dictRawResultsProvider = FutureProvider.autoDispose
       return DictRawSearchResults.fromRows(
         meta: allMeta,
         exactRows: exactRows,
+        partialRows: partialRows,
         fuzzyRows: fuzzyRows,
       );
     });

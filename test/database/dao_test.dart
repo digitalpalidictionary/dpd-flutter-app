@@ -1,3 +1,4 @@
+import 'package:drift/drift.dart' hide isNull, isNotNull;
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:dpd_flutter_app/database/database.dart';
@@ -107,6 +108,74 @@ void main() {
   test('getAllLookupKeys returns empty set when lookup table is empty', () async {
     final keys = await dao.getAllLookupKeys();
     expect(keys, isEmpty);
+  });
+
+  group('searchDictPartial', () {
+    Future<void> insertDictEntry(
+      AppDatabase db, {
+      required int id,
+      required String dictId,
+      required String word,
+    }) async {
+      await db.into(db.dictEntries).insert(
+        DictEntriesCompanion.insert(
+          id: Value(id),
+          dictId: dictId,
+          word: word,
+        ),
+      );
+    }
+
+    test('returns entries whose word starts with the query, excluding exact', () async {
+      await insertDictEntry(db, id: 1, dictId: 'cone', word: 'buddha');
+      await insertDictEntry(db, id: 2, dictId: 'cone', word: 'buddhakāya');
+      await insertDictEntry(db, id: 3, dictId: 'cone', word: 'buddhassa');
+      await insertDictEntry(db, id: 4, dictId: 'cone', word: 'dhamma');
+
+      final results = await dao.searchDictPartial('buddha');
+
+      final ids = results.map((e) => e.id).toSet();
+      expect(ids, {2, 3});
+      expect(ids, isNot(contains(1)));
+    });
+
+    test('excludes exact match at DB level, not in-memory', () async {
+      await insertDictEntry(db, id: 1, dictId: 'cone', word: 'buddha');
+      await insertDictEntry(db, id: 2, dictId: 'cone', word: 'buddhas');
+
+      final results = await dao.searchDictPartial('buddha');
+
+      expect(results.map((e) => e.word), isNot(contains('buddha')));
+      expect(results.map((e) => e.word), contains('buddhas'));
+    });
+
+    test('returns empty when no prefix matches exist', () async {
+      await insertDictEntry(db, id: 1, dictId: 'cone', word: 'dhamma');
+
+      final results = await dao.searchDictPartial('buddha');
+
+      expect(results, isEmpty);
+    });
+
+    test('respects the limit parameter', () async {
+      for (var i = 1; i <= 60; i++) {
+        await insertDictEntry(db, id: i, dictId: 'cone', word: 'buddha$i');
+      }
+
+      final results = await dao.searchDictPartial('buddha', limit: 10);
+
+      expect(results.length, 10);
+    });
+
+    test('fuzzy results are semantically separate from partial results', () async {
+      await insertDictEntry(db, id: 1, dictId: 'cone', word: 'dharma');
+
+      final partial = await dao.searchDictPartial('buddha');
+      final exact = await dao.searchDictExact('buddha');
+
+      expect(partial, isEmpty);
+      expect(exact, isEmpty);
+    });
   });
 
   test('getById joins DpdRoots and returns DpdHeadwordWithRoot', () async {
