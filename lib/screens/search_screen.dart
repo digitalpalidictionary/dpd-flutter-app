@@ -14,6 +14,7 @@ import '../providers/autocomplete_provider.dart';
 import '../providers/dict_provider.dart';
 import '../providers/history_provider.dart';
 import '../providers/search_provider.dart';
+import '../providers/search_state_provider.dart';
 import '../providers/secondary_results_provider.dart';
 import '../providers/database_update_provider.dart';
 import '../providers/settings_provider.dart';
@@ -654,10 +655,14 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     final dictSearch = dictAsync.valueOrNull ?? const DictSearchResults();
     final allDictResults = [...dictSearch.exact, ...dictSearch.fuzzy];
 
-    if (fuzzyAsync.isLoading) return const Center(child: CircularProgressIndicator());
+    final searchState = ref.watch(searchAggregateStateProvider(query));
+
+    if (fuzzyAsync.isLoading || dictAsync.isLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
     if (fuzzyAsync.hasError) return Center(child: Text('Error: ${fuzzyAsync.error}'));
     final results = fuzzyAsync.valueOrNull ?? [];
-    if (results.isEmpty && allDictResults.isEmpty) return _NoResults(query: query);
+    if (searchState.shouldShowNoResults) return _NoResults(query: query);
     final theme = Theme.of(context);
     return Column(
       children: [
