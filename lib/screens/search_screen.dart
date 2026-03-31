@@ -631,7 +631,8 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
       return _buildFuzzyFallback(context, query, settings.displayMode);
     }
 
-    final summaryEntries = buildSummaryEntries(exact, roots, secondary);
+    final visibility = ref.watch(dictVisibilityProvider);
+    final summaryEntries = ref.watch(summaryEntriesProvider(query));
     return _SplitResultsList(
       exact: exact,
       partial: partial,
@@ -643,6 +644,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
       summaryEntries: summaryEntries,
       showSummary: settings.showSummary && settings.displayMode != DisplayMode.compact,
       mode: settings.displayMode,
+      visibility: visibility,
     );
   }
 
@@ -957,6 +959,7 @@ class _SplitResultsList extends StatefulWidget {
     required this.summaryEntries,
     required this.showSummary,
     required this.mode,
+    required this.visibility,
   });
 
   final List<DpdHeadwordWithRoot> exact;
@@ -969,6 +972,7 @@ class _SplitResultsList extends StatefulWidget {
   final List<SummaryEntry> summaryEntries;
   final bool showSummary;
   final DisplayMode mode;
+  final DictVisibility visibility;
 
   @override
   State<_SplitResultsList> createState() => _SplitResultsListState();
@@ -999,128 +1003,134 @@ class _SplitResultsListState extends State<_SplitResultsList> {
     }
   }
 
+  Object? _secondaryForSource(String sourceId) => switch (sourceId) {
+    'dpd_abbreviations' =>
+      widget.secondary.whereType<AbbreviationResult>().firstOrNull,
+    'dpd_deconstructor' =>
+      widget.secondary.whereType<DeconstructorResult>().firstOrNull,
+    'dpd_grammar' =>
+      widget.secondary.whereType<GrammarDictResult>().firstOrNull,
+    'dpd_help' => widget.secondary.whereType<HelpResult>().firstOrNull,
+    'dpd_epd' => widget.secondary.whereType<EpdResult>().firstOrNull,
+    'dpd_variants' => widget.secondary.whereType<VariantResult>().firstOrNull,
+    'dpd_spelling' => widget.secondary.whereType<SpellingResult>().firstOrNull,
+    'dpd_see' => widget.secondary.whereType<SeeResult>().firstOrNull,
+    _ => null,
+  };
+
   @override
   Widget build(BuildContext context) {
-    final hasSummary =
-        widget.showSummary && widget.summaryEntries.isNotEmpty;
-    final hasExact = widget.exact.isNotEmpty;
-    final hasPartial = widget.partial.isNotEmpty;
-    final hasRoots = widget.roots.isNotEmpty;
-    final hasSecondary = widget.secondary.isNotEmpty;
-    final hasDictExact = widget.dictExact.isNotEmpty;
-    final hasDictFuzzy = widget.dictFuzzy.isNotEmpty;
-    final showPartialDivider =
-        (hasExact || hasRoots || hasSecondary || hasDictExact) &&
-        (hasPartial || widget.partialLoading || hasDictFuzzy);
+    final enabled = widget.visibility.enabled;
+    final order = widget.visibility.order;
 
-    final itemCount =
-        (hasSummary ? 1 : 0) +
-        widget.exact.length +
-        widget.roots.length +
-        widget.secondary.length +
-        widget.dictExact.length +
-        (showPartialDivider ? 1 : 0) +
-        widget.partial.length +
-        (widget.partialLoading ? 1 : 0) +
-        widget.dictFuzzy.length;
+    final tier1 = <Widget>[];
+    final tier2 = <Widget>[];
+
+    for (final sourceId in order) {
+      if (!enabled.contains(sourceId)) continue;
+
+      switch (sourceId) {
+        case 'dpd_summary':
+          if (widget.showSummary && widget.summaryEntries.isNotEmpty) {
+            tier1.add(SummarySection(
+              entries: widget.summaryEntries,
+              onTap: _scrollToEntry,
+            ));
+          }
+        case 'dpd_headwords':
+          for (final hw in widget.exact) {
+            tier1.add(KeyedSubtree(
+              key: _keyFor('hw_${hw.headword.id}'),
+              child: _buildItem(context, hw),
+            ));
+          }
+          for (final hw in widget.partial) {
+            tier2.add(_buildItem(context, hw));
+          }
+        case 'dpd_roots':
+          for (final rwf in widget.roots) {
+            tier1.add(KeyedSubtree(
+              key: _keyFor('root_${rwf.root.root}'),
+              child: _buildRootItem(context, rwf),
+            ));
+          }
+        case 'dpd_abbreviations':
+        case 'dpd_deconstructor':
+        case 'dpd_grammar':
+        case 'dpd_help':
+        case 'dpd_epd':
+        case 'dpd_variants':
+        case 'dpd_spelling':
+        case 'dpd_see':
+          final result = _secondaryForSource(sourceId);
+          if (result != null) {
+            final secId = _secondaryTargetId(result);
+            tier1.add(KeyedSubtree(
+              key: secId.isNotEmpty ? _keyFor(secId) : null,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                child: _buildSecondaryItem(result),
+              ),
+            ));
+          }
+        default:
+          final exactResult =
+              widget.dictExact.where((dr) => dr.dictId == sourceId).firstOrNull;
+          if (exactResult != null) {
+            tier1.add(Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              child: DictHtmlCard(
+                dictId: exactResult.dictId,
+                dictName: exactResult.dictName,
+                entries: exactResult.entries,
+              ),
+            ));
+          }
+          final fuzzyResult =
+              widget.dictFuzzy.where((dr) => dr.dictId == sourceId).firstOrNull;
+          if (fuzzyResult != null) {
+            tier2.add(Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              child: DictHtmlCard(
+                dictId: fuzzyResult.dictId,
+                dictName: fuzzyResult.dictName,
+                entries: fuzzyResult.entries,
+              ),
+            ));
+          }
+      }
+    }
+
+    final showPartialLoading =
+        widget.partialLoading && enabled.contains('dpd_headwords');
+    final showDivider =
+        tier1.isNotEmpty && (tier2.isNotEmpty || showPartialLoading);
+
+    final allItems = [
+      ...tier1,
+      if (showDivider)
+        _MoreResultsDivider(isCompact: widget.mode == DisplayMode.compact),
+      ...tier2,
+      if (showPartialLoading)
+        const Padding(
+          padding: EdgeInsets.symmetric(vertical: 16),
+          child: Center(
+            child: SizedBox(
+              width: 20,
+              height: 20,
+              child: CircularProgressIndicator(strokeWidth: 2),
+            ),
+          ),
+        ),
+    ];
 
     return ListView.separated(
       controller: _scrollController,
       cacheExtent: 5000,
       keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-      itemCount: itemCount,
+      itemCount: allItems.length,
       separatorBuilder: (context, index) => const SizedBox.shrink(),
-      itemBuilder: (context, index) {
-        // Summary section first
-        if (hasSummary && index == 0) {
-          return SummarySection(
-            entries: widget.summaryEntries,
-            onTap: _scrollToEntry,
-          );
-        }
-        if (hasSummary) index -= 1;
-
-        // Exact headword matches
-        if (index < widget.exact.length) {
-          final hw = widget.exact[index];
-          return KeyedSubtree(
-            key: _keyFor('hw_${hw.headword.id}'),
-            child: _buildItem(context, hw),
-          );
-        }
-        index -= widget.exact.length;
-
-        // Root matches
-        if (index < widget.roots.length) {
-          final rwf = widget.roots[index];
-          return KeyedSubtree(
-            key: _keyFor('root_${rwf.root.root}'),
-            child: _buildRootItem(context, rwf),
-          );
-        }
-        index -= widget.roots.length;
-
-        // Secondary result cards (abbreviations, deconstructor, grammar, help, EPD, variant, spelling, see)
-        if (index < widget.secondary.length) {
-          final result = widget.secondary[index];
-          final secId = _secondaryTargetId(result);
-          return KeyedSubtree(
-            key: secId.isNotEmpty ? _keyFor(secId) : null,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8),
-              child: _buildSecondaryItem(result),
-            ),
-          );
-        }
-        index -= widget.secondary.length;
-
-        // Exact dictionary results (before "more results")
-        if (index < widget.dictExact.length) {
-          final dr = widget.dictExact[index];
-          return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            child: DictHtmlCard(dictId: dr.dictId, dictName: dr.dictName, entries: dr.entries),
-          );
-        }
-        index -= widget.dictExact.length;
-
-        // Partial matches divider
-        if (showPartialDivider && index == 0) {
-          return _MoreResultsDivider(isCompact: widget.mode == DisplayMode.compact);
-        }
-        if (showPartialDivider) index -= 1;
-
-        // Partial headword matches
-        if (index < widget.partial.length) {
-          return _buildItem(context, widget.partial[index]);
-        }
-        index -= widget.partial.length;
-
-        if (widget.partialLoading && index == 0) {
-          return const Padding(
-            padding: EdgeInsets.symmetric(vertical: 16),
-            child: Center(
-              child: SizedBox(
-                width: 20,
-                height: 20,
-                child: CircularProgressIndicator(strokeWidth: 2),
-              ),
-            ),
-          );
-        }
-        if (widget.partialLoading) index -= 1;
-
-        // Fuzzy dictionary results (after partial DPD matches)
-        if (index < widget.dictFuzzy.length) {
-          final dr = widget.dictFuzzy[index];
-          return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            child: DictHtmlCard(dictId: dr.dictId, dictName: dr.dictName, entries: dr.entries),
-          );
-        }
-
-        return const SizedBox.shrink();
-      },
+      itemBuilder: (context, index) => allItems[index],
     );
   }
 

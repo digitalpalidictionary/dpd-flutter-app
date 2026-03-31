@@ -3,8 +3,21 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../database/database.dart';
 import '../models/lookup_results.dart';
 import '../models/summary_entry.dart';
+import 'dict_provider.dart';
 import 'search_provider.dart';
 import 'secondary_results_provider.dart';
+
+// Maps secondary result runtime type to its DPD source ID.
+const _secondarySourceId = {
+  'AbbreviationResult': 'dpd_abbreviations',
+  'DeconstructorResult': 'dpd_deconstructor',
+  'GrammarDictResult': 'dpd_grammar',
+  'HelpResult': 'dpd_help',
+  'EpdResult': 'dpd_epd',
+  'VariantResult': 'dpd_variants',
+  'SpellingResult': 'dpd_spelling',
+  'SeeResult': 'dpd_see',
+};
 
 final summaryEntriesProvider = Provider.autoDispose
     .family<List<SummaryEntry>, String>((ref, query) {
@@ -14,42 +27,54 @@ final summaryEntriesProvider = Provider.autoDispose
   final roots = ref.watch(rootResultsProvider(query)).valueOrNull ?? [];
   final secondary =
       ref.watch(secondaryResultsProvider(query)).valueOrNull ?? [];
+  final enabled = ref.watch(dictVisibilityProvider).enabled;
 
-  return buildSummaryEntries(exact, roots, secondary);
+  return buildSummaryEntries(exact, roots, secondary, enabledSources: enabled);
 });
 
 List<SummaryEntry> buildSummaryEntries(
   List<DpdHeadwordWithRoot> exact,
   List<RootWithFamilies> roots,
-  List<Object> secondary,
-) {
+  List<Object> secondary, {
+  Set<String>? enabledSources,
+}) {
+  bool sourceEnabled(String id) =>
+      enabledSources == null || enabledSources.contains(id);
+
   final entries = <SummaryEntry>[];
 
-  for (final hw in exact) {
-    final meaning = hw.headword.meaning1?.isNotEmpty == true
-        ? hw.headword.meaning1!
-        : hw.headword.meaning2 ?? '';
-    entries.add(SummaryEntry(
-      type: SummaryEntryType.headword,
-      label: hw.headword.lemma1,
-      typeLabel: '${hw.headword.pos ?? ''}.',
-      meaning: meaning,
-      targetId: 'hw_${hw.headword.id}',
-    ));
+  if (sourceEnabled('dpd_headwords')) {
+    for (final hw in exact) {
+      final meaning = hw.headword.meaning1?.isNotEmpty == true
+          ? hw.headword.meaning1!
+          : hw.headword.meaning2 ?? '';
+      entries.add(SummaryEntry(
+        type: SummaryEntryType.headword,
+        label: hw.headword.lemma1,
+        typeLabel: '${hw.headword.pos ?? ''}.',
+        meaning: meaning,
+        targetId: 'hw_${hw.headword.id}',
+      ));
+    }
   }
 
-  for (final rwf in roots) {
-    final rootClean = rwf.root.root.replaceFirst('√', '');
-    entries.add(SummaryEntry(
-      type: SummaryEntryType.root,
-      label: rwf.root.root,
-      typeLabel: 'root.',
-      meaning: '$rootClean (${rwf.root.rootMeaning})',
-      targetId: 'root_${rwf.root.root}',
-    ));
+  if (sourceEnabled('dpd_roots')) {
+    for (final rwf in roots) {
+      final rootClean = rwf.root.root.replaceFirst('√', '');
+      entries.add(SummaryEntry(
+        type: SummaryEntryType.root,
+        label: rwf.root.root,
+        typeLabel: 'root.',
+        meaning: '$rootClean (${rwf.root.rootMeaning})',
+        targetId: 'root_${rwf.root.root}',
+      ));
+    }
   }
 
   for (final result in secondary) {
+    final srcId = _secondarySourceId[result.runtimeType.toString()];
+    if (srcId != null && !sourceEnabled(srcId)) continue;
+
     switch (result) {
       case SeeResult r:
         entries.add(SummaryEntry(
