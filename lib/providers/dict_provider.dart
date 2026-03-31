@@ -105,21 +105,28 @@ class DictVisibilityNotifier extends StateNotifier<DictVisibility> {
     await _prefs.setString(_prefsKey, jsonEncode(state.toJson()));
   }
 
-  void initFromMeta(List<DictMetaData> allMeta) {
+  void initFromMeta(List<DictMetaData> dictMeta) {
+    final dpdIds = kDpdSources.map((s) => s.id).toList();
+    final dictIds = dictMeta.map((m) => m.dictId).toList();
+    final allIds = [...dpdIds, ...dictIds];
+
     if (state.order.isNotEmpty) {
-      final known = allMeta.map((m) => m.dictId).toSet();
-      final newIds = known.difference(state.order.toSet());
-      if (newIds.isNotEmpty) {
+      final existing = state.order.toSet();
+      final newDpdIds = dpdIds.where((id) => !existing.contains(id)).toList();
+      final newDictIds = dictIds.where((id) => !existing.contains(id)).toList();
+      if (newDpdIds.isNotEmpty || newDictIds.isNotEmpty) {
+        // Prepend new DPD sources before the existing order; append new dict sources at end
         state = state.copyWith(
-          order: [...state.order, ...newIds],
-          enabled: {...state.enabled, ...newIds},
+          order: [...newDpdIds, ...state.order, ...newDictIds],
+          enabled: {...state.enabled, ...newDpdIds, ...newDictIds},
         );
         _save();
       }
       return;
     }
-    final ids = allMeta.map((m) => m.dictId).toList();
-    state = DictVisibility(order: ids, enabled: ids.toSet());
+
+    // Fresh install: DPD sources first, then dict sources
+    state = DictVisibility(order: allIds, enabled: allIds.toSet());
     _save();
   }
 

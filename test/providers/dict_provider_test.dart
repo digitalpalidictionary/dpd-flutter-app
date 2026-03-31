@@ -117,13 +117,14 @@ void main() {
     });
 
     test(
-      'initFromMeta seeds initial order and appends new ids to existing state',
+      'initFromMeta seeds initial order (DPD first) and appends new dict ids to existing state',
       () {
         final notifier = DictVisibilityNotifier(prefs);
+        final dpdIds = kDpdSources.map((s) => s.id).toList();
 
         notifier.initFromMeta([_meta('cone', 'Cone'), _meta('mw', 'MW')]);
-        expect(notifier.state.order, ['cone', 'mw']);
-        expect(notifier.state.enabled, {'cone', 'mw'});
+        expect(notifier.state.order, [...dpdIds, 'cone', 'mw']);
+        expect(notifier.state.enabled, {...dpdIds.toSet(), 'cone', 'mw'});
 
         notifier.toggleDict('mw', false);
         notifier.initFromMeta([
@@ -132,8 +133,10 @@ void main() {
           _meta('pts', 'PTS'),
         ]);
 
-        expect(notifier.state.order, ['cone', 'mw', 'pts']);
-        expect(notifier.state.enabled, {'cone', 'pts'});
+        // 'pts' is a new dict id — appended after existing order
+        expect(notifier.state.order, [...dpdIds, 'cone', 'mw', 'pts']);
+        // 'mw' was disabled, 'pts' is new (auto-enabled), DPD sources remain enabled
+        expect(notifier.state.enabled, {...dpdIds.toSet(), 'cone', 'pts'});
       },
     );
 
@@ -145,11 +148,13 @@ void main() {
       await notifier.toggleDict('cone', false);
 
       expect(notifier.state.order, ['mw', 'cone']);
-      expect(notifier.state.enabled, {'mw'});
+      // toggleDict only removes 'cone' from enabled; DPD sources remain enabled
+      final dpdEnabled = kDpdSources.map((s) => s.id).toSet();
+      expect(notifier.state.enabled, {...dpdEnabled, 'mw'});
 
       final reloaded = DictVisibilityNotifier(prefs);
       expect(reloaded.state.order, ['mw', 'cone']);
-      expect(reloaded.state.enabled, {'mw'});
+      expect(reloaded.state.enabled, {...dpdEnabled, 'mw'});
     });
   });
 
