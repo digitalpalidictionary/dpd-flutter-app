@@ -35,7 +35,7 @@ Treat this as foundational architecture work, not a feature bolt-on.
     - [ ] Add tests for final presentation order across DPD items and existing dictionary items
     - [ ] Run the new targeted tests and confirm the initial failure state before implementation
 
-- [ ] Task: Extend the dictionary visibility/order model to support all DPD result sources
+- [x] Task: Extend the dictionary visibility/order model to support all DPD result sources (b5e3439)
     - [ ] Update the visibility/order state model so DPD result sources can live in the same unified ordering system as other dictionaries
     - [ ] Merge the code-defined DPD sources with DB-backed dictionary sources in one ordering model
     - [ ] Update initialization and migration logic to prepend DPD items for new and existing users without resetting existing preferences
