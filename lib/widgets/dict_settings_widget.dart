@@ -14,13 +14,17 @@ class DictSettingsWidget extends ConsumerWidget {
     final theme = Theme.of(context);
 
     final allMeta = metaAsync.valueOrNull ?? [];
-    if (allMeta.isEmpty) return const SizedBox.shrink();
-
     final metaMap = {for (final m in allMeta) m.dictId: m};
 
-    final orderedIds = visibility.order.isNotEmpty
-        ? visibility.order
-        : allMeta.map((m) => m.dictId).toList();
+    // Unified order: DPD sources + dict sources, driven by saved visibility.
+    // Falls back to canonical DPD-first order when no preference is saved.
+    final dpdIds = kDpdSources.map((s) => s.id).toList();
+    final dictIds = allMeta.map((m) => m.dictId).toList();
+    final defaultOrder = [...dpdIds, ...dictIds];
+    final orderedIds =
+        visibility.order.isNotEmpty ? visibility.order : defaultOrder;
+
+    if (orderedIds.isEmpty) return const SizedBox.shrink();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -31,7 +35,7 @@ class DictSettingsWidget extends ConsumerWidget {
         ),
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
-          child: Text('Dictionaries', style: theme.textTheme.titleMedium),
+          child: Text('Result Sources', style: theme.textTheme.titleMedium),
         ),
         ReorderableListView.builder(
           shrinkWrap: true,
@@ -65,14 +69,13 @@ class DictSettingsWidget extends ConsumerWidget {
             ref.read(dictVisibilityProvider.notifier).setOrder(newOrder);
           },
           itemBuilder: (context, index) {
-            final dictId = orderedIds[index];
-            final meta = metaMap[dictId];
-            final name = meta?.name ?? dictId;
-            final count = meta?.entryCount;
-            final enabled = visibility.enabled.contains(dictId);
+            final id = orderedIds[index];
+            final name = kDpdSourceNames[id] ?? metaMap[id]?.name ?? id;
+            final count = metaMap[id]?.entryCount;
+            final enabled = visibility.enabled.contains(id);
 
             return ListTile(
-              key: ValueKey(dictId),
+              key: ValueKey(id),
               leading: _ReorderHandle(index: index),
               title: Text(name),
               subtitle: count != null
@@ -92,7 +95,7 @@ class DictSettingsWidget extends ConsumerWidget {
                 onChanged: (value) {
                   ref
                       .read(dictVisibilityProvider.notifier)
-                      .toggleDict(dictId, value);
+                      .toggleDict(id, value);
                 },
               ),
             );
