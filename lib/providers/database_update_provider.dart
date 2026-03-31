@@ -50,8 +50,8 @@ class DbUpdateNotifier extends StateNotifier<DbUpdateState> {
   final DatabaseUpdateService _service;
 
   DbUpdateNotifier(this._ref)
-      : _service = DatabaseUpdateService(),
-        super(const DbUpdateState());
+    : _service = DatabaseUpdateService(),
+      super(const DbUpdateState());
 
   String? get _installedTag =>
       _ref.read(sharedPreferencesProvider).getString(_installedTagKey);
@@ -92,17 +92,42 @@ class DbUpdateNotifier extends StateNotifier<DbUpdateState> {
       return;
     }
 
-    // DB exists — check schema compatibility before proceeding
+    // DB exists — distinguish schema metadata issues from an unusable DB.
     bool compatible;
+    bool usable;
+    final db = _ref.read(databaseProvider);
     try {
-      final db = _ref.read(databaseProvider);
       compatible = await _service.isSchemaCompatible(db);
+      usable = compatible || await _service.isDatabaseUsable(db);
     } catch (_) {
       compatible = false;
+      usable = false;
     }
 
     if (!compatible) {
-      // Schema mismatch — must download a matching DB before any queries.
+      if (usable) {
+        String? localVersion;
+        try {
+          final dao = _ref.read(daoProvider);
+          localVersion = await dao
+              .getDbValue('dpd_release_version')
+              .timeout(const Duration(seconds: 5));
+        } catch (_) {}
+
+        state = DbUpdateState(
+          status: DbStatus.ready,
+          hasLocalDatabase: true,
+          localVersion: localVersion,
+        );
+
+        if (!kDebugMode) {
+          _backgroundCheck(localVersion);
+        }
+        return;
+      }
+
+      // DB file exists but is unreadable or incompatible — must download a
+      // matching replacement before any queries can run.
       _ref.invalidate(databaseProvider);
       await Future<void>.delayed(const Duration(milliseconds: 200));
 
@@ -277,7 +302,8 @@ class DbUpdateNotifier extends StateNotifier<DbUpdateState> {
   }
 }
 
-final dbUpdateProvider =
-    StateNotifierProvider<DbUpdateNotifier, DbUpdateState>((ref) {
-  return DbUpdateNotifier(ref);
-});
+final dbUpdateProvider = StateNotifierProvider<DbUpdateNotifier, DbUpdateState>(
+  (ref) {
+    return DbUpdateNotifier(ref);
+  },
+);

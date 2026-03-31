@@ -9,14 +9,7 @@ import '../database/database.dart';
 /// Matches the app's schemaVersion at the time this check was introduced.
 const _fallbackDbSchemaVersion = 2;
 
-enum DbStatus {
-  noDatabase,
-  ready,
-  checking,
-  downloading,
-  extracting,
-  error,
-}
+enum DbStatus { noDatabase, ready, checking, downloading, extracting, error }
 
 class ReleaseInfo {
   final String tagName;
@@ -34,11 +27,14 @@ class DatabaseUpdateService {
   final Dio _dio;
 
   DatabaseUpdateService({Dio? dio})
-      : _dio = dio ??
-            Dio(BaseOptions(
+    : _dio =
+          dio ??
+          Dio(
+            BaseOptions(
               connectTimeout: const Duration(seconds: 30),
               receiveTimeout: const Duration(seconds: 30),
-            ));
+            ),
+          );
 
   Future<bool> databaseExists() async {
     final dbFile = await resolveDbPath();
@@ -50,9 +46,7 @@ class DatabaseUpdateService {
       final response = await _dio.get<List<dynamic>>(
         'https://api.github.com/repos/digitalpalidictionary/dpd-db/releases',
         queryParameters: {'per_page': 10},
-        options: Options(
-          headers: {'Accept': 'application/vnd.github.v3+json'},
-        ),
+        options: Options(headers: {'Accept': 'application/vnd.github.v3+json'}),
       );
 
       final releases = response.data;
@@ -106,9 +100,7 @@ class DatabaseUpdateService {
             onProgress(received / total);
           }
         },
-        options: Options(
-          receiveTimeout: const Duration(minutes: 30),
-        ),
+        options: Options(receiveTimeout: const Duration(minutes: 30)),
       );
 
       // Extract .db from zip
@@ -141,15 +133,29 @@ class DatabaseUpdateService {
   /// Uses raw SQL so it works even when Drift table definitions have changed.
   Future<bool> isSchemaCompatible(AppDatabase db) async {
     try {
-      final result = await db.customSelect(
-        "SELECT value FROM db_info WHERE key = 'db_schema_version'",
-      ).getSingleOrNull();
+      final result = await db
+          .customSelect(
+            "SELECT value FROM db_info WHERE key = 'db_schema_version'",
+          )
+          .getSingleOrNull();
       final version =
           int.tryParse(result?.data['value'] as String? ?? '') ??
-              _fallbackDbSchemaVersion;
+          _fallbackDbSchemaVersion;
       return version >= AppDatabase.requiredDbSchemaVersion;
     } catch (_) {
       // db_info table missing or unreadable — assume incompatible.
+      return false;
+    }
+  }
+
+  /// Returns true when the on-device DB is readable enough for core queries.
+  /// This lets the app continue offline with an older DB instead of forcing a
+  /// blocking re-download on startup.
+  Future<bool> isDatabaseUsable(AppDatabase db) async {
+    try {
+      await db.customSelect('SELECT id FROM dpd_headwords LIMIT 1').get();
+      return true;
+    } catch (_) {
       return false;
     }
   }
