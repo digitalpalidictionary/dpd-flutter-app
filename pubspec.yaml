@@ -47,6 +47,9 @@ dependencies:
   # Network connectivity check (WiFi-only updates)
   connectivity_plus: ^6.1.4
 
+  # Foreground service — keeps download alive when app is backgrounded
+  flutter_foreground_task: ^9.2.1
+
   # App version info
   package_info_plus: ^8.3.0
 

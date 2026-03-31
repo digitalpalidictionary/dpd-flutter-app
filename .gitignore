@@ -58,3 +58,6 @@ __pycache__/
 
 # Claude Code
 .claude/
+
+# Android/build/reports
+android/build/reports/*

@@ -5,6 +5,7 @@ import 'package:open_filex/open_filex.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 import '../services/app_update_service.dart';
+import '../services/foreground_download_service.dart';
 import 'settings_provider.dart';
 
 enum AppUpdateStatus { idle, checking, downloading, readyToInstall, error }
@@ -95,10 +96,14 @@ class AppUpdateNotifier extends StateNotifier<AppUpdateState> {
       progress: 0,
     );
 
+    await ForegroundDownloadService.startAppDownload();
     try {
       final file = await _service.downloadApk(
         release: release,
-        onProgress: (progress) => state = state.copyWith(progress: progress),
+        onProgress: (progress) {
+          state = state.copyWith(progress: progress);
+          ForegroundDownloadService.updateProgress(progress);
+        },
       );
       state = state.copyWith(
         status: AppUpdateStatus.readyToInstall,
@@ -106,6 +111,8 @@ class AppUpdateNotifier extends StateNotifier<AppUpdateState> {
       );
     } catch (_) {
       state = state.copyWith(status: AppUpdateStatus.idle);
+    } finally {
+      await ForegroundDownloadService.stop();
     }
   }
 

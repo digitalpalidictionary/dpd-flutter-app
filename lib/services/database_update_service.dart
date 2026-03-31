@@ -23,6 +23,8 @@ class ReleaseInfo {
   });
 }
 
+class _RangeNotSupportedException implements Exception {}
+
 class DatabaseUpdateService {
   final Dio _dio;
 
@@ -90,18 +92,10 @@ class DatabaseUpdateService {
     final tempZip = File('${dbFile.path}.zip');
     final tempDb = File('${dbFile.path}.new');
 
+    bool downloadSucceeded = false;
     try {
-      // Download zip with progress
-      await _dio.download(
-        release.downloadUrl,
-        tempZip.path,
-        onReceiveProgress: (received, total) {
-          if (total > 0) {
-            onProgress(received / total);
-          }
-        },
-        options: Options(receiveTimeout: const Duration(minutes: 30)),
-      );
+      await _downloadWithResume(tempZip, release, onProgress);
+      downloadSucceeded = true;
 
       // Extract .db from zip
       final zipBytes = await tempZip.readAsBytes();
@@ -124,8 +118,77 @@ class DatabaseUpdateService {
       }
       rethrow;
     } finally {
-      if (tempZip.existsSync()) await tempZip.delete();
+      // Only delete tempZip on success — keep partial file for resumption on failure.
+      if (downloadSucceeded && tempZip.existsSync()) await tempZip.delete();
       if (tempDb.existsSync()) await tempDb.delete();
+    }
+  }
+
+  Future<void> _downloadWithResume(
+    File tempZip,
+    ReleaseInfo release,
+    void Function(double progress) onProgress,
+  ) async {
+    final totalSize = release.size;
+    final alreadyDownloaded = tempZip.existsSync() ? tempZip.lengthSync() : 0;
+
+    if (alreadyDownloaded > 0 && alreadyDownloaded >= totalSize) {
+      onProgress(1.0);
+      return;
+    }
+
+    if (alreadyDownloaded > 0) {
+      try {
+        await _downloadRange(tempZip, release.downloadUrl, alreadyDownloaded, totalSize, onProgress);
+        return;
+      } on _RangeNotSupportedException {
+        // Server doesn't support Range — delete partial file and download fresh.
+        await tempZip.delete();
+      }
+    }
+
+    await _dio.download(
+      release.downloadUrl,
+      tempZip.path,
+      onReceiveProgress: (received, total) {
+        final knownTotal = total > 0 ? total : totalSize;
+        if (knownTotal > 0) onProgress(received / knownTotal);
+      },
+      options: Options(receiveTimeout: const Duration(minutes: 30)),
+    );
+  }
+
+  Future<void> _downloadRange(
+    File tempZip,
+    String url,
+    int startByte,
+    int totalSize,
+    void Function(double progress) onProgress,
+  ) async {
+    final response = await _dio.get<ResponseBody>(
+      url,
+      options: Options(
+        responseType: ResponseType.stream,
+        headers: {'Range': 'bytes=$startByte-'},
+        receiveTimeout: const Duration(minutes: 30),
+      ),
+    );
+
+    if (response.statusCode == 200) {
+      throw _RangeNotSupportedException();
+    }
+
+    final sink = tempZip.openWrite(mode: FileMode.append);
+    int receivedBytes = startByte;
+    try {
+      await for (final chunk in response.data!.stream) {
+        sink.add(chunk);
+        receivedBytes += chunk.length;
+        if (totalSize > 0) onProgress(receivedBytes / totalSize);
+      }
+    } finally {
+      await sink.flush();
+      await sink.close();
     }
   }
 

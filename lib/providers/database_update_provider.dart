@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../services/database_update_service.dart';
+import '../services/foreground_download_service.dart';
 import 'autocomplete_provider.dart';
 import 'database_provider.dart';
 import 'settings_provider.dart';
@@ -185,11 +186,13 @@ class DbUpdateNotifier extends StateNotifier<DbUpdateState> {
   Future<void> _initialDownload(ReleaseInfo release) async {
     state = state.copyWith(status: DbStatus.downloading, progress: 0);
 
+    await ForegroundDownloadService.startDbDownload();
     try {
       await _service.downloadAndInstall(
         release: release,
         onProgress: (progress) {
           state = state.copyWith(progress: progress);
+          ForegroundDownloadService.updateProgress(progress);
         },
         closeDb: () async {
           _ref.invalidate(databaseProvider);
@@ -218,6 +221,8 @@ class DbUpdateNotifier extends StateNotifier<DbUpdateState> {
         status: DbStatus.error,
         errorMessage: e.toString(),
       );
+    } finally {
+      await ForegroundDownloadService.stop();
     }
   }
 
@@ -256,11 +261,13 @@ class DbUpdateNotifier extends StateNotifier<DbUpdateState> {
       progress: 0,
     );
 
+    await ForegroundDownloadService.startDbDownload();
     try {
       await _service.downloadAndInstall(
         release: release,
         onProgress: (progress) {
           state = state.copyWith(progress: progress);
+          ForegroundDownloadService.updateProgress(progress);
         },
         closeDb: () async {
           state = state.copyWith(status: DbStatus.extracting);
@@ -291,6 +298,8 @@ class DbUpdateNotifier extends StateNotifier<DbUpdateState> {
         status: DbStatus.ready,
         errorMessage: e.toString(),
       );
+    } finally {
+      await ForegroundDownloadService.stop();
     }
   }
 

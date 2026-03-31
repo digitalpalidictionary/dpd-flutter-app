@@ -5,10 +5,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'app.dart';
 import 'providers/settings_provider.dart';
 import 'providers/search_provider.dart';
+import 'services/foreground_download_service.dart';
 import 'services/intent_service.dart';
 
 void main(List<String> args) async {
   WidgetsFlutterBinding.ensureInitialized();
+  ForegroundDownloadService.initialize();
 
   debugPrint('[DPD] main() called with args: $args');
 
