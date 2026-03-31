@@ -626,8 +626,6 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
         partial.isEmpty &&
         roots.isEmpty &&
         secondary.isEmpty &&
-        dictExact.isEmpty &&
-        dictFuzzy.isEmpty &&
         !partialLoading) {
       return _buildFuzzyFallback(context, query, settings.displayMode);
     }
