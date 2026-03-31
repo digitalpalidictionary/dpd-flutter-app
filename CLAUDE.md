@@ -2,6 +2,8 @@
 
 ## Commit Convention
 
+**CRITICAL:** NEVER commit unless the user explicitly asks you to. Always wait for instruction.
+
 **CRITICAL:** Use `conductor:` prefix for ALL conductor-related commits, NOT `chore:`.
 
 - `conductor:` - Conductor framework updates (plan.md, tracks.md, phase/task tracking, checkpoints)
@@ -17,18 +19,26 @@
 
 The commit **subject line** must describe the user-facing idea in plain language. Technical details (what changed, why, how) go in the commit **body**.
 
-**BAD:** `fix: delta is now 500ms` — tells a user nothing
-**GOOD:** `fix: improved double-tap word search sensitivity` — instantly meaningful
-
 Commit messages appear in the app's release notes. Users read them. Every commit subject must answer: *"What does this mean for me as a user?"*
 
-### Examples
+### Good examples from this project's history
+```
+feat: search results now show partial and fuzzy matches in labeled tiers
+fix: inflection table forms start grey instead of flashing white
+fix: startup screen now opens more smoothly
+fix: app now starts offline with an existing database
+fix: prevent "No results" flashing during search
+```
+
+### Bad examples from this project's history
+```
+db: bump db schema version          ← technical, tells user nothing
+fix: another attempt to fix summary ← "another attempt" is meaningless
+conductor: udpate plans             ← typo; fine for conductor but proofread
+```
+
+### Commit with body for context
 ```bash
-git commit -m "conductor: mark track 'X' as complete"
-git commit -m "conductor: checkpoint end of Phase 1"
-git commit -m "conductor: completed phase 1 of restyle"
-git commit -m "feat: added webapp style parity"
-git commit -m "fix: inflection button naming"
 git commit -m "fix: improved double-tap word search sensitivity
 
 Increased double-tap detection window from 300ms to 500ms and
