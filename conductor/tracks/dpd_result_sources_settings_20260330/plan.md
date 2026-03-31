@@ -49,7 +49,7 @@ Treat this as foundational architecture work, not a feature bolt-on.
     - [ ] Keep drag handles, on/off controls, spacing, and styling aligned with the current settings implementation
     - [ ] Verify the settings list still works correctly when both DPD and non-DPD items are present
 
-- [ ] Task: Refactor search-result assembly around unified configurable result sections
+- [x] Task: Refactor search-result assembly around unified configurable result sections (21cdac8)
     - [ ] Replace the current fixed index-arithmetic ordering with a unified ordered result-section model driven by saved visibility and order
     - [ ] Apply the user-defined order independently to both result tiers: exact results above the "More Results" divider and partial/fuzzy results below it, each rendering their applicable sources in the same saved order
     - [ ] Ensure `DPD Headwords` moves exact and partial headword results together as one configurable source
