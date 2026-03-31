@@ -285,7 +285,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
 
     // Initialize dict visibility from meta (no-op after first run)
     ref.listen<AsyncValue<List<DictMetaData>>>(dictMetaAllProvider, (_, next) {
-      if (next.hasValue && next.value!.isNotEmpty) {
+      if (next.hasValue) {
         ref.read(dictVisibilityProvider.notifier).initFromMeta(next.value!);
       }
     });
