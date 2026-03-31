@@ -42,7 +42,7 @@ Treat this as foundational architecture work, not a feature bolt-on.
     - [ ] Persist the updated ordering and visibility data using the existing shared-preferences mechanism
     - [ ] Run the focused logic tests and confirm they pass after the state-model changes
 
-- [ ] Task: Update settings UI to expose DPD result sources with the existing dictionary controls
+- [x] Task: Update settings UI to expose DPD result sources with the existing dictionary controls (12ecfed)
     - [ ] Reuse the existing reorderable dictionary settings UI pattern
     - [ ] Ensure DPD items appear above non-DPD dictionaries by default in the unified list
     - [ ] Render `DPD ...` labels for all DPD items
