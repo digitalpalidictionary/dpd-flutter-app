@@ -25,7 +25,7 @@ Treat this as foundational architecture work, not a feature bolt-on.
     - [ ] Define the canonical default order with DPD items above non-DPD dictionaries
     - [ ] Preserve the current effective DPD display sequence when deriving the default order for migration
 
-- [ ] Task: Add focused logic tests for configurable result-source ordering and migration
+- [x] Task: Add focused logic tests for configurable result-source ordering and migration (41e6f41)
     - [ ] Identify the smallest test surface for main logic only
     - [ ] Add tests for default order initialization with all DPD items included
     - [ ] Add tests for migration that preserves existing saved order and prepends newly configurable DPD items in the current DPD sequence
