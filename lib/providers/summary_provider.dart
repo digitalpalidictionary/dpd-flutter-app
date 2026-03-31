@@ -27,11 +27,9 @@ final summaryEntriesProvider = Provider.autoDispose
   final roots = ref.watch(rootResultsProvider(query)).valueOrNull ?? [];
   final secondary =
       ref.watch(secondaryResultsProvider(query)).valueOrNull ?? [];
-  final visibility = ref.watch(dictVisibilityProvider);
-  // If visibility hasn't been initialized yet (empty order), treat all sources as enabled
-  final enabledSources = visibility.order.isEmpty ? null : visibility.enabled;
+  final enabled = ref.watch(dictVisibilityProvider).enabled;
 
-  return buildSummaryEntries(exact, roots, secondary, enabledSources: enabledSources);
+  return buildSummaryEntries(exact, roots, secondary, enabledSources: enabled);
 });
 
 List<SummaryEntry> buildSummaryEntries(

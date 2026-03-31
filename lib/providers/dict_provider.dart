@@ -86,6 +86,9 @@ class DictVisibilityNotifier extends StateNotifier<DictVisibility> {
   DictVisibilityNotifier(this._prefs)
     : super(const DictVisibility(order: [], enabled: {})) {
     _load();
+    // Seed DPD sources immediately so they are always present before any
+    // provider reads from state — even before the DB dict meta resolves.
+    initFromMeta([]);
   }
 
   final SharedPreferences _prefs;
