@@ -43,14 +43,22 @@ class _DpdAppState extends ConsumerState<DpdApp> {
   final _navKey = GlobalKey<NavigatorState>();
   StreamSubscription<String>? _intentSub;
   StreamSubscription<String>? _lookupSub;
+  ProviderSubscription<DbUpdateState>? _dbUpdateSub;
+  bool _firstFrameReleased = false;
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(dbUpdateProvider.notifier).checkForUpdates();
-      ref.read(appUpdateProvider.notifier).checkForUpdates();
+    WidgetsBinding.instance.deferFirstFrame();
+    _dbUpdateSub = ref.listenManual<DbUpdateState>(dbUpdateProvider, (
+      previous,
+      next,
+    ) {
+      if (_shouldReleaseFirstFrame(next)) {
+        _releaseFirstFrame();
+      }
     });
+    ref.read(dbUpdateProvider.notifier).checkForUpdates();
 
     if (!Platform.isLinux) {
       _intentSub = IntentService.intentStream.listen((text) {
@@ -75,6 +83,22 @@ class _DpdAppState extends ConsumerState<DpdApp> {
     }
   }
 
+  bool _shouldReleaseFirstFrame(DbUpdateState state) {
+    return state.hasLocalDatabase ||
+        state.status == DbStatus.downloading ||
+        state.status == DbStatus.extracting ||
+        state.status == DbStatus.error;
+  }
+
+  void _releaseFirstFrame() {
+    if (_firstFrameReleased) return;
+    _firstFrameReleased = true;
+    WidgetsBinding.instance.allowFirstFrame();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(appUpdateProvider.notifier).checkForUpdates();
+    });
+  }
+
   void _exitApp() {
     _intentSub?.cancel();
     _lookupSub?.cancel();
@@ -83,6 +107,10 @@ class _DpdAppState extends ConsumerState<DpdApp> {
 
   @override
   void dispose() {
+    _dbUpdateSub?.close();
+    if (!_firstFrameReleased) {
+      WidgetsBinding.instance.allowFirstFrame();
+    }
     _intentSub?.cancel();
     _lookupSub?.cancel();
     super.dispose();
@@ -154,46 +182,46 @@ class _DpdAppState extends ConsumerState<DpdApp> {
           const SingleActivator(LogicalKeyboardKey.keyQ, control: true):
               _exitApp,
         if (Platform.isMacOS)
-          const SingleActivator(LogicalKeyboardKey.keyQ, meta: true):
-              _exitApp,
+          const SingleActivator(LogicalKeyboardKey.keyQ, meta: true): _exitApp,
       },
       child: Focus(
         autofocus: true,
         child: MaterialApp(
-      navigatorKey: _navKey,
-      title: 'DPD',
-      debugShowCheckedModeBanner: false,
-      themeMode: settings.themeMode,
-      theme: ThemeData(
-        colorScheme: lightScheme,
-        scaffoldBackgroundColor: DpdColors.light,
-        textTheme: buildTextTheme(
-          ThemeData(colorScheme: lightScheme).textTheme,
-        ),
-        switchTheme: _switchTheme,
-        useMaterial3: true,
-      ),
-      darkTheme: ThemeData(
-        colorScheme: darkScheme,
-        scaffoldBackgroundColor: DpdColors.dark,
-        textTheme: buildTextTheme(
-          ThemeData.dark().copyWith(colorScheme: darkScheme).textTheme,
-        ),
-        switchTheme: _switchTheme,
-        useMaterial3: true,
-      ),
-      builder: (context, child) {
-        final scale = settings.fontSize / 16.0;
-        return MediaQuery(
-          data: MediaQuery.of(context).copyWith(
-            textScaler: TextScaler.linear(scale),
+          navigatorKey: _navKey,
+          title: 'DPD',
+          debugShowCheckedModeBanner: false,
+          themeMode: settings.themeMode,
+          theme: ThemeData(
+            colorScheme: lightScheme,
+            scaffoldBackgroundColor: DpdColors.light,
+            textTheme: buildTextTheme(
+              ThemeData(colorScheme: lightScheme).textTheme,
+            ),
+            switchTheme: _switchTheme,
+            useMaterial3: true,
           ),
-          child: child!,
-        );
-      },
-      initialRoute: '/',
-      onGenerateRoute: _onGenerateRoute,
-    )),
+          darkTheme: ThemeData(
+            colorScheme: darkScheme,
+            scaffoldBackgroundColor: DpdColors.dark,
+            textTheme: buildTextTheme(
+              ThemeData.dark().copyWith(colorScheme: darkScheme).textTheme,
+            ),
+            switchTheme: _switchTheme,
+            useMaterial3: true,
+          ),
+          builder: (context, child) {
+            final scale = settings.fontSize / 16.0;
+            return MediaQuery(
+              data: MediaQuery.of(
+                context,
+              ).copyWith(textScaler: TextScaler.linear(scale)),
+              child: child!,
+            );
+          },
+          initialRoute: '/',
+          onGenerateRoute: _onGenerateRoute,
+        ),
+      ),
     );
   }
 

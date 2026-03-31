@@ -15,6 +15,7 @@ class DownloadScreen extends ConsumerWidget {
     final updateState = ref.watch(dbUpdateProvider);
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
+    final subtitle = _subtitleFor(updateState);
 
     return Scaffold(
       body: SafeArea(
@@ -37,14 +38,16 @@ class DownloadScreen extends ConsumerWidget {
                   style: theme.textTheme.titleLarge,
                   textAlign: TextAlign.center,
                 ),
-                const SizedBox(height: 8),
-                Text(
-                  'Downloading the latest dictionary database…',
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
+                if (subtitle != null) ...[
+                  const SizedBox(height: 8),
+                  Text(
+                    subtitle,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
+                    ),
+                    textAlign: TextAlign.center,
                   ),
-                  textAlign: TextAlign.center,
-                ),
+                ],
                 const SizedBox(height: 32),
                 _buildContent(context, ref, updateState),
               ],
@@ -65,13 +68,18 @@ class DownloadScreen extends ConsumerWidget {
     switch (updateState.status) {
       case DbStatus.checking:
       case DbStatus.noDatabase:
-        return const CircularProgressIndicator();
+        return const SizedBox.shrink();
 
       case DbStatus.downloading:
         return _downloadingView(context, updateState, updateState.progress);
 
       case DbStatus.extracting:
-        return _downloadingView(context, updateState, 1.0, label: 'Extracting…');
+        return _downloadingView(
+          context,
+          updateState,
+          1.0,
+          label: 'Extracting…',
+        );
 
       case DbStatus.error:
         return Column(
@@ -110,7 +118,8 @@ class DownloadScreen extends ConsumerWidget {
     final release = updateState.releaseInfo;
     final service = DatabaseUpdateService();
 
-    final statusLabel = label ??
+    final statusLabel =
+        label ??
         'Downloading… ${(percent * 100).toStringAsFixed(0)}%'
             '${release != null ? "  (${service.formatBytes(release.size)})" : ""}';
 
@@ -128,5 +137,19 @@ class DownloadScreen extends ConsumerWidget {
         Text(statusLabel, style: theme.textTheme.bodyMedium),
       ],
     );
+  }
+
+  String? _subtitleFor(DbUpdateState updateState) {
+    switch (updateState.status) {
+      case DbStatus.checking:
+      case DbStatus.noDatabase:
+      case DbStatus.ready:
+        return null;
+      case DbStatus.downloading:
+      case DbStatus.extracting:
+        return 'Downloading the latest dictionary database…';
+      case DbStatus.error:
+        return 'Action is required before the app can open.';
+    }
   }
 }
