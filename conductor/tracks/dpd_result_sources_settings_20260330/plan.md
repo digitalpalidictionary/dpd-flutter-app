@@ -61,7 +61,7 @@ Treat this as foundational architecture work, not a feature bolt-on.
     - [ ] Ensure reordered DPD items appear in the user-selected order
     - [ ] Run the focused logic tests again after integrating search-result ordering
 
-- [ ] Task: Run project verification for the completed implementation
+- [x] Task: Run project verification for the completed implementation (458c054)
     - [ ] Run `flutter analyze`
     - [ ] Run the focused test set covering the main ordering and visibility logic
     - [ ] Fix any failures and rerun until clean
