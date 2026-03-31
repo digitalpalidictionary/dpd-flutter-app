@@ -8,6 +8,34 @@ import '../utils/diacritics.dart';
 import 'database_provider.dart';
 import 'settings_provider.dart';
 
+// ── DPD source metadata (code-defined, not in DB) ───────────────────────────
+
+class DpdSourceMeta {
+  final String id;
+  final String label;
+  const DpdSourceMeta(this.id, this.label);
+}
+
+const kDpdSources = [
+  DpdSourceMeta('dpd_summary', 'DPD Summary'),
+  DpdSourceMeta('dpd_headwords', 'DPD Headwords'),
+  DpdSourceMeta('dpd_roots', 'DPD Roots'),
+  DpdSourceMeta('dpd_abbreviations', 'DPD Abbreviations'),
+  DpdSourceMeta('dpd_deconstructor', 'DPD Deconstructor'),
+  DpdSourceMeta('dpd_grammar', 'DPD Grammar'),
+  DpdSourceMeta('dpd_help', 'DPD Help'),
+  DpdSourceMeta('dpd_epd', 'DPD EPD'),
+  DpdSourceMeta('dpd_variants', 'DPD Variants'),
+  DpdSourceMeta('dpd_spelling', 'DPD Spelling'),
+  DpdSourceMeta('dpd_see', 'DPD See'),
+];
+
+final kDpdSourceNames = {
+  for (final s in kDpdSources) s.id: s.label,
+};
+
+// ── DictResult ───────────────────────────────────────────────────────────────
+
 class DictResult {
   final String dictId;
   final String dictName;
