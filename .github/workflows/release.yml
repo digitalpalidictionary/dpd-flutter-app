@@ -46,12 +46,27 @@ jobs:
 
           # Collect commits since last release tag
           if [ "$LAST_TAG" = "v0.0.0" ]; then
-            NOTES=$(git log --pretty="- %s" --no-merges)
+            ALL_NOTES=$(git log --pretty="- %s" --no-merges)
           else
-            NOTES=$(git log "${LAST_TAG}..HEAD" --pretty="- %s" --no-merges)
+            ALL_NOTES=$(git log "${LAST_TAG}..HEAD" --pretty="- %s" --no-merges)
           fi
-          # Write to file to preserve newlines
-          echo "$NOTES" > /tmp/release_notes.txt
+
+          TOTAL=$(echo "$ALL_NOTES" | grep -c .)
+          if [ "$TOTAL" -le 10 ]; then
+            echo "$ALL_NOTES" > /tmp/release_notes.txt
+          else
+            REST_COUNT=$((TOTAL - 10))
+            {
+              echo "$ALL_NOTES" | head -10
+              echo ""
+              echo "<details>"
+              echo "<summary>$REST_COUNT more commits…</summary>"
+              echo ""
+              echo "$ALL_NOTES" | tail -n +11
+              echo ""
+              echo "</details>"
+            } > /tmp/release_notes.txt
+          fi
 
       - name: Restore keystore
         run: |
