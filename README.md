@@ -2,6 +2,8 @@
 
 Native offline Flutter app for the [Digital Pali Dictionary](https://dpdict.net).
 
+Beta testing instructions: [`BETA_TESTER.md`](BETA_TESTER.md)
+
 ## Features
 
 - Offline dictionary lookup via local SQLite database

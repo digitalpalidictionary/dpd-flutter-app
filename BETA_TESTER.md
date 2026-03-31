@@ -11,6 +11,8 @@ This beta version is intended for testing before wider release. If you find bugs
 
 On the latest release page, download the `.apk` file listed under **Assets**.
 
+For safety, only download and install the APK from the official GitHub releases page linked above.
+
 ## Install On Android
 
 Because this app is not installed from the Google Play Store, Android may warn you that installation from this source is blocked.
@@ -29,7 +31,7 @@ Notes:
 - The permission is usually granted to the app you used to open the APK, such as your browser or file manager.
 - Android still shows its normal package installer confirmation screen before the app is installed.
 
-On first launch, the app will download the dictionary database. This may take a few minutes depending on your connection speed.
+On first launch, the app downloads the dictionary database automatically. This may take a few minutes depending on your connection speed.
 
 ## How Updates Work
 
@@ -40,7 +42,7 @@ The app can check for new releases published on GitHub.
 - The dictionary database can also update automatically in the background.
 - If the app is set to download updates on Wi-Fi only, background downloads will wait for Wi-Fi.
 
-During beta testing, expect updates every few days to once a week. After release, updates will slow down to roughly once a month.
+During beta testing, updates may arrive more frequently than in a stable release.
 
 In short:
 
@@ -49,7 +51,7 @@ In short:
 
 ## How To Send Feedback
 
-At the bottom of every screen you will see:
+At the bottom of the app you will see:
 
 **`Having a problem? Report it here`**
 
@@ -63,6 +65,10 @@ Please tap this link to report anything you notice, including:
 - anything that does not feel right
 
 The form is pre-filled with your device and app version, so you just need to describe the problem. Every report helps, no matter how small.
+
+Direct feedback form:
+
+<https://docs.google.com/forms/d/e/1FAIpQLSd2Agk8K2EwAv-wXxxYw4Ud6rezW96BmMf2qPhrT3-0cW-ALQ/viewform>
 
 For feedback about specific words, grammar, or definitions, you can also use the `feedback` button at the bottom of any dictionary entry.
 
