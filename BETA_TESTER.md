@@ -33,6 +33,20 @@ Notes:
 
 On first launch, the app downloads the dictionary database automatically. This may take a few minutes depending on your connection speed.
 
+## How To Look Up Words From Other Apps
+
+You can use DPD from almost any app or website on Android in two ways:
+
+1. Tap any word or select some text, then tap `Share` and choose `DPD`.
+2. Or select a word and tap the `DPD` app icon directly if Android shows it in the text selection menu.
+
+Both methods open the selected text in DPD and have the same effect.
+
+Tip:
+
+- The more often you share to DPD, the more likely Android is to move it onto the first page of your share sheet.
+- After using it a few times, DPD may become one of your most common share targets.
+
 ## How Updates Work
 
 The app can check for new releases published on GitHub.
