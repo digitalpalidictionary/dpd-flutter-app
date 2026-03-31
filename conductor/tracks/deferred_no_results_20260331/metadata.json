@@ -1,0 +1,8 @@
+{
+  "track_id": "deferred_no_results_20260331",
+  "type": "bug",
+  "status": "new",
+  "created_at": "2026-03-31T02:22:21Z",
+  "updated_at": "2026-03-31T02:22:21Z",
+  "description": "Delay the no-results message until all search result sources have completed, using an aggregated search-state provider"
+}
