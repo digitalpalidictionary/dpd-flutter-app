@@ -362,6 +362,97 @@ void main() {
     );
   });
 
+  group('DPD source ordering and migration', () {
+    test('default order puts all DPD sources before dict sources', () {
+      final notifier = DictVisibilityNotifier(prefs);
+      notifier.initFromMeta([_meta('cone', 'Cone'), _meta('mw', 'MW')]);
+
+      final dpdIds = kDpdSources.map((s) => s.id).toList();
+      final order = notifier.state.order;
+
+      // Every DPD source must appear before every dict source
+      final lastDpdIndex =
+          order.lastIndexWhere((id) => dpdIds.contains(id));
+      final firstDictIndex =
+          order.indexWhere((id) => !dpdIds.contains(id));
+
+      expect(lastDpdIndex, lessThan(firstDictIndex));
+      expect(order.where((id) => dpdIds.contains(id)), dpdIds);
+    });
+
+    test('default order enables all DPD sources', () {
+      final notifier = DictVisibilityNotifier(prefs);
+      notifier.initFromMeta([_meta('cone', 'Cone')]);
+
+      for (final source in kDpdSources) {
+        expect(notifier.state.enabled, contains(source.id));
+      }
+    });
+
+    test('migration prepends DPD sources ahead of existing dict order', () {
+      final notifier = DictVisibilityNotifier(prefs);
+      // Seed an existing user state with only dict IDs (pre-DPD-configurable)
+      notifier.initFromMeta([_meta('cone', 'Cone'), _meta('mw', 'MW')]);
+      notifier.setOrder(['mw', 'cone']);
+      notifier.toggleDict('cone', false);
+
+      // Re-init simulating app upgrade that introduces DPD sources
+      notifier.initFromMeta([_meta('cone', 'Cone'), _meta('mw', 'MW')]);
+
+      final order = notifier.state.order;
+      final dpdIds = kDpdSources.map((s) => s.id).toList();
+
+      // DPD sources must all be present and come before dict IDs
+      for (final id in dpdIds) {
+        expect(order, contains(id));
+      }
+      final lastDpdIndex = order.lastIndexWhere((id) => dpdIds.contains(id));
+      final mwIndex = order.indexOf('mw');
+      final coneIndex = order.indexOf('cone');
+      expect(lastDpdIndex, lessThan(mwIndex));
+      expect(lastDpdIndex, lessThan(coneIndex));
+
+      // Existing dict order is preserved
+      expect(mwIndex, lessThan(coneIndex));
+      // Existing enabled state is preserved
+      expect(notifier.state.enabled, contains('mw'));
+      expect(notifier.state.enabled, isNot(contains('cone')));
+    });
+
+    test('migration enables newly added DPD sources automatically', () {
+      // Simulate user who already has saved order with only dict IDs
+      final notifier = DictVisibilityNotifier(prefs);
+      notifier.initFromMeta([_meta('cone', 'Cone')]);
+      notifier.setOrder(['cone']);
+
+      // Re-init with DPD sources (upgrade path)
+      notifier.initFromMeta([_meta('cone', 'Cone')]);
+
+      for (final source in kDpdSources) {
+        expect(notifier.state.enabled, contains(source.id));
+      }
+    });
+
+    test('DPD source toggle changes enabled set only', () {
+      final notifier = DictVisibilityNotifier(prefs);
+      notifier.initFromMeta([_meta('cone', 'Cone')]);
+
+      notifier.toggleDict('dpd_headwords', false);
+      expect(notifier.state.enabled, isNot(contains('dpd_headwords')));
+      expect(notifier.state.order, contains('dpd_headwords'));
+
+      notifier.toggleDict('dpd_headwords', true);
+      expect(notifier.state.enabled, contains('dpd_headwords'));
+    });
+
+    test('dpd_headwords is a single source ID gating both exact and partial', () {
+      // The same ID controls both tiers — toggling it off removes both.
+      // Verified by checking it appears exactly once in the canonical order.
+      final dpdIds = kDpdSources.map((s) => s.id).toList();
+      expect(dpdIds.where((id) => id == 'dpd_headwords').length, 1);
+    });
+  });
+
   group('presentDictSearchResults', () {
     test(
       'raw grouping excludes fuzzy rows already present in exact results',

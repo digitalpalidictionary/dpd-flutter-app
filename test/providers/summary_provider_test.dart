@@ -196,4 +196,131 @@ void main() {
       expect(result[0].typeLabel, '.');
     });
   });
+
+  group('buildSummaryEntries — DPD source filtering', () {
+    final hwResult = DpdHeadwordWithRoot(
+      _headword(id: 1, lemma1: 'buddha', meaning1: 'awakened'),
+      null,
+    );
+    final abbrevResult = AbbreviationResult(headword: 'adj', meaning: 'adjective');
+    final grammarResult = GrammarDictResult(headword: 'buddha', entries: []);
+    final deconResult = DeconstructorResult(headword: 'buddha', deconstructions: ['budh + a']);
+    final helpResult = HelpResult(headword: 'adj', helpText: 'help');
+    final epdResult = EpdResult(headword: 'adj', entries: []);
+    final variantResult = VariantResult(headword: 'adj', variants: {});
+    final spellingResult = SpellingResult(headword: 'adj', spellings: ['adj']);
+    final seeResult = SeeResult(headword: 'adj', seeHeadwords: ['adjectival']);
+
+    final allSecondary = <Object>[
+      abbrevResult,
+      deconResult,
+      grammarResult,
+      helpResult,
+      epdResult,
+      variantResult,
+      spellingResult,
+      seeResult,
+    ];
+
+    test('enabledSources null includes all entries (backward compat)', () {
+      final entries = buildSummaryEntries([hwResult], [], allSecondary);
+      expect(entries.where((e) => e.type == SummaryEntryType.headword), hasLength(1));
+      expect(entries.where((e) => e.type == SummaryEntryType.abbreviation), hasLength(1));
+      expect(entries.where((e) => e.type == SummaryEntryType.grammar), hasLength(1));
+      expect(entries.length, 9);
+    });
+
+    test('dpd_headwords disabled removes headword entries', () {
+      final enabledSources = {
+        'dpd_abbreviations', 'dpd_grammar', 'dpd_deconstructor',
+        'dpd_help', 'dpd_epd', 'dpd_variants', 'dpd_spelling', 'dpd_see',
+      };
+      final entries = buildSummaryEntries(
+        [hwResult], [], allSecondary, enabledSources: enabledSources,
+      );
+      expect(entries.any((e) => e.type == SummaryEntryType.headword), isFalse);
+      expect(entries.any((e) => e.type == SummaryEntryType.abbreviation), isTrue);
+    });
+
+    test('dpd_abbreviations disabled removes abbreviation entries', () {
+      final enabledSources = {
+        'dpd_headwords', 'dpd_grammar', 'dpd_deconstructor',
+        'dpd_help', 'dpd_epd', 'dpd_variants', 'dpd_spelling', 'dpd_see',
+      };
+      final entries = buildSummaryEntries(
+        [hwResult], [], allSecondary, enabledSources: enabledSources,
+      );
+      expect(entries.any((e) => e.type == SummaryEntryType.abbreviation), isFalse);
+      expect(entries.any((e) => e.type == SummaryEntryType.headword), isTrue);
+    });
+
+    test('each secondary type filtered by its corresponding source ID', () {
+      final typeToSource = {
+        SummaryEntryType.abbreviation: 'dpd_abbreviations',
+        SummaryEntryType.deconstructor: 'dpd_deconstructor',
+        SummaryEntryType.grammar: 'dpd_grammar',
+        SummaryEntryType.help: 'dpd_help',
+        SummaryEntryType.epd: 'dpd_epd',
+        SummaryEntryType.variant: 'dpd_variants',
+        SummaryEntryType.spelling: 'dpd_spelling',
+        SummaryEntryType.see: 'dpd_see',
+      };
+
+      for (final entry in typeToSource.entries) {
+        final entryType = entry.key;
+        final sourceId = entry.value;
+
+        // Enabled with only this source
+        final withSource = buildSummaryEntries(
+          [], [], allSecondary, enabledSources: {sourceId},
+        );
+        expect(
+          withSource.any((e) => e.type == entryType),
+          isTrue,
+          reason: '$sourceId should include $entryType',
+        );
+
+        // Disabled — none of the sources
+        final withoutSource = buildSummaryEntries(
+          [], [], allSecondary, enabledSources: const {},
+        );
+        expect(
+          withoutSource.any((e) => e.type == entryType),
+          isFalse,
+          reason: 'empty enabledSources should exclude $entryType',
+        );
+      }
+    });
+
+    test('all secondary DPD sources enabled with empty enabledSources omits all', () {
+      final entries = buildSummaryEntries(
+        [hwResult], [], allSecondary, enabledSources: const {},
+      );
+      expect(entries, isEmpty);
+    });
+
+    test('dpd_roots disabled removes root entries', () {
+      final rwf = RootWithFamilies(
+        root: _root(root: '√bud', meaning: 'to know'),
+        families: [],
+        count: 1,
+      );
+      final entries = buildSummaryEntries(
+        [], [rwf], [], enabledSources: const {'dpd_headwords'},
+      );
+      expect(entries.any((e) => e.type == SummaryEntryType.root), isFalse);
+    });
+
+    test('dpd_roots enabled includes root entries', () {
+      final rwf = RootWithFamilies(
+        root: _root(root: '√bud', meaning: 'to know'),
+        families: [],
+        count: 1,
+      );
+      final entries = buildSummaryEntries(
+        [], [rwf], [], enabledSources: const {'dpd_roots'},
+      );
+      expect(entries.any((e) => e.type == SummaryEntryType.root), isTrue);
+    });
+  });
 }
