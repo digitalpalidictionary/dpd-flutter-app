@@ -632,6 +632,11 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
       return _buildFuzzyFallback(context, query, settings.displayMode);
     }
 
+    final dpdEmpty = exact.isEmpty && partial.isEmpty && roots.isEmpty;
+    final fuzzy = dpdEmpty
+        ? (ref.watch(fuzzyResultsProvider(query)).valueOrNull ?? [])
+        : <DpdHeadwordWithRoot>[];
+
     final visibility = ref.watch(dictVisibilityProvider);
     final summaryEntries = ref.watch(summaryEntriesProvider(query));
     return _SplitResultsList(
@@ -646,6 +651,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
       showSummary: settings.showSummary && settings.displayMode != DisplayMode.compact,
       mode: settings.displayMode,
       visibility: visibility,
+      fuzzy: fuzzy,
     );
   }
 
@@ -965,6 +971,7 @@ class _SplitResultsList extends StatefulWidget {
     required this.showSummary,
     required this.mode,
     required this.visibility,
+    this.fuzzy = const [],
   });
 
   final List<DpdHeadwordWithRoot> exact;
@@ -978,6 +985,7 @@ class _SplitResultsList extends StatefulWidget {
   final bool showSummary;
   final DisplayMode mode;
   final DictVisibility visibility;
+  final List<DpdHeadwordWithRoot> fuzzy;
 
   @override
   State<_SplitResultsList> createState() => _SplitResultsListState();
@@ -1050,6 +1058,9 @@ class _SplitResultsListState extends State<_SplitResultsList> {
             ));
           }
           for (final hw in widget.partial) {
+            tier2.add(_buildItem(context, hw));
+          }
+          for (final hw in widget.fuzzy) {
             tier2.add(_buildItem(context, hw));
           }
         case 'dpd_roots':
