@@ -67,7 +67,12 @@ class RootMatrixTable extends StatelessWidget {
                   width: labelWidth,
                   child: _Cell(
                     margin: const EdgeInsets.only(bottom: 2, right: 2),
-                    child: Text(sub.key, style: labelStyle),
+                    child: Text(
+                      sub.key,
+                      style: labelStyle,
+                      maxLines: 1,
+                      softWrap: false,
+                    ),
                   ),
                 ),
                 Expanded(
