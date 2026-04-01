@@ -92,12 +92,35 @@ class DatabaseUpdateService {
     final tempZip = File('${dbFile.path}.zip');
     final tempDb = File('${dbFile.path}.new');
 
-    bool downloadSucceeded = false;
     try {
       await _downloadWithResume(tempZip, release, onProgress);
-      downloadSucceeded = true;
+      await _extractAndInstall(
+        tempZip, tempDb, dbFile,
+        release: release,
+        onProgress: onProgress,
+        closeDb: closeDb,
+        reopenDb: reopenDb,
+      );
+    } on FileSystemException catch (e) {
+      if (e.message.contains('No space')) {
+        throw Exception('Not enough storage space to download the database.');
+      }
+      rethrow;
+    } finally {
+      if (tempDb.existsSync()) await tempDb.delete();
+    }
+  }
 
-      // Extract .db from zip
+  Future<void> _extractAndInstall(
+    File tempZip,
+    File tempDb,
+    File dbFile, {
+    required ReleaseInfo release,
+    required void Function(double progress) onProgress,
+    required Future<void> Function() closeDb,
+    required Future<void> Function() reopenDb,
+  }) async {
+    try {
       final zipBytes = await tempZip.readAsBytes();
       final archive = ZipDecoder().decodeBytes(zipBytes);
 
@@ -107,21 +130,28 @@ class DatabaseUpdateService {
       );
 
       await tempDb.writeAsBytes(dbEntry.content as List<int>);
-
-      // Close DB, atomic rename, reopen
-      await closeDb();
-      await tempDb.rename(dbFile.path);
-      await reopenDb();
-    } on FileSystemException catch (e) {
-      if (e.message.contains('No space')) {
-        throw Exception('Not enough storage space to download the database.');
-      }
-      rethrow;
-    } finally {
-      // Only delete tempZip on success — keep partial file for resumption on failure.
-      if (downloadSucceeded && tempZip.existsSync()) await tempZip.delete();
+    } catch (_) {
+      // Zip is corrupt — delete it and download fresh.
+      if (tempZip.existsSync()) await tempZip.delete();
       if (tempDb.existsSync()) await tempDb.delete();
+      await _freshDownload(tempZip, release, onProgress);
+
+      final zipBytes = await tempZip.readAsBytes();
+      final archive = ZipDecoder().decodeBytes(zipBytes);
+
+      final dbEntry = archive.files.firstWhere(
+        (f) => f.name.endsWith('.db') && f.isFile,
+        orElse: () => throw Exception('No .db file found in zip'),
+      );
+
+      await tempDb.writeAsBytes(dbEntry.content as List<int>);
     }
+
+    await closeDb();
+    await tempDb.rename(dbFile.path);
+    await reopenDb();
+
+    if (tempZip.existsSync()) await tempZip.delete();
   }
 
   Future<void> _downloadWithResume(
@@ -130,22 +160,35 @@ class DatabaseUpdateService {
     void Function(double progress) onProgress,
   ) async {
     final totalSize = release.size;
-    final alreadyDownloaded = tempZip.existsSync() ? tempZip.lengthSync() : 0;
+    var alreadyDownloaded = tempZip.existsSync() ? tempZip.lengthSync() : 0;
 
+    // Discard partial files that are larger than expected (stale/corrupt).
     if (alreadyDownloaded > 0 && alreadyDownloaded >= totalSize) {
-      onProgress(1.0);
-      return;
+      await tempZip.delete();
+      alreadyDownloaded = 0;
     }
 
     if (alreadyDownloaded > 0) {
       try {
         await _downloadRange(tempZip, release.downloadUrl, alreadyDownloaded, totalSize, onProgress);
-        return;
+        if (_isFileSizeValid(tempZip, totalSize)) return;
+        // Resumed file is wrong size — discard and fall through to fresh download.
+        await tempZip.delete();
       } on _RangeNotSupportedException {
-        // Server doesn't support Range — delete partial file and download fresh.
         await tempZip.delete();
       }
     }
+
+    await _freshDownload(tempZip, release, onProgress);
+  }
+
+  Future<void> _freshDownload(
+    File tempZip,
+    ReleaseInfo release,
+    void Function(double progress) onProgress,
+  ) async {
+    final totalSize = release.size;
+    if (tempZip.existsSync()) await tempZip.delete();
 
     await _dio.download(
       release.downloadUrl,
@@ -156,6 +199,17 @@ class DatabaseUpdateService {
       },
       options: Options(receiveTimeout: const Duration(minutes: 30)),
     );
+
+    if (!_isFileSizeValid(tempZip, totalSize)) {
+      await tempZip.delete();
+      throw Exception(
+        'Download appears incomplete. Please check your connection and try again.',
+      );
+    }
+  }
+
+  bool _isFileSizeValid(File file, int expectedSize) {
+    return file.existsSync() && file.lengthSync() == expectedSize;
   }
 
   Future<void> _downloadRange(
