@@ -69,6 +69,11 @@ class SettingsContent extends ConsumerWidget {
                   label: Text(isUpdating ? 'Updating…' : 'Update Now'),
                 ),
               ),
+              // Display
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Divider(color: theme.colorScheme.outlineVariant),
+              ),
               ListTile(
                 title: const Text('Result style'),
                 trailing: CompactSegmented<DisplayMode>(
@@ -101,9 +106,13 @@ class SettingsContent extends ConsumerWidget {
                   onChanged: notifier.setThemeMode,
                 ),
               ),
+              // Text
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Row(
+                child: Divider(color: theme.colorScheme.outlineVariant),
+              ),
+              ListTile(
+                title: Row(
                   children: [
                     const Text('Font size'),
                     Expanded(
@@ -131,39 +140,6 @@ class SettingsContent extends ConsumerWidget {
                 ),
               ),
               ListTile(
-                title: const Text('Grammar'),
-                trailing: CompactSegmented<bool>(
-                  segments: const [
-                    ButtonSegment(value: false, label: Text('Closed')),
-                    ButtonSegment(value: true, label: Text('Open')),
-                  ],
-                  selected: settings.grammarOpen,
-                  onChanged: notifier.setGrammarOpen,
-                ),
-              ),
-              ListTile(
-                title: const Text('Examples'),
-                trailing: CompactSegmented<bool>(
-                  segments: const [
-                    ButtonSegment(value: false, label: Text('Closed')),
-                    ButtonSegment(value: true, label: Text('Open')),
-                  ],
-                  selected: settings.examplesOpen,
-                  onChanged: notifier.setExamplesOpen,
-                ),
-              ),
-              ListTile(
-                title: const Text('One section at a time'),
-                trailing: CompactSegmented<bool>(
-                  segments: const [
-                    ButtonSegment(value: false, label: Text('Off')),
-                    ButtonSegment(value: true, label: Text('On')),
-                  ],
-                  selected: settings.oneButtonAtATime,
-                  onChanged: notifier.setOneButtonAtATime,
-                ),
-              ),
-              ListTile(
                 title: const Text('Niggahīta'),
                 trailing: CompactSegmented<NiggahitaMode>(
                   segments: const [
@@ -188,16 +164,83 @@ class SettingsContent extends ConsumerWidget {
                   onChanged: notifier.setShowSandhiApostrophe,
                 ),
               ),
+              // Sections
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Divider(color: theme.colorScheme.outlineVariant),
+              ),
               ListTile(
-                title: const Text('Summary'),
+                title: const Text('Grammar button'),
                 trailing: CompactSegmented<bool>(
                   segments: const [
-                    ButtonSegment(value: false, label: Text('Hide')),
-                    ButtonSegment(value: true, label: Text('Show')),
+                    ButtonSegment(value: false, label: Text('Closed')),
+                    ButtonSegment(value: true, label: Text('Open')),
                   ],
-                  selected: settings.showSummary,
-                  onChanged: notifier.setShowSummary,
+                  selected: settings.grammarOpen,
+                  onChanged: notifier.setGrammarOpen,
                 ),
+              ),
+              ListTile(
+                title: const Text('Examples button'),
+                trailing: CompactSegmented<bool>(
+                  segments: const [
+                    ButtonSegment(value: false, label: Text('Closed')),
+                    ButtonSegment(value: true, label: Text('Open')),
+                  ],
+                  selected: settings.examplesOpen,
+                  onChanged: notifier.setExamplesOpen,
+                ),
+              ),
+              ListTile(
+                title: const Text('One button at a time'),
+                trailing: CompactSegmented<bool>(
+                  segments: const [
+                    ButtonSegment(value: false, label: Text('Off')),
+                    ButtonSegment(value: true, label: Text('On')),
+                  ],
+                  selected: settings.oneButtonAtATime,
+                  onChanged: notifier.setOneButtonAtATime,
+                ),
+              ),
+              // Other
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Divider(color: theme.colorScheme.outlineVariant),
+              ),
+              ListTile(
+                title: const Text('Audio gender'),
+                trailing: CompactSegmented<AudioGender>(
+                  segments: const [
+                    ButtonSegment(value: AudioGender.male, label: Text('Male')),
+                    ButtonSegment(
+                      value: AudioGender.female,
+                      label: Text('Female'),
+                    ),
+                  ],
+                  selected: settings.audioGender,
+                  onChanged: notifier.setAudioGender,
+                ),
+              ),
+              ListTile(
+                title: const Text('Updates'),
+                trailing: CompactSegmented<bool>(
+                  segments: const [
+                    ButtonSegment(value: false, label: Text('Any')),
+                    ButtonSegment(value: true, label: Text('WiFi')),
+                  ],
+                  selected: settings.wifiOnlyUpdates,
+                  onChanged: notifier.setWifiOnlyUpdates,
+                ),
+              ),
+              if (Platform.isLinux)
+                _HotkeyTile(
+                  hotkey: settings.lookupHotkey,
+                  onChanged: notifier.setLookupHotkey,
+                ),
+              // Results visibility
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Divider(color: theme.colorScheme.outlineVariant),
               ),
               ListTile(
                 title: const Text('Exact results'),
@@ -232,36 +275,6 @@ class SettingsContent extends ConsumerWidget {
                   onChanged: notifier.setShowFuzzyResults,
                 ),
               ),
-              ListTile(
-                title: const Text('Audio gender'),
-                trailing: CompactSegmented<AudioGender>(
-                  segments: const [
-                    ButtonSegment(value: AudioGender.male, label: Text('Male')),
-                    ButtonSegment(
-                      value: AudioGender.female,
-                      label: Text('Female'),
-                    ),
-                  ],
-                  selected: settings.audioGender,
-                  onChanged: notifier.setAudioGender,
-                ),
-              ),
-              ListTile(
-                title: const Text('Updates'),
-                trailing: CompactSegmented<bool>(
-                  segments: const [
-                    ButtonSegment(value: false, label: Text('Any')),
-                    ButtonSegment(value: true, label: Text('WiFi')),
-                  ],
-                  selected: settings.wifiOnlyUpdates,
-                  onChanged: notifier.setWifiOnlyUpdates,
-                ),
-              ),
-              if (Platform.isLinux)
-                _HotkeyTile(
-                  hotkey: settings.lookupHotkey,
-                  onChanged: notifier.setLookupHotkey,
-                ),
               const DictSettingsWidget(),
               const SizedBox(height: 16),
               Padding(
