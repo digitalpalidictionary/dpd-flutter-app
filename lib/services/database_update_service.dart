@@ -121,30 +121,12 @@ class DatabaseUpdateService {
     required Future<void> Function() reopenDb,
   }) async {
     try {
-      final zipBytes = await tempZip.readAsBytes();
-      final archive = ZipDecoder().decodeBytes(zipBytes);
-
-      final dbEntry = archive.files.firstWhere(
-        (f) => f.name.endsWith('.db') && f.isFile,
-        orElse: () => throw Exception('No .db file found in zip'),
-      );
-
-      await tempDb.writeAsBytes(dbEntry.content as List<int>);
+      await _extractDbFromZip(tempZip, tempDb);
     } catch (_) {
-      // Zip is corrupt — delete it and download fresh.
       if (tempZip.existsSync()) await tempZip.delete();
       if (tempDb.existsSync()) await tempDb.delete();
       await _freshDownload(tempZip, release, onProgress);
-
-      final zipBytes = await tempZip.readAsBytes();
-      final archive = ZipDecoder().decodeBytes(zipBytes);
-
-      final dbEntry = archive.files.firstWhere(
-        (f) => f.name.endsWith('.db') && f.isFile,
-        orElse: () => throw Exception('No .db file found in zip'),
-      );
-
-      await tempDb.writeAsBytes(dbEntry.content as List<int>);
+      await _extractDbFromZip(tempZip, tempDb);
     }
 
     await closeDb();
@@ -152,6 +134,16 @@ class DatabaseUpdateService {
     await reopenDb();
 
     if (tempZip.existsSync()) await tempZip.delete();
+  }
+
+  Future<void> _extractDbFromZip(File tempZip, File tempDb) async {
+    final zipBytes = await tempZip.readAsBytes();
+    final archive = ZipDecoder().decodeBytes(zipBytes);
+    final dbEntry = archive.files.firstWhere(
+      (f) => f.name.endsWith('.db') && f.isFile,
+      orElse: () => throw Exception('No .db file found in zip'),
+    );
+    await tempDb.writeAsBytes(dbEntry.content as List<int>);
   }
 
   Future<void> _downloadWithResume(
