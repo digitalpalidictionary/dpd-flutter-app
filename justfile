@@ -51,6 +51,13 @@ android-run-no-db:
     adb shell pm clear {{_android_pkg}}
     adb shell am start -n {{_android_pkg}}/net.dpdict.dpd_flutter_app.MainActivity
 
+# Delete the DB on device and restart — forces a re-download
+android-delete-db:
+    adb shell am force-stop {{_android_pkg}}
+    adb shell rm -f {{_android_db_path}} {{_android_db_path}}-wal {{_android_db_path}}-shm {{_android_db_path}}-journal {{_android_db_path}}.zip
+    adb shell am start -n {{_android_pkg}}/net.dpdict.dpd_flutter_app.MainActivity
+    @echo "DB deleted — app will prompt for download."
+
 # Build debug APK
 android-build:
     flutter build apk --debug
