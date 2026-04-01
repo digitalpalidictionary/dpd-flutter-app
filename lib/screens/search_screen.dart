@@ -1481,7 +1481,7 @@ class _DownloadFooter extends ConsumerWidget {
         : '';
     final label = status == DbStatus.extracting
         ? 'Applying update…'
-        : 'Downloading… ${(percent * 100).toStringAsFixed(0)}%$sizeLabel';
+        : 'Downloading database… ${(percent * 100).toStringAsFixed(0)}%$sizeLabel';
 
     return Column(
       mainAxisSize: MainAxisSize.min,

@@ -120,7 +120,7 @@ class DownloadScreen extends ConsumerWidget {
 
     final statusLabel =
         label ??
-        'Downloading… ${(percent * 100).toStringAsFixed(0)}%'
+        'Downloading database… ${(percent * 100).toStringAsFixed(0)}%'
             '${release != null ? "  (${service.formatBytes(release.size)})" : ""}';
 
     return Column(
