@@ -1046,7 +1046,7 @@ class _SplitResultsListState extends State<_SplitResultsList> {
             tier1.add(KeyedSubtree(
               key: secId.isNotEmpty ? _keyFor(secId) : null,
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8),
+                padding: const EdgeInsets.fromLTRB(8, 0, 8, 4),
                 child: _buildSecondaryItem(result),
               ),
             ));
@@ -1248,7 +1248,7 @@ class _TierDivider extends StatelessWidget {
     return Container(
       width: double.infinity,
       color: bgColor,
-      margin: const EdgeInsets.symmetric(vertical: 12),
+      margin: const EdgeInsets.only(top: 24, bottom: 15),
       padding: EdgeInsets.symmetric(
         horizontal: 16,
         vertical: isCompact ? 6 : 8,

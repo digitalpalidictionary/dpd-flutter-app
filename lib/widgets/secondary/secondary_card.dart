@@ -19,33 +19,36 @@ class DpdSecondaryCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final titleStyle = Theme.of(context).textTheme.titleLarge;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(top: 10, bottom: 1),
-          child: Text(
-            title,
-            style: titleStyle?.copyWith(fontWeight: FontWeight.w700),
+    return Container(
+      margin: const EdgeInsets.only(top: 10),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(bottom: 1),
+            child: Text(
+              title,
+              style: titleStyle?.copyWith(fontWeight: FontWeight.w700),
+            ),
           ),
-        ),
-        Container(
-          width: double.infinity,
-          decoration: BoxDecoration(
-            border: Border.all(color: DpdColors.primary, width: 2),
-            borderRadius: DpdColors.borderRadius,
+          Container(
+            width: double.infinity,
+            decoration: BoxDecoration(
+              border: Border.all(color: DpdColors.primary, width: 2),
+              borderRadius: DpdColors.borderRadius,
+            ),
+            padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                content,
+                // ignore: use_null_aware_elements
+                if (footer != null) footer!,
+              ],
+            ),
           ),
-          padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              content,
-              // ignore: use_null_aware_elements
-              if (footer != null) footer!,
-            ],
-          ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
@@ -67,26 +70,29 @@ class TertiaryCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final titleStyle = Theme.of(context).textTheme.titleLarge;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(top: 10, bottom: 1),
-          child: Text(
-            title,
-            style: titleStyle?.copyWith(fontWeight: FontWeight.w700),
+    return Container(
+      margin: const EdgeInsets.only(top: 10),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(bottom: 1),
+            child: Text(
+              title,
+              style: titleStyle?.copyWith(fontWeight: FontWeight.w700),
+            ),
           ),
-        ),
-        Container(
-          width: double.infinity,
-          decoration: BoxDecoration(
-            border: Border.all(color: DpdColors.secondary, width: 2),
-            borderRadius: DpdColors.borderRadius,
+          Container(
+            width: double.infinity,
+            decoration: BoxDecoration(
+              border: Border.all(color: DpdColors.secondary, width: 2),
+              borderRadius: DpdColors.borderRadius,
+            ),
+            padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 3),
+            child: content,
           ),
-          padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 3),
-          child: content,
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
