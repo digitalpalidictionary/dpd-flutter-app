@@ -46,9 +46,9 @@ jobs:
 
           # Collect commits since last release tag
           if [ "$LAST_TAG" = "v0.0.0" ]; then
-            ALL_NOTES=$(git log --pretty="- %s" --no-merges)
+            ALL_NOTES=$(git log --pretty="- %s" --no-merges | grep -v "^- chore")
           else
-            ALL_NOTES=$(git log "${LAST_TAG}..HEAD" --pretty="- %s" --no-merges)
+            ALL_NOTES=$(git log "${LAST_TAG}..HEAD" --pretty="- %s" --no-merges | grep -v "^- chore")
           fi
 
           TOTAL=$(echo "$ALL_NOTES" | grep -c .)
