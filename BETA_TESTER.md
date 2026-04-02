@@ -1,6 +1,6 @@
 # Beta Tester Guide
 
-Thank you for helping test the Digital Pāḷi Dictionary app.
+Thank you for helping test the DPD app.
 
 This beta version is intended for testing before wider release. If you find bugs, installation problems, dictionary mistakes, or anything confusing, please send feedback.
 
@@ -11,11 +11,9 @@ This beta version is intended for testing before wider release. If you find bugs
 
 On the latest release page, download the `.apk` file listed under **Assets**.
 
-Your browser may warn that the file might be harmful. This is a standard warning shown for any APK downloaded outside the Play Store — not a sign that the file is actually dangerous. You can safely proceed with the download.
+⚠ Your browser may warn that the file might be harmful. This is a standard warning shown for any APK downloaded outside the Play Store — not a sign that the file is actually dangerous. You can safely proceed with the download.
 
-The full source code of this app is publicly available and can be inspected by anyone:
-
-- Source code: <https://github.com/digitalpalidictionary/dpd-flutter-app>
+The full source code of this app is publicly available and can be inspected by anyone here: <https://github.com/digitalpalidictionary/dpd-flutter-app>
 
 For safety, only download and install the APK from the official GitHub releases page linked above.
 
@@ -31,19 +29,13 @@ To install it:
 4. The setting is commonly called `Install unknown apps` or `Allow from this source`.
 5. After allowing it, return to the APK and continue the installation.
 
-Notes:
-
-- The exact setting name and menu path vary by Android version and device manufacturer.
-- The permission is usually granted to the app you used to open the APK, such as your browser or file manager.
-- Android still shows its normal package installer confirmation screen before the app is installed.
-
 On first launch, the app downloads the dictionary database automatically. This may take a few minutes depending on your connection speed.
 
 ## How To Look Up Words From Other Apps
 
 You can use DPD from almost any app or website on Android in two ways:
 
-1. Tap any word or select some text, then tap `Share` and choose `DPD`.
+1. Tap and hold any word, or select some text, then tap `Share` and choose `DPD`.
 2. Or select a word and tap the `DPD` app icon directly if Android shows it in the text selection menu.
 
 Both methods open the selected text in DPD and have the same effect.
@@ -52,6 +44,11 @@ Tip:
 
 - The more often you share to DPD, the more likely Android is to move it onto the first page of your share sheet.
 - After using it a few times, DPD may become one of your most common share targets.
+
+## How To Look Up Words Within The App
+
+- Double-click on any word within the app to search for it.
+- Type directly into the search bar using Unicode or Velthuis typing.
 
 ## How Updates Work
 
@@ -62,7 +59,7 @@ The app can check for new releases published on GitHub.
 - The dictionary database can also update automatically in the background.
 - If the app is set to download updates on Wi-Fi only, background downloads will wait for Wi-Fi.
 
-During beta testing, updates may arrive more frequently than in a stable release.
+During beta testing, updates may occur more frequently than in a stable release.
 
 In short:
 
