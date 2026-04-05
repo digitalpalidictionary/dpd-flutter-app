@@ -22,7 +22,7 @@ import '../theme/dpd_colors.dart';
 import '../utils/velthuis.dart';
 import '../widgets/accordion_card.dart';
 import '../widgets/autocomplete_dropdown.dart';
-import '../widgets/double_tap_search_wrapper.dart';
+import '../widgets/tap_search_wrapper.dart';
 import '../widgets/feedback_footer.dart';
 import '../widgets/inline_entry_card.dart';
 import '../widgets/inline_root_card.dart';
@@ -506,7 +506,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                       content: _activeInfo!,
                       onClose: () => setState(() => _activeInfo = null),
                     )
-                  : DoubleTapSearchWrapper(
+                  : TapSearchWrapper(
                       child: _buildBody(context, query, exactAsync, partialAsync),
                     ),
             ),

@@ -222,6 +222,23 @@ class SettingsContent extends ConsumerWidget {
                 ),
               ),
               ListTile(
+                title: const Text('Word search tap'),
+                trailing: CompactSegmented<TapMode>(
+                  segments: const [
+                    ButtonSegment(
+                      value: TapMode.singleTap,
+                      label: Text('Single'),
+                    ),
+                    ButtonSegment(
+                      value: TapMode.doubleTap,
+                      label: Text('Double'),
+                    ),
+                  ],
+                  selected: settings.tapMode,
+                  onChanged: notifier.setTapMode,
+                ),
+              ),
+              ListTile(
                 title: const Text('Updates'),
                 trailing: CompactSegmented<bool>(
                   segments: const [

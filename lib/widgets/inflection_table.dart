@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../models/inflection_table_data.dart';
 import '../theme/dpd_colors.dart';
-import 'double_tap_search_wrapper.dart';
+import 'tap_search_wrapper.dart';
 
 class InflectionTable extends StatelessWidget {
   const InflectionTable({super.key, required this.data, this.lookupKey});
@@ -26,12 +26,12 @@ class InflectionTable extends StatelessWidget {
             _buildHeading(context),
             const SizedBox(height: 8),
             // SelectionContainer.disabled prevents the root SelectionArea from
-            // crashing on nested scrollables; DoubleTapSearchWrapper inside
+            // crashing on nested scrollables; TapSearchWrapper inside
             // keeps the table searchable.
             SelectionContainer.disabled(
               child: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
-                child: DoubleTapSearchWrapper(
+                child: TapSearchWrapper(
                   child: ConstrainedBox(
                     constraints: BoxConstraints(minWidth: constraints.maxWidth),
                     child: _buildTable(context, headerBg),

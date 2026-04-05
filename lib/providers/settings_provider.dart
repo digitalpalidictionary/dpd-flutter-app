@@ -9,6 +9,8 @@ enum NiggahitaMode { dot, circle }
 
 enum AudioGender { male, female }
 
+enum TapMode { singleTap, doubleTap }
+
 class Settings {
   const Settings({
     this.themeMode = ThemeMode.system,
@@ -27,6 +29,7 @@ class Settings {
     this.showExactResults = true,
     this.showPartialResults = true,
     this.showFuzzyResults = true,
+    this.tapMode = TapMode.singleTap,
   });
 
   final ThemeMode themeMode;
@@ -45,6 +48,7 @@ class Settings {
   final bool showExactResults;
   final bool showPartialResults;
   final bool showFuzzyResults;
+  final TapMode tapMode;
 
   Settings copyWith({
     ThemeMode? themeMode,
@@ -63,6 +67,7 @@ class Settings {
     bool? showExactResults,
     bool? showPartialResults,
     bool? showFuzzyResults,
+    TapMode? tapMode,
   }) {
     return Settings(
       themeMode: themeMode ?? this.themeMode,
@@ -81,6 +86,7 @@ class Settings {
       showExactResults: showExactResults ?? this.showExactResults,
       showPartialResults: showPartialResults ?? this.showPartialResults,
       showFuzzyResults: showFuzzyResults ?? this.showFuzzyResults,
+      tapMode: tapMode ?? this.tapMode,
     );
   }
 
@@ -103,7 +109,8 @@ class Settings {
         other.lookupHotkey == lookupHotkey &&
         other.showExactResults == showExactResults &&
         other.showPartialResults == showPartialResults &&
-        other.showFuzzyResults == showFuzzyResults;
+        other.showFuzzyResults == showFuzzyResults &&
+        other.tapMode == tapMode;
   }
 
   @override
@@ -124,6 +131,7 @@ class Settings {
     showExactResults,
     showPartialResults,
     showFuzzyResults,
+    tapMode,
   );
 }
 
@@ -169,6 +177,11 @@ class SettingsNotifier extends StateNotifier<Settings> {
     final showExactResults = _prefs.getBool('show_exact_results') ?? true;
     final showPartialResults = _prefs.getBool('show_partial_results') ?? true;
     final showFuzzyResults = _prefs.getBool('show_fuzzy_results') ?? true;
+    final tapModeName = _prefs.getString('tap_mode') ?? 'singleTap';
+    final tapMode = TapMode.values.firstWhere(
+      (m) => m.name == tapModeName,
+      orElse: () => TapMode.singleTap,
+    );
     state = Settings(
       themeMode: themeMode,
       fontSize: fontSize,
@@ -186,6 +199,7 @@ class SettingsNotifier extends StateNotifier<Settings> {
       showExactResults: showExactResults,
       showPartialResults: showPartialResults,
       showFuzzyResults: showFuzzyResults,
+      tapMode: tapMode,
     );
   }
 
@@ -267,6 +281,11 @@ class SettingsNotifier extends StateNotifier<Settings> {
   Future<void> setShowFuzzyResults(bool value) async {
     await _prefs.setBool('show_fuzzy_results', value);
     state = state.copyWith(showFuzzyResults: value);
+  }
+
+  Future<void> setTapMode(TapMode mode) async {
+    await _prefs.setString('tap_mode', mode.name);
+    state = state.copyWith(tapMode: mode);
   }
 }
 
