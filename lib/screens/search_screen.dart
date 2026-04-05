@@ -275,6 +275,22 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     _infoOverlayEntry = null;
   }
 
+  bool _hasActiveBackInterceptState() {
+    if (!Platform.isAndroid) return false;
+    return _controller.text.isNotEmpty ||
+        _overlayEntry != null ||
+        _showHelpPopup ||
+        _infoOverlayEntry != null ||
+        _activeInfo != null;
+  }
+
+  void _clearAllActiveState() {
+    _removeInfoOverlay();
+    setState(() => _activeInfo = null);
+    _hideVelthuisHelp();
+    _onClear();
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -299,8 +315,13 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
       }
     });
 
-    return Scaffold(
-      bottomNavigationBar: const Column(
+    return PopScope(
+      canPop: !_hasActiveBackInterceptState(),
+      onPopInvokedWithResult: (didPop, _) {
+        if (!didPop) _clearAllActiveState();
+      },
+      child: Scaffold(
+        bottomNavigationBar: const Column(
         mainAxisSize: MainAxisSize.min,
         children: [_DownloadFooter(), FeedbackFooter()],
       ),
@@ -580,6 +601,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
               ),
           ],
         ),
+      ),
       ),
     );
   }
