@@ -36,6 +36,7 @@ import '../models/summary_entry.dart';
 import '../providers/summary_provider.dart';
 import '../widgets/dict_html_card.dart';
 import '../widgets/summary_section.dart';
+import '../utils/search_timing.dart';
 
 enum _InfoContent { bibliography, thanks }
 
@@ -676,6 +677,19 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
 
     final visibility = ref.watch(dictVisibilityProvider);
     final summaryEntries = ref.watch(summaryEntriesProvider(query));
+    
+    if (enableSearchTiming) {
+      final timing = SearchTimingData(query: query);
+      timing.startRenderTimer();
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        timing.endRenderTimer();
+        timing.recordTotalSearchTime(
+          DateTime.now().difference(timing.startedAt),
+        );
+        recordTiming(timing);
+      });
+    }
+    
     return _SplitResultsList(
       exact: visibleExact,
       partial: visiblePartial,

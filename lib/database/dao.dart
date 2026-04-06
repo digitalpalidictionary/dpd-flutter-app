@@ -5,6 +5,7 @@ import 'package:drift/drift.dart';
 import 'database.dart';
 import 'tables.dart';
 import '../utils/diacritics.dart';
+import '../utils/search_timing.dart';
 
 part 'dao.g.dart';
 
@@ -54,12 +55,21 @@ class DpdDao extends DatabaseAccessor<AppDatabase> with _$DpdDaoMixin {
     if (query.isEmpty) return [];
     final normalized = _normalizeQuery(query);
 
+    final timing = enableSearchTiming ? SearchTimingData(query: query) : null;
+    final sw = Stopwatch()..start();
+    
     final lookupRows = await (select(
       lookup,
     )..where((t) => t.lookupKey.equals(normalized))).get();
 
     final idSet = _extractIds(lookupRows);
-    return _fetchHeadwords(idSet);
+    final results = await _fetchHeadwords(idSet);
+    
+    sw.stop();
+    timing?.recordQueryTime('searchExact_total', sw.elapsed);
+    if (timing != null) recordTiming(timing);
+    
+    return results;
   }
 
   Future<List<DpdHeadwordWithRoot>> searchPartial(
@@ -69,18 +79,31 @@ class DpdDao extends DatabaseAccessor<AppDatabase> with _$DpdDaoMixin {
     if (query.isEmpty) return [];
     final normalized = _normalizeQuery(query);
 
+    final sw = Stopwatch()..start();
+    // Use range query instead of LIKE — allows SQLite to use the index
+    final nextKey = _nextString(normalized);
     final lookupRows =
         await (select(lookup)
               ..where(
                 (t) =>
-                    t.lookupKey.like('$normalized%') &
+                    t.lookupKey.isBiggerOrEqualValue(normalized) &
+                    t.lookupKey.isSmallerThanValue(nextKey) &
                     t.lookupKey.equals(normalized).not(),
               )
               ..limit(limit))
             .get();
 
     final idSet = _extractIds(lookupRows);
-    return _fetchHeadwords(idSet);
+    final results = await _fetchHeadwords(idSet);
+    sw.stop();
+    
+    if (enableSearchTiming) {
+      final timing = SearchTimingData(query: query);
+      timing.recordQueryTime('searchPartial_total', sw.elapsed);
+      recordTiming(timing);
+    }
+    
+    return results;
   }
 
   Future<List<DpdHeadwordWithRoot>> searchFuzzy(
@@ -91,14 +114,30 @@ class DpdDao extends DatabaseAccessor<AppDatabase> with _$DpdDaoMixin {
     final normalized = stripDiacritics(_normalizeQuery(query));
     if (normalized.isEmpty) return [];
 
+    final sw = Stopwatch()..start();
+    // Use range query instead of LIKE — allows SQLite to use the index
+    final nextKey = _nextString(normalized);
     final lookupRows =
         await (select(lookup)
-              ..where((t) => t.fuzzyKey.like('$normalized%'))
+              ..where(
+                (t) =>
+                    t.fuzzyKey.isBiggerOrEqualValue(normalized) &
+                    t.fuzzyKey.isSmallerThanValue(nextKey),
+              )
               ..limit(limit))
             .get();
 
     final idSet = _extractIds(lookupRows);
-    return _fetchHeadwords(idSet);
+    final results = await _fetchHeadwords(idSet);
+    sw.stop();
+    
+    if (enableSearchTiming) {
+      final timing = SearchTimingData(query: query);
+      timing.recordQueryTime('searchFuzzy_total', sw.elapsed);
+      recordTiming(timing);
+    }
+    
+    return results;
   }
 
   Set<int> _extractIds(List<LookupData> lookupRows) {
@@ -474,6 +513,15 @@ class DpdDao extends DatabaseAccessor<AppDatabase> with _$DpdDaoMixin {
         .replaceAll('-', '')
         .replaceAll('ṁ', 'ṃ')
         .replaceAll('ŋ', 'ṃ');
+  }
+
+  /// Get the next string lexicographically (for range queries).
+  /// Increments the last character by 1, enabling prefix matching via
+  /// `>= prefix AND < nextString(prefix)` instead of `LIKE 'prefix%'`.
+  String _nextString(String s) {
+    if (s.isEmpty) return '{'; // '{' is after 'z' in ASCII
+    return s.substring(0, s.length - 1) +
+        String.fromCharCode(s.codeUnitAt(s.length - 1) + 1);
   }
 }
 

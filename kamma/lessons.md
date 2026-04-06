@@ -1,1 +1,3 @@
 - 2026-04-06 [POSITIVE] Replacing heavy Material 3 widgets (SegmentedButton) with lightweight custom equivalents gave a dramatic performance win — diagnose the widget tree cost before adding loading hacks
+- 2026-04-05 [CONFUSION] During a performance review, skipped verifying the fuzzy_key index and nearly missed that the fuzzy benchmark numbers were credible — always verify the index backing any range query claim
+- 2026-04-05 [WORKFLOW] Running /kamma:3-review while plan mode was active blocked fixing findings in-session; review skills need implementation access, not planning mode
