@@ -1113,9 +1113,7 @@ class _SplitResultsListState extends State<_SplitResultsList> {
       }
     }
 
-    final showPartialLoading =
-        widget.partialLoading && enabled.contains('dpd_headwords');
-    final showPartialDivider = tier2.isNotEmpty || showPartialLoading;
+    final showPartialDivider = tier2.isNotEmpty;
     final showFuzzyDivider = tier3.isNotEmpty;
 
     final allItems = [
@@ -1123,7 +1121,7 @@ class _SplitResultsListState extends State<_SplitResultsList> {
       if (showPartialDivider)
         _TierDivider(label: 'Partial Results', isCompact: widget.mode == DisplayMode.compact),
       ...tier2,
-      if (showPartialLoading)
+      if (showPartialDivider && widget.partialLoading)
         const Padding(
           padding: EdgeInsets.symmetric(vertical: 16),
           child: Center(
