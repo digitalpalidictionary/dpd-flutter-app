@@ -13,16 +13,21 @@ import '../theme/dpd_colors.dart';
 import 'compact_segmented.dart';
 import 'dict_settings_widget.dart';
 
-class SettingsContent extends ConsumerWidget {
+class SettingsContent extends ConsumerStatefulWidget {
   const SettingsContent({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<SettingsContent> createState() => _SettingsContentState();
+}
+
+class _SettingsContentState extends ConsumerState<SettingsContent> {
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final settings = ref.watch(settingsProvider);
     final notifier = ref.read(settingsProvider.notifier);
     final updateState = ref.watch(dbUpdateProvider);
     final appUpdateState = ref.watch(appUpdateProvider);
-    final theme = Theme.of(context);
 
     final isUpdating =
         appUpdateState.status == AppUpdateStatus.checking ||
@@ -30,287 +35,249 @@ class SettingsContent extends ConsumerWidget {
         updateState.status == DbStatus.downloading ||
         updateState.status == DbStatus.extracting;
 
-    return ListView(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      children: [
-        Container(
-          decoration: BoxDecoration(
-            border: Border.all(color: theme.colorScheme.primary, width: 2),
-            borderRadius: DpdColors.borderRadius,
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
-                child: Text('Settings', style: theme.textTheme.titleLarge),
-              ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),
-                child: FilledButton.icon(
-                  onPressed: isUpdating
-                      ? null
-                      : () {
-                          ref.read(appUpdateProvider.notifier).manualCheck();
-                          ref
-                              .read(dbUpdateProvider.notifier)
-                              .manualCheckForUpdates();
-                        },
-                  icon: isUpdating
-                      ? SizedBox(
-                          width: 18,
-                          height: 18,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            color: theme.colorScheme.onPrimary,
-                          ),
-                        )
-                      : const Icon(Icons.update),
-                  label: Text(isUpdating ? 'Updating…' : 'Update Now'),
-                ),
-              ),
-              // Display
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Divider(color: theme.colorScheme.outlineVariant),
-              ),
-              ListTile(
-                title: const Text('Result style'),
-                trailing: CompactSegmented<DisplayMode>(
-                  segments: const [
-                    ButtonSegment(
-                      value: DisplayMode.classic,
-                      label: Text('Classic'),
-                    ),
-                    ButtonSegment(
-                      value: DisplayMode.compact,
-                      label: Text('Compact'),
-                    ),
-                  ],
-                  selected: settings.displayMode,
-                  onChanged: notifier.setDisplayMode,
-                ),
-              ),
-              ListTile(
-                title: const Text('Theme'),
-                trailing: CompactSegmented<ThemeMode>(
-                  segments: const [
-                    ButtonSegment(
-                      value: ThemeMode.system,
-                      label: Text('System'),
-                    ),
-                    ButtonSegment(value: ThemeMode.light, label: Text('Light')),
-                    ButtonSegment(value: ThemeMode.dark, label: Text('Dark')),
-                  ],
-                  selected: settings.themeMode,
-                  onChanged: notifier.setThemeMode,
-                ),
-              ),
-              // Text
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Divider(color: theme.colorScheme.outlineVariant),
-              ),
-              ListTile(
-                title: Row(
-                  children: [
-                    const Text('Font size'),
-                    Expanded(
-                      child: Slider(
-                        value: settings.fontSize,
-                        min: 12,
-                        max: 24,
-                        divisions: 12,
-                        label: settings.fontSize.toStringAsFixed(0),
-                        onChanged: notifier.setFontSize,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              ListTile(
-                title: const Text('Font'),
-                trailing: CompactSegmented<bool>(
-                  segments: const [
-                    ButtonSegment(value: false, label: Text('Sans')),
-                    ButtonSegment(value: true, label: Text('Serif')),
-                  ],
-                  selected: settings.useSerifFont,
-                  onChanged: notifier.setUseSerifFont,
-                ),
-              ),
-              ListTile(
-                title: const Text('Niggahīta'),
-                trailing: CompactSegmented<NiggahitaMode>(
-                  segments: const [
-                    ButtonSegment(value: NiggahitaMode.dot, label: Text('ṃ')),
-                    ButtonSegment(
-                      value: NiggahitaMode.circle,
-                      label: Text('ṁ'),
-                    ),
-                  ],
-                  selected: settings.niggahitaMode,
-                  onChanged: notifier.setNiggahitaMode,
-                ),
-              ),
-              ListTile(
-                title: const Text('Sandhi apostrophes'),
-                trailing: CompactSegmented<bool>(
-                  segments: const [
-                    ButtonSegment(value: false, label: Text('Hide')),
-                    ButtonSegment(value: true, label: Text('Show')),
-                  ],
-                  selected: settings.showSandhiApostrophe,
-                  onChanged: notifier.setShowSandhiApostrophe,
-                ),
-              ),
-              // Sections
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Divider(color: theme.colorScheme.outlineVariant),
-              ),
-              ListTile(
-                title: const Text('Grammar button'),
-                trailing: CompactSegmented<bool>(
-                  segments: const [
-                    ButtonSegment(value: false, label: Text('Closed')),
-                    ButtonSegment(value: true, label: Text('Open')),
-                  ],
-                  selected: settings.grammarOpen,
-                  onChanged: notifier.setGrammarOpen,
-                ),
-              ),
-              ListTile(
-                title: const Text('Examples button'),
-                trailing: CompactSegmented<bool>(
-                  segments: const [
-                    ButtonSegment(value: false, label: Text('Closed')),
-                    ButtonSegment(value: true, label: Text('Open')),
-                  ],
-                  selected: settings.examplesOpen,
-                  onChanged: notifier.setExamplesOpen,
-                ),
-              ),
-              ListTile(
-                title: const Text('One button at a time'),
-                trailing: CompactSegmented<bool>(
-                  segments: const [
-                    ButtonSegment(value: false, label: Text('Off')),
-                    ButtonSegment(value: true, label: Text('On')),
-                  ],
-                  selected: settings.oneButtonAtATime,
-                  onChanged: notifier.setOneButtonAtATime,
-                ),
-              ),
-              // Other
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Divider(color: theme.colorScheme.outlineVariant),
-              ),
-              ListTile(
-                title: const Text('Audio gender'),
-                trailing: CompactSegmented<AudioGender>(
-                  segments: const [
-                    ButtonSegment(value: AudioGender.male, label: Text('Male')),
-                    ButtonSegment(
-                      value: AudioGender.female,
-                      label: Text('Female'),
-                    ),
-                  ],
-                  selected: settings.audioGender,
-                  onChanged: notifier.setAudioGender,
-                ),
-              ),
-              ListTile(
-                title: const Text('Word search tap'),
-                trailing: CompactSegmented<TapMode>(
-                  segments: const [
-                    ButtonSegment(
-                      value: TapMode.singleTap,
-                      label: Text('Single'),
-                    ),
-                    ButtonSegment(
-                      value: TapMode.doubleTap,
-                      label: Text('Double'),
-                    ),
-                  ],
-                  selected: settings.tapMode,
-                  onChanged: notifier.setTapMode,
-                ),
-              ),
-              ListTile(
-                title: const Text('Updates'),
-                trailing: CompactSegmented<bool>(
-                  segments: const [
-                    ButtonSegment(value: false, label: Text('Any')),
-                    ButtonSegment(value: true, label: Text('WiFi')),
-                  ],
-                  selected: settings.wifiOnlyUpdates,
-                  onChanged: notifier.setWifiOnlyUpdates,
-                ),
-              ),
-              if (Platform.isLinux)
-                _HotkeyTile(
-                  hotkey: settings.lookupHotkey,
-                  onChanged: notifier.setLookupHotkey,
-                ),
-              // Results visibility
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Divider(color: theme.colorScheme.outlineVariant),
-              ),
-              ListTile(
-                title: const Text('Exact results'),
-                trailing: CompactSegmented<bool>(
-                  segments: const [
-                    ButtonSegment(value: false, label: Text('Hide')),
-                    ButtonSegment(value: true, label: Text('Show')),
-                  ],
-                  selected: settings.showExactResults,
-                  onChanged: notifier.setShowExactResults,
-                ),
-              ),
-              ListTile(
-                title: const Text('Partial results'),
-                trailing: CompactSegmented<bool>(
-                  segments: const [
-                    ButtonSegment(value: false, label: Text('Hide')),
-                    ButtonSegment(value: true, label: Text('Show')),
-                  ],
-                  selected: settings.showPartialResults,
-                  onChanged: notifier.setShowPartialResults,
-                ),
-              ),
-              ListTile(
-                title: const Text('Fuzzy results'),
-                trailing: CompactSegmented<bool>(
-                  segments: const [
-                    ButtonSegment(value: false, label: Text('Hide')),
-                    ButtonSegment(value: true, label: Text('Show')),
-                  ],
-                  selected: settings.showFuzzyResults,
-                  onChanged: notifier.setShowFuzzyResults,
-                ),
-              ),
-              const DictSettingsWidget(),
-              const SizedBox(height: 16),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Divider(color: theme.colorScheme.outlineVariant),
-              ),
-              ListTile(
-                dense: true,
-                title: Text(
-                  'App ${ref.watch(appVersionProvider).valueOrNull ?? "…"}  ·  Database ${updateState.localVersion ?? "unknown"}',
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: theme.colorScheme.onSurfaceVariant,
+    Widget buildDivider() {
+      return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        child: Divider(color: theme.colorScheme.outlineVariant),
+      );
+    }
+
+    final itemBuilders = <Widget Function()>[
+      () => Padding(
+        padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
+        child: Text('Settings', style: theme.textTheme.titleLarge),
+      ),
+      () => Padding(
+        padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),
+        child: FilledButton.icon(
+          onPressed: isUpdating
+              ? null
+              : () {
+                  ref.read(appUpdateProvider.notifier).manualCheck();
+                  ref.read(dbUpdateProvider.notifier).manualCheckForUpdates();
+                },
+          icon: isUpdating
+              ? SizedBox(
+                  width: 18,
+                  height: 18,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    color: theme.colorScheme.onPrimary,
                   ),
-                ),
+                )
+              : const Icon(Icons.update),
+          label: Text(isUpdating ? 'Updating…' : 'Update Now'),
+        ),
+      ),
+      buildDivider,
+      () => ListTile(
+        title: const Text('Result style'),
+        trailing: CompactSegmented<DisplayMode>(
+          segments: const [
+            ButtonSegment(value: DisplayMode.classic, label: Text('Classic')),
+            ButtonSegment(value: DisplayMode.compact, label: Text('Compact')),
+          ],
+          selected: settings.displayMode,
+          onChanged: notifier.setDisplayMode,
+        ),
+      ),
+      () => ListTile(
+        title: const Text('Theme'),
+        trailing: CompactSegmented<ThemeMode>(
+          segments: const [
+            ButtonSegment(value: ThemeMode.system, label: Text('System')),
+            ButtonSegment(value: ThemeMode.light, label: Text('Light')),
+            ButtonSegment(value: ThemeMode.dark, label: Text('Dark')),
+          ],
+          selected: settings.themeMode,
+          onChanged: notifier.setThemeMode,
+        ),
+      ),
+      buildDivider,
+      () => ListTile(
+        title: Row(
+          children: [
+            const Text('Font size'),
+            Expanded(
+              child: Slider(
+                value: settings.fontSize,
+                min: 12,
+                max: 24,
+                divisions: 12,
+                label: settings.fontSize.toStringAsFixed(0),
+                onChanged: notifier.setFontSize,
               ),
-            ],
+            ),
+          ],
+        ),
+      ),
+      () => ListTile(
+        title: const Text('Font'),
+        trailing: CompactSegmented<bool>(
+          segments: const [
+            ButtonSegment(value: false, label: Text('Sans')),
+            ButtonSegment(value: true, label: Text('Serif')),
+          ],
+          selected: settings.useSerifFont,
+          onChanged: notifier.setUseSerifFont,
+        ),
+      ),
+      () => ListTile(
+        title: const Text('Niggahīta'),
+        trailing: CompactSegmented<NiggahitaMode>(
+          segments: const [
+            ButtonSegment(value: NiggahitaMode.dot, label: Text('ṃ')),
+            ButtonSegment(value: NiggahitaMode.circle, label: Text('ṁ')),
+          ],
+          selected: settings.niggahitaMode,
+          onChanged: notifier.setNiggahitaMode,
+        ),
+      ),
+      () => ListTile(
+        title: const Text('Sandhi apostrophes'),
+        trailing: CompactSegmented<bool>(
+          segments: const [
+            ButtonSegment(value: false, label: Text('Hide')),
+            ButtonSegment(value: true, label: Text('Show')),
+          ],
+          selected: settings.showSandhiApostrophe,
+          onChanged: notifier.setShowSandhiApostrophe,
+        ),
+      ),
+      buildDivider,
+      () => ListTile(
+        title: const Text('Grammar button'),
+        trailing: CompactSegmented<bool>(
+          segments: const [
+            ButtonSegment(value: false, label: Text('Closed')),
+            ButtonSegment(value: true, label: Text('Open')),
+          ],
+          selected: settings.grammarOpen,
+          onChanged: notifier.setGrammarOpen,
+        ),
+      ),
+      () => ListTile(
+        title: const Text('Examples button'),
+        trailing: CompactSegmented<bool>(
+          segments: const [
+            ButtonSegment(value: false, label: Text('Closed')),
+            ButtonSegment(value: true, label: Text('Open')),
+          ],
+          selected: settings.examplesOpen,
+          onChanged: notifier.setExamplesOpen,
+        ),
+      ),
+      () => ListTile(
+        title: const Text('One button at a time'),
+        trailing: CompactSegmented<bool>(
+          segments: const [
+            ButtonSegment(value: false, label: Text('Off')),
+            ButtonSegment(value: true, label: Text('On')),
+          ],
+          selected: settings.oneButtonAtATime,
+          onChanged: notifier.setOneButtonAtATime,
+        ),
+      ),
+      buildDivider,
+      () => ListTile(
+        title: const Text('Audio gender'),
+        trailing: CompactSegmented<AudioGender>(
+          segments: const [
+            ButtonSegment(value: AudioGender.male, label: Text('Male')),
+            ButtonSegment(value: AudioGender.female, label: Text('Female')),
+          ],
+          selected: settings.audioGender,
+          onChanged: notifier.setAudioGender,
+        ),
+      ),
+      () => ListTile(
+        title: const Text('Word search tap'),
+        trailing: CompactSegmented<TapMode>(
+          segments: const [
+            ButtonSegment(value: TapMode.singleTap, label: Text('Single')),
+            ButtonSegment(value: TapMode.doubleTap, label: Text('Double')),
+          ],
+          selected: settings.tapMode,
+          onChanged: notifier.setTapMode,
+        ),
+      ),
+      () => ListTile(
+        title: const Text('Updates'),
+        trailing: CompactSegmented<bool>(
+          segments: const [
+            ButtonSegment(value: false, label: Text('Any')),
+            ButtonSegment(value: true, label: Text('WiFi')),
+          ],
+          selected: settings.wifiOnlyUpdates,
+          onChanged: notifier.setWifiOnlyUpdates,
+        ),
+      ),
+      if (Platform.isLinux)
+        () => _HotkeyTile(
+          hotkey: settings.lookupHotkey,
+          onChanged: notifier.setLookupHotkey,
+        ),
+      buildDivider,
+      () => ListTile(
+        title: const Text('Exact results'),
+        trailing: CompactSegmented<bool>(
+          segments: const [
+            ButtonSegment(value: false, label: Text('Hide')),
+            ButtonSegment(value: true, label: Text('Show')),
+          ],
+          selected: settings.showExactResults,
+          onChanged: notifier.setShowExactResults,
+        ),
+      ),
+      () => ListTile(
+        title: const Text('Partial results'),
+        trailing: CompactSegmented<bool>(
+          segments: const [
+            ButtonSegment(value: false, label: Text('Hide')),
+            ButtonSegment(value: true, label: Text('Show')),
+          ],
+          selected: settings.showPartialResults,
+          onChanged: notifier.setShowPartialResults,
+        ),
+      ),
+      () => ListTile(
+        title: const Text('Fuzzy results'),
+        trailing: CompactSegmented<bool>(
+          segments: const [
+            ButtonSegment(value: false, label: Text('Hide')),
+            ButtonSegment(value: true, label: Text('Show')),
+          ],
+          selected: settings.showFuzzyResults,
+          onChanged: notifier.setShowFuzzyResults,
+        ),
+      ),
+      () => const DictSettingsWidget(),
+      () => const SizedBox(height: 16),
+      buildDivider,
+      () => ListTile(
+        dense: true,
+        title: Text(
+          'App ${ref.watch(appVersionProvider).valueOrNull ?? "…"}  ·  Database ${updateState.localVersion ?? "unknown"}',
+          style: theme.textTheme.bodySmall?.copyWith(
+            color: theme.colorScheme.onSurfaceVariant,
           ),
         ),
-      ],
+      ),
+    ];
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      child: Container(
+        decoration: BoxDecoration(
+          border: Border.all(color: theme.colorScheme.primary, width: 2),
+          borderRadius: DpdColors.borderRadius,
+        ),
+        child: ListView.builder(
+          padding: EdgeInsets.zero,
+          itemCount: itemBuilders.length,
+          itemBuilder: (context, index) => itemBuilders[index](),
+        ),
+      ),
     );
   }
 }

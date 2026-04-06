@@ -5,7 +5,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../database/database.dart';
 import '../utils/diacritics.dart';
-import '../utils/pali_sort.dart';
 import 'database_provider.dart';
 import 'settings_provider.dart';
 
@@ -31,9 +30,7 @@ const kDpdSources = [
   DpdSourceMeta('dpd_see', 'DPD See'),
 ];
 
-final kDpdSourceNames = {
-  for (final s in kDpdSources) s.id: s.label,
-};
+final kDpdSourceNames = {for (final s in kDpdSources) s.id: s.label};
 
 // ── DictResult ───────────────────────────────────────────────────────────────
 
@@ -208,9 +205,8 @@ class DictRawSearchResults {
     final partialIds = partialRows.map((entry) => entry.id).toSet();
     final excludedFromFuzzy = exactIds.union(partialIds);
 
-    final fuzzySorted = [...fuzzyRows]..sort(
-      (a, b) => paliSortKey(a.word).compareTo(paliSortKey(b.word)),
-    );
+    final fuzzySorted = [...fuzzyRows]
+      ..sort((a, b) => paliSortKey(a.word).compareTo(paliSortKey(b.word)));
     final fuzzyGrouped = <String, List<DictEntry>>{};
     for (final entry in fuzzySorted) {
       if (excludedFromFuzzy.contains(entry.id)) continue;
@@ -227,9 +223,8 @@ class DictRawSearchResults {
 }
 
 Map<String, List<DictEntry>> _groupDictEntries(List<DictEntry> rows) {
-  final sorted = [...rows]..sort(
-    (a, b) => paliSortKey(a.word).compareTo(paliSortKey(b.word)),
-  );
+  final sorted = [...rows]
+    ..sort((a, b) => paliSortKey(a.word).compareTo(paliSortKey(b.word)));
   final grouped = <String, List<DictEntry>>{};
   for (final entry in sorted) {
     grouped.putIfAbsent(entry.dictId, () => []).add(entry);

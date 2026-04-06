@@ -21,8 +21,9 @@ class DictSettingsWidget extends ConsumerWidget {
     final dpdIds = kDpdSources.map((s) => s.id).toList();
     final dictIds = allMeta.map((m) => m.dictId).toList();
     final defaultOrder = [...dpdIds, ...dictIds];
-    final orderedIds =
-        visibility.order.isNotEmpty ? visibility.order : defaultOrder;
+    final orderedIds = visibility.order.isNotEmpty
+        ? visibility.order
+        : defaultOrder;
 
     if (orderedIds.isEmpty) return const SizedBox.shrink();
 
