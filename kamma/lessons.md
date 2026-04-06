@@ -1,0 +1,1 @@
+- 2026-04-06 [POSITIVE] Replacing heavy Material 3 widgets (SegmentedButton) with lightweight custom equivalents gave a dramatic performance win — diagnose the widget tree cost before adding loading hacks
