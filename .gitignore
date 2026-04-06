@@ -62,3 +62,4 @@ __pycache__/
 # Android/build/reports
 android/build/reports/*
 /.codex
+/QWEN.md
