@@ -83,6 +83,20 @@ class AppUpdateService {
     return apkFile;
   }
 
+  Future<String?> fetchReleaseNotes(String tag) async {
+    try {
+      final response = await _dio.get<Map<String, dynamic>>(
+        'https://api.github.com/repos/digitalpalidictionary/dpd-flutter-app/releases/tags/$tag',
+        options: Options(
+          headers: {'Accept': 'application/vnd.github.v3+json'},
+        ),
+      );
+      return response.data?['body'] as String?;
+    } catch (_) {
+      return null;
+    }
+  }
+
   String formatBytes(int bytes) {
     final mb = bytes / (1024 * 1024);
     return '${mb.toStringAsFixed(0)} MB';

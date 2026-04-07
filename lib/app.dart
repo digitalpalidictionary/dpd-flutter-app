@@ -7,7 +7,10 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import 'package:package_info_plus/package_info_plus.dart';
+
 import 'providers/app_update_provider.dart';
+import 'services/app_update_service.dart';
 import 'providers/autocomplete_provider.dart';
 import 'providers/database_provider.dart';
 import 'providers/database_update_provider.dart';
@@ -269,6 +272,7 @@ void _showUpdateSnackBar(BuildContext context, String message) {
 class _DbGateState extends ConsumerState<_DbGate> {
   bool _eagerLoaded = false;
   bool _downloadPromptVisible = false;
+  bool _whatsNewShown = false;
 
   void _eagerLoadProviders() {
     if (_eagerLoaded) return;
@@ -277,6 +281,22 @@ class _DbGateState extends ConsumerState<_DbGate> {
     ref.read(searchIndexProvider);
     ref.read(compoundFamilyKeysProvider);
     ref.read(idiomKeysProvider);
+    _checkWhatsNew();
+  }
+
+  Future<void> _checkWhatsNew() async {
+    if (_whatsNewShown) return;
+    final prefs = ref.read(sharedPreferencesProvider);
+    final info = await PackageInfo.fromPlatform();
+    final current = info.version;
+    final lastSeen = prefs.getString('last_seen_version') ?? '';
+    if (lastSeen == current) return;
+    await prefs.setString('last_seen_version', current);
+    if (lastSeen.isEmpty) return;
+    _whatsNewShown = true;
+    final notes = await AppUpdateService().fetchReleaseNotes('v$current');
+    if (!mounted) return;
+    await _showWhatsNewDialog(current, notes);
   }
 
   @override
@@ -322,6 +342,26 @@ class _DbGateState extends ConsumerState<_DbGate> {
 
     _eagerLoadProviders();
     return const SearchScreen();
+  }
+
+  Future<void> _showWhatsNewDialog(String version, String? notes) async {
+    await showDialog<void>(
+      context: context,
+      builder: (dialogContext) {
+        return AlertDialog(
+          title: Text("What's new in v$version"),
+          content: notes != null && notes.isNotEmpty
+              ? SingleChildScrollView(child: Text(notes))
+              : null,
+          actions: [
+            FilledButton(
+              onPressed: () => Navigator.of(dialogContext).pop(),
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   Future<void> _showInitialDownloadPrompt() async {
