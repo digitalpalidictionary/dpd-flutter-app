@@ -135,15 +135,26 @@ class _SettingsContentState extends ConsumerState<SettingsContent> {
           onChanged: notifier.setExamplesOpen,
         ),
       ),
-      () => ListTile(
-        title: const Text('One button at a time'),
-        trailing: CompactSegmented<bool>(
-          segments: const [
-            ButtonSegment(value: false, label: Text('Off')),
-            ButtonSegment(value: true, label: Text('On')),
-          ],
-          selected: settings.oneButtonAtATime,
-          onChanged: notifier.setOneButtonAtATime,
+      () => Tooltip(
+        message: 'Opening one section closes any other open sections',
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.primary,
+          borderRadius: BorderRadius.circular(8),
+        ),
+        textStyle: TextStyle(
+          color: Theme.of(context).colorScheme.onPrimary,
+          fontSize: 12,
+        ),
+        child: ListTile(
+          title: const Text('One button at a time'),
+          trailing: CompactSegmented<bool>(
+            segments: const [
+              ButtonSegment(value: false, label: Text('Off')),
+              ButtonSegment(value: true, label: Text('On')),
+            ],
+            selected: settings.oneButtonAtATime,
+            onChanged: notifier.setOneButtonAtATime,
+          ),
         ),
       ),
       buildDivider,
