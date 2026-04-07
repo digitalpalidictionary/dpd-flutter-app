@@ -10,6 +10,42 @@ import 'settings_provider.dart';
 
 const _installedTagKey = 'dpd_installed_release_tag';
 
+abstract class ForegroundDownloadController {
+  const ForegroundDownloadController();
+
+  Future<void> startDbDownload();
+  Future<void> updateProgress(double progress);
+  Future<void> stop();
+}
+
+class AppForegroundDownloadController implements ForegroundDownloadController {
+  const AppForegroundDownloadController();
+
+  @override
+  Future<void> startDbDownload() {
+    return ForegroundDownloadService.startDbDownload();
+  }
+
+  @override
+  Future<void> stop() {
+    return ForegroundDownloadService.stop();
+  }
+
+  @override
+  Future<void> updateProgress(double progress) {
+    return ForegroundDownloadService.updateProgress(progress);
+  }
+}
+
+final databaseUpdateServiceProvider = Provider<DatabaseUpdateService>((ref) {
+  return DatabaseUpdateService();
+});
+
+final foregroundDownloadControllerProvider =
+    Provider<ForegroundDownloadController>((ref) {
+      return const AppForegroundDownloadController();
+    });
+
 class DbUpdateState {
   final DbStatus status;
   final double progress;
@@ -17,6 +53,7 @@ class DbUpdateState {
   final ReleaseInfo? releaseInfo;
   final String? localVersion;
   final bool hasLocalDatabase;
+  final bool shouldPromptForDownload;
 
   const DbUpdateState({
     this.status = DbStatus.checking,
@@ -25,6 +62,7 @@ class DbUpdateState {
     this.releaseInfo,
     this.localVersion,
     this.hasLocalDatabase = false,
+    this.shouldPromptForDownload = false,
   });
 
   DbUpdateState copyWith({
@@ -34,6 +72,7 @@ class DbUpdateState {
     ReleaseInfo? releaseInfo,
     String? localVersion,
     bool? hasLocalDatabase,
+    bool? shouldPromptForDownload,
   }) {
     return DbUpdateState(
       status: status ?? this.status,
@@ -42,6 +81,8 @@ class DbUpdateState {
       releaseInfo: releaseInfo ?? this.releaseInfo,
       localVersion: localVersion ?? this.localVersion,
       hasLocalDatabase: hasLocalDatabase ?? this.hasLocalDatabase,
+      shouldPromptForDownload:
+          shouldPromptForDownload ?? this.shouldPromptForDownload,
     );
   }
 }
@@ -49,9 +90,13 @@ class DbUpdateState {
 class DbUpdateNotifier extends StateNotifier<DbUpdateState> {
   final Ref _ref;
   final DatabaseUpdateService _service;
+  final ForegroundDownloadController _foregroundDownloadController;
 
   DbUpdateNotifier(this._ref)
-    : _service = DatabaseUpdateService(),
+    : _service = _ref.read(databaseUpdateServiceProvider),
+      _foregroundDownloadController = _ref.read(
+        foregroundDownloadControllerProvider,
+      ),
       super(const DbUpdateState());
 
   String? get _installedTag =>
@@ -88,8 +133,11 @@ class DbUpdateNotifier extends StateNotifier<DbUpdateState> {
         );
         return;
       }
-      state = DbUpdateState(status: DbStatus.noDatabase, releaseInfo: release);
-      await _initialDownload(release);
+      state = DbUpdateState(
+        status: DbStatus.noDatabase,
+        releaseInfo: release,
+        shouldPromptForDownload: true,
+      );
       return;
     }
 
@@ -157,8 +205,11 @@ class DbUpdateNotifier extends StateNotifier<DbUpdateState> {
         );
         return;
       }
-      state = DbUpdateState(status: DbStatus.noDatabase, releaseInfo: release);
-      await _initialDownload(release);
+      state = DbUpdateState(
+        status: DbStatus.noDatabase,
+        releaseInfo: release,
+        shouldPromptForDownload: true,
+      );
       return;
     }
 
@@ -184,15 +235,19 @@ class DbUpdateNotifier extends StateNotifier<DbUpdateState> {
   }
 
   Future<void> _initialDownload(ReleaseInfo release) async {
-    state = state.copyWith(status: DbStatus.downloading, progress: 0);
+    state = state.copyWith(
+      status: DbStatus.downloading,
+      progress: 0,
+      shouldPromptForDownload: false,
+    );
 
-    await ForegroundDownloadService.startDbDownload();
+    await _foregroundDownloadController.startDbDownload();
     try {
       await _service.downloadAndInstall(
         release: release,
         onProgress: (progress) {
           state = state.copyWith(progress: progress);
-          ForegroundDownloadService.updateProgress(progress);
+          _foregroundDownloadController.updateProgress(progress);
         },
         closeDb: () async {
           _ref.invalidate(databaseProvider);
@@ -222,7 +277,7 @@ class DbUpdateNotifier extends StateNotifier<DbUpdateState> {
         errorMessage: e.toString(),
       );
     } finally {
-      await ForegroundDownloadService.stop();
+      await _foregroundDownloadController.stop();
     }
   }
 
@@ -261,13 +316,13 @@ class DbUpdateNotifier extends StateNotifier<DbUpdateState> {
       progress: 0,
     );
 
-    await ForegroundDownloadService.startDbDownload();
+    await _foregroundDownloadController.startDbDownload();
     try {
       await _service.downloadAndInstall(
         release: release,
         onProgress: (progress) {
           state = state.copyWith(progress: progress);
-          ForegroundDownloadService.updateProgress(progress);
+          _foregroundDownloadController.updateProgress(progress);
         },
         closeDb: () async {
           state = state.copyWith(status: DbStatus.extracting);
@@ -299,8 +354,19 @@ class DbUpdateNotifier extends StateNotifier<DbUpdateState> {
         errorMessage: e.toString(),
       );
     } finally {
-      await ForegroundDownloadService.stop();
+      await _foregroundDownloadController.stop();
     }
+  }
+
+  void dismissInitialDownloadPrompt() {
+    if (!state.shouldPromptForDownload) return;
+    state = state.copyWith(shouldPromptForDownload: false);
+  }
+
+  Future<void> startInitialDownload() async {
+    final release = state.releaseInfo;
+    if (release == null) return;
+    await _initialDownload(release);
   }
 
   Future<void> manualCheckForUpdates() async {

@@ -67,8 +67,27 @@ class DownloadScreen extends ConsumerWidget {
 
     switch (updateState.status) {
       case DbStatus.checking:
-      case DbStatus.noDatabase:
         return const SizedBox.shrink();
+
+      case DbStatus.noDatabase:
+        return Column(
+          children: [
+            Text(
+              'The DPD database is required before the app can open. Download it when you are ready.',
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 16),
+            FilledButton.icon(
+              onPressed: () =>
+                  ref.read(dbUpdateProvider.notifier).startInitialDownload(),
+              icon: const Icon(Icons.download),
+              label: const Text('Download now'),
+            ),
+          ],
+        );
 
       case DbStatus.downloading:
         return _downloadingView(context, updateState, updateState.progress);
@@ -142,8 +161,9 @@ class DownloadScreen extends ConsumerWidget {
   String? _subtitleFor(DbUpdateState updateState) {
     switch (updateState.status) {
       case DbStatus.checking:
-      case DbStatus.noDatabase:
       case DbStatus.ready:
+        return null;
+      case DbStatus.noDatabase:
         return null;
       case DbStatus.downloading:
       case DbStatus.extracting:

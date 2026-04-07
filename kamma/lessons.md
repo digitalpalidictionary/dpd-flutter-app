@@ -5,3 +5,4 @@
 - 2026-04-07 [CONFUSION] Designed listener condition using toRoman() comparison to prevent field overwrite, which broke double-tap sync — the right fix was a _suppressProviderSync flag to distinguish local vs external provider changes
 - 2026-04-07 [BEHAVIOR] Removed live Velthuis conversion too eagerly when simplifying — user correctly pointed out Velthuis ASCII sequences don't overlap with any script, so live conversion is safe and should be kept
 - 2026-04-07 [POSITIVE] Reviewing multiple external code reviews in one pass and triaging each finding (actionable / not doing / deferred) was efficient and produced a clean, well-justified fix set
+- 2026-04-07 [WORKFLOW] The Dart test runner wrapper injected an unsupported `--pause-after-load` flag for this Flutter project, so falling back to direct `flutter test` kept verification moving

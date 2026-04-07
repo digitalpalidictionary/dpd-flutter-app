@@ -85,6 +85,7 @@ class _DpdAppState extends ConsumerState<DpdApp> {
 
   bool _shouldReleaseFirstFrame(DbUpdateState state) {
     return state.hasLocalDatabase ||
+        state.status == DbStatus.noDatabase ||
         state.status == DbStatus.downloading ||
         state.status == DbStatus.extracting ||
         state.status == DbStatus.error;
@@ -267,6 +268,7 @@ void _showUpdateSnackBar(BuildContext context, String message) {
 
 class _DbGateState extends ConsumerState<_DbGate> {
   bool _eagerLoaded = false;
+  bool _downloadPromptVisible = false;
 
   void _eagerLoadProviders() {
     if (_eagerLoaded) return;
@@ -304,11 +306,54 @@ class _DbGateState extends ConsumerState<_DbGate> {
       }
     });
 
+    ref.listen<DbUpdateState>(dbUpdateProvider, (previous, next) {
+      if (!next.shouldPromptForDownload || _downloadPromptVisible) return;
+      _downloadPromptVisible = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        if (!mounted) return;
+        await _showInitialDownloadPrompt();
+        _downloadPromptVisible = false;
+      });
+    });
+
     if (!updateState.hasLocalDatabase) {
       return const DownloadScreen();
     }
 
     _eagerLoadProviders();
     return const SearchScreen();
+  }
+
+  Future<void> _showInitialDownloadPrompt() async {
+    await showDialog<void>(
+      context: context,
+      builder: (dialogContext) {
+        return AlertDialog(
+          title: const Text('Download dictionary data?'),
+          content: const Text(
+            'The DPD database is required before the app can open. '
+            'Download it when you are ready.',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                ref
+                    .read(dbUpdateProvider.notifier)
+                    .dismissInitialDownloadPrompt();
+                Navigator.of(dialogContext).pop();
+              },
+              child: const Text('Not now'),
+            ),
+            FilledButton(
+              onPressed: () {
+                Navigator.of(dialogContext).pop();
+                ref.read(dbUpdateProvider.notifier).startInitialDownload();
+              },
+              child: const Text('Download now'),
+            ),
+          ],
+        );
+      },
+    );
   }
 }
