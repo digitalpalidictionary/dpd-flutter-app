@@ -4,10 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../providers/app_update_provider.dart';
 import '../providers/database_update_provider.dart';
 import '../providers/settings_provider.dart';
-import '../services/database_update_service.dart';
 import '../services/intent_service.dart';
 import '../theme/dpd_colors.dart';
 import 'compact_segmented.dart';
@@ -27,13 +25,6 @@ class _SettingsContentState extends ConsumerState<SettingsContent> {
     final settings = ref.watch(settingsProvider);
     final notifier = ref.read(settingsProvider.notifier);
     final updateState = ref.watch(dbUpdateProvider);
-    final appUpdateState = ref.watch(appUpdateProvider);
-
-    final isUpdating =
-        appUpdateState.status == AppUpdateStatus.checking ||
-        appUpdateState.status == AppUpdateStatus.downloading ||
-        updateState.status == DbStatus.downloading ||
-        updateState.status == DbStatus.extracting;
 
     Widget buildDivider() {
       return Padding(
@@ -47,29 +38,6 @@ class _SettingsContentState extends ConsumerState<SettingsContent> {
         padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
         child: Text('Settings', style: theme.textTheme.titleLarge),
       ),
-      () => Padding(
-        padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),
-        child: FilledButton.icon(
-          onPressed: isUpdating
-              ? null
-              : () {
-                  ref.read(appUpdateProvider.notifier).manualCheck();
-                  ref.read(dbUpdateProvider.notifier).manualCheckForUpdates();
-                },
-          icon: isUpdating
-              ? SizedBox(
-                  width: 18,
-                  height: 18,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2,
-                    color: theme.colorScheme.onPrimary,
-                  ),
-                )
-              : const Icon(Icons.update),
-          label: Text(isUpdating ? 'Updating…' : 'Update Now'),
-        ),
-      ),
-      buildDivider,
       () => ListTile(
         title: const Text('Result style'),
         trailing: CompactSegmented<DisplayMode>(
