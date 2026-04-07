@@ -467,6 +467,7 @@ Future<void> showSettingsOverlay(BuildContext context) {
   return showModalBottomSheet(
     context: context,
     isScrollControlled: true,
+    useSafeArea: true,
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(
         top: Radius.circular(DpdColors.borderRadiusValue),
