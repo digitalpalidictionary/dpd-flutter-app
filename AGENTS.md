@@ -89,3 +89,6 @@ Do not add UI tests for this app. Add tests only for data logic and other non-UI
 Use `DpdFooter` for all section footers with feedback links:
 - Provides consistent styling matching webapp `.dpd-footer` CSS
 - Pass `messagePrefix`, `linkText`, and `urlBuilder` for customization
+
+### Search Bar Display Text
+The search bar (`_controller`) must never be overwritten by transliteration or query normalization. Only Velthuis live conversion may rewrite the field. Use `_suppressProviderSync` (or equivalent flag) to prevent provider→controller sync from clobbering the user's original script when a local search fires.

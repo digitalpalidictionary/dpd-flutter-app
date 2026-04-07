@@ -1,3 +1,7 @@
 - 2026-04-06 [POSITIVE] Replacing heavy Material 3 widgets (SegmentedButton) with lightweight custom equivalents gave a dramatic performance win — diagnose the widget tree cost before adding loading hacks
 - 2026-04-05 [CONFUSION] During a performance review, skipped verifying the fuzzy_key index and nearly missed that the fuzzy benchmark numbers were credible — always verify the index backing any range query claim
 - 2026-04-05 [WORKFLOW] Running /kamma:3-review while plan mode was active blocked fixing findings in-session; review skills need implementation access, not planning mode
+- 2026-04-07 [REPEATED] User had to re-state three times that the text field must never be converted except for Velthuis — initial implementations kept adding toRoman() calls that touched the display text
+- 2026-04-07 [CONFUSION] Designed listener condition using toRoman() comparison to prevent field overwrite, which broke double-tap sync — the right fix was a _suppressProviderSync flag to distinguish local vs external provider changes
+- 2026-04-07 [BEHAVIOR] Removed live Velthuis conversion too eagerly when simplifying — user correctly pointed out Velthuis ASCII sequences don't overlap with any script, so live conversion is safe and should be kept
+- 2026-04-07 [POSITIVE] Reviewing multiple external code reviews in one pass and triaging each finding (actionable / not doing / deferred) was efficient and produced a clean, well-justified fix set

@@ -7,10 +7,12 @@ import 'providers/settings_provider.dart';
 import 'providers/search_provider.dart';
 import 'services/foreground_download_service.dart';
 import 'services/intent_service.dart';
+import 'utils/transliteration.dart';
 
 void main(List<String> args) async {
   WidgetsFlutterBinding.ensureInitialized();
   ForegroundDownloadService.initialize();
+  initTransliteration();
 
   debugPrint('[DPD] main() called with args: $args');
 

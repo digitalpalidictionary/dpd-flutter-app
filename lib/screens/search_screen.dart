@@ -19,6 +19,7 @@ import '../providers/database_update_provider.dart';
 import '../providers/settings_provider.dart';
 import '../services/database_update_service.dart';
 import '../theme/dpd_colors.dart';
+import '../utils/transliteration.dart';
 import '../utils/velthuis.dart';
 import '../widgets/accordion_card.dart';
 import '../widgets/autocomplete_dropdown.dart';
@@ -61,6 +62,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   bool _showHelpPopup = false;
   bool _showSettingsPanel = false;
   bool _showHistoryPanel = false;
+  bool _suppressProviderSync = false;
   final _historyButtonKey = GlobalKey();
   _InfoContent? _activeInfo;
 
@@ -76,6 +78,12 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     super.dispose();
   }
 
+  void _setSearchQuery(String query) {
+    _suppressProviderSync = true;
+    ref.read(searchQueryProvider.notifier).state = query;
+    _suppressProviderSync = false;
+  }
+
   void _onChanged(String raw) {
     final converted = velthuis(raw);
     if (converted != raw) {
@@ -84,17 +92,15 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
         selection: TextSelection.collapsed(offset: converted.length),
       );
     }
-
+    final query = toRoman(converted);
     setState(() {});
-
     _autocompleteDebounce?.cancel();
     _autocompleteDebounce = Timer(const Duration(milliseconds: 150), () {
-      _updateAutocomplete(converted);
+      _updateAutocomplete(query);
     });
-
     _debounce?.cancel();
     _debounce = Timer(const Duration(milliseconds: 300), () {
-      ref.read(searchQueryProvider.notifier).state = converted;
+      _setSearchQuery(query);
     });
   }
 
@@ -103,8 +109,8 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     _hideVelthuisHelp();
     _autocompleteDebounce?.cancel();
     _debounce?.cancel();
-    final query = _controller.text.trim();
-    ref.read(searchQueryProvider.notifier).state = query;
+    final query = toRoman(_controller.text.trim());
+    _setSearchQuery(query);
     if (query.isNotEmpty) {
       ref.read(historyProvider.notifier).add(query);
     }
@@ -307,10 +313,10 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
       }
     });
 
-    // Sync the controller with the provider ONLY when the provider actually changes
-    // (e.g. via double-tap search). This avoids fighting with active typing.
+    // Sync the controller only for external provider changes (double-tap, intent).
+    // Local changes from typing/_onSearch set _suppressProviderSync to skip this.
     ref.listen<String>(searchQueryProvider, (previous, next) {
-      if (next != _controller.text) {
+      if (!_suppressProviderSync && next != _controller.text) {
         _controller.text = next;
         _controller.selection = TextSelection.collapsed(offset: next.length);
       }
