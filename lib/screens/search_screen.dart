@@ -101,6 +101,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     _debounce?.cancel();
     _debounce = Timer(const Duration(milliseconds: 300), () {
       _setSearchQuery(query);
+      if (query.isNotEmpty) ref.read(historyProvider.notifier).add(query);
     });
   }
 
@@ -678,7 +679,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
         !partialLoading &&
         !fuzzyAsync.isLoading &&
         !dictAsync.isLoading) {
-      return _NoResults(query: query);
+      return _NoResultsWithSuggestions(query: query, onSuggestionTap: _onSuggestionSelected);
     }
 
     final visibility = ref.watch(dictVisibilityProvider);
@@ -1481,19 +1482,57 @@ class _CompactVariantSummary extends StatelessWidget {
   }
 }
 
-class _NoResults extends StatelessWidget {
-  const _NoResults({required this.query});
+class _NoResultsWithSuggestions extends ConsumerWidget {
+  const _NoResultsWithSuggestions({
+    required this.query,
+    required this.onSuggestionTap,
+  });
 
   final String query;
+  final void Function(String) onSuggestionTap;
 
   @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Text(
-        'No results for "$query"',
-        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-          color: Theme.of(context).colorScheme.outline,
-        ),
+  Widget build(BuildContext context, WidgetRef ref) {
+    final closestAsync = ref.watch(closestMatchesProvider(query));
+    final matches = closestAsync.valueOrNull ?? [];
+    final theme = Theme.of(context);
+
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Center(
+            child: Text(
+              'No results for "$query"',
+              style: theme.textTheme.bodyLarge?.copyWith(
+                color: theme.colorScheme.outline,
+              ),
+            ),
+          ),
+          if (matches.isNotEmpty) ...[
+            const SizedBox(height: 16),
+            Text(
+              'Closest matches:',
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: theme.colorScheme.outline,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Wrap(
+              spacing: 8,
+              runSpacing: 4,
+              children: [
+                for (final match in matches)
+                  ActionChip(
+                    label: Text(match),
+                    onPressed: () => onSuggestionTap(match),
+                  ),
+              ],
+            ),
+          ],
+        ],
       ),
     );
   }

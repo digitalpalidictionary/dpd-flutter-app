@@ -227,6 +227,62 @@ class DpdDao extends DatabaseAccessor<AppDatabase> with _$DpdDaoMixin {
     return hw;
   }
 
+  Future<List<String>> searchClosestMatches(
+    String query, {
+    int maxResults = 10,
+  }) async {
+    if (query.isEmpty) return [];
+    final normalized = _normalizeQuery(query);
+    if (normalized.length < 2) return [];
+
+    final candidates = <String>{};
+
+    // Strategy 1: progressively shorter prefixes on lookup_key
+    for (var len = normalized.length - 1; len >= 2 && candidates.length < 50; len--) {
+      final prefix = normalized.substring(0, len);
+      final nextKey = _nextString(prefix);
+      final rows = await (selectOnly(lookup)
+            ..addColumns([lookup.lookupKey])
+            ..where(
+              lookup.lookupKey.isBiggerOrEqualValue(prefix) &
+                  lookup.lookupKey.isSmallerThanValue(nextKey),
+            )
+            ..limit(20))
+          .get();
+      for (final row in rows) {
+        final key = row.read(lookup.lookupKey);
+        if (key != null && key != normalized) candidates.add(key);
+      }
+    }
+
+    // Strategy 2: fuzzy_key prefix trimming (diacritics-insensitive)
+    final fuzzyNorm = stripDiacritics(normalized);
+    if (fuzzyNorm.length >= 2) {
+      for (var len = fuzzyNorm.length; len >= 2 && candidates.length < 50; len--) {
+        final prefix = fuzzyNorm.substring(0, len);
+        final nextKey = _nextString(prefix);
+        final rows = await (selectOnly(lookup)
+              ..addColumns([lookup.lookupKey])
+              ..where(
+                lookup.fuzzyKey.isBiggerOrEqualValue(prefix) &
+                    lookup.fuzzyKey.isSmallerThanValue(nextKey),
+              )
+              ..limit(20))
+            .get();
+        for (final row in rows) {
+          final key = row.read(lookup.lookupKey);
+          if (key != null && key != normalized) candidates.add(key);
+        }
+      }
+    }
+
+    if (candidates.isEmpty) return [];
+
+    final sorted = candidates.toList()
+      ..sort((a, b) => paliSortKey(a).compareTo(paliSortKey(b)));
+    return sorted.take(maxResults).toList();
+  }
+
   Future<Set<String>> checkWordsInLookup(Set<String> words) async {
     if (words.isEmpty) return {};
     final rows = await (select(lookup)

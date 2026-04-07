@@ -63,6 +63,13 @@ final fuzzyResultsProvider = FutureProvider.autoDispose
     timing.recordQueryTime('fuzzy_provider', sw.elapsed);
     recordTiming(timing);
   }
-  
+
   return result;
+});
+
+final closestMatchesProvider = FutureProvider.autoDispose
+    .family<List<String>, String>((ref, query) async {
+  if (query.isEmpty) return [];
+  final dao = ref.watch(daoProvider);
+  return dao.searchClosestMatches(query);
 });
