@@ -7,3 +7,4 @@
 - 2026-04-07 [POSITIVE] Reviewing multiple external code reviews in one pass and triaging each finding (actionable / not doing / deferred) was efficient and produced a clean, well-justified fix set
 - 2026-04-07 [WORKFLOW] The Dart test runner wrapper injected an unsupported `--pause-after-load` flag for this Flutter project, so falling back to direct `flutter test` kept verification moving
 - 2026-04-07 [REPEATED] User had to correct the update dialog plan three times — kept designing user-choice (Install/Later) into the dialog instead of just displaying information. Listen for "show" not "ask".
+- 2026-04-07 [BEHAVIOR] Gave flutter run instructions to a user who uses justfile — always check for a justfile first and use its recipes instead of raw CLI commands
