@@ -45,7 +45,7 @@ android-push-db:
     @echo "DB pushed (WAL/SHM cleaned) and app restarted."
 
 # Install debug APK without a DB — triggers the download flow on launch
-android-run-no-db:
+android-install-no-db:
     flutter build apk --debug
     adb install -r build/app/outputs/flutter-apk/app-debug.apk
     adb shell pm clear {{_android_pkg}}
