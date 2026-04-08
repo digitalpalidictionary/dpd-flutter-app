@@ -21,6 +21,8 @@ import '../services/database_update_service.dart';
 import '../theme/dpd_colors.dart';
 import '../utils/transliteration.dart';
 import '../utils/velthuis.dart';
+import '../utils/back_navigation.dart';
+import '../utils/history_recording.dart';
 import '../widgets/accordion_card.dart';
 import '../widgets/autocomplete_dropdown.dart';
 import '../widgets/tap_search_wrapper.dart';
@@ -101,7 +103,6 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     _debounce?.cancel();
     _debounce = Timer(const Duration(milliseconds: 300), () {
       _setSearchQuery(query);
-      if (query.isNotEmpty) ref.read(historyProvider.notifier).add(query);
     });
   }
 
@@ -112,7 +113,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     _debounce?.cancel();
     final query = toRoman(_controller.text.trim());
     _setSearchQuery(query);
-    if (query.isNotEmpty) {
+    if (shouldRecordCommittedSearch(query)) {
       ref.read(historyProvider.notifier).add(query);
     }
     FocusScope.of(context).unfocus();
@@ -177,7 +178,9 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     _autocompleteDebounce?.cancel();
     _debounce?.cancel();
     ref.read(searchQueryProvider.notifier).state = term;
-    ref.read(historyProvider.notifier).add(term);
+    if (shouldRecordCommittedSearch(term)) {
+      ref.read(historyProvider.notifier).add(term);
+    }
     setState(() {});
   }
 
@@ -283,20 +286,42 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     _infoOverlayEntry = null;
   }
 
-  bool _hasActiveBackInterceptState() {
-    if (!Platform.isAndroid) return false;
-    return _controller.text.isNotEmpty ||
-        _overlayEntry != null ||
-        _showHelpPopup ||
-        _infoOverlayEntry != null ||
-        _activeInfo != null;
+  AndroidBackAction _androidBackAction() {
+    final history = ref.read(historyProvider);
+    return resolveAndroidBackAction(
+      isAndroid: Platform.isAndroid,
+      hasAutocompleteOverlay: _overlayEntry != null,
+      hasHelpPopup: _showHelpPopup,
+      hasInfoOverlay: _infoOverlayEntry != null,
+      hasActiveInfoView: _activeInfo != null,
+      canGoBackInHistory: history.canGoBack,
+    );
   }
 
-  void _clearAllActiveState() {
+  bool _hasActiveBackInterceptState() {
+    return _androidBackAction() != AndroidBackAction.exitApp;
+  }
+
+  void _dismissBackOverlays() {
+    _removeOverlay();
     _removeInfoOverlay();
     setState(() => _activeInfo = null);
     _hideVelthuisHelp();
-    _onClear();
+  }
+
+  void _handleAndroidBackPress() {
+    switch (_androidBackAction()) {
+      case AndroidBackAction.dismissOverlay:
+        _dismissBackOverlays();
+      case AndroidBackAction.navigateHistoryBack:
+        ref.read(historyProvider.notifier).goBack();
+        final entry = ref.read(historyProvider).currentEntry;
+        if (entry != null) {
+          ref.read(searchQueryProvider.notifier).state = entry.query;
+        }
+      case AndroidBackAction.exitApp:
+        break;
+    }
   }
 
   @override
@@ -326,7 +351,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     return PopScope(
       canPop: !_hasActiveBackInterceptState(),
       onPopInvokedWithResult: (didPop, _) {
-        if (!didPop) _clearAllActiveState();
+        if (!didPop) _handleAndroidBackPress();
       },
       child: Scaffold(
         bottomNavigationBar: const Column(

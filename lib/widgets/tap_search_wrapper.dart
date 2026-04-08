@@ -5,6 +5,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/history_provider.dart';
 import '../providers/search_provider.dart';
+import '../utils/history_recording.dart';
 import '../providers/settings_provider.dart';
 
 class TapSearchWrapper extends ConsumerStatefulWidget {
@@ -170,7 +171,9 @@ class _TapSearchWrapperState extends ConsumerState<TapSearchWrapper> {
       _suppressContextMenu = false;
       _selectionAreaKey.currentState?.selectableRegion.clearSelection();
       ref.read(searchQueryProvider.notifier).state = selectedText;
-      ref.read(historyProvider.notifier).add(selectedText);
+      if (shouldRecordCommittedSearch(selectedText)) {
+        ref.read(historyProvider.notifier).add(selectedText);
+      }
 
       if (widget.shouldPop) {
         final navigator = Navigator.of(context);

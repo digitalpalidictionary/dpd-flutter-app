@@ -82,6 +82,9 @@ All entry sections (grammar, examples, inflections, families, etc.) MUST use:
 ### Reuse Existing Patterns
 **ALWAYS** search the codebase for existing solutions before building new ones. If the app already has a pattern for tooltips, dialogs, popups, or any UI component, copy that exact pattern — same widget, same styling, same configuration. Never reinvent a solution for an already-solved problem.
 
+### Behavior-Parity Fixes
+When a request says one interaction should work exactly like an existing one, keep the change strictly limited to that behavior path. Do not alter adjacent state updates, history recording, or cleanup behavior unless the user explicitly asks for it.
+
 ### Testing
 Do not add UI tests for this app. Add tests only for data logic and other non-UI behavior.
 
