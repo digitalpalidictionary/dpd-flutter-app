@@ -442,10 +442,20 @@ class VariantCard extends StatelessWidget {
   }
 }
 
-class _VariantTable extends StatelessWidget {
+class _VariantTable extends StatefulWidget {
   const _VariantTable({required this.variants});
 
   final Map<String, Map<String, List<List<String>>>> variants;
+
+  @override
+  State<_VariantTable> createState() => _VariantTableState();
+}
+
+const _variantCollapsedRows = 10;
+
+class _VariantTableState extends State<_VariantTable> {
+  int _visibleRows = _variantCollapsedRows;
+  final _toggleKey = GlobalKey();
 
   @override
   Widget build(BuildContext context) {
@@ -453,8 +463,32 @@ class _VariantTable extends StatelessWidget {
       context,
     ).textTheme.bodyMedium?.copyWith(height: _lineHeight);
     final headerStyle = bodyStyle?.copyWith(fontWeight: FontWeight.w700);
+    final linkStyle = bodyStyle?.copyWith(
+      color: DpdColors.primaryText,
+      fontWeight: FontWeight.w700,
+    );
 
-    final corpusList = variants.keys.toList();
+    final corpusList = widget.variants.keys.toList();
+
+    // Collect all data rows with their corpus index for separator logic.
+    final dataRows = <(int corpusIndex, String corpus, String book, List<String> entry)>[];
+    for (int ci = 0; ci < corpusList.length; ci++) {
+      final corpus = corpusList[ci];
+      for (final book in widget.variants[corpus]!.keys) {
+        for (final entry in widget.variants[corpus]![book]!) {
+          dataRows.add((ci, corpus, book, entry));
+        }
+      }
+    }
+
+    final totalDataRows = dataRows.length;
+    final needsCollapse = totalDataRows > _variantCollapsedRows;
+    final visibleCount = needsCollapse
+        ? _visibleRows.clamp(0, totalDataRows)
+        : totalDataRows;
+    final remaining = totalDataRows - visibleCount;
+    final isExpanded = visibleCount > _variantCollapsedRows;
+
     final rows = <TableRow>[];
 
     // Header row
@@ -467,11 +501,11 @@ class _VariantTable extends StatelessWidget {
       ),
     );
 
-    for (int ci = 0; ci < corpusList.length; ci++) {
-      final corpus = corpusList[ci];
+    int? prevCorpusIndex;
+    for (int i = 0; i < visibleCount; i++) {
+      final (ci, corpus, book, entry) = dataRows[i];
 
-      // Separator row between corpus groups (1px height so decoration renders)
-      if (ci > 0) {
+      if (prevCorpusIndex != null && ci != prevCorpusIndex) {
         rows.add(
           TableRow(
             decoration: BoxDecoration(
@@ -483,32 +517,73 @@ class _VariantTable extends StatelessWidget {
           ),
         );
       }
+      prevCorpusIndex = ci;
 
-      for (final book in variants[corpus]!.keys) {
-        for (final entry in variants[corpus]![book]!) {
-          rows.add(
-            TableRow(
-              children: [
-                _cell(corpus, style: bodyStyle, noWrap: true),
-                _cell(book, style: bodyStyle, noWrap: true),
-                _cell(entry[0], style: bodyStyle),
-                _cell(entry[1], style: bodyStyle),
-              ],
-            ),
-          );
-        }
-      }
+      rows.add(
+        TableRow(
+          children: [
+            _cell(corpus, style: bodyStyle, noWrap: true),
+            _cell(book, style: bodyStyle, noWrap: true),
+            _cell(entry[0], style: bodyStyle),
+            _cell(entry[1], style: bodyStyle),
+          ],
+        ),
+      );
     }
 
-    return Table(
-      columnWidths: const {
-        0: IntrinsicColumnWidth(),
-        1: IntrinsicColumnWidth(),
-        2: FlexColumnWidth(),
-        3: FlexColumnWidth(),
-      },
-      defaultVerticalAlignment: TableCellVerticalAlignment.top,
-      children: rows,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Table(
+          columnWidths: const {
+            0: IntrinsicColumnWidth(),
+            1: IntrinsicColumnWidth(),
+            2: FlexColumnWidth(),
+            3: FlexColumnWidth(),
+          },
+          defaultVerticalAlignment: TableCellVerticalAlignment.top,
+          children: rows,
+        ),
+        if (needsCollapse)
+          Padding(
+            key: _toggleKey,
+            padding: const EdgeInsets.only(top: 6),
+            child: Row(
+              children: [
+                if (remaining > 0)
+                  GestureDetector(
+                    onTap: () => setState(() =>
+                        _visibleRows += _variantCollapsedRows),
+                    child: Text(
+                      'show more ($remaining remaining)',
+                      style: linkStyle,
+                    ),
+                  ),
+                if (remaining > 0 && isExpanded)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 6),
+                    child: Text('·', style: linkStyle),
+                  ),
+                if (isExpanded)
+                  GestureDetector(
+                    onTap: () {
+                      setState(() =>
+                          _visibleRows = _variantCollapsedRows);
+                      WidgetsBinding.instance.addPostFrameCallback((_) {
+                        final ctx = _toggleKey.currentContext;
+                        if (ctx != null) {
+                          Scrollable.ensureVisible(ctx,
+                              alignment: 1.0,
+                              duration: const Duration(milliseconds: 300));
+                        }
+                      });
+                    },
+                    child: Text('show less', style: linkStyle),
+                  ),
+              ],
+            ),
+          ),
+      ],
     );
   }
 
