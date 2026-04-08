@@ -47,7 +47,9 @@ class _DpdAppState extends ConsumerState<DpdApp> {
   StreamSubscription<String>? _intentSub;
   StreamSubscription<String>? _lookupSub;
   ProviderSubscription<DbUpdateState>? _dbUpdateSub;
+  ProviderSubscription<DbUpdateState>? _appUpdateGateSub;
   bool _firstFrameReleased = false;
+  bool _appUpdateChecked = false;
 
   @override
   void initState() {
@@ -98,9 +100,20 @@ class _DpdAppState extends ConsumerState<DpdApp> {
     if (_firstFrameReleased) return;
     _firstFrameReleased = true;
     WidgetsBinding.instance.allowFirstFrame();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(appUpdateProvider.notifier).checkForUpdates();
-    });
+
+    // Only fire app update check once DB is fully ready — never during download/extract.
+    _appUpdateGateSub = ref.listenManual<DbUpdateState>(
+      dbUpdateProvider,
+      (previous, next) {
+        if (!_appUpdateChecked && next.status == DbStatus.ready) {
+          _appUpdateChecked = true;
+          _appUpdateGateSub?.close();
+          _appUpdateGateSub = null;
+          ref.read(appUpdateProvider.notifier).checkForUpdates();
+        }
+      },
+      fireImmediately: true,
+    );
   }
 
   void _exitApp() {
@@ -112,6 +125,7 @@ class _DpdAppState extends ConsumerState<DpdApp> {
   @override
   void dispose() {
     _dbUpdateSub?.close();
+    _appUpdateGateSub?.close();
     if (!_firstFrameReleased) {
       WidgetsBinding.instance.allowFirstFrame();
     }
@@ -273,6 +287,7 @@ class _DbGateState extends ConsumerState<_DbGate> {
   bool _eagerLoaded = false;
   bool _downloadPromptVisible = false;
   bool _whatsNewShown = false;
+  bool _appInstallPending = false;
 
   void _eagerLoadProviders() {
     if (_eagerLoaded) return;
@@ -282,6 +297,16 @@ class _DbGateState extends ConsumerState<_DbGate> {
     ref.read(compoundFamilyKeysProvider);
     ref.read(idiomKeysProvider);
     _checkWhatsNew();
+  }
+
+  Future<void> _maybeInstallAppUpdate() async {
+    final db = ref.read(dbUpdateProvider);
+    if (db.status == DbStatus.downloading || db.status == DbStatus.extracting) {
+      _appInstallPending = true;
+      return;
+    }
+    _appInstallPending = false;
+    await ref.read(appUpdateProvider.notifier).installUpdate();
   }
 
   Future<void> _checkWhatsNew() async {
@@ -310,7 +335,7 @@ class _DbGateState extends ConsumerState<_DbGate> {
           context,
           'Installing app update ${next.latestTag ?? ""}…',
         );
-        ref.read(appUpdateProvider.notifier).installUpdate();
+        _maybeInstallAppUpdate();
       }
     });
 
@@ -323,6 +348,10 @@ class _DbGateState extends ConsumerState<_DbGate> {
           context,
           'Database updated to ${next.localVersion ?? "latest version"}',
         );
+      }
+
+      if (next.status == DbStatus.ready && _appInstallPending) {
+        _maybeInstallAppUpdate();
       }
     });
 
