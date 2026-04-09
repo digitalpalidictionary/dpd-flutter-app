@@ -109,18 +109,22 @@ void main() {
 
   group('DictVisibilityNotifier', () {
     test('loads persisted state and ignores corrupted prefs', () async {
+      final dpdIds = kDpdSources.map((s) => s.id).toList();
+
       await prefs.setString(
         'dict_visibility',
         '{"order":["mw"],"enabled":["mw"]}',
       );
       final loaded = DictVisibilityNotifier(prefs);
-      expect(loaded.state.order, ['mw']);
-      expect(loaded.state.enabled, {'mw'});
+      // Constructor seeds DPD sources ahead of any saved dict IDs
+      expect(loaded.state.order, [...dpdIds, 'mw']);
+      expect(loaded.state.enabled, {...dpdIds.toSet(), 'mw'});
 
       await prefs.setString('dict_visibility', '{not json');
       final corrupted = DictVisibilityNotifier(prefs);
-      expect(corrupted.state.order, isEmpty);
-      expect(corrupted.state.enabled, isEmpty);
+      // Corrupted prefs fall back to defaults; DPD sources still seeded
+      expect(corrupted.state.order, dpdIds);
+      expect(corrupted.state.enabled, dpdIds.toSet());
     });
 
     test(
@@ -148,6 +152,9 @@ void main() {
     );
 
     test('setOrder and toggleDict persist updated visibility', () async {
+      final dpdEnabled = kDpdSources.map((s) => s.id).toSet();
+      final dpdIds = kDpdSources.map((s) => s.id).toList();
+
       final notifier = DictVisibilityNotifier(prefs);
       notifier.initFromMeta([_meta('cone', 'Cone'), _meta('mw', 'MW')]);
 
@@ -156,11 +163,11 @@ void main() {
 
       expect(notifier.state.order, ['mw', 'cone']);
       // toggleDict only removes 'cone' from enabled; DPD sources remain enabled
-      final dpdEnabled = kDpdSources.map((s) => s.id).toSet();
       expect(notifier.state.enabled, {...dpdEnabled, 'mw'});
 
       final reloaded = DictVisibilityNotifier(prefs);
-      expect(reloaded.state.order, ['mw', 'cone']);
+      // Constructor re-seeds DPD sources ahead of the saved dict order
+      expect(reloaded.state.order, [...dpdIds, 'mw', 'cone']);
       expect(reloaded.state.enabled, {...dpdEnabled, 'mw'});
     });
   });

@@ -23,7 +23,7 @@ void main() {
       final notifier = HistoryNotifier(prefs);
       notifier.add('dhamma');
       notifier.add('kamma');
-      expect(notifier.state.entries, ['kamma', 'dhamma']);
+      expect(notifier.state.entries.map((e) => e.query).toList(), ['kamma', 'dhamma']);
       expect(notifier.state.currentIndex, 0);
     });
 
@@ -32,7 +32,7 @@ void main() {
       notifier.add('dhamma');
       notifier.add('kamma');
       notifier.add('dhamma');
-      expect(notifier.state.entries, ['dhamma', 'kamma']);
+      expect(notifier.state.entries.map((e) => e.query).toList(), ['dhamma', 'kamma']);
       expect(notifier.state.currentIndex, 0);
     });
 
@@ -48,7 +48,7 @@ void main() {
         notifier.add('term$i');
       }
       expect(notifier.state.entries.length, 50);
-      expect(notifier.state.entries.first, 'term54');
+      expect(notifier.state.entries.first.query, 'term54');
     });
 
     test('goBack increments index', () {
@@ -60,11 +60,11 @@ void main() {
 
       notifier.goBack();
       expect(notifier.state.currentIndex, 1);
-      expect(notifier.state.currentEntry, 'b');
+      expect(notifier.state.currentEntry?.query, 'b');
 
       notifier.goBack();
       expect(notifier.state.currentIndex, 2);
-      expect(notifier.state.currentEntry, 'a');
+      expect(notifier.state.currentEntry?.query, 'a');
     });
 
     test('goBack stops at end', () {
@@ -90,7 +90,7 @@ void main() {
 
       notifier.goForward();
       expect(notifier.state.currentIndex, 1);
-      expect(notifier.state.currentEntry, 'b');
+      expect(notifier.state.currentEntry?.query, 'b');
     });
 
     test('goForward stops at index 0', () {
@@ -120,14 +120,16 @@ void main() {
       await Future<void>.delayed(Duration.zero);
       final stored = prefs.getString('dpd_history');
       expect(stored, isNotNull);
-      final list = (jsonDecode(stored!) as List).cast<String>();
+      final list = (jsonDecode(stored!) as List)
+          .map((e) => e is String ? e : e['q'] as String)
+          .toList();
       expect(list, ['kamma', 'dhamma']);
     });
 
     test('loads from SharedPreferences', () async {
       await prefs.setString('dpd_history', jsonEncode(['kamma', 'dhamma']));
       final notifier = HistoryNotifier(prefs);
-      expect(notifier.state.entries, ['kamma', 'dhamma']);
+      expect(notifier.state.entries.map((e) => e.query).toList(), ['kamma', 'dhamma']);
       expect(notifier.state.currentIndex, -1);
     });
 
