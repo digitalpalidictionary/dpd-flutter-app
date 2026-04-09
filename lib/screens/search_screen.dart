@@ -704,7 +704,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
         !partialLoading &&
         !fuzzyAsync.isLoading &&
         !dictAsync.isLoading) {
-      return _NoResultsWithSuggestions(query: query, onSuggestionTap: _onSuggestionSelected);
+      return _NoResultsWithSuggestions(query: query);
     }
 
     final visibility = ref.watch(dictVisibilityProvider);
@@ -1508,13 +1508,9 @@ class _CompactVariantSummary extends StatelessWidget {
 }
 
 class _NoResultsWithSuggestions extends ConsumerWidget {
-  const _NoResultsWithSuggestions({
-    required this.query,
-    required this.onSuggestionTap,
-  });
+  const _NoResultsWithSuggestions({required this.query});
 
   final String query;
-  final void Function(String) onSuggestionTap;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -1522,42 +1518,40 @@ class _NoResultsWithSuggestions extends ConsumerWidget {
     final matches = closestAsync.valueOrNull ?? [];
     final theme = Theme.of(context);
 
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
+    return Align(
+      alignment: Alignment.topLeft,
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
         children: [
-          Center(
-            child: Text(
-              'No results for "$query"',
-              style: theme.textTheme.bodyLarge?.copyWith(
-                color: theme.colorScheme.outline,
-              ),
+          Text(
+            'No results for "$query"',
+            style: theme.textTheme.titleSmall?.copyWith(
+              color: theme.colorScheme.outline,
             ),
           ),
           if (matches.isNotEmpty) ...[
             const SizedBox(height: 16),
             Text(
               'Closest matches:',
-              style: theme.textTheme.bodyMedium?.copyWith(
+              style: theme.textTheme.titleSmall?.copyWith(
                 color: theme.colorScheme.outline,
               ),
             ),
             const SizedBox(height: 8),
-            Wrap(
-              spacing: 8,
-              runSpacing: 4,
-              children: [
-                for (final match in matches)
-                  ActionChip(
-                    label: Text(match),
-                    onPressed: () => onSuggestionTap(match),
-                  ),
-              ],
-            ),
+            for (final match in matches)
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 2),
+                child: Text(
+                  match,
+                  style: theme.textTheme.bodyLarge,
+                ),
+              ),
           ],
         ],
+        ),
       ),
     );
   }

@@ -10,3 +10,5 @@
 - 2026-04-07 [BEHAVIOR] Gave flutter run instructions to a user who uses justfile — always check for a justfile first and use its recipes instead of raw CLI commands
 - 2026-04-08 [WORKFLOW] Race condition between two independent download flows (DB + APK) — gating with ref.listenManual + fireImmediately: true handles both "already ready" and "wait for ready" cases cleanly in one listener
 - 2026-04-08 [BEHAVIOR] For behavior-parity fixes, changing adjacent logic exposed unrelated UX regressions; keep the implementation strictly scoped to the requested behavior unless the user explicitly asks for broader cleanup
+- 2026-04-09 [BEHAVIOR] Skipped writing kamma thread files to disk before implementing — the /kamma flow requires creating spec.md and plan.md files in kamma/threads/ before starting implementation, even for small changes
+- 2026-04-09 [CONFUSION] Set CrossAxisAlignment.start but widget still appeared centered — a min-sized Column inside an Expanded gets vertically centered by default; need Align(topLeft) wrapper to pin it
