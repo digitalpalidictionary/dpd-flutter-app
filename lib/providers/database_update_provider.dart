@@ -10,12 +10,10 @@ import 'settings_provider.dart';
 
 const _installedTagKey = 'dpd_installed_release_tag';
 
-abstract class ForegroundDownloadController {
-  const ForegroundDownloadController();
-
-  Future<void> startDbDownload();
-  Future<void> updateProgress(double progress);
-  Future<void> stop();
+String _errorMessage(Object e) {
+  final s = e.toString();
+  if (s.startsWith('Exception: ')) return s.substring('Exception: '.length);
+  return s;
 }
 
 class AppForegroundDownloadController implements ForegroundDownloadController {
@@ -38,13 +36,10 @@ class AppForegroundDownloadController implements ForegroundDownloadController {
 }
 
 final databaseUpdateServiceProvider = Provider<DatabaseUpdateService>((ref) {
-  return DatabaseUpdateService();
+  return DatabaseUpdateService(
+    foregroundController: const AppForegroundDownloadController(),
+  );
 });
-
-final foregroundDownloadControllerProvider =
-    Provider<ForegroundDownloadController>((ref) {
-      return const AppForegroundDownloadController();
-    });
 
 class DbUpdateState {
   final DbStatus status;
@@ -54,6 +49,7 @@ class DbUpdateState {
   final String? localVersion;
   final bool hasLocalDatabase;
   final bool shouldPromptForDownload;
+  final String? statusLabel;
 
   const DbUpdateState({
     this.status = DbStatus.checking,
@@ -63,6 +59,7 @@ class DbUpdateState {
     this.localVersion,
     this.hasLocalDatabase = false,
     this.shouldPromptForDownload = false,
+    this.statusLabel,
   });
 
   DbUpdateState copyWith({
@@ -73,16 +70,20 @@ class DbUpdateState {
     String? localVersion,
     bool? hasLocalDatabase,
     bool? shouldPromptForDownload,
+    String? statusLabel,
+    bool clearStatusLabel = false,
+    bool clearErrorMessage = false,
   }) {
     return DbUpdateState(
       status: status ?? this.status,
       progress: progress ?? this.progress,
-      errorMessage: errorMessage ?? this.errorMessage,
+      errorMessage: clearErrorMessage ? null : (errorMessage ?? this.errorMessage),
       releaseInfo: releaseInfo ?? this.releaseInfo,
       localVersion: localVersion ?? this.localVersion,
       hasLocalDatabase: hasLocalDatabase ?? this.hasLocalDatabase,
       shouldPromptForDownload:
           shouldPromptForDownload ?? this.shouldPromptForDownload,
+      statusLabel: clearStatusLabel ? null : (statusLabel ?? this.statusLabel),
     );
   }
 }
@@ -90,13 +91,9 @@ class DbUpdateState {
 class DbUpdateNotifier extends StateNotifier<DbUpdateState> {
   final Ref _ref;
   final DatabaseUpdateService _service;
-  final ForegroundDownloadController _foregroundDownloadController;
 
   DbUpdateNotifier(this._ref)
     : _service = _ref.read(databaseUpdateServiceProvider),
-      _foregroundDownloadController = _ref.read(
-        foregroundDownloadControllerProvider,
-      ),
       super(const DbUpdateState());
 
   String? get _installedTag =>
@@ -239,15 +236,26 @@ class DbUpdateNotifier extends StateNotifier<DbUpdateState> {
       status: DbStatus.downloading,
       progress: 0,
       shouldPromptForDownload: false,
+      clearStatusLabel: true,
     );
 
-    await _foregroundDownloadController.startDbDownload();
     try {
       await _service.downloadAndInstall(
         release: release,
         onProgress: (progress) {
           state = state.copyWith(progress: progress);
-          _foregroundDownloadController.updateProgress(progress);
+        },
+        onStatusLabel: (label) {
+          if (label.isEmpty) {
+            state = state.copyWith(clearStatusLabel: true);
+          } else if (label == 'Extracting…') {
+            state = state.copyWith(
+              status: DbStatus.extracting,
+              clearStatusLabel: true,
+            );
+          } else {
+            state = state.copyWith(statusLabel: label);
+          }
         },
         closeDb: () async {
           _ref.invalidate(databaseProvider);
@@ -257,8 +265,6 @@ class DbUpdateNotifier extends StateNotifier<DbUpdateState> {
           _ref.read(databaseProvider);
         },
       );
-
-      state = state.copyWith(status: DbStatus.extracting);
 
       await _saveInstalledTag(release.tagName);
 
@@ -271,13 +277,18 @@ class DbUpdateNotifier extends StateNotifier<DbUpdateState> {
         localVersion: newVersion,
         releaseInfo: release,
       );
+    } on DownloadCancelledException {
+      state = DbUpdateState(
+        status: DbStatus.noDatabase,
+        releaseInfo: release,
+        shouldPromptForDownload: true,
+      );
     } catch (e) {
       state = state.copyWith(
         status: DbStatus.error,
-        errorMessage: e.toString(),
+        errorMessage: _errorMessage(e),
+        clearStatusLabel: true,
       );
-    } finally {
-      await _foregroundDownloadController.stop();
     }
   }
 
@@ -314,18 +325,28 @@ class DbUpdateNotifier extends StateNotifier<DbUpdateState> {
       status: DbStatus.downloading,
       releaseInfo: release,
       progress: 0,
+      clearStatusLabel: true,
     );
 
-    await _foregroundDownloadController.startDbDownload();
     try {
       await _service.downloadAndInstall(
         release: release,
         onProgress: (progress) {
           state = state.copyWith(progress: progress);
-          _foregroundDownloadController.updateProgress(progress);
+        },
+        onStatusLabel: (label) {
+          if (label.isEmpty) {
+            state = state.copyWith(clearStatusLabel: true);
+          } else if (label == 'Extracting…') {
+            state = state.copyWith(
+              status: DbStatus.extracting,
+              clearStatusLabel: true,
+            );
+          } else {
+            state = state.copyWith(statusLabel: label);
+          }
         },
         closeDb: () async {
-          state = state.copyWith(status: DbStatus.extracting);
           _ref.invalidate(databaseProvider);
           await Future<void>.delayed(const Duration(milliseconds: 200));
         },
@@ -348,14 +369,24 @@ class DbUpdateNotifier extends StateNotifier<DbUpdateState> {
         localVersion: newVersion,
         releaseInfo: release,
       );
+    } on DownloadCancelledException {
+      // Background download cancelled — stay ready with existing DB.
+      state = state.copyWith(
+        status: DbStatus.ready,
+        clearStatusLabel: true,
+        clearErrorMessage: true,
+      );
     } catch (e) {
       state = state.copyWith(
         status: DbStatus.ready,
-        errorMessage: e.toString(),
+        errorMessage: _errorMessage(e),
+        clearStatusLabel: true,
       );
-    } finally {
-      await _foregroundDownloadController.stop();
     }
+  }
+
+  void cancelDownload() {
+    _service.cancelDownload();
   }
 
   void dismissInitialDownloadPrompt() {

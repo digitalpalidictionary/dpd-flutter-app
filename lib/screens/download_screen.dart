@@ -90,11 +90,18 @@ class DownloadScreen extends ConsumerWidget {
         );
 
       case DbStatus.downloading:
-        return _downloadingView(context, updateState, updateState.progress);
+        return _downloadingView(
+          context,
+          ref,
+          updateState,
+          updateState.progress,
+          showCancel: !updateState.hasLocalDatabase,
+        );
 
       case DbStatus.extracting:
         return _downloadingView(
           context,
+          ref,
           updateState,
           1.0,
           label: 'Extracting…',
@@ -129,18 +136,20 @@ class DownloadScreen extends ConsumerWidget {
 
   Widget _downloadingView(
     BuildContext context,
+    WidgetRef ref,
     DbUpdateState updateState,
     double percent, {
     String? label,
+    bool showCancel = false,
   }) {
     final theme = Theme.of(context);
     final release = updateState.releaseInfo;
-    final service = DatabaseUpdateService();
 
     final statusLabel =
+        updateState.statusLabel ??
         label ??
         'Downloading database… ${(percent * 100).toStringAsFixed(0)}%'
-            '${release != null ? "  (${service.formatBytes(release.size)})" : ""}';
+            '${release != null ? "  (${DatabaseUpdateService.formatBytes(release.size)})" : ""}';
 
     return Column(
       children: [
@@ -154,6 +163,13 @@ class DownloadScreen extends ConsumerWidget {
         ),
         const SizedBox(height: 12),
         Text(statusLabel, style: theme.textTheme.bodyMedium),
+        if (showCancel) ...[
+          const SizedBox(height: 16),
+          TextButton(
+            onPressed: () => ref.read(dbUpdateProvider.notifier).cancelDownload(),
+            child: const Text('Cancel'),
+          ),
+        ],
       ],
     );
   }

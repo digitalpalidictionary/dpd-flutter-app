@@ -1,6 +1,7 @@
+import 'dart:async';
 import 'dart:io';
 
-import 'package:archive/archive.dart';
+import 'package:archive/archive_io.dart';
 import 'package:dio/dio.dart';
 
 import '../database/database.dart';
@@ -8,6 +9,10 @@ import '../database/database.dart';
 /// Default for DBs that predate the schema-version mechanism.
 /// Matches the app's schemaVersion at the time this check was introduced.
 const _fallbackDbSchemaVersion = 2;
+
+const _stallTimeout = Duration(seconds: 60);
+const _stallPollInterval = Duration(seconds: 5);
+const _receiveTimeout = Duration(minutes: 5);
 
 enum DbStatus { noDatabase, ready, checking, downloading, extracting, error }
 
@@ -25,18 +30,48 @@ class ReleaseInfo {
 
 class _RangeNotSupportedException implements Exception {}
 
+class DownloadCancelledException implements Exception {
+  final String? reason;
+  const DownloadCancelledException([this.reason]);
+}
+
+abstract class ForegroundDownloadController {
+  Future<void> startDbDownload();
+  Future<void> updateProgress(double progress);
+  Future<void> stop();
+}
+
+class _NoOpForegroundController implements ForegroundDownloadController {
+  @override
+  Future<void> startDbDownload() async {}
+  @override
+  Future<void> updateProgress(double progress) async {}
+  @override
+  Future<void> stop() async {}
+}
+
 class DatabaseUpdateService {
   final Dio _dio;
+  final ForegroundDownloadController _foregroundController;
+  CancelToken? _activeCancelToken;
 
-  DatabaseUpdateService({Dio? dio})
-    : _dio =
-          dio ??
-          Dio(
-            BaseOptions(
-              connectTimeout: const Duration(seconds: 30),
-              receiveTimeout: const Duration(seconds: 30),
-            ),
-          );
+  DatabaseUpdateService({
+    Dio? dio,
+    ForegroundDownloadController? foregroundController,
+  }) : _dio =
+           dio ??
+           Dio(
+             BaseOptions(
+               connectTimeout: const Duration(seconds: 30),
+               receiveTimeout: const Duration(seconds: 30),
+             ),
+           ),
+       _foregroundController =
+           foregroundController ?? _NoOpForegroundController();
+
+  void cancelDownload() {
+    _activeCancelToken?.cancel('user');
+  }
 
   Future<bool> databaseExists() async {
     final dbFile = await resolveDbPath();
@@ -87,27 +122,75 @@ class DatabaseUpdateService {
     required void Function(double progress) onProgress,
     required Future<void> Function() closeDb,
     required Future<void> Function() reopenDb,
+    void Function(String label)? onStatusLabel,
   }) async {
     final dbFile = await resolveDbPath();
     final tempZip = File('${dbFile.path}.zip');
     final tempDb = File('${dbFile.path}.new');
 
+    final cancelToken = CancelToken();
+    _activeCancelToken = cancelToken;
+
+    var lastProgressTime = DateTime.now();
+    Timer? stallTimer;
+    stallTimer = Timer.periodic(_stallPollInterval, (_) {
+      if (DateTime.now().difference(lastProgressTime) > _stallTimeout) {
+        cancelToken.cancel('stall');
+        stallTimer?.cancel();
+      }
+    });
+
+    await _foregroundController.startDbDownload();
+    var clearLabelOnNextProgress = false;
     try {
-      await _downloadWithResume(tempZip, release, onProgress);
+      await _downloadWithResume(
+        tempZip,
+        release,
+        (progress) {
+          lastProgressTime = DateTime.now();
+          if (clearLabelOnNextProgress) {
+            onStatusLabel?.call('');
+            clearLabelOnNextProgress = false;
+          }
+          onProgress(progress);
+          unawaited(_foregroundController.updateProgress(progress));
+        },
+        cancelToken,
+        () {
+          onStatusLabel?.call('Restarting download…');
+          clearLabelOnNextProgress = true;
+        },
+      );
       await _extractAndInstall(
-        tempZip, tempDb, dbFile,
-        release: release,
-        onProgress: onProgress,
+        tempZip,
+        tempDb,
+        dbFile,
         closeDb: closeDb,
         reopenDb: reopenDb,
+        onStatusLabel: onStatusLabel,
       );
+    } on DioException catch (e) {
+      if (e.type == DioExceptionType.cancel) {
+        final reason = cancelToken.cancelError?.message;
+        if (reason == 'stall') {
+          throw Exception(
+            'Download stalled — no data received for 60 seconds.\n'
+            'Check your connection and try again.',
+          );
+        }
+        throw const DownloadCancelledException();
+      }
+      throw Exception(_friendlyDioError(e));
     } on FileSystemException catch (e) {
       if (e.message.contains('No space')) {
         throw Exception('Not enough storage space to download the database.');
       }
       rethrow;
     } finally {
+      stallTimer.cancel();
+      _activeCancelToken = null;
       if (tempDb.existsSync()) await tempDb.delete();
+      await _foregroundController.stop();
     }
   }
 
@@ -115,18 +198,17 @@ class DatabaseUpdateService {
     File tempZip,
     File tempDb,
     File dbFile, {
-    required ReleaseInfo release,
-    required void Function(double progress) onProgress,
     required Future<void> Function() closeDb,
     required Future<void> Function() reopenDb,
+    void Function(String label)? onStatusLabel,
   }) async {
+    onStatusLabel?.call('Extracting…');
     try {
       await _extractDbFromZip(tempZip, tempDb);
     } catch (_) {
       if (tempZip.existsSync()) await tempZip.delete();
       if (tempDb.existsSync()) await tempDb.delete();
-      await _freshDownload(tempZip, release, onProgress);
-      await _extractDbFromZip(tempZip, tempDb);
+      throw Exception('Downloaded file was corrupt. Please try again.');
     }
 
     await closeDb();
@@ -137,19 +219,30 @@ class DatabaseUpdateService {
   }
 
   Future<void> _extractDbFromZip(File tempZip, File tempDb) async {
-    final zipBytes = await tempZip.readAsBytes();
-    final archive = ZipDecoder().decodeBytes(zipBytes);
-    final dbEntry = archive.files.firstWhere(
-      (f) => f.name.endsWith('.db') && f.isFile,
-      orElse: () => throw Exception('No .db file found in zip'),
-    );
-    await tempDb.writeAsBytes(dbEntry.content as List<int>);
+    final inputStream = InputFileStream(tempZip.path);
+    try {
+      final archive = ZipDecoder().decodeStream(inputStream);
+      final dbEntry = archive.files.firstWhere(
+        (f) => f.name.endsWith('.db') && f.isFile,
+        orElse: () => throw Exception('No .db file found in zip'),
+      );
+      final outputStream = OutputFileStream(tempDb.path);
+      try {
+        dbEntry.writeContent(outputStream);
+      } finally {
+        await outputStream.close();
+      }
+    } finally {
+      await inputStream.close();
+    }
   }
 
   Future<void> _downloadWithResume(
     File tempZip,
     ReleaseInfo release,
     void Function(double progress) onProgress,
+    CancelToken cancelToken,
+    void Function()? onRestart,
   ) async {
     final totalSize = release.size;
     var alreadyDownloaded = tempZip.existsSync() ? tempZip.lengthSync() : 0;
@@ -162,22 +255,31 @@ class DatabaseUpdateService {
 
     if (alreadyDownloaded > 0) {
       try {
-        await _downloadRange(tempZip, release.downloadUrl, alreadyDownloaded, totalSize, onProgress);
+        await _downloadRange(
+          tempZip,
+          release.downloadUrl,
+          alreadyDownloaded,
+          totalSize,
+          onProgress,
+          cancelToken,
+        );
         if (_isFileSizeValid(tempZip, totalSize)) return;
         // Resumed file is wrong size — discard and fall through to fresh download.
         await tempZip.delete();
       } on _RangeNotSupportedException {
         await tempZip.delete();
       }
+      onRestart?.call();
     }
 
-    await _freshDownload(tempZip, release, onProgress);
+    await _freshDownload(tempZip, release, onProgress, cancelToken);
   }
 
   Future<void> _freshDownload(
     File tempZip,
     ReleaseInfo release,
     void Function(double progress) onProgress,
+    CancelToken cancelToken,
   ) async {
     final totalSize = release.size;
     if (tempZip.existsSync()) await tempZip.delete();
@@ -185,11 +287,12 @@ class DatabaseUpdateService {
     await _dio.download(
       release.downloadUrl,
       tempZip.path,
+      cancelToken: cancelToken,
       onReceiveProgress: (received, total) {
         final knownTotal = total > 0 ? total : totalSize;
         if (knownTotal > 0) onProgress(received / knownTotal);
       },
-      options: Options(receiveTimeout: const Duration(minutes: 30)),
+      options: Options(receiveTimeout: _receiveTimeout),
     );
 
     if (!_isFileSizeValid(tempZip, totalSize)) {
@@ -210,13 +313,15 @@ class DatabaseUpdateService {
     int startByte,
     int totalSize,
     void Function(double progress) onProgress,
+    CancelToken cancelToken,
   ) async {
     final response = await _dio.get<ResponseBody>(
       url,
+      cancelToken: cancelToken,
       options: Options(
         responseType: ResponseType.stream,
         headers: {'Range': 'bytes=$startByte-'},
-        receiveTimeout: const Duration(minutes: 30),
+        receiveTimeout: const Duration(minutes: 5),
       ),
     );
 
@@ -269,8 +374,30 @@ class DatabaseUpdateService {
     }
   }
 
-  String formatBytes(int bytes) {
+  static String formatBytes(int bytes) {
     final mb = bytes / (1024 * 1024);
     return '${mb.toStringAsFixed(0)} MB';
+  }
+}
+
+String _friendlyDioError(DioException e) {
+  switch (e.type) {
+    case DioExceptionType.connectionTimeout:
+    case DioExceptionType.sendTimeout:
+      return 'Connection timed out.\nCheck your connection and try again.';
+    case DioExceptionType.receiveTimeout:
+      return 'Download timed out.\nCheck your connection and try again.';
+    case DioExceptionType.connectionError:
+      return 'Could not connect to the server.\nCheck your connection and try again.';
+    case DioExceptionType.badResponse:
+      final code = e.response?.statusCode;
+      if (code != null && code >= 500) {
+        return 'The server returned an error ($code).\nPlease try again later.';
+      }
+      return 'Download failed (error $code).\nPlease try again later.';
+    case DioExceptionType.unknown:
+    case DioExceptionType.badCertificate:
+    case DioExceptionType.cancel:
+      return 'Download failed.\nCheck your connection and try again.';
   }
 }

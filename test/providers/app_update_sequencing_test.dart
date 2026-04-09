@@ -42,9 +42,6 @@ void main() {
         overrides: [
           sharedPreferencesProvider.overrideWithValue(prefs),
           databaseUpdateServiceProvider.overrideWithValue(service),
-          foregroundDownloadControllerProvider.overrideWithValue(
-            const _FakeForegroundDownloadController(),
-          ),
           daoProvider.overrideWithValue(dao),
         ],
       );
@@ -79,9 +76,6 @@ void main() {
         overrides: [
           sharedPreferencesProvider.overrideWithValue(prefs),
           databaseUpdateServiceProvider.overrideWithValue(service),
-          foregroundDownloadControllerProvider.overrideWithValue(
-            const _FakeForegroundDownloadController(),
-          ),
           daoProvider.overrideWithValue(dao),
         ],
       );
@@ -171,24 +165,12 @@ class _FakeDatabaseUpdateService extends DatabaseUpdateService {
     required void Function(double progress) onProgress,
     required Future<void> Function() closeDb,
     required Future<void> Function() reopenDb,
+    void Function(String label)? onStatusLabel,
   }) async {
     if (downloadCompleter != null) {
       await downloadCompleter!.future;
     }
   }
-}
-
-class _FakeForegroundDownloadController implements ForegroundDownloadController {
-  const _FakeForegroundDownloadController();
-
-  @override
-  Future<void> startDbDownload() async {}
-
-  @override
-  Future<void> stop() async {}
-
-  @override
-  Future<void> updateProgress(double progress) async {}
 }
 
 class _FakeDao extends DpdDao {
