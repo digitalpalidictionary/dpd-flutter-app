@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io' show Platform;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -299,7 +300,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   }
 
   bool _hasActiveBackInterceptState() {
-    return _androidBackAction() != AndroidBackAction.exitApp;
+    return Platform.isAndroid || _androidBackAction() != AndroidBackAction.exitApp;
   }
 
   void _dismissBackOverlays() {
@@ -309,7 +310,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     _hideVelthuisHelp();
   }
 
-  void _handleAndroidBackPress() {
+  void _handleAndroidBackPress(BuildContext context) {
     switch (_androidBackAction()) {
       case AndroidBackAction.dismissOverlay:
         _dismissBackOverlays();
@@ -320,7 +321,26 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
           ref.read(searchQueryProvider.notifier).state = entry.query;
         }
       case AndroidBackAction.exitApp:
-        break;
+        showDialog<void>(
+          context: context,
+          builder: (ctx) => AlertDialog(
+            title: const Text('Exit'),
+            content: const Text('Would you really like to exit?'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(ctx),
+                child: const Text('Cancel'),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(ctx);
+                  SystemNavigator.pop();
+                },
+                child: const Text('Exit'),
+              ),
+            ],
+          ),
+        );
     }
   }
 
@@ -351,7 +371,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     return PopScope(
       canPop: !_hasActiveBackInterceptState(),
       onPopInvokedWithResult: (didPop, _) {
-        if (!didPop) _handleAndroidBackPress();
+        if (!didPop) _handleAndroidBackPress(context);
       },
       child: Scaffold(
         bottomNavigationBar: const Column(
@@ -1575,7 +1595,7 @@ class _DownloadFooter extends ConsumerWidget {
     final percent = updateState.progress.clamp(0.0, 1.0);
     final release = updateState.releaseInfo;
     final sizeLabel = release != null
-        ? ' (${DatabaseUpdateService().formatBytes(release.size)})'
+        ? ' (${DatabaseUpdateService.formatBytes(release.size)})'
         : '';
     final label = status == DbStatus.extracting
         ? 'Applying update…'
