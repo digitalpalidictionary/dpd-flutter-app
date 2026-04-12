@@ -63,3 +63,4 @@ __pycache__/
 android/build/reports/*
 /.codex
 /QWEN.md
+/kamma/kammika.queue.json

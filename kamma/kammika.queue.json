@@ -1,8 +1,0 @@
-{
-  "number": 11,
-  "title": "Sinhala transliteration",
-  "body": "**Problem:** `indic_transliteration_dart` has a very convenient automatic \u201cscript to Roman\u201d workflow, but it does not support Sinhala, so Sinhala input cannot be transliterated within the same pipeline. \n\n**Proposed solution:** add Sinhala support by detecting the Sinhala Unicode block (U+0D80\u2013U+0DFF) and routing Sinhala text through the `inditrans` package for Sinhala\u2192Roman transliteration, using the same Roman output scheme already used elsewhere, so Sinhala becomes a seamless fallback while preserving the current \u201cunknown script \u2192 Roman\u201d behavior.\n\n",
-  "rationale": "Selected by user",
-  "source": "user",
-  "picked_at": "2026-04-12T02:57:33.086733+00:00"
-}
