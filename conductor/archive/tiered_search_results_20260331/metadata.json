@@ -1,8 +1,0 @@
-{
-  "track_id": "tiered_search_results_20260331",
-  "type": "feature",
-  "status": "new",
-  "created_at": "2026-03-31T12:00:00Z",
-  "updated_at": "2026-03-31T12:00:00Z",
-  "description": "Unify DPD headwords and external dictionaries under explicit exact, partial, and fuzzy result tiers in the main search screen"
-}

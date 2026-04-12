@@ -1,8 +1,0 @@
-{
-  "track_id": "settings_parity_20260305",
-  "type": "feature",
-  "status": "new",
-  "created_at": "2026-03-05T00:00:00Z",
-  "updated_at": "2026-03-05T00:00:00Z",
-  "description": "Settings parity between webapp and Flutter app: one-button-at-a-time, niggahīta toggle, summary visibility, sandhi apostrophe visibility, audio gender toggle, and wire up font size."
-}

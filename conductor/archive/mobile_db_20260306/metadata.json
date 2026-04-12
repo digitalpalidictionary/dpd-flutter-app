@@ -1,8 +1,0 @@
-{
-  "track_id": "mobile_db_20260306",
-  "type": "feature",
-  "status": "new",
-  "created_at": "2026-03-06T00:00:00Z",
-  "updated_at": "2026-03-06T00:00:00Z",
-  "description": "Adopt mobile-optimised dpd-mobile.db: update Flutter Drift schema with new columns and update DB filename reference"
-}

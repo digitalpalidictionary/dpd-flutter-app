@@ -1,8 +1,0 @@
-{
-  "track_id": "dpd_result_sources_settings_20260330",
-  "type": "feature",
-  "status": "completed",
-  "created_at": "2026-03-30T23:43:52Z",
-  "updated_at": "2026-03-30T23:43:52Z",
-  "description": "right now the different dpd dictionaries like grammar and variants etc, always appear, and always appear in a fixed order. i would like a section in settings where they can be turned on and off and re-ordered, with exactly the same style and functionality as turning on and off, and reordering other dictionaries. make sure to account for all the different \"parts\" of dpd and include them in that settings section. it should occur just above the other dictioanries in settings."
-}

@@ -1,8 +1,0 @@
-{
-  "track_id": "cpd_mobile_export_20260330",
-  "type": "feature",
-  "status": "new",
-  "created_at": "2026-03-30T14:52:25Z",
-  "updated_at": "2026-03-30T14:52:25Z",
-  "description": "Add CPD to the mobile database export by reading cpd_clean.db directly and canonicalizing headwords from ṁ to ṃ"
-}
