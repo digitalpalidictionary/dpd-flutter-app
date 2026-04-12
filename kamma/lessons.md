@@ -17,3 +17,4 @@
 - 2026-04-12 [WORKFLOW] Review PASSED but a real bug (share intent clobbering search bar display) was only caught when the user tested — round-trip UX paths from external entry points need an explicit review checklist item
 - 2026-04-12 [POSITIVE] searchBarTextProvider one-shot pattern (set before searchQueryProvider, cleared in listener) is clean and reusable for any external-trigger display/query split
 - 2026-04-12 [BEHAVIOR] GitHub issue search found nothing in spec/plan — silently skipped instead of asking the user; when issue search returns nothing, ask before skipping
+- 2026-04-12 [CONFUSION] An external review incorrectly flagged Dart `switch` cases as fall-through; validate review findings against the language semantics and current code before changing anything
