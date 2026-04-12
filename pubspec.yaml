@@ -68,8 +68,7 @@ dependencies:
   flutter_widget_from_html: ^0.15.2
   html: ^0.15.5
 
-  # Transliteration between Indic scripts
-  indic_transliteration_dart: ^2.3.80
+  characters: ^1.4.0
 
 dev_dependencies:
   flutter_test:

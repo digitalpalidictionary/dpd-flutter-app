@@ -90,6 +90,9 @@ When a request says one interaction should work exactly like an existing one, ke
 ### Testing
 Do not add UI tests for this app. Add tests only for data logic and other non-UI behavior.
 
+### Dependencies
+When `pubspec.yaml` changes, run `flutter pub get` to refresh dependencies and `pubspec.lock`. Never edit `pubspec.lock` manually.
+
 ### Footer Widget
 Use `DpdFooter` for all section footers with feedback links:
 - Provides consistent styling matching webapp `.dpd-footer` CSS
@@ -97,3 +100,6 @@ Use `DpdFooter` for all section footers with feedback links:
 
 ### Search Bar Display Text
 The search bar (`_controller`) must never be overwritten by transliteration or query normalization. Only Velthuis live conversion may rewrite the field. Use `_suppressProviderSync` (or equivalent flag) to prevent provider→controller sync from clobbering the user's original script when a local search fires.
+
+### External Entry Points
+When reviewing any search or navigation change, explicitly verify all external entry points: share intents (`intentStream`), lookup intents (`lookupStream`), and CLI args (`_IntentBoot`). These bypass the normal typing flow and must be tested separately.

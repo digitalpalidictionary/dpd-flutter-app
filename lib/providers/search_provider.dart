@@ -6,6 +6,10 @@ import 'database_provider.dart';
 
 final searchQueryProvider = StateProvider<String>((ref) => '');
 
+// Holds the original-script text to display in the search bar when a lookup
+// is triggered externally (e.g. share intent). Cleared after one use.
+final searchBarTextProvider = StateProvider<String?>((ref) => null);
+
 final exactResultsProvider = FutureProvider.autoDispose
     .family<List<DpdHeadwordWithRoot>, String>((ref, query) async {
   if (query.isEmpty) return [];
