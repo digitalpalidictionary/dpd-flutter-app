@@ -3,6 +3,7 @@
 
 # Run on connected device/emulator
 run:
+    dart run tool/generate_changelog.dart
     flutter run
 
 # Analyze code
@@ -23,6 +24,7 @@ _local_db := "../dpd-db/exporter/share/dpd-mobile.db"
 
 # Build, install debug APK, push DB, then launch — all in one
 android-fresh:
+    dart run tool/generate_changelog.dart
     flutter build apk --debug
     adb install -r build/app/outputs/flutter-apk/app-debug.apk
     adb shell am force-stop {{_android_pkg}}
@@ -33,7 +35,7 @@ android-fresh:
 
 # Build and install debug APK without clearing app data
 android-update:
-    flutter build apk --debug && adb install -r build/app/outputs/flutter-apk/app-debug.apk
+    dart run tool/generate_changelog.dart && flutter build apk --debug && adb install -r build/app/outputs/flutter-apk/app-debug.apk
 
 # Push DB and restart the running app (cleans stale WAL/SHM files)
 android-push-db:
@@ -46,6 +48,7 @@ android-push-db:
 
 # Install debug APK without a DB — triggers the download flow on launch
 android-install-no-db:
+    dart run tool/generate_changelog.dart
     flutter build apk --debug
     adb install -r build/app/outputs/flutter-apk/app-debug.apk
     adb shell pm clear {{_android_pkg}}
@@ -60,10 +63,12 @@ android-delete-db:
 
 # Build debug APK
 android-build:
+    dart run tool/generate_changelog.dart
     flutter build apk --debug
 
 # Build release APK
 android-build-release:
+    dart run tool/generate_changelog.dart
     flutter build apk --release
     cp build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/dpd.apk
     @echo "\nRelease APK: build/app/outputs/flutter-apk/dpd.apk"
@@ -76,7 +81,7 @@ build-db:
 
 # Build and run Linux
 linux-run:
-    flutter build linux --debug && flutter run -d linux
+    dart run tool/generate_changelog.dart && flutter build linux --debug && flutter run -d linux
 
 # Copy dpd-mobile.db to Linux app support directory (for linux-run)
 linux-push-db:

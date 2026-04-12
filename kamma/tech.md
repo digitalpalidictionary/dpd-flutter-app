@@ -23,3 +23,6 @@ The `lookup` table in the mobile DB uses `lookup_key` as a PRIMARY KEY (created 
 - Exact match: ~50μs
 - Partial match: 200-250μs
 - Fuzzy match: 75-90μs
+
+## Change Log Asset (2026-04-12)
+The in-app change log is generated at build time from local git tags and commit subjects by `tool/generate_changelog.dart`, which writes `assets/help/changelog.json`. Standard local build/run Just recipes and `.github/workflows/release.yml` regenerate that asset before packaging so the shipped app never depends on runtime git access or GitHub API calls.

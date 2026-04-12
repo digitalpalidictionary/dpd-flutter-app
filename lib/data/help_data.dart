@@ -1,5 +1,7 @@
 import 'package:flutter/services.dart';
 
+import 'changelog_data.dart';
+
 // ── Bibliography ──────────────────────────────────────────────────────────────
 
 class BibliographyEntry {
@@ -148,7 +150,11 @@ List<ThanksCategory> parseThanksTsv(String tsv) {
     if (category.isNotEmpty) {
       currentEntries = [];
       categories.add(
-        ThanksCategory(name: category, description: what, entries: currentEntries),
+        ThanksCategory(
+          name: category,
+          description: what,
+          entries: currentEntries,
+        ),
       );
     } else if (who.isNotEmpty && currentEntries != null) {
       currentEntries.add(ThanksEntry(who: who, where: where, what: what));
@@ -168,4 +174,9 @@ Future<List<BibliographyCategory>> loadBibliography() async {
 Future<List<ThanksCategory>> loadThanks() async {
   final content = await rootBundle.loadString('assets/help/thanks.tsv');
   return parseThanksTsv(content);
+}
+
+Future<ChangelogData> loadChangelog() async {
+  final content = await rootBundle.loadString('assets/help/changelog.json');
+  return ChangelogData.fromJsonString(content);
 }

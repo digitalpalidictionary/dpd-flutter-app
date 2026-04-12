@@ -2,13 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../data/help_data.dart';
+import '../data/changelog_data.dart';
 import '../models/help_results.dart';
 import '../providers/settings_provider.dart';
 import '../theme/dpd_colors.dart';
 import '../widgets/secondary/bibliography_card.dart';
 import '../widgets/secondary/thanks_card.dart';
 
-enum InfoContent { bibliography, thanks }
+enum InfoContent { changelog, bibliography, thanks }
 
 // ── Info popup ────────────────────────────────────────────────────────────────
 
@@ -83,6 +84,12 @@ class InfoPopup extends ConsumerWidget {
                   ),
                 ],
               ),
+            ),
+            divider,
+            InfoMenuItem(
+              label: 'Change Log',
+              icon: Icons.history,
+              onTap: () => onSelect(InfoContent.changelog),
             ),
             divider,
             InfoMenuItem(
@@ -185,6 +192,9 @@ class _InfoContentViewState extends State<InfoContentView> {
 
   Future<Widget> _load() async {
     switch (widget.content) {
+      case InfoContent.changelog:
+        final changelog = await loadChangelog();
+        return ChangelogCard(changelog: changelog);
       case InfoContent.bibliography:
         final cats = await loadBibliography();
         return BibliographyCard(result: BibliographyResult(categories: cats));
@@ -218,6 +228,65 @@ class _InfoContentViewState extends State<InfoContentView> {
           child: snapshot.data!,
         );
       },
+    );
+  }
+}
+
+class ChangelogCard extends StatelessWidget {
+  const ChangelogCard({super.key, required this.changelog});
+
+  final ChangelogData changelog;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
+    if (changelog.sections.isEmpty) {
+      return Padding(
+        padding: const EdgeInsets.all(16),
+        child: Text(
+          'No change log is available yet.',
+          style: theme.textTheme.bodyMedium,
+        ),
+      );
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        for (final section in changelog.sections)
+          Container(
+            width: double.infinity,
+            margin: const EdgeInsets.only(bottom: 12),
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: colorScheme.surface,
+              border: Border.all(color: DpdColors.primary, width: 1.5),
+              borderRadius: DpdColors.borderRadius,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(section.title, style: theme.textTheme.titleMedium),
+                const SizedBox(height: 12),
+                for (final item in section.items)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 8),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('• ', style: theme.textTheme.bodyMedium),
+                        Expanded(
+                          child: Text(item, style: theme.textTheme.bodyMedium),
+                        ),
+                      ],
+                    ),
+                  ),
+              ],
+            ),
+          ),
+      ],
     );
   }
 }
