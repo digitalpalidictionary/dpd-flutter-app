@@ -28,6 +28,7 @@ const kDpdSources = [
   DpdSourceMeta('dpd_variants', 'DPD Variants'),
   DpdSourceMeta('dpd_spelling', 'DPD Spelling'),
   DpdSourceMeta('dpd_see', 'DPD See'),
+  DpdSourceMeta('dpd_abbreviations_other', 'DPD Other Abbreviations'),
 ];
 
 final kDpdSourceNames = {for (final s in kDpdSources) s.id: s.label};
@@ -116,9 +117,15 @@ class DictVisibilityNotifier extends StateNotifier<DictVisibility> {
       final newDpdIds = dpdIds.where((id) => !existing.contains(id)).toList();
       final newDictIds = dictIds.where((id) => !existing.contains(id)).toList();
       if (newDpdIds.isNotEmpty || newDictIds.isNotEmpty) {
-        // Prepend new DPD sources before the existing order; append new dict sources at end
+        final currentDpd = state.order.where(dpdIds.contains).toList();
+        final currentDict = state.order
+            .where((id) => !dpdIds.contains(id))
+            .toList();
+
+        // Keep the user's existing order intact and slot any newly-added DPD
+        // sources after the existing DPD block instead of ahead of the summary.
         state = state.copyWith(
-          order: [...newDpdIds, ...state.order, ...newDictIds],
+          order: [...currentDpd, ...newDpdIds, ...currentDict, ...newDictIds],
           enabled: {...state.enabled, ...newDpdIds, ...newDictIds},
         );
         _save();

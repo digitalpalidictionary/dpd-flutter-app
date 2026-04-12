@@ -13,3 +13,4 @@
 - 2026-04-09 [BEHAVIOR] Skipped writing kamma thread files to disk before implementing — the /kamma flow requires creating spec.md and plan.md files in kamma/threads/ before starting implementation, even for small changes
 - 2026-04-09 [CONFUSION] Set CrossAxisAlignment.start but widget still appeared centered — a min-sized Column inside an Expanded gets vertically centered by default; need Align(topLeft) wrapper to pin it
 - 2026-04-09 [POSITIVE] coderabbit review --agent works well as a post-implementation review step
+- 2026-04-12 [BEHAVIOR] Used raw `python` in `../dpd-db` and the user had to correct it — this repo uses `uv run` for local project scripts

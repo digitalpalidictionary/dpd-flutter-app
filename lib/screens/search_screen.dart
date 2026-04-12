@@ -270,7 +270,10 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                 },
                 onExternalLink: (url) {
                   _removeInfoOverlay();
-                  launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
+                  launchUrl(
+                    Uri.parse(url),
+                    mode: LaunchMode.externalApplication,
+                  );
                 },
               ),
             ),
@@ -300,7 +303,8 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   }
 
   bool _hasActiveBackInterceptState() {
-    return Platform.isAndroid || _androidBackAction() != AndroidBackAction.exitApp;
+    return Platform.isAndroid ||
+        _androidBackAction() != AndroidBackAction.exitApp;
   }
 
   void _dismissBackOverlays() {
@@ -375,286 +379,351 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
       },
       child: Scaffold(
         bottomNavigationBar: const Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [_DownloadFooter(), FeedbackFooter()],
-      ),
-      body: SafeArea(
-        child: Stack(
-          children: [
-            Column(
-          children: [
-            // Header: logo + title + settings
-            Padding(
-              padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
-              child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [_DownloadFooter(), FeedbackFooter()],
+        ),
+        body: SafeArea(
+          child: Stack(
+            children: [
+              Column(
                 children: [
-                  SvgPicture.asset(
-                    isDark
-                        ? 'assets/images/dpd-logo-dark.svg'
-                        : 'assets/images/dpd-logo.svg',
-                    height: 30,
-                    width: 30,
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Text(
-                      'Digital Pāḷi Dictionary',
-                      style: theme.textTheme.titleLarge?.copyWith(
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ),
-                  CompositedTransformTarget(
-                    link: _infoLayerLink,
-                    child: Tooltip(
-                      message: 'Information',
-                      decoration: BoxDecoration(
-                        color: DpdColors.primaryAlt,
-                        borderRadius: DpdColors.borderRadius,
-                      ),
-                      textStyle: TextStyle(color: DpdColors.light, fontSize: 12),
-                      child: IconButton(
-                        icon: Icon(
-                          _activeInfo != null ? Icons.info : Icons.info_outline,
+                  // Header: logo + title + settings
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
+                    child: Row(
+                      children: [
+                        SvgPicture.asset(
+                          isDark
+                              ? 'assets/images/dpd-logo-dark.svg'
+                              : 'assets/images/dpd-logo.svg',
+                          height: 30,
+                          width: 30,
                         ),
-                        onPressed: _onInfoButtonPressed,
-                      ),
-                    ),
-                  ),
-                  Tooltip(
-                    key: _historyButtonKey,
-                    message: 'Search history',
-                    decoration: BoxDecoration(
-                      color: DpdColors.primaryAlt,
-                      borderRadius: DpdColors.borderRadius,
-                    ),
-                    textStyle: TextStyle(color: DpdColors.light, fontSize: 12),
-                    child: IconButton(
-                      icon: Icon(
-                        _showHistoryPanel ? Icons.history_toggle_off : Icons.history,
-                      ),
-                      onPressed: Platform.isLinux
-                          ? () => setState(() {
-                              _showHistoryPanel = !_showHistoryPanel;
-                              if (_showHistoryPanel) _showSettingsPanel = false;
-                            })
-                          : () => showHistoryOverlay(context),
-                    ),
-                  ),
-                  Tooltip(
-                    message: 'Settings',
-                    decoration: BoxDecoration(
-                      color: DpdColors.primaryAlt,
-                      borderRadius: DpdColors.borderRadius,
-                    ),
-                    textStyle: TextStyle(color: DpdColors.light, fontSize: 12),
-                    child: IconButton(
-                      icon: Icon(
-                        _showSettingsPanel ? Icons.settings : Icons.settings_outlined,
-                      ),
-                      onPressed: Platform.isLinux
-                          ? () => setState(() {
-                              _showSettingsPanel = !_showSettingsPanel;
-                              if (_showSettingsPanel) _showHistoryPanel = false;
-                            })
-                          : () => showSettingsOverlay(context),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-
-            const SizedBox(height: 8),
-
-            // Search bar + buttons
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: CompositedTransformTarget(
-                      link: _layerLink,
-                      child: CompositedTransformTarget(
-                        link: _helpLayerLink,
-                        child: TextField(
-                          controller: _controller,
-                          focusNode: _focusNode,
-                          autofocus: false,
-                          onChanged: _onChanged,
-                          onSubmitted: (_) => _onSearch(),
-                          style: theme.textTheme.titleMedium,
-                          decoration: InputDecoration(
-                            hintText: 'Search Pāḷi...',
-                            hintStyle: theme.textTheme.titleMedium?.copyWith(
-                              color: theme.colorScheme.onSurface.withValues(
-                                alpha: 0.4,
-                              ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            'Digital Pāḷi Dictionary',
+                            style: theme.textTheme.titleLarge?.copyWith(
+                              fontWeight: FontWeight.w700,
                             ),
-                            enabledBorder: OutlineInputBorder(
+                          ),
+                        ),
+                        CompositedTransformTarget(
+                          link: _infoLayerLink,
+                          child: Tooltip(
+                            message: 'Information',
+                            decoration: BoxDecoration(
+                              color: DpdColors.primaryAlt,
                               borderRadius: DpdColors.borderRadius,
-                              borderSide: BorderSide(
-                                color: theme.colorScheme.primary,
-                                width: 1.5,
-                              ),
                             ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: DpdColors.borderRadius,
-                              borderSide: BorderSide(
-                                color: theme.colorScheme.primary,
-                                width: 2,
-                              ),
+                            textStyle: TextStyle(
+                              color: DpdColors.light,
+                              fontSize: 12,
                             ),
-                            contentPadding: const EdgeInsets.symmetric(
-                              horizontal: 12,
-                              vertical: 10,
-                            ),
-                            suffixIcon: IconButton(
+                            child: IconButton(
                               icon: Icon(
-                                Icons.help_outline,
-                                color: theme.colorScheme.onSurface.withValues(
-                                  alpha: 0.6,
+                                _activeInfo != null
+                                    ? Icons.info
+                                    : Icons.info_outline,
+                              ),
+                              onPressed: _onInfoButtonPressed,
+                            ),
+                          ),
+                        ),
+                        Tooltip(
+                          key: _historyButtonKey,
+                          message: 'Search history',
+                          decoration: BoxDecoration(
+                            color: DpdColors.primaryAlt,
+                            borderRadius: DpdColors.borderRadius,
+                          ),
+                          textStyle: TextStyle(
+                            color: DpdColors.light,
+                            fontSize: 12,
+                          ),
+                          child: IconButton(
+                            icon: Icon(
+                              _showHistoryPanel
+                                  ? Icons.history_toggle_off
+                                  : Icons.history,
+                            ),
+                            onPressed: Platform.isLinux
+                                ? () => setState(() {
+                                    _showHistoryPanel = !_showHistoryPanel;
+                                    if (_showHistoryPanel)
+                                      _showSettingsPanel = false;
+                                  })
+                                : () => showHistoryOverlay(context),
+                          ),
+                        ),
+                        Tooltip(
+                          message: 'Settings',
+                          decoration: BoxDecoration(
+                            color: DpdColors.primaryAlt,
+                            borderRadius: DpdColors.borderRadius,
+                          ),
+                          textStyle: TextStyle(
+                            color: DpdColors.light,
+                            fontSize: 12,
+                          ),
+                          child: IconButton(
+                            icon: Icon(
+                              _showSettingsPanel
+                                  ? Icons.settings
+                                  : Icons.settings_outlined,
+                            ),
+                            onPressed: Platform.isLinux
+                                ? () => setState(() {
+                                    _showSettingsPanel = !_showSettingsPanel;
+                                    if (_showSettingsPanel)
+                                      _showHistoryPanel = false;
+                                  })
+                                : () => showSettingsOverlay(context),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  const SizedBox(height: 8),
+
+                  // Search bar + buttons
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: CompositedTransformTarget(
+                            link: _layerLink,
+                            child: CompositedTransformTarget(
+                              link: _helpLayerLink,
+                              child: TextField(
+                                controller: _controller,
+                                focusNode: _focusNode,
+                                autofocus: false,
+                                onChanged: _onChanged,
+                                onSubmitted: (_) => _onSearch(),
+                                style: theme.textTheme.titleMedium,
+                                decoration: InputDecoration(
+                                  hintText: 'Search Pāḷi...',
+                                  hintStyle: theme.textTheme.titleMedium
+                                      ?.copyWith(
+                                        color: theme.colorScheme.onSurface
+                                            .withValues(alpha: 0.4),
+                                      ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: DpdColors.borderRadius,
+                                    borderSide: BorderSide(
+                                      color: theme.colorScheme.primary,
+                                      width: 1.5,
+                                    ),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: DpdColors.borderRadius,
+                                    borderSide: BorderSide(
+                                      color: theme.colorScheme.primary,
+                                      width: 2,
+                                    ),
+                                  ),
+                                  contentPadding: const EdgeInsets.symmetric(
+                                    horizontal: 12,
+                                    vertical: 10,
+                                  ),
+                                  suffixIcon: IconButton(
+                                    icon: Icon(
+                                      Icons.help_outline,
+                                      color: theme.colorScheme.onSurface
+                                          .withValues(alpha: 0.6),
+                                    ),
+                                    onPressed: _toggleHelpPopup,
+                                    tooltip: 'Velthuis typing help',
+                                  ),
                                 ),
                               ),
-                              onPressed: _toggleHelpPopup,
-                              tooltip: 'Velthuis typing help',
                             ),
                           ),
                         ),
-                      ),
+                        const SizedBox(width: 4),
+                        _BarIconButton(
+                          icon: Icons.search,
+                          onPressed: _onSearch,
+                          tooltip: 'Search',
+                        ),
+                        _BarIconButton(
+                          icon: Icons.close,
+                          onPressed: _controller.text.isEmpty ? null : _onClear,
+                          tooltip: 'Clear',
+                        ),
+                        Builder(
+                          builder: (context) {
+                            final history = ref.watch(historyProvider);
+                            final backIndex = history.currentIndex + 1;
+                            final backWord = backIndex < history.entries.length
+                                ? history.entries[backIndex].query
+                                : null;
+                            final fwdIndex = history.currentIndex - 1;
+                            final fwdWord =
+                                fwdIndex >= 0 &&
+                                    fwdIndex < history.entries.length
+                                ? history.entries[fwdIndex].query
+                                : null;
+                            return Row(
+                              children: [
+                                _BarIconButton(
+                                  icon: Icons.arrow_back,
+                                  tooltip: backWord != null
+                                      ? '← $backWord'
+                                      : 'Previous search',
+                                  onPressed: history.canGoBack
+                                      ? () {
+                                          ref
+                                              .read(historyProvider.notifier)
+                                              .goBack();
+                                          final entry = ref
+                                              .read(historyProvider)
+                                              .currentEntry;
+                                          if (entry != null) {
+                                            ref
+                                                .read(
+                                                  searchQueryProvider.notifier,
+                                                )
+                                                .state = entry
+                                                .query;
+                                          }
+                                        }
+                                      : null,
+                                ),
+                                _BarIconButton(
+                                  icon: Icons.arrow_forward,
+                                  tooltip: fwdWord != null
+                                      ? '$fwdWord →'
+                                      : 'Next search',
+                                  onPressed: history.canGoForward
+                                      ? () {
+                                          ref
+                                              .read(historyProvider.notifier)
+                                              .goForward();
+                                          final entry = ref
+                                              .read(historyProvider)
+                                              .currentEntry;
+                                          if (entry != null) {
+                                            ref
+                                                .read(
+                                                  searchQueryProvider.notifier,
+                                                )
+                                                .state = entry
+                                                .query;
+                                          }
+                                        }
+                                      : null,
+                                ),
+                              ],
+                            );
+                          },
+                        ),
+                      ],
                     ),
                   ),
-                  const SizedBox(width: 4),
-                  _BarIconButton(icon: Icons.search, onPressed: _onSearch, tooltip: 'Search'),
-                  _BarIconButton(
-                    icon: Icons.close,
-                    onPressed: _controller.text.isEmpty ? null : _onClear,
-                    tooltip: 'Clear',
+
+                  // Main content: info view or search results
+                  Expanded(
+                    child: _activeInfo != null
+                        ? _InfoContentView(
+                            content: _activeInfo!,
+                            onClose: () => setState(() => _activeInfo = null),
+                          )
+                        : TapSearchWrapper(
+                            child: _buildBody(
+                              context,
+                              query,
+                              exactAsync,
+                              partialAsync,
+                            ),
+                          ),
                   ),
-                  Builder(builder: (context) {
-                    final history = ref.watch(historyProvider);
-                    final backIndex = history.currentIndex + 1;
-                    final backWord = backIndex < history.entries.length
-                        ? history.entries[backIndex].query
-                        : null;
-                    final fwdIndex = history.currentIndex - 1;
-                    final fwdWord = fwdIndex >= 0 && fwdIndex < history.entries.length
-                        ? history.entries[fwdIndex].query
-                        : null;
-                    return Row(children: [
-                      _BarIconButton(
-                        icon: Icons.arrow_back,
-                        tooltip: backWord != null ? '← $backWord' : 'Previous search',
-                        onPressed: history.canGoBack
-                            ? () {
-                                ref.read(historyProvider.notifier).goBack();
-                                final entry = ref.read(historyProvider).currentEntry;
-                                if (entry != null) {
-                                  ref.read(searchQueryProvider.notifier).state = entry.query;
-                                }
-                              }
-                            : null,
-                      ),
-                      _BarIconButton(
-                        icon: Icons.arrow_forward,
-                        tooltip: fwdWord != null ? '$fwdWord →' : 'Next search',
-                        onPressed: history.canGoForward
-                            ? () {
-                                ref.read(historyProvider.notifier).goForward();
-                                final entry = ref.read(historyProvider).currentEntry;
-                                if (entry != null) {
-                                  ref.read(searchQueryProvider.notifier).state = entry.query;
-                                }
-                              }
-                            : null,
-                      ),
-                    ]);
-                  }),
                 ],
               ),
-            ),
-
-            // Main content: info view or search results
-            Expanded(
-              child: _activeInfo != null
-                  ? _InfoContentView(
-                      content: _activeInfo!,
-                      onClose: () => setState(() => _activeInfo = null),
-                    )
-                  : TapSearchWrapper(
-                      child: _buildBody(context, query, exactAsync, partialAsync),
-                    ),
-            ),
-
-          ],
-            ),
-            if (_showSettingsPanel)
-              Positioned(
-                top: 0,
-                right: 0,
-                bottom: 0,
-                width: 440,
-                child: Material(
-                  elevation: 8,
-                  child: Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(0, 8, 8, 0),
-                        child: Align(
-                          alignment: Alignment.topRight,
-                          child: IconButton(
-                            icon: const Icon(Icons.close),
-                            onPressed: () => setState(() => _showSettingsPanel = false),
-                          ),
-                        ),
-                      ),
-                      const Expanded(child: SettingsContent()),
-                    ],
-                  ),
-                ),
-              ),
-            if (_showHistoryPanel)
-              Positioned(
-                top: 0,
-                right: 0,
-                bottom: 0,
-                width: 440,
-                child: Material(
-                  elevation: 8,
-                  child: Column(
-                    children: [
-                      Builder(builder: (context) {
-                        final screenWidth = MediaQuery.of(context).size.width;
-                        final buttonBox = _historyButtonKey.currentContext
-                            ?.findRenderObject() as RenderBox?;
-                        final rightPadding = buttonBox != null
-                            ? screenWidth -
-                                buttonBox.localToGlobal(Offset.zero).dx -
-                                buttonBox.size.width
-                            : 8.0;
-                        return Padding(
-                          padding: EdgeInsets.fromLTRB(0, 8, rightPadding, 0),
+              if (_showSettingsPanel)
+                Positioned(
+                  top: 0,
+                  right: 0,
+                  bottom: 0,
+                  width: 440,
+                  child: Material(
+                    elevation: 8,
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(0, 8, 8, 0),
                           child: Align(
                             alignment: Alignment.topRight,
                             child: IconButton(
                               icon: const Icon(Icons.close),
                               onPressed: () =>
-                                  setState(() => _showHistoryPanel = false),
+                                  setState(() => _showSettingsPanel = false),
                             ),
                           ),
-                        );
-                      }),
-                      Expanded(
-                        child: HistoryContent(
-                          onClose: () => setState(() => _showHistoryPanel = false),
                         ),
-                      ),
-                    ],
+                        const Expanded(child: SettingsContent()),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-          ],
+              if (_showHistoryPanel)
+                Positioned(
+                  top: 0,
+                  right: 0,
+                  bottom: 0,
+                  width: 440,
+                  child: Material(
+                    elevation: 8,
+                    child: Column(
+                      children: [
+                        Builder(
+                          builder: (context) {
+                            final screenWidth = MediaQuery.of(
+                              context,
+                            ).size.width;
+                            final buttonBox =
+                                _historyButtonKey.currentContext
+                                        ?.findRenderObject()
+                                    as RenderBox?;
+                            final rightPadding = buttonBox != null
+                                ? screenWidth -
+                                      buttonBox.localToGlobal(Offset.zero).dx -
+                                      buttonBox.size.width
+                                : 8.0;
+                            return Padding(
+                              padding: EdgeInsets.fromLTRB(
+                                0,
+                                8,
+                                rightPadding,
+                                0,
+                              ),
+                              child: Align(
+                                alignment: Alignment.topRight,
+                                child: IconButton(
+                                  icon: const Icon(Icons.close),
+                                  onPressed: () =>
+                                      setState(() => _showHistoryPanel = false),
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                        Expanded(
+                          child: HistoryContent(
+                            onClose: () =>
+                                setState(() => _showHistoryPanel = false),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+            ],
+          ),
         ),
-      ),
       ),
     );
   }
@@ -706,12 +775,24 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
         .where((e) => !exactAndPartialIds.contains(e.headword.id))
         .toList();
 
-    final visibleExact = settings.showExactResults ? exact : <DpdHeadwordWithRoot>[];
-    final visiblePartial = settings.showPartialResults ? partial : <DpdHeadwordWithRoot>[];
-    final visibleFuzzy = settings.showFuzzyResults ? fuzzyRaw : <DpdHeadwordWithRoot>[];
-    final visibleDictExact = settings.showExactResults ? dictExact : <DictResult>[];
-    final visibleDictPartial = settings.showPartialResults ? dictPartial : <DictResult>[];
-    final visibleDictFuzzy = settings.showFuzzyResults ? dictFuzzy : <DictResult>[];
+    final visibleExact = settings.showExactResults
+        ? exact
+        : <DpdHeadwordWithRoot>[];
+    final visiblePartial = settings.showPartialResults
+        ? partial
+        : <DpdHeadwordWithRoot>[];
+    final visibleFuzzy = settings.showFuzzyResults
+        ? fuzzyRaw
+        : <DpdHeadwordWithRoot>[];
+    final visibleDictExact = settings.showExactResults
+        ? dictExact
+        : <DictResult>[];
+    final visibleDictPartial = settings.showPartialResults
+        ? dictPartial
+        : <DictResult>[];
+    final visibleDictFuzzy = settings.showFuzzyResults
+        ? dictFuzzy
+        : <DictResult>[];
 
     if (visibleExact.isEmpty &&
         visiblePartial.isEmpty &&
@@ -729,7 +810,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
 
     final visibility = ref.watch(dictVisibilityProvider);
     final summaryEntries = ref.watch(summaryEntriesProvider(query));
-    
+
     if (enableSearchTiming) {
       final timing = SearchTimingData(query: query);
       timing.startRenderTimer();
@@ -741,7 +822,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
         recordTiming(timing);
       });
     }
-    
+
     return _SplitResultsList(
       exact: visibleExact,
       partial: visiblePartial,
@@ -752,13 +833,13 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
       dictPartial: visibleDictPartial,
       dictFuzzy: visibleDictFuzzy,
       summaryEntries: summaryEntries,
-      showSummary: settings.showSummary && settings.displayMode != DisplayMode.compact,
+      showSummary:
+          settings.showSummary && settings.displayMode != DisplayMode.compact,
       mode: settings.displayMode,
       visibility: visibility,
       fuzzy: visibleFuzzy,
     );
   }
-
 }
 
 // ── Info popup ────────────────────────────────────────────────────────────────
@@ -779,7 +860,10 @@ class _InfoPopup extends ConsumerWidget {
     final appVersion = ref.watch(appVersionProvider).valueOrNull;
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
-    final divider = Divider(height: 1, color: DpdColors.primary.withValues(alpha: 0.3));
+    final divider = Divider(
+      height: 1,
+      color: DpdColors.primary.withValues(alpha: 0.3),
+    );
 
     return Material(
       elevation: 4,
@@ -799,7 +883,11 @@ class _InfoPopup extends ConsumerWidget {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(Icons.phone_android, size: 16, color: theme.textTheme.bodyMedium?.color),
+                  Icon(
+                    Icons.phone_android,
+                    size: 16,
+                    color: theme.textTheme.bodyMedium?.color,
+                  ),
                   const SizedBox(width: 8),
                   Text(
                     'App v${appVersion ?? "…"}',
@@ -814,7 +902,11 @@ class _InfoPopup extends ConsumerWidget {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(Icons.storage_outlined, size: 16, color: theme.textTheme.bodyMedium?.color),
+                  Icon(
+                    Icons.storage_outlined,
+                    size: 16,
+                    color: theme.textTheme.bodyMedium?.color,
+                  ),
                   const SizedBox(width: 8),
                   Text(
                     'Database ${dbVersion ?? "unknown"}',
@@ -851,7 +943,8 @@ class _InfoPopup extends ConsumerWidget {
             _InfoMenuItem(
               label: 'Mailing List',
               icon: Icons.mail_outline,
-              onTap: () => onExternalLink('https://forms.gle/gJ7ouhJriYREPm1s8'),
+              onTap: () =>
+                  onExternalLink('https://forms.gle/gJ7ouhJriYREPm1s8'),
             ),
           ],
         ),
@@ -861,7 +954,11 @@ class _InfoPopup extends ConsumerWidget {
 }
 
 class _InfoMenuItem extends StatelessWidget {
-  const _InfoMenuItem({required this.label, required this.onTap, required this.icon});
+  const _InfoMenuItem({
+    required this.label,
+    required this.onTap,
+    required this.icon,
+  });
 
   final String label;
   final VoidCallback onTap;
@@ -959,7 +1056,11 @@ class _InfoContentViewState extends State<_InfoContentView> {
 // ─────────────────────────────────────────────────────────────────────────────
 
 class _BarIconButton extends StatelessWidget {
-  const _BarIconButton({required this.icon, required this.onPressed, this.tooltip});
+  const _BarIconButton({
+    required this.icon,
+    required this.onPressed,
+    this.tooltip,
+  });
 
   final IconData icon;
   final VoidCallback? onPressed;
@@ -1003,7 +1104,6 @@ class _BarIconButton extends StatelessWidget {
     );
   }
 }
-
 
 class _SplitResultsList extends StatefulWidget {
   const _SplitResultsList({
@@ -1050,8 +1150,7 @@ class _SplitResultsListState extends State<_SplitResultsList> {
     super.dispose();
   }
 
-  GlobalKey _keyFor(String id) =>
-      _itemKeys.putIfAbsent(id, GlobalKey.new);
+  GlobalKey _keyFor(String id) => _itemKeys.putIfAbsent(id, GlobalKey.new);
 
   void _scrollToEntry(String targetId) {
     final key = _itemKeys[targetId];
@@ -1068,6 +1167,8 @@ class _SplitResultsListState extends State<_SplitResultsList> {
   Object? _secondaryForSource(String sourceId) => switch (sourceId) {
     'dpd_abbreviations' =>
       widget.secondary.whereType<AbbreviationResult>().firstOrNull,
+    'dpd_abbreviations_other' =>
+      widget.secondary.whereType<AbbreviationOtherResult>().firstOrNull,
     'dpd_deconstructor' =>
       widget.secondary.whereType<DeconstructorResult>().firstOrNull,
     'dpd_grammar' =>
@@ -1095,17 +1196,21 @@ class _SplitResultsListState extends State<_SplitResultsList> {
       switch (sourceId) {
         case 'dpd_summary':
           if (widget.showSummary && widget.summaryEntries.isNotEmpty) {
-            tier1.add(SummarySection(
-              entries: widget.summaryEntries,
-              onTap: _scrollToEntry,
-            ));
+            tier1.add(
+              SummarySection(
+                entries: widget.summaryEntries,
+                onTap: _scrollToEntry,
+              ),
+            );
           }
         case 'dpd_headwords':
           for (final hw in widget.exact) {
-            tier1.add(KeyedSubtree(
-              key: _keyFor('hw_${hw.headword.id}'),
-              child: _buildItem(context, hw),
-            ));
+            tier1.add(
+              KeyedSubtree(
+                key: _keyFor('hw_${hw.headword.id}'),
+                child: _buildItem(context, hw),
+              ),
+            );
           }
           for (final hw in widget.partial) {
             tier2.add(_buildItem(context, hw));
@@ -1115,12 +1220,15 @@ class _SplitResultsListState extends State<_SplitResultsList> {
           }
         case 'dpd_roots':
           for (final rwf in widget.roots) {
-            tier1.add(KeyedSubtree(
-              key: _keyFor('root_${rwf.root.root}'),
-              child: _buildRootItem(context, rwf),
-            ));
+            tier1.add(
+              KeyedSubtree(
+                key: _keyFor('root_${rwf.root.root}'),
+                child: _buildRootItem(context, rwf),
+              ),
+            );
           }
         case 'dpd_abbreviations':
+        case 'dpd_abbreviations_other':
         case 'dpd_deconstructor':
         case 'dpd_grammar':
         case 'dpd_help':
@@ -1131,50 +1239,61 @@ class _SplitResultsListState extends State<_SplitResultsList> {
           final result = _secondaryForSource(sourceId);
           if (result != null) {
             final secId = _secondaryTargetId(result);
-            tier1.add(KeyedSubtree(
-              key: secId.isNotEmpty ? _keyFor(secId) : null,
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(8, 0, 8, 4),
-                child: _buildSecondaryItem(result),
+            tier1.add(
+              KeyedSubtree(
+                key: secId.isNotEmpty ? _keyFor(secId) : null,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(8, 0, 8, 4),
+                  child: _buildSecondaryItem(result),
+                ),
               ),
-            ));
+            );
           }
         default:
-          final exactResult =
-              widget.dictExact.where((dr) => dr.dictId == sourceId).firstOrNull;
+          final exactResult = widget.dictExact
+              .where((dr) => dr.dictId == sourceId)
+              .firstOrNull;
           if (exactResult != null) {
-            tier1.add(Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              child: DictHtmlCard(
-                dictId: exactResult.dictId,
-                dictName: exactResult.dictName,
-                entries: exactResult.entries,
+            tier1.add(
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                child: DictHtmlCard(
+                  dictId: exactResult.dictId,
+                  dictName: exactResult.dictName,
+                  entries: exactResult.entries,
+                ),
               ),
-            ));
+            );
           }
-          final partialResult =
-              widget.dictPartial.where((dr) => dr.dictId == sourceId).firstOrNull;
+          final partialResult = widget.dictPartial
+              .where((dr) => dr.dictId == sourceId)
+              .firstOrNull;
           if (partialResult != null) {
-            tier2.add(Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              child: DictHtmlCard(
-                dictId: partialResult.dictId,
-                dictName: partialResult.dictName,
-                entries: partialResult.entries,
+            tier2.add(
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                child: DictHtmlCard(
+                  dictId: partialResult.dictId,
+                  dictName: partialResult.dictName,
+                  entries: partialResult.entries,
+                ),
               ),
-            ));
+            );
           }
-          final fuzzyResult =
-              widget.dictFuzzy.where((dr) => dr.dictId == sourceId).firstOrNull;
+          final fuzzyResult = widget.dictFuzzy
+              .where((dr) => dr.dictId == sourceId)
+              .firstOrNull;
           if (fuzzyResult != null) {
-            tier3.add(Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              child: DictHtmlCard(
-                dictId: fuzzyResult.dictId,
-                dictName: fuzzyResult.dictName,
-                entries: fuzzyResult.entries,
+            tier3.add(
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                child: DictHtmlCard(
+                  dictId: fuzzyResult.dictId,
+                  dictName: fuzzyResult.dictName,
+                  entries: fuzzyResult.entries,
+                ),
               ),
-            ));
+            );
           }
       }
     }
@@ -1185,7 +1304,10 @@ class _SplitResultsListState extends State<_SplitResultsList> {
     final allItems = [
       ...tier1,
       if (showPartialDivider)
-        _TierDivider(label: 'Partial Results', isCompact: widget.mode == DisplayMode.compact),
+        _TierDivider(
+          label: 'Partial Results',
+          isCompact: widget.mode == DisplayMode.compact,
+        ),
       ...tier2,
       if (showPartialDivider && widget.partialLoading)
         const Padding(
@@ -1199,7 +1321,10 @@ class _SplitResultsListState extends State<_SplitResultsList> {
           ),
         ),
       if (showFuzzyDivider)
-        _TierDivider(label: 'Fuzzy Results', isCompact: widget.mode == DisplayMode.compact),
+        _TierDivider(
+          label: 'Fuzzy Results',
+          isCompact: widget.mode == DisplayMode.compact,
+        ),
       ...tier3,
     ];
 
@@ -1219,6 +1344,7 @@ class _SplitResultsListState extends State<_SplitResultsList> {
     SpellingResult r => 'sec_spelling_${r.headword}',
     VariantResult r => 'sec_variant_${r.headword}',
     AbbreviationResult r => 'sec_abbrev_${r.headword}',
+    AbbreviationOtherResult r => 'sec_abbrev_other_${r.headword}',
     EpdResult r => 'sec_epd_${r.headword}',
     DeconstructorResult r => 'sec_decon_${r.headword}',
     HelpResult r => 'sec_help_${r.headword}',
@@ -1231,6 +1357,7 @@ class _SplitResultsListState extends State<_SplitResultsList> {
         DeconstructorResult r => DeconstructorCard(result: r),
         GrammarDictResult r => GrammarDictCard(result: r),
         AbbreviationResult r => AbbreviationCard(result: r),
+        AbbreviationOtherResult r => AbbreviationOtherCard(result: r),
         HelpResult r => HelpCard(result: r),
         EpdResult r => EpdCard(result: r),
         VariantResult r => VariantCard(result: r),
@@ -1256,6 +1383,20 @@ class _SplitResultsListState extends State<_SplitResultsList> {
         _CompactTextLines(lines: [r.meaning]) as Widget,
         AbbreviationCard(result: r) as Widget,
       ),
+      AbbreviationOtherResult r => (
+        'other abbreviations: ${r.headword}',
+        _CompactTextLines(
+              lines: r.rows
+                  .map(
+                    (row) => row.notes == null
+                        ? '${row.source}: ${row.meaning}'
+                        : '${row.source}: ${row.meaning} ${row.notes}',
+                  )
+                  .toList(),
+            )
+            as Widget,
+        AbbreviationOtherCard(result: r) as Widget,
+      ),
       HelpResult r => (
         r.headword,
         _CompactTextLines(lines: [r.helpText]) as Widget,
@@ -1273,15 +1414,25 @@ class _SplitResultsListState extends State<_SplitResultsList> {
       ),
       SpellingResult r => (
         'spelling: ${r.headword}',
-        _CompactTextLines(lines: r.spellings.map((s) => 'incorrect spelling of $s').toList()) as Widget,
+        _CompactTextLines(
+              lines: r.spellings
+                  .map((s) => 'incorrect spelling of $s')
+                  .toList(),
+            )
+            as Widget,
         SpellingCard(result: r) as Widget,
       ),
       SeeResult r => (
         'see: ${r.headword}',
-        _CompactTextLines(lines: r.seeHeadwords.map((s) => 'see $s').toList()) as Widget,
+        _CompactTextLines(lines: r.seeHeadwords.map((s) => 'see $s').toList())
+            as Widget,
         SeeCard(result: r) as Widget,
       ),
-      _ => ('', const SizedBox.shrink() as Widget, const SizedBox.shrink() as Widget),
+      _ => (
+        '',
+        const SizedBox.shrink() as Widget,
+        const SizedBox.shrink() as Widget,
+      ),
     };
 
     return _AccordionSecondaryCard(
@@ -1383,7 +1534,8 @@ class _AccordionSecondaryCard extends StatefulWidget {
   final Widget expandedChild;
 
   @override
-  State<_AccordionSecondaryCard> createState() => _AccordionSecondaryCardState();
+  State<_AccordionSecondaryCard> createState() =>
+      _AccordionSecondaryCardState();
 }
 
 class _AccordionSecondaryCardState extends State<_AccordionSecondaryCard> {
@@ -1401,34 +1553,34 @@ class _AccordionSecondaryCardState extends State<_AccordionSecondaryCard> {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: _isExpanded
-        ? Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Material(
-                color: Colors.transparent,
-                child: InkWell(
-                  onTap: () => setState(() => _isExpanded = false),
-                  child: widget.expandedChild,
-                ),
-              ),
-            ],
-          )
-        : Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Material(
-                color: Colors.transparent,
-                child: InkWell(
-                  onTap: () => setState(() => _isExpanded = true),
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(4, 6, 4, 6),
-                    child: Text(widget.title, style: boldStyle),
+          ? Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    onTap: () => setState(() => _isExpanded = false),
+                    child: widget.expandedChild,
                   ),
                 ),
-              ),
-              widget.compactChild,
-            ],
-          ),
+              ],
+            )
+          : Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    onTap: () => setState(() => _isExpanded = true),
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(4, 6, 4, 6),
+                      child: Text(widget.title, style: boldStyle),
+                    ),
+                  ),
+                ),
+                widget.compactChild,
+              ],
+            ),
     );
   }
 }
@@ -1490,11 +1642,16 @@ class _CompactEpdList extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           for (final e in entries)
-            Text.rich(TextSpan(style: style, children: [
-              TextSpan(text: e.headword, style: boldStyle),
-              if (e.posInfo.isNotEmpty) TextSpan(text: ' ${e.posInfo}.'),
-              TextSpan(text: ' ${e.meaning}.'),
-            ])),
+            Text.rich(
+              TextSpan(
+                style: style,
+                children: [
+                  TextSpan(text: e.headword, style: boldStyle),
+                  if (e.posInfo.isNotEmpty) TextSpan(text: ' ${e.posInfo}.'),
+                  TextSpan(text: ' ${e.meaning}.'),
+                ],
+              ),
+            ),
         ],
       ),
     );
@@ -1545,39 +1702,34 @@ class _NoResultsWithSuggestions extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(
-            'No results for "$query"',
-            style: theme.textTheme.titleSmall?.copyWith(
-              color: theme.colorScheme.outline,
-            ),
-          ),
-          if (matches.isNotEmpty) ...[
-            const SizedBox(height: 16),
+          children: [
             Text(
-              'Closest matches:',
+              'No results for "$query"',
               style: theme.textTheme.titleSmall?.copyWith(
                 color: theme.colorScheme.outline,
               ),
             ),
-            const SizedBox(height: 8),
-            for (final match in matches)
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 2),
-                child: Text(
-                  match,
-                  style: theme.textTheme.bodyLarge,
+            if (matches.isNotEmpty) ...[
+              const SizedBox(height: 16),
+              Text(
+                'Closest matches:',
+                style: theme.textTheme.titleSmall?.copyWith(
+                  color: theme.colorScheme.outline,
                 ),
               ),
+              const SizedBox(height: 8),
+              for (final match in matches)
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 2),
+                  child: Text(match, style: theme.textTheme.bodyLarge),
+                ),
+            ],
           ],
-        ],
         ),
       ),
     );
   }
 }
-
-
 
 class _DownloadFooter extends ConsumerWidget {
   const _DownloadFooter();

@@ -32,14 +32,14 @@ class AppDatabase extends _$AppDatabase {
   /// The exported DB must set `db_schema_version` in the `db_info` table to
   /// the same value. When the on-device DB has a lower value, the app forces
   /// a blocking re-download before any queries run.
-  static const requiredDbSchemaVersion = 5;
+  static const requiredDbSchemaVersion = 6;
 
   AppDatabase() : super(_openConnection());
 
   AppDatabase.forTesting(super.e);
 
   @override
-  int get schemaVersion => 5;
+  int get schemaVersion => 6;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(

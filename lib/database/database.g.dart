@@ -4118,6 +4118,17 @@ class $LookupTable extends Lookup with TableInfo<$LookupTable, LookupData> {
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _abbrevOtherMeta = const VerificationMeta(
+    'abbrevOther',
+  );
+  @override
+  late final GeneratedColumn<String> abbrevOther = GeneratedColumn<String>(
+    'abbrev_other',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _deconstructorMeta = const VerificationMeta(
     'deconstructor',
   );
@@ -4160,6 +4171,7 @@ class $LookupTable extends Lookup with TableInfo<$LookupTable, LookupData> {
     grammar,
     help,
     abbrev,
+    abbrevOther,
     deconstructor,
     epd,
     fuzzyKey,
@@ -4232,6 +4244,15 @@ class $LookupTable extends Lookup with TableInfo<$LookupTable, LookupData> {
         abbrev.isAcceptableOrUnknown(data['abbrev']!, _abbrevMeta),
       );
     }
+    if (data.containsKey('abbrev_other')) {
+      context.handle(
+        _abbrevOtherMeta,
+        abbrevOther.isAcceptableOrUnknown(
+          data['abbrev_other']!,
+          _abbrevOtherMeta,
+        ),
+      );
+    }
     if (data.containsKey('deconstructor')) {
       context.handle(
         _deconstructorMeta,
@@ -4298,6 +4319,10 @@ class $LookupTable extends Lookup with TableInfo<$LookupTable, LookupData> {
         DriftSqlType.string,
         data['${effectivePrefix}abbrev'],
       ),
+      abbrevOther: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}abbrev_other'],
+      ),
       deconstructor: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}deconstructor'],
@@ -4329,6 +4354,7 @@ class LookupData extends DataClass implements Insertable<LookupData> {
   final String? grammar;
   final String? help;
   final String? abbrev;
+  final String? abbrevOther;
   final String? deconstructor;
   final String? epd;
   final String? fuzzyKey;
@@ -4342,6 +4368,7 @@ class LookupData extends DataClass implements Insertable<LookupData> {
     this.grammar,
     this.help,
     this.abbrev,
+    this.abbrevOther,
     this.deconstructor,
     this.epd,
     this.fuzzyKey,
@@ -4373,6 +4400,9 @@ class LookupData extends DataClass implements Insertable<LookupData> {
     }
     if (!nullToAbsent || abbrev != null) {
       map['abbrev'] = Variable<String>(abbrev);
+    }
+    if (!nullToAbsent || abbrevOther != null) {
+      map['abbrev_other'] = Variable<String>(abbrevOther);
     }
     if (!nullToAbsent || deconstructor != null) {
       map['deconstructor'] = Variable<String>(deconstructor);
@@ -4409,6 +4439,9 @@ class LookupData extends DataClass implements Insertable<LookupData> {
       abbrev: abbrev == null && nullToAbsent
           ? const Value.absent()
           : Value(abbrev),
+      abbrevOther: abbrevOther == null && nullToAbsent
+          ? const Value.absent()
+          : Value(abbrevOther),
       deconstructor: deconstructor == null && nullToAbsent
           ? const Value.absent()
           : Value(deconstructor),
@@ -4434,6 +4467,7 @@ class LookupData extends DataClass implements Insertable<LookupData> {
       grammar: serializer.fromJson<String?>(json['grammar']),
       help: serializer.fromJson<String?>(json['help']),
       abbrev: serializer.fromJson<String?>(json['abbrev']),
+      abbrevOther: serializer.fromJson<String?>(json['abbrevOther']),
       deconstructor: serializer.fromJson<String?>(json['deconstructor']),
       epd: serializer.fromJson<String?>(json['epd']),
       fuzzyKey: serializer.fromJson<String?>(json['fuzzyKey']),
@@ -4452,6 +4486,7 @@ class LookupData extends DataClass implements Insertable<LookupData> {
       'grammar': serializer.toJson<String?>(grammar),
       'help': serializer.toJson<String?>(help),
       'abbrev': serializer.toJson<String?>(abbrev),
+      'abbrevOther': serializer.toJson<String?>(abbrevOther),
       'deconstructor': serializer.toJson<String?>(deconstructor),
       'epd': serializer.toJson<String?>(epd),
       'fuzzyKey': serializer.toJson<String?>(fuzzyKey),
@@ -4468,6 +4503,7 @@ class LookupData extends DataClass implements Insertable<LookupData> {
     Value<String?> grammar = const Value.absent(),
     Value<String?> help = const Value.absent(),
     Value<String?> abbrev = const Value.absent(),
+    Value<String?> abbrevOther = const Value.absent(),
     Value<String?> deconstructor = const Value.absent(),
     Value<String?> epd = const Value.absent(),
     Value<String?> fuzzyKey = const Value.absent(),
@@ -4481,6 +4517,7 @@ class LookupData extends DataClass implements Insertable<LookupData> {
     grammar: grammar.present ? grammar.value : this.grammar,
     help: help.present ? help.value : this.help,
     abbrev: abbrev.present ? abbrev.value : this.abbrev,
+    abbrevOther: abbrevOther.present ? abbrevOther.value : this.abbrevOther,
     deconstructor: deconstructor.present
         ? deconstructor.value
         : this.deconstructor,
@@ -4498,6 +4535,9 @@ class LookupData extends DataClass implements Insertable<LookupData> {
       grammar: data.grammar.present ? data.grammar.value : this.grammar,
       help: data.help.present ? data.help.value : this.help,
       abbrev: data.abbrev.present ? data.abbrev.value : this.abbrev,
+      abbrevOther: data.abbrevOther.present
+          ? data.abbrevOther.value
+          : this.abbrevOther,
       deconstructor: data.deconstructor.present
           ? data.deconstructor.value
           : this.deconstructor,
@@ -4518,6 +4558,7 @@ class LookupData extends DataClass implements Insertable<LookupData> {
           ..write('grammar: $grammar, ')
           ..write('help: $help, ')
           ..write('abbrev: $abbrev, ')
+          ..write('abbrevOther: $abbrevOther, ')
           ..write('deconstructor: $deconstructor, ')
           ..write('epd: $epd, ')
           ..write('fuzzyKey: $fuzzyKey')
@@ -4536,6 +4577,7 @@ class LookupData extends DataClass implements Insertable<LookupData> {
     grammar,
     help,
     abbrev,
+    abbrevOther,
     deconstructor,
     epd,
     fuzzyKey,
@@ -4553,6 +4595,7 @@ class LookupData extends DataClass implements Insertable<LookupData> {
           other.grammar == this.grammar &&
           other.help == this.help &&
           other.abbrev == this.abbrev &&
+          other.abbrevOther == this.abbrevOther &&
           other.deconstructor == this.deconstructor &&
           other.epd == this.epd &&
           other.fuzzyKey == this.fuzzyKey);
@@ -4568,6 +4611,7 @@ class LookupCompanion extends UpdateCompanion<LookupData> {
   final Value<String?> grammar;
   final Value<String?> help;
   final Value<String?> abbrev;
+  final Value<String?> abbrevOther;
   final Value<String?> deconstructor;
   final Value<String?> epd;
   final Value<String?> fuzzyKey;
@@ -4582,6 +4626,7 @@ class LookupCompanion extends UpdateCompanion<LookupData> {
     this.grammar = const Value.absent(),
     this.help = const Value.absent(),
     this.abbrev = const Value.absent(),
+    this.abbrevOther = const Value.absent(),
     this.deconstructor = const Value.absent(),
     this.epd = const Value.absent(),
     this.fuzzyKey = const Value.absent(),
@@ -4597,6 +4642,7 @@ class LookupCompanion extends UpdateCompanion<LookupData> {
     this.grammar = const Value.absent(),
     this.help = const Value.absent(),
     this.abbrev = const Value.absent(),
+    this.abbrevOther = const Value.absent(),
     this.deconstructor = const Value.absent(),
     this.epd = const Value.absent(),
     this.fuzzyKey = const Value.absent(),
@@ -4612,6 +4658,7 @@ class LookupCompanion extends UpdateCompanion<LookupData> {
     Expression<String>? grammar,
     Expression<String>? help,
     Expression<String>? abbrev,
+    Expression<String>? abbrevOther,
     Expression<String>? deconstructor,
     Expression<String>? epd,
     Expression<String>? fuzzyKey,
@@ -4627,6 +4674,7 @@ class LookupCompanion extends UpdateCompanion<LookupData> {
       if (grammar != null) 'grammar': grammar,
       if (help != null) 'help': help,
       if (abbrev != null) 'abbrev': abbrev,
+      if (abbrevOther != null) 'abbrev_other': abbrevOther,
       if (deconstructor != null) 'deconstructor': deconstructor,
       if (epd != null) 'epd': epd,
       if (fuzzyKey != null) 'fuzzy_key': fuzzyKey,
@@ -4644,6 +4692,7 @@ class LookupCompanion extends UpdateCompanion<LookupData> {
     Value<String?>? grammar,
     Value<String?>? help,
     Value<String?>? abbrev,
+    Value<String?>? abbrevOther,
     Value<String?>? deconstructor,
     Value<String?>? epd,
     Value<String?>? fuzzyKey,
@@ -4659,6 +4708,7 @@ class LookupCompanion extends UpdateCompanion<LookupData> {
       grammar: grammar ?? this.grammar,
       help: help ?? this.help,
       abbrev: abbrev ?? this.abbrev,
+      abbrevOther: abbrevOther ?? this.abbrevOther,
       deconstructor: deconstructor ?? this.deconstructor,
       epd: epd ?? this.epd,
       fuzzyKey: fuzzyKey ?? this.fuzzyKey,
@@ -4696,6 +4746,9 @@ class LookupCompanion extends UpdateCompanion<LookupData> {
     if (abbrev.present) {
       map['abbrev'] = Variable<String>(abbrev.value);
     }
+    if (abbrevOther.present) {
+      map['abbrev_other'] = Variable<String>(abbrevOther.value);
+    }
     if (deconstructor.present) {
       map['deconstructor'] = Variable<String>(deconstructor.value);
     }
@@ -4723,6 +4776,7 @@ class LookupCompanion extends UpdateCompanion<LookupData> {
           ..write('grammar: $grammar, ')
           ..write('help: $help, ')
           ..write('abbrev: $abbrev, ')
+          ..write('abbrevOther: $abbrevOther, ')
           ..write('deconstructor: $deconstructor, ')
           ..write('epd: $epd, ')
           ..write('fuzzyKey: $fuzzyKey, ')
@@ -12877,6 +12931,7 @@ typedef $$LookupTableCreateCompanionBuilder =
       Value<String?> grammar,
       Value<String?> help,
       Value<String?> abbrev,
+      Value<String?> abbrevOther,
       Value<String?> deconstructor,
       Value<String?> epd,
       Value<String?> fuzzyKey,
@@ -12893,6 +12948,7 @@ typedef $$LookupTableUpdateCompanionBuilder =
       Value<String?> grammar,
       Value<String?> help,
       Value<String?> abbrev,
+      Value<String?> abbrevOther,
       Value<String?> deconstructor,
       Value<String?> epd,
       Value<String?> fuzzyKey,
@@ -12950,6 +13006,11 @@ class $$LookupTableFilterComposer
 
   ColumnFilters<String> get abbrev => $composableBuilder(
     column: $table.abbrev,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get abbrevOther => $composableBuilder(
+    column: $table.abbrevOther,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -13023,6 +13084,11 @@ class $$LookupTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get abbrevOther => $composableBuilder(
+    column: $table.abbrevOther,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get deconstructor => $composableBuilder(
     column: $table.deconstructor,
     builder: (column) => ColumnOrderings(column),
@@ -13075,6 +13141,11 @@ class $$LookupTableAnnotationComposer
   GeneratedColumn<String> get abbrev =>
       $composableBuilder(column: $table.abbrev, builder: (column) => column);
 
+  GeneratedColumn<String> get abbrevOther => $composableBuilder(
+    column: $table.abbrevOther,
+    builder: (column) => column,
+  );
+
   GeneratedColumn<String> get deconstructor => $composableBuilder(
     column: $table.deconstructor,
     builder: (column) => column,
@@ -13124,6 +13195,7 @@ class $$LookupTableTableManager
                 Value<String?> grammar = const Value.absent(),
                 Value<String?> help = const Value.absent(),
                 Value<String?> abbrev = const Value.absent(),
+                Value<String?> abbrevOther = const Value.absent(),
                 Value<String?> deconstructor = const Value.absent(),
                 Value<String?> epd = const Value.absent(),
                 Value<String?> fuzzyKey = const Value.absent(),
@@ -13138,6 +13210,7 @@ class $$LookupTableTableManager
                 grammar: grammar,
                 help: help,
                 abbrev: abbrev,
+                abbrevOther: abbrevOther,
                 deconstructor: deconstructor,
                 epd: epd,
                 fuzzyKey: fuzzyKey,
@@ -13154,6 +13227,7 @@ class $$LookupTableTableManager
                 Value<String?> grammar = const Value.absent(),
                 Value<String?> help = const Value.absent(),
                 Value<String?> abbrev = const Value.absent(),
+                Value<String?> abbrevOther = const Value.absent(),
                 Value<String?> deconstructor = const Value.absent(),
                 Value<String?> epd = const Value.absent(),
                 Value<String?> fuzzyKey = const Value.absent(),
@@ -13168,6 +13242,7 @@ class $$LookupTableTableManager
                 grammar: grammar,
                 help: help,
                 abbrev: abbrev,
+                abbrevOther: abbrevOther,
                 deconstructor: deconstructor,
                 epd: epd,
                 fuzzyKey: fuzzyKey,

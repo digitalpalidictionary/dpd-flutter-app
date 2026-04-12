@@ -11,6 +11,7 @@ import 'secondary_results_provider.dart';
 // Maps secondary result runtime type to its DPD source ID.
 const _secondarySourceId = {
   'AbbreviationResult': 'dpd_abbreviations',
+  'AbbreviationOtherResult': 'dpd_abbreviations_other',
   'DeconstructorResult': 'dpd_deconstructor',
   'GrammarDictResult': 'dpd_grammar',
   'HelpResult': 'dpd_help',
@@ -134,6 +135,16 @@ List<SummaryEntry> buildSummaryEntries(
             typeLabel: 'abbreviation.',
             meaning: r.meaning,
             targetId: 'sec_abbrev_${r.headword}',
+          ),
+        );
+      case AbbreviationOtherResult r:
+        entries.add(
+          SummaryEntry(
+            type: SummaryEntryType.abbreviationOther,
+            label: r.headword,
+            typeLabel: 'other abbreviations.',
+            meaning: '',
+            targetId: 'sec_abbrev_other_${r.headword}',
           ),
         );
       case EpdResult r:

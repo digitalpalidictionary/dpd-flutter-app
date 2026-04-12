@@ -127,6 +127,54 @@ class AbbreviationResult {
   }
 }
 
+class AbbreviationOtherRow {
+  final String source;
+  final String meaning;
+  final String? notes;
+
+  const AbbreviationOtherRow({
+    required this.source,
+    required this.meaning,
+    this.notes,
+  });
+}
+
+class AbbreviationOtherResult {
+  final String headword;
+  final List<AbbreviationOtherRow> rows;
+
+  const AbbreviationOtherResult({required this.headword, required this.rows});
+
+  static AbbreviationOtherResult? fromJson(
+    String headword,
+    String? jsonString,
+  ) {
+    if (jsonString == null || jsonString.isEmpty) return null;
+    try {
+      final decoded = jsonDecode(jsonString) as List<dynamic>;
+      final rows = decoded
+          .whereType<Map<String, dynamic>>()
+          .map((row) {
+            final source = (row['source'] as String?)?.trim() ?? '';
+            final meaning = (row['meaning'] as String?)?.trim() ?? '';
+            final notes = (row['notes'] as String?)?.trim().nullIfEmpty;
+            if (source.isEmpty || meaning.isEmpty) return null;
+            return AbbreviationOtherRow(
+              source: source,
+              meaning: meaning,
+              notes: notes,
+            );
+          })
+          .nonNulls
+          .toList();
+      if (rows.isEmpty) return null;
+      return AbbreviationOtherResult(headword: headword, rows: rows);
+    } catch (_) {
+      return null;
+    }
+  }
+}
+
 // ── HelpResult ───────────────────────────────────────────────────────────────
 
 class HelpResult {
@@ -201,7 +249,10 @@ class VariantResult {
     try {
       final decoded = jsonDecode(jsonString) as Map<String, dynamic>;
       final variants = decoded.map((corpus, booksRaw) {
-        final books = (booksRaw as Map<String, dynamic>).map((book, entriesRaw) {
+        final books = (booksRaw as Map<String, dynamic>).map((
+          book,
+          entriesRaw,
+        ) {
           final entries = (entriesRaw as List<dynamic>).map((entry) {
             final pair = entry as List<dynamic>;
             return [pair[0] as String, pair[1] as String];

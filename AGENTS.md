@@ -50,6 +50,8 @@ accommodate slower devices."
 
 The DPD database and webapp exporter are in the sibling folder: `../dpd-db/`
 
+When running project scripts inside `../dpd-db/`, use `uv run ...` rather than raw `python ...`.
+
 Key paths:
 - Database: `../dpd-db/dpd.db`
 - Python DB models: `../dpd-db/db/models.py` (DpdHeadword, DpdRoot definitions)

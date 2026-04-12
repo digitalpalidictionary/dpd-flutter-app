@@ -311,6 +311,69 @@ class AbbreviationCard extends StatelessWidget {
   }
 }
 
+class AbbreviationOtherCard extends StatelessWidget {
+  const AbbreviationOtherCard({super.key, required this.result});
+
+  final AbbreviationOtherResult result;
+
+  @override
+  Widget build(BuildContext context) {
+    return TertiaryCard(
+      title: 'other abbreviations: ${result.headword}',
+      content: _AbbreviationOtherTable(rows: result.rows),
+    );
+  }
+}
+
+class _AbbreviationOtherTable extends StatelessWidget {
+  const _AbbreviationOtherTable({required this.rows});
+
+  final List<AbbreviationOtherRow> rows;
+
+  @override
+  Widget build(BuildContext context) {
+    final bodyStyle = Theme.of(
+      context,
+    ).textTheme.bodyMedium?.copyWith(height: _lineHeight);
+    final noteStyle = bodyStyle?.copyWith(
+      color: Theme.of(context).colorScheme.onSurfaceVariant,
+    );
+
+    return Table(
+      columnWidths: const {0: IntrinsicColumnWidth(), 1: FlexColumnWidth()},
+      defaultVerticalAlignment: TableCellVerticalAlignment.top,
+      children: rows
+          .map(
+            (row) => TableRow(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(right: 5),
+                  child: Text(
+                    row.source,
+                    style: bodyStyle?.copyWith(fontWeight: FontWeight.w700),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(right: 5),
+                  child: Text.rich(
+                    TextSpan(
+                      style: bodyStyle,
+                      children: [
+                        TextSpan(text: row.meaning),
+                        if (row.notes != null)
+                          TextSpan(text: ' ${row.notes}', style: noteStyle),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          )
+          .toList(),
+    );
+  }
+}
+
 // ── Help Card ─────────────────────────────────────────────────────────────────
 
 class HelpCard extends StatelessWidget {
@@ -471,7 +534,8 @@ class _VariantTableState extends State<_VariantTable> {
     final corpusList = widget.variants.keys.toList();
 
     // Collect all data rows with their corpus index for separator logic.
-    final dataRows = <(int corpusIndex, String corpus, String book, List<String> entry)>[];
+    final dataRows =
+        <(int corpusIndex, String corpus, String book, List<String> entry)>[];
     for (int ci = 0; ci < corpusList.length; ci++) {
       final corpus = corpusList[ci];
       for (final book in widget.variants[corpus]!.keys) {
@@ -552,8 +616,8 @@ class _VariantTableState extends State<_VariantTable> {
               children: [
                 if (remaining > 0)
                   GestureDetector(
-                    onTap: () => setState(() =>
-                        _visibleRows += _variantCollapsedRows),
+                    onTap: () =>
+                        setState(() => _visibleRows += _variantCollapsedRows),
                     child: Text(
                       'show more ($remaining remaining)',
                       style: linkStyle,
@@ -567,14 +631,15 @@ class _VariantTableState extends State<_VariantTable> {
                 if (isExpanded)
                   GestureDetector(
                     onTap: () {
-                      setState(() =>
-                          _visibleRows = _variantCollapsedRows);
+                      setState(() => _visibleRows = _variantCollapsedRows);
                       WidgetsBinding.instance.addPostFrameCallback((_) {
                         final ctx = _toggleKey.currentContext;
                         if (ctx != null) {
-                          Scrollable.ensureVisible(ctx,
-                              alignment: 1.0,
-                              duration: const Duration(milliseconds: 300));
+                          Scrollable.ensureVisible(
+                            ctx,
+                            alignment: 1.0,
+                            duration: const Duration(milliseconds: 300),
+                          );
                         }
                       });
                     },

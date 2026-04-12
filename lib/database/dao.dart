@@ -57,18 +57,18 @@ class DpdDao extends DatabaseAccessor<AppDatabase> with _$DpdDaoMixin {
 
     final timing = enableSearchTiming ? SearchTimingData(query: query) : null;
     final sw = Stopwatch()..start();
-    
+
     final lookupRows = await (select(
       lookup,
     )..where((t) => t.lookupKey.equals(normalized))).get();
 
     final idSet = _extractIds(lookupRows);
     final results = await _fetchHeadwords(idSet);
-    
+
     sw.stop();
     timing?.recordQueryTime('searchExact_total', sw.elapsed);
     if (timing != null) recordTiming(timing);
-    
+
     return results;
   }
 
@@ -96,13 +96,13 @@ class DpdDao extends DatabaseAccessor<AppDatabase> with _$DpdDaoMixin {
     final idSet = _extractIds(lookupRows);
     final results = await _fetchHeadwords(idSet);
     sw.stop();
-    
+
     if (enableSearchTiming) {
       final timing = SearchTimingData(query: query);
       timing.recordQueryTime('searchPartial_total', sw.elapsed);
       recordTiming(timing);
     }
-    
+
     return results;
   }
 
@@ -130,13 +130,13 @@ class DpdDao extends DatabaseAccessor<AppDatabase> with _$DpdDaoMixin {
     final idSet = _extractIds(lookupRows);
     final results = await _fetchHeadwords(idSet);
     sw.stop();
-    
+
     if (enableSearchTiming) {
       final timing = SearchTimingData(query: query);
       timing.recordQueryTime('searchFuzzy_total', sw.elapsed);
       recordTiming(timing);
     }
-    
+
     return results;
   }
 
@@ -238,17 +238,22 @@ class DpdDao extends DatabaseAccessor<AppDatabase> with _$DpdDaoMixin {
     final candidates = <String>{};
 
     // Strategy 1: progressively shorter prefixes on lookup_key
-    for (var len = normalized.length - 1; len >= 2 && candidates.length < 50; len--) {
+    for (
+      var len = normalized.length - 1;
+      len >= 2 && candidates.length < 50;
+      len--
+    ) {
       final prefix = normalized.substring(0, len);
       final nextKey = _nextString(prefix);
-      final rows = await (selectOnly(lookup)
-            ..addColumns([lookup.lookupKey])
-            ..where(
-              lookup.lookupKey.isBiggerOrEqualValue(prefix) &
-                  lookup.lookupKey.isSmallerThanValue(nextKey),
-            )
-            ..limit(20))
-          .get();
+      final rows =
+          await (selectOnly(lookup)
+                ..addColumns([lookup.lookupKey])
+                ..where(
+                  lookup.lookupKey.isBiggerOrEqualValue(prefix) &
+                      lookup.lookupKey.isSmallerThanValue(nextKey),
+                )
+                ..limit(20))
+              .get();
       for (final row in rows) {
         final key = row.read(lookup.lookupKey);
         if (key != null && key != normalized) candidates.add(key);
@@ -258,17 +263,22 @@ class DpdDao extends DatabaseAccessor<AppDatabase> with _$DpdDaoMixin {
     // Strategy 2: fuzzy_key prefix trimming (diacritics-insensitive)
     final fuzzyNorm = stripDiacritics(normalized);
     if (fuzzyNorm.length >= 2) {
-      for (var len = fuzzyNorm.length; len >= 2 && candidates.length < 50; len--) {
+      for (
+        var len = fuzzyNorm.length;
+        len >= 2 && candidates.length < 50;
+        len--
+      ) {
         final prefix = fuzzyNorm.substring(0, len);
         final nextKey = _nextString(prefix);
-        final rows = await (selectOnly(lookup)
-              ..addColumns([lookup.lookupKey])
-              ..where(
-                lookup.fuzzyKey.isBiggerOrEqualValue(prefix) &
-                    lookup.fuzzyKey.isSmallerThanValue(nextKey),
-              )
-              ..limit(20))
-            .get();
+        final rows =
+            await (selectOnly(lookup)
+                  ..addColumns([lookup.lookupKey])
+                  ..where(
+                    lookup.fuzzyKey.isBiggerOrEqualValue(prefix) &
+                        lookup.fuzzyKey.isSmallerThanValue(nextKey),
+                  )
+                  ..limit(20))
+                .get();
         for (final row in rows) {
           final key = row.read(lookup.lookupKey);
           if (key != null && key != normalized) candidates.add(key);
@@ -285,14 +295,16 @@ class DpdDao extends DatabaseAccessor<AppDatabase> with _$DpdDaoMixin {
 
   Future<Set<String>> checkWordsInLookup(Set<String> words) async {
     if (words.isEmpty) return {};
-    final rows = await (select(lookup)
-          ..where((t) => t.lookupKey.isIn(words)))
-        .get();
+    final rows = await (select(
+      lookup,
+    )..where((t) => t.lookupKey.isIn(words))).get();
     return rows.map((r) => r.lookupKey).toSet();
   }
 
   Future<Set<String>> getAllLookupKeys() async {
-    final rows = await (selectOnly(lookup)..addColumns([lookup.lookupKey])).get();
+    final rows = await (selectOnly(
+      lookup,
+    )..addColumns([lookup.lookupKey])).get();
     return rows.map((r) => r.read(lookup.lookupKey)!).toSet();
   }
 
@@ -534,11 +546,7 @@ class DpdDao extends DatabaseAccessor<AppDatabase> with _$DpdDaoMixin {
 
   Future<List<DictEntry>> searchDictPartial(String word, {int limit = 50}) {
     return (select(dictEntries)
-          ..where(
-            (t) =>
-                t.word.like('$word%') &
-                t.word.equals(word).not(),
-          )
+          ..where((t) => t.word.like('$word%') & t.word.equals(word).not())
           ..limit(limit))
         .get();
   }
@@ -551,8 +559,9 @@ class DpdDao extends DatabaseAccessor<AppDatabase> with _$DpdDaoMixin {
   }
 
   Future<DictMetaData?> getDictMeta(String dictId) {
-    return (select(dictMeta)..where((t) => t.dictId.equals(dictId)))
-        .getSingleOrNull();
+    return (select(
+      dictMeta,
+    )..where((t) => t.dictId.equals(dictId))).getSingleOrNull();
   }
 
   Future<List<DictMetaData>> getAllDictMeta() {

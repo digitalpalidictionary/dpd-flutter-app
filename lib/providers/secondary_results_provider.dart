@@ -7,7 +7,7 @@ import 'database_provider.dart';
 /// Parses a [LookupData] row into an ordered list of secondary result objects.
 ///
 /// Results are ordered: abbreviations → deconstructor → grammar → help →
-/// EPD → variant → spelling → see.
+/// EPD → variant → spelling → see → other abbreviations.
 /// Null or empty columns produce no entry.
 class SecondaryResultsProvider {
   static List<Object> parse(String headword, LookupData row) {
@@ -16,7 +16,10 @@ class SecondaryResultsProvider {
     final abbrev = AbbreviationResult.fromJson(headword, row.abbrev);
     if (abbrev != null) results.add(abbrev);
 
-    final deconstructor = DeconstructorResult.fromJson(headword, row.deconstructor);
+    final deconstructor = DeconstructorResult.fromJson(
+      headword,
+      row.deconstructor,
+    );
     if (deconstructor != null) results.add(deconstructor);
 
     final grammar = GrammarDictResult.fromJson(headword, row.grammar);
@@ -37,15 +40,21 @@ class SecondaryResultsProvider {
     final see = SeeResult.fromJson(headword, row.see);
     if (see != null) results.add(see);
 
+    final abbrevOther = AbbreviationOtherResult.fromJson(
+      headword,
+      row.abbrevOther,
+    );
+    if (abbrevOther != null) results.add(abbrevOther);
+
     return results;
   }
 }
 
 final secondaryResultsProvider = FutureProvider.autoDispose
     .family<List<Object>, String>((ref, query) async {
-  if (query.isEmpty) return [];
-  final dao = ref.watch(daoProvider);
-  final row = await dao.getLookupRow(query);
-  if (row == null) return [];
-  return SecondaryResultsProvider.parse(row.lookupKey, row);
-});
+      if (query.isEmpty) return [];
+      final dao = ref.watch(daoProvider);
+      final row = await dao.getLookupRow(query);
+      if (row == null) return [];
+      return SecondaryResultsProvider.parse(row.lookupKey, row);
+    });

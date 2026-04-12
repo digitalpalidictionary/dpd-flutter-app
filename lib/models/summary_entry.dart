@@ -6,6 +6,7 @@ enum SummaryEntryType {
   spelling,
   variant,
   abbreviation,
+  abbreviationOther,
   epd,
   help,
   deconstructor,

@@ -71,6 +71,7 @@ class Lookup extends Table {
   TextColumn get grammar => text().nullable()();
   TextColumn get help => text().nullable()();
   TextColumn get abbrev => text().nullable()();
+  TextColumn get abbrevOther => text().named('abbrev_other').nullable()();
   TextColumn get deconstructor => text().nullable()();
   TextColumn get epd => text().nullable()();
   TextColumn get fuzzyKey => text().named('fuzzy_key').nullable()();
@@ -295,7 +296,8 @@ class DictEntries extends Table {
   TextColumn get word => text()();
   TextColumn get wordFuzzy => text().named('word_fuzzy').nullable()();
   TextColumn get definitionHtml => text().named('definition_html').nullable()();
-  TextColumn get definitionPlain => text().named('definition_plain').nullable()();
+  TextColumn get definitionPlain =>
+      text().named('definition_plain').nullable()();
 }
 
 class FamilySet extends Table {

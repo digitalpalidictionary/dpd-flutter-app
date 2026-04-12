@@ -1,0 +1,13 @@
+{
+  "repo": "digitalpalidictionary/dpd-flutter-app",
+  "project": "",
+  "agents": [
+    "claude",
+    "gemini",
+    "opencode",
+    "codex",
+    "kilo",
+    "qwen"
+  ],
+  "models": {}
+}
