@@ -1,5 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:dpd_flutter_app/utils/pali_transliterator/pali_script.dart';
+import 'package:dpd_flutter_app/utils/pali_transliterator/pali_script_converter.dart';
 import 'package:dpd_flutter_app/utils/transliteration.dart';
 import 'package:dpd_flutter_app/utils/velthuis.dart';
 
@@ -22,8 +24,48 @@ void main() {
       expect(toRoman('धम्म'), 'dhamma');
     });
 
+    test('converts Sinhala to IAST', () {
+      expect(toRoman('ධම්ම'), 'dhamma');
+    });
+
+    test('converts Thai to IAST', () {
+      expect(toRoman('ธมฺม'), 'dhamma');
+    });
+
+    test('converts Myanmar to IAST', () {
+      expect(toRoman('ဓမ္မ'), 'dhamma');
+    });
+
+    test('round-trips dhammena across all scripts', () {
+      const word = 'dhammena';
+      for (final info in listOfScripts) {
+        final rendered = PaliScript.getScriptOf(
+          script: info.script,
+          romanText: word,
+        );
+        expect(toRoman(rendered), word, reason: info.script.name);
+      }
+    });
+
+    test('round-trips representative words across all scripts', () {
+      const words = ['dhamma', 'dhammena', 'dhammoti'];
+      for (final word in words) {
+        for (final info in listOfScripts) {
+          final rendered = PaliScript.getScriptOf(
+            script: info.script,
+            romanText: word,
+          );
+          expect(toRoman(rendered), word, reason: '${info.script.name}: $word');
+        }
+      }
+    });
+
     test('empty string returns empty', () {
       expect(toRoman(''), '');
+    });
+
+    test('normalizes shared lookup text with trim and transliteration', () {
+      expect(normalizeLookupQuery(' धम्म '), 'dhamma');
     });
   });
 

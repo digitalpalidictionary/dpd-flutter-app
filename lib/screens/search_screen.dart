@@ -365,10 +365,19 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
 
     // Sync the controller only for external provider changes (double-tap, intent).
     // Local changes from typing/_onSearch set _suppressProviderSync to skip this.
+    // When searchBarTextProvider is set, use it for display (preserves original
+    // script from share intents) instead of the romanized lookup query.
     ref.listen<String>(searchQueryProvider, (previous, next) {
       if (!_suppressProviderSync && next != _controller.text) {
-        _controller.text = next;
-        _controller.selection = TextSelection.collapsed(offset: next.length);
+        final displayText = ref.read(searchBarTextProvider);
+        final textToShow = displayText ?? next;
+        _controller.text = textToShow;
+        _controller.selection = TextSelection.collapsed(
+          offset: textToShow.length,
+        );
+        if (displayText != null) {
+          ref.read(searchBarTextProvider.notifier).state = null;
+        }
       }
     });
 

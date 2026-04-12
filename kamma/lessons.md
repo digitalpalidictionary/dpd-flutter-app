@@ -14,3 +14,5 @@
 - 2026-04-09 [CONFUSION] Set CrossAxisAlignment.start but widget still appeared centered — a min-sized Column inside an Expanded gets vertically centered by default; need Align(topLeft) wrapper to pin it
 - 2026-04-09 [POSITIVE] coderabbit review --agent works well as a post-implementation review step
 - 2026-04-12 [BEHAVIOR] Used raw `python` in `../dpd-db` and the user had to correct it — this repo uses `uv run` for local project scripts
+- 2026-04-12 [WORKFLOW] Review PASSED but a real bug (share intent clobbering search bar display) was only caught when the user tested — round-trip UX paths from external entry points need an explicit review checklist item
+- 2026-04-12 [POSITIVE] searchBarTextProvider one-shot pattern (set before searchQueryProvider, cleared in listener) is clean and reusable for any external-trigger display/query split

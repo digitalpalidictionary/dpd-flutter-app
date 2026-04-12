@@ -218,7 +218,7 @@ packages:
     source: hosted
     version: "1.3.1"
   characters:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: characters
       sha256: f71061c654a3380576a52b451dd5532377954cf9dbd272a78fc8479606670803
@@ -680,14 +680,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.8.0"
-  indic_transliteration_dart:
-    dependency: "direct main"
-    description:
-      name: indic_transliteration_dart
-      sha256: "52643a2277d03f62dc5c7a20dcbff7c608a7a6ba2b2bd4a9f05940c515f642b4"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.3.80"
   io:
     dependency: transitive
     description:

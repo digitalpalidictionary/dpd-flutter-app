@@ -23,6 +23,7 @@ import 'screens/search_screen.dart';
 import 'services/database_update_service.dart';
 import 'services/intent_service.dart';
 import 'theme/dpd_colors.dart';
+import 'utils/transliteration.dart';
 
 final _switchTheme = SwitchThemeData(
   thumbColor: WidgetStateProperty.resolveWith((states) {
@@ -68,7 +69,10 @@ class _DpdAppState extends ConsumerState<DpdApp> {
     if (!Platform.isLinux) {
       _intentSub = IntentService.intentStream.listen((text) {
         _navKey.currentState?.popUntil((route) => route.isFirst);
-        ref.read(searchQueryProvider.notifier).state = text;
+        ref.read(searchBarTextProvider.notifier).state = text.trim();
+        ref.read(searchQueryProvider.notifier).state = normalizeLookupQuery(
+          text,
+        );
       });
     }
 
@@ -77,7 +81,10 @@ class _DpdAppState extends ConsumerState<DpdApp> {
       _lookupSub = IntentService.lookupStream.listen((text) {
         debugPrint('[DPD] app.dart: lookupStream received: "$text"');
         _navKey.currentState?.popUntil((route) => route.isFirst);
-        ref.read(searchQueryProvider.notifier).state = text;
+        ref.read(searchBarTextProvider.notifier).state = text.trim();
+        ref.read(searchQueryProvider.notifier).state = normalizeLookupQuery(
+          text,
+        );
       });
 
       final hotkey = ref.read(settingsProvider).lookupHotkey;
@@ -102,18 +109,17 @@ class _DpdAppState extends ConsumerState<DpdApp> {
     WidgetsBinding.instance.allowFirstFrame();
 
     // Only fire app update check once DB is fully ready — never during download/extract.
-    _appUpdateGateSub = ref.listenManual<DbUpdateState>(
-      dbUpdateProvider,
-      (previous, next) {
-        if (!_appUpdateChecked && next.status == DbStatus.ready) {
-          _appUpdateChecked = true;
-          _appUpdateGateSub?.close();
-          _appUpdateGateSub = null;
-          ref.read(appUpdateProvider.notifier).checkForUpdates();
-        }
-      },
-      fireImmediately: true,
-    );
+    _appUpdateGateSub = ref.listenManual<DbUpdateState>(dbUpdateProvider, (
+      previous,
+      next,
+    ) {
+      if (!_appUpdateChecked && next.status == DbStatus.ready) {
+        _appUpdateChecked = true;
+        _appUpdateGateSub?.close();
+        _appUpdateGateSub = null;
+        ref.read(appUpdateProvider.notifier).checkForUpdates();
+      }
+    }, fireImmediately: true);
   }
 
   void _exitApp() {

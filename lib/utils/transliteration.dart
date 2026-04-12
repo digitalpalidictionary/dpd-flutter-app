@@ -1,23 +1,29 @@
-import 'package:indic_transliteration_dart/indic_transliteration_dart.dart'
-    as itr;
+import 'pali_transliterator/pali_script.dart';
+import 'pali_transliterator/pali_script_converter.dart';
+import 'pali_transliterator/script_detector.dart';
 
 void initTransliteration() {
-  itr.initializeSchemes();
+  // No startup initialization required for the imported transliterator.
 }
 
-/// Converts [input] to Roman (IAST) by auto-detecting the source script.
+final _asciiRomanRegex = RegExp(r'^[a-zA-Z\s]+$');
+
+String normalizeLookupQuery(String input) {
+  return toRoman(input.trim());
+}
+
+/// Converts non-Roman input to Roman (IAST) for DB lookup.
 ///
-/// Returns [input] unchanged if it is already IAST or unrecognised.
-/// Falls back to [input] unchanged on any package error.
+/// Roman input is returned unchanged immediately.
+/// Falls back to [input] unchanged on any converter error.
 String toRoman(String input) {
   if (input.isEmpty) return input;
-  // Pure ASCII has no Brahmic or diacritic characters — nothing to convert.
-  // Velthuis sequences (aa, .t, ~n) are already converted live before this runs.
-  if (RegExp(r'^[a-zA-Z\s]+$').hasMatch(input)) return input;
+  if (_asciiRomanRegex.hasMatch(input)) return input;
+
   try {
-    final detected = itr.detect(input);
-    if (detected == 'iast') return input;
-    return itr.transliterate(input, fromScheme: detected, toScheme: 'iast');
+    final detected = ScriptDetector.getLanguage(input);
+    if (detected == Script.roman) return input;
+    return PaliScript.getRomanScriptFrom(script: detected, text: input);
   } catch (_) {
     return input;
   }

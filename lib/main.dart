@@ -31,9 +31,7 @@ void main(List<String> args) async {
 
   runApp(
     ProviderScope(
-      overrides: [
-        sharedPreferencesProvider.overrideWithValue(prefs),
-      ],
+      overrides: [sharedPreferencesProvider.overrideWithValue(prefs)],
       child: intentText != null
           ? _IntentBoot(query: intentText)
           : const DpdApp(),
@@ -50,7 +48,10 @@ class _IntentBoot extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(searchQueryProvider.notifier).state = query;
+      ref.read(searchBarTextProvider.notifier).state = query.trim();
+      ref.read(searchQueryProvider.notifier).state = normalizeLookupQuery(
+        query,
+      );
     });
     return const DpdApp();
   }
