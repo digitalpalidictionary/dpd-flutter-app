@@ -16,3 +16,4 @@
 - 2026-04-12 [BEHAVIOR] Used raw `python` in `../dpd-db` and the user had to correct it — this repo uses `uv run` for local project scripts
 - 2026-04-12 [WORKFLOW] Review PASSED but a real bug (share intent clobbering search bar display) was only caught when the user tested — round-trip UX paths from external entry points need an explicit review checklist item
 - 2026-04-12 [POSITIVE] searchBarTextProvider one-shot pattern (set before searchQueryProvider, cleared in listener) is clean and reusable for any external-trigger display/query split
+- 2026-04-12 [BEHAVIOR] GitHub issue search found nothing in spec/plan — silently skipped instead of asking the user; when issue search returns nothing, ask before skipping
