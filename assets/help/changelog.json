@@ -1,8 +1,9 @@
 {
   "sections": [
     {
-      "title": "v9.9.9",
+      "title": "unreleased",
       "items": [
+        "feat: info menu displays release change log",
         "refactor: split search screen into focused files"
       ]
     },

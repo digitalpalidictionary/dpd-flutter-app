@@ -23,7 +23,6 @@ import 'screens/search_screen.dart';
 import 'services/database_update_service.dart';
 import 'services/intent_service.dart';
 import 'theme/dpd_colors.dart';
-import 'utils/transliteration.dart';
 
 final _switchTheme = SwitchThemeData(
   thumbColor: WidgetStateProperty.resolveWith((states) {
@@ -69,10 +68,7 @@ class _DpdAppState extends ConsumerState<DpdApp> {
     if (!Platform.isLinux) {
       _intentSub = IntentService.intentStream.listen((text) {
         _navKey.currentState?.popUntil((route) => route.isFirst);
-        ref.read(searchBarTextProvider.notifier).state = text.trim();
-        ref.read(searchQueryProvider.notifier).state = normalizeLookupQuery(
-          text,
-        );
+        ref.read(externalSearchHandlerProvider).apply(text);
       });
     }
 
@@ -81,10 +77,7 @@ class _DpdAppState extends ConsumerState<DpdApp> {
       _lookupSub = IntentService.lookupStream.listen((text) {
         debugPrint('[DPD] app.dart: lookupStream received: "$text"');
         _navKey.currentState?.popUntil((route) => route.isFirst);
-        ref.read(searchBarTextProvider.notifier).state = text.trim();
-        ref.read(searchQueryProvider.notifier).state = normalizeLookupQuery(
-          text,
-        );
+        ref.read(externalSearchHandlerProvider).apply(text);
       });
 
       final hotkey = ref.read(settingsProvider).lookupHotkey;

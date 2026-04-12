@@ -48,10 +48,7 @@ class _IntentBoot extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(searchBarTextProvider.notifier).state = query.trim();
-      ref.read(searchQueryProvider.notifier).state = normalizeLookupQuery(
-        query,
-      );
+      ref.read(externalSearchHandlerProvider).apply(query);
     });
     return const DpdApp();
   }
