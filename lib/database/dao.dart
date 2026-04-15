@@ -58,9 +58,15 @@ class DpdDao extends DatabaseAccessor<AppDatabase> with _$DpdDaoMixin {
     final timing = enableSearchTiming ? SearchTimingData(query: query) : null;
     final sw = Stopwatch()..start();
 
-    final lookupRows = await (select(
-      lookup,
-    )..where((t) => t.lookupKey.equals(normalized))).get();
+    final isSuttaCode = normalized.contains(RegExp(r'\d'));
+    final lookupRows = await (select(lookup)
+          ..where(
+            (t) => isSuttaCode
+                ? t.lookupKey.equals(normalized) |
+                    t.lookupKey.equals(normalized.toUpperCase())
+                : t.lookupKey.equals(normalized),
+          ))
+        .get();
 
     final idSet = _extractIds(lookupRows);
     final results = await _fetchHeadwords(idSet);
@@ -80,15 +86,26 @@ class DpdDao extends DatabaseAccessor<AppDatabase> with _$DpdDaoMixin {
     final normalized = _normalizeQuery(query);
 
     final sw = Stopwatch()..start();
-    // Use range query instead of LIKE — allows SQLite to use the index
+    // Use range query instead of LIKE — allows SQLite to use the index.
+    // If query contains a digit it's a sutta code — also search uppercase range.
+    final isSuttaCode = normalized.contains(RegExp(r'\d'));
+    final upper = isSuttaCode ? normalized.toUpperCase() : null;
     final nextKey = _nextString(normalized);
     final lookupRows =
         await (select(lookup)
               ..where(
-                (t) =>
-                    t.lookupKey.isBiggerOrEqualValue(normalized) &
-                    t.lookupKey.isSmallerThanValue(nextKey) &
-                    t.lookupKey.equals(normalized).not(),
+                (t) {
+                  final lowerRange =
+                      t.lookupKey.isBiggerOrEqualValue(normalized) &
+                          t.lookupKey.isSmallerThanValue(nextKey) &
+                          t.lookupKey.equals(normalized).not();
+                  if (upper == null) return lowerRange;
+                  final upperNextKey = _nextString(upper);
+                  return lowerRange |
+                      (t.lookupKey.isBiggerOrEqualValue(upper) &
+                          t.lookupKey.isSmallerThanValue(upperNextKey) &
+                          t.lookupKey.equals(upper).not());
+                },
               )
               ..limit(limit))
             .get();
@@ -237,7 +254,9 @@ class DpdDao extends DatabaseAccessor<AppDatabase> with _$DpdDaoMixin {
 
     final candidates = <String>{};
 
-    // Strategy 1: progressively shorter prefixes on lookup_key
+    // Strategy 1: progressively shorter prefixes on lookup_key.
+    // If query contains a digit it's a sutta code — also search uppercase range.
+    final isSuttaCode = normalized.contains(RegExp(r'\d'));
     for (
       var len = normalized.length - 1;
       len >= 2 && candidates.length < 50;
@@ -245,13 +264,21 @@ class DpdDao extends DatabaseAccessor<AppDatabase> with _$DpdDaoMixin {
     ) {
       final prefix = normalized.substring(0, len);
       final nextKey = _nextString(prefix);
+      final lowerRange =
+          lookup.lookupKey.isBiggerOrEqualValue(prefix) &
+              lookup.lookupKey.isSmallerThanValue(nextKey);
+      Expression<bool> whereExpr = lowerRange;
+      if (isSuttaCode) {
+        final upperPrefix = prefix.toUpperCase();
+        final upperNextKey = _nextString(upperPrefix);
+        whereExpr = lowerRange |
+            (lookup.lookupKey.isBiggerOrEqualValue(upperPrefix) &
+                lookup.lookupKey.isSmallerThanValue(upperNextKey));
+      }
       final rows =
           await (selectOnly(lookup)
                 ..addColumns([lookup.lookupKey])
-                ..where(
-                  lookup.lookupKey.isBiggerOrEqualValue(prefix) &
-                      lookup.lookupKey.isSmallerThanValue(nextKey),
-                )
+                ..where(whereExpr)
                 ..limit(20))
               .get();
       for (final row in rows) {
@@ -295,9 +322,15 @@ class DpdDao extends DatabaseAccessor<AppDatabase> with _$DpdDaoMixin {
 
   Future<Set<String>> checkWordsInLookup(Set<String> words) async {
     if (words.isEmpty) return {};
+    final allKeys = {
+      ...words,
+      ...words
+          .where((w) => w.contains(RegExp(r'\d')))
+          .map((w) => w.toUpperCase()),
+    };
     final rows = await (select(
       lookup,
-    )..where((t) => t.lookupKey.isIn(words))).get();
+    )..where((t) => t.lookupKey.isIn(allKeys))).get();
     return rows.map((r) => r.lookupKey).toSet();
   }
 
@@ -308,11 +341,19 @@ class DpdDao extends DatabaseAccessor<AppDatabase> with _$DpdDaoMixin {
     return rows.map((r) => r.read(lookup.lookupKey)!).toSet();
   }
 
-  Future<LookupData?> getLookupRow(String key) {
+  Future<LookupData?> getLookupRow(String key) async {
     final normalized = _normalizeQuery(key);
-    return (select(
+    final exact = await (select(
       lookup,
     )..where((t) => t.lookupKey.equals(normalized))).getSingleOrNull();
+    if (exact != null) return exact;
+    if (!normalized.contains(RegExp(r'\d'))) return null;
+    final rows = await (select(lookup)
+          ..where(
+            (t) => t.lookupKey.equals(normalized.toUpperCase()),
+          ))
+        .get();
+    return rows.isEmpty ? null : rows.first;
   }
 
   Future<DpdRoot?> getRoot(String rootKey) {
@@ -520,9 +561,15 @@ class DpdDao extends DatabaseAccessor<AppDatabase> with _$DpdDaoMixin {
     if (query.isEmpty) return [];
     final normalized = _normalizeQuery(query);
 
-    final lookupRows = await (select(
-      lookup,
-    )..where((t) => t.lookupKey.equals(normalized))).get();
+    final isSuttaCode = normalized.contains(RegExp(r'\d'));
+    final lookupRows = await (select(lookup)
+          ..where(
+            (t) => isSuttaCode
+                ? t.lookupKey.equals(normalized) |
+                    t.lookupKey.equals(normalized.toUpperCase())
+                : t.lookupKey.equals(normalized),
+          ))
+        .get();
 
     final rootKeys = _extractRootKeys(lookupRows);
     if (rootKeys.isEmpty) return [];
