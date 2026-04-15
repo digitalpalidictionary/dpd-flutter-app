@@ -198,17 +198,6 @@ class _SettingsContentState extends ConsumerState<SettingsContent> {
         ),
       buildDivider,
       () => ListTile(
-        title: const Text('Exact results'),
-        trailing: CompactSegmented<bool>(
-          segments: const [
-            ButtonSegment(value: false, label: Text('Hide')),
-            ButtonSegment(value: true, label: Text('Show')),
-          ],
-          selected: settings.showExactResults,
-          onChanged: notifier.setShowExactResults,
-        ),
-      ),
-      () => ListTile(
         title: const Text('Partial results'),
         trailing: CompactSegmented<bool>(
           segments: const [

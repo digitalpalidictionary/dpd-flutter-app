@@ -3,6 +3,8 @@
     {
       "title": "unreleased",
       "items": [
+        "fix: exact search results are always shown",
+        "fix: sutta code searches (mn12, SN3.12) now return direct results",
         "fix: search bar no longer auto-spaces after periods, strips ?! from queries",
         "fix: external searches now appear in history",
         "feat: info menu displays release change log",

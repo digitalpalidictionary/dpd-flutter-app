@@ -101,7 +101,8 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     _hideVelthuisHelp();
     _autocompleteDebounce?.cancel();
     _debounce?.cancel();
-    final query = toRoman(_controller.text.trim()).replaceAll('?', '').replaceAll('!', '');
+    final query =
+        toRoman(_controller.text.trim()).replaceAll('?', '').replaceAll('!', '');
     _setSearchQuery(query);
     if (shouldRecordCommittedSearch(query)) {
       ref.read(historyProvider.notifier).add(query);
@@ -774,18 +775,12 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
         .where((e) => !exactAndPartialIds.contains(e.headword.id))
         .toList();
 
-    final visibleExact = settings.showExactResults
-        ? exact
-        : <DpdHeadwordWithRoot>[];
     final visiblePartial = settings.showPartialResults
         ? partial
         : <DpdHeadwordWithRoot>[];
     final visibleFuzzy = settings.showFuzzyResults
         ? fuzzyRaw
         : <DpdHeadwordWithRoot>[];
-    final visibleDictExact = settings.showExactResults
-        ? dictExact
-        : <DictResult>[];
     final visibleDictPartial = settings.showPartialResults
         ? dictPartial
         : <DictResult>[];
@@ -793,11 +788,11 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
         ? dictFuzzy
         : <DictResult>[];
 
-    if (visibleExact.isEmpty &&
+    if (exact.isEmpty &&
         visiblePartial.isEmpty &&
         roots.isEmpty &&
         secondary.isEmpty &&
-        visibleDictExact.isEmpty &&
+        dictExact.isEmpty &&
         visibleDictPartial.isEmpty &&
         visibleDictFuzzy.isEmpty &&
         visibleFuzzy.isEmpty &&
@@ -823,12 +818,12 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     }
 
     return SplitResultsList(
-      exact: visibleExact,
+      exact: exact,
       partial: visiblePartial,
       partialLoading: partialLoading,
       roots: roots,
       secondary: secondary,
-      dictExact: visibleDictExact,
+      dictExact: dictExact,
       dictPartial: visibleDictPartial,
       dictFuzzy: visibleDictFuzzy,
       summaryEntries: summaryEntries,

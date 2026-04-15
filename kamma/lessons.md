@@ -18,3 +18,4 @@
 - 2026-04-12 [POSITIVE] searchBarTextProvider one-shot pattern (set before searchQueryProvider, cleared in listener) is clean and reusable for any external-trigger display/query split
 - 2026-04-12 [BEHAVIOR] GitHub issue search found nothing in spec/plan — silently skipped instead of asking the user; when issue search returns nothing, ask before skipping
 - 2026-04-12 [CONFUSION] An external review incorrectly flagged Dart `switch` cases as fall-through; validate review findings against the language semantics and current code before changing anything
+- 2026-04-15 [WORKFLOW] Archived a Kamma thread before the user completed manual review — in this repo, stop after local verification, wait for explicit user acceptance, then review/finalize
