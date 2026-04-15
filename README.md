@@ -1,66 +1,60 @@
 # DPD Flutter App
 
-Native offline Flutter app for the [Digital Pali Dictionary](https://dpdict.net).
+Offline Flutter app for the [Digital Pali Dictionary](https://dpdict.net). It is Android-first and currently in beta.
 
-Beta testing instructions: [`BETA_TESTER.md`](BETA_TESTER.md)
+This project uses [Kamma](https://github.com/bdhrs/kamma) for spec-driven work. Project context, specs, plans, and reviews live in [`kamma/`](kamma/).
 
-## Features
+## Install The Beta App
 
-- Offline dictionary lookup via local SQLite database
-- Full-text search with Pāḷi-aware collation and Velthuis transliteration
-- Android text selection integration — select any word in any app → "Look up in DPD"
-- Entry sections: grammar, examples, inflection/conjugation/declension tables, word families (root, word, compound, idioms, sets), frequency heatmap, notes, feedback
-- Material 3 UI with dark/light theme
-- Webapp-parity styling matching the DPD webapp dictionary pane
+The public beta is for Android.
 
-## Tech Stack
+- Install guide in the DPD docs: <https://digitalpalidictionary.github.io/install/dpd_app/>
+- GitHub releases: <https://github.com/digitalpalidictionary/dpd-flutter-app/releases>
+- Latest release: <https://github.com/digitalpalidictionary/dpd-flutter-app/releases/latest>
+- Beta tester notes: [`BETA_TESTER.md`](BETA_TESTER.md)
 
-- **Flutter/Dart** — latest stable
-- **Drift** — type-safe SQLite ORM with code generation
-- **Riverpod** — reactive state management
-- **flutter_html** — render pre-built HTML content
-- **url_launcher** — external links (sutta references, feedback forms)
+The app is still beta software. Installation uses a direct APK download rather than the Play Store. On first launch, the app downloads the dictionary database.
 
-## Development
+## For Developers
 
-### Prerequisites
-- Flutter 3.29+
-- Android SDK (for device/emulator testing)
-- Sibling `dpd-db` repo at `../dpd-db/`
+If you want to work on the app locally, it helps to have:
 
-### Setup
+- Flutter stable
+- Android SDK and `adb` if you want to test on Android
+- [`just`](https://github.com/casey/just)
+
+Typical local setup:
 
 ```bash
 flutter pub get
-dart run build_runner build
-ln -sf /path/to/dpd-db/dpd.db assets/db/dpd.db
+dart run build_runner build --delete-conflicting-outputs
 flutter run
 ```
 
-The app uses the full `dpd.db` in debug mode (via hardcoded dev path).
-In production it downloads `mobile.db` from GitHub Releases.
+## Relevant Flutter And Dart Commands
 
-### Code Generation
-
-After changing `lib/database/tables.dart` or any Riverpod provider:
 ```bash
+flutter pub get
 dart run build_runner build --delete-conflicting-outputs
+flutter run
+flutter analyze
+flutter test
 ```
 
-### Spec-Driven Development
-
-This project uses Conductor for spec-driven development. Tracks, specs, and plans live in `conductor/`.
+## Relevant Just Recipes
 
 ```bash
-conductor/
-├── product.md              # Product vision and goals
-├── product-guidelines.md   # Visual identity and UX guidelines
-├── tech-stack.md           # Packages and platform targets
-├── tracks.md               # Master track list
-├── tracks/                 # Active tracks
-└── archive/                # Completed tracks
+just run                # generate the changelog asset and run the app; normal local development entry point
+just analyze            # run static analysis; use this to catch lint and type issues quickly
+just test               # run the test suite; use this for automated verification
+just android-fresh      # build/install debug APK, push local DB from ../dpd-db, launch app; use when testing against a fresh local DB export
+just android-update     # rebuild and reinstall debug APK without replacing the on-device DB; normal Android app-code iteration
+just android-push-db    # push local DB from ../dpd-db and restart app; use when only the DB changed
+just android-install-no-db  # install debug APK with no DB push and clear app data; use to test first-run download flow
+just android-delete-db      # delete the on-device DB and restart app; use to force a re-download
+just android-build      # build a debug APK only
+just android-build-release  # build a release APK and copy it to build/app/outputs/flutter-apk/dpd.apk
+just build-db           # rebuild the packaged mobile DB in ../dpd-db; only for local DB export work
+just linux-run          # build and run the Linux app
+just linux-push-db      # copy local DB from ../dpd-db into the Linux app location used for local testing
 ```
-
-## Bundle ID
-
-`net.dpdict.app`
