@@ -576,6 +576,8 @@ class DpdDao extends DatabaseAccessor<AppDatabase> with _$DpdDaoMixin {
         .toLowerCase()
         .replaceAll("'", '')
         .replaceAll('-', '')
+        .replaceAll('?', '')
+        .replaceAll('!', '')
         .replaceAll('ṁ', 'ṃ')
         .replaceAll('ŋ', 'ṃ');
   }

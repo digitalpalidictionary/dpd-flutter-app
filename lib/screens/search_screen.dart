@@ -84,7 +84,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
         selection: TextSelection.collapsed(offset: converted.length),
       );
     }
-    final query = toRoman(converted);
+    final query = toRoman(converted).replaceAll('?', '').replaceAll('!', '');
     setState(() {});
     _autocompleteDebounce?.cancel();
     _autocompleteDebounce = Timer(const Duration(milliseconds: 150), () {
@@ -101,7 +101,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     _hideVelthuisHelp();
     _autocompleteDebounce?.cancel();
     _debounce?.cancel();
-    final query = toRoman(_controller.text.trim());
+    final query = toRoman(_controller.text.trim()).replaceAll('?', '').replaceAll('!', '');
     _setSearchQuery(query);
     if (shouldRecordCommittedSearch(query)) {
       ref.read(historyProvider.notifier).add(query);
@@ -501,6 +501,8 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                                 controller: _controller,
                                 focusNode: _focusNode,
                                 autofocus: false,
+                                autocorrect: false,
+                                enableSuggestions: false,
                                 onChanged: _onChanged,
                                 onSubmitted: (_) => _onSearch(),
                                 style: theme.textTheme.titleMedium,

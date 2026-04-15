@@ -3,6 +3,8 @@
     {
       "title": "unreleased",
       "items": [
+        "fix: search bar no longer auto-spaces after periods, strips ?! from queries",
+        "fix: external searches now appear in history",
         "feat: info menu displays release change log",
         "refactor: split search screen into focused files"
       ]

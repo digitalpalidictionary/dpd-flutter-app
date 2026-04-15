@@ -6,7 +6,7 @@ void initTransliteration() {
   // No startup initialization required for the imported transliterator.
 }
 
-final _asciiRomanRegex = RegExp(r'^[a-zA-Z\s]+$');
+final _asciiRomanRegex = RegExp(r'^[a-zA-Z0-9.\s]+$');
 
 String normalizeLookupQuery(String input) {
   return toRoman(input.trim());
