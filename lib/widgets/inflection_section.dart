@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../database/database.dart';
+import '../database/dpd_headword_extensions.dart';
 import '../models/inflection_table_builder.dart';
 import '../providers/database_provider.dart';
 import '../theme/dpd_colors.dart';
 import '../widgets/entry_content.dart';
-import 'feedback_type.dart';
+import 'conjugation_form_sheet.dart';
+import 'declension_form_sheet.dart';
 import 'inflection_table.dart';
 
 /// Renders the complete inflection section: dynamic table + footer.
@@ -93,7 +95,11 @@ class _InflectionSectionState extends ConsumerState<InflectionSection> {
             if (tableData != null) ...[
               InflectionTable(data: tableData, lookupKey: widget.lookupKey),
             ],
-            _InflectionFooter(headwordId: h.id, lemma1: h.lemma1),
+            _InflectionFooter(
+              headwordId: h.id,
+              lemma1: h.lemma1,
+              isConjugation: h.inflectionButtonLabel == 'conjugation',
+            ),
           ],
         ),
       ),
@@ -102,19 +108,36 @@ class _InflectionSectionState extends ConsumerState<InflectionSection> {
 }
 
 class _InflectionFooter extends StatelessWidget {
-  const _InflectionFooter({required this.headwordId, required this.lemma1});
+  const _InflectionFooter({
+    required this.headwordId,
+    required this.lemma1,
+    required this.isConjugation,
+  });
 
   final int headwordId;
   final String lemma1;
+  final bool isConjugation;
 
   @override
   Widget build(BuildContext context) {
     return DpdFooter(
       messagePrefix: 'Did you spot a mistake?',
       linkText: 'Correct it here',
-      feedbackType: FeedbackType.inflection,
-      word: lemma1,
-      headwordId: headwordId,
+      customOnTap: (context) {
+        if (isConjugation) {
+          showConjugationSheet(
+            context,
+            headword: lemma1,
+            headwordId: headwordId,
+          );
+          return;
+        }
+        showDeclensionSheet(
+          context,
+          headword: lemma1,
+          headwordId: headwordId,
+        );
+      },
     );
   }
 }

@@ -8,7 +8,7 @@ import '../database/dpd_headword_extensions.dart';
 import '../providers/settings_provider.dart';
 import '../services/audio_service.dart';
 import '../theme/dpd_colors.dart';
-import '../utils/feedback_urls.dart';
+import 'dpd_feedback_form_sheet.dart';
 import '../utils/text_filters.dart';
 
 /// Padding for the label cell in a key-value table row.
@@ -187,9 +187,12 @@ class DpdFooter extends StatelessWidget {
     this.word,
     this.headwordId,
     this.customUrlBuilder,
+    this.customOnTap,
   }) : assert(
-         customUrlBuilder != null || (feedbackType != null && word != null),
-         'Must provide either customUrlBuilder or feedbackType and word',
+         customUrlBuilder != null ||
+             customOnTap != null ||
+             (feedbackType != null && word != null),
+         'Must provide customUrlBuilder, customOnTap, or feedbackType and word',
        );
 
   final String messagePrefix;
@@ -198,17 +201,7 @@ class DpdFooter extends StatelessWidget {
   final String? word;
   final int? headwordId;
   final String Function()? customUrlBuilder;
-
-  String _buildUrl() {
-    if (customUrlBuilder != null) {
-      return customUrlBuilder!();
-    }
-    return buildMistakeUrl(
-      word: word,
-      headwordId: headwordId,
-      feedbackType: feedbackType?.value,
-    );
-  }
+  final void Function(BuildContext context)? customOnTap;
 
   @override
   Widget build(BuildContext context) {
@@ -224,10 +217,23 @@ class DpdFooter extends StatelessWidget {
           cursor: SystemMouseCursors.click,
           child: SelectionContainer.disabled(
             child: GestureDetector(
-              onTap: () async {
-                await launchUrl(
-                  Uri.parse(_buildUrl()),
-                  mode: LaunchMode.platformDefault,
+              onTap: () {
+                if (customOnTap != null) {
+                  customOnTap!(context);
+                  return;
+                }
+                if (customUrlBuilder != null) {
+                  launchUrl(
+                    Uri.parse(customUrlBuilder!()),
+                    mode: LaunchMode.platformDefault,
+                  );
+                  return;
+                }
+                showDpdFeedbackSheet(
+                  context,
+                  headword: word,
+                  headwordId: headwordId,
+                  feedbackType: feedbackType?.value,
                 );
               },
               child: Text.rich(

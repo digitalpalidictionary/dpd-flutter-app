@@ -10,7 +10,7 @@ enum FeedbackType {
   frequency('Frequency'),
   rootInfo('Root Info'),
   rootMatrix('Root Matrix'),
-  suttaInfo('Sutta Info');
+  suttaInfo('Sutta');
 
   final String value;
   const FeedbackType(this.value);

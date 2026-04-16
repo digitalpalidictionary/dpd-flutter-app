@@ -14,5 +14,5 @@ String _platform() {
   return 'Unknown';
 }
 
-/// Returns a URL-safe app label, e.g. "DPD+Android+2026-03-08"
-String dpdAppLabel() => 'DPD+${_platform()}+${dpdDateStamp()}';
+/// Returns a human-readable app label, e.g. "DPD Android 2026-03-08"
+String dpdAppLabel() => 'DPD ${_platform()} ${dpdDateStamp()}';

@@ -1,7 +1,7 @@
 {
   "sections": [
     {
-      "title": "unreleased",
+      "title": "v0.1.7",
       "items": [
         "fix: exact search results are always shown",
         "fix: sutta code searches (mn12, SN3.12) now return direct results",

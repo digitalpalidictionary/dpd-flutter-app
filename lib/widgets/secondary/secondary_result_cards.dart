@@ -3,8 +3,9 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../models/lookup_results.dart';
 import '../../theme/dpd_colors.dart';
-import '../../utils/feedback_urls.dart';
 import '../../utils/pali_sort.dart';
+import '../add_word_form_sheet.dart';
+import '../dpd_feedback_form_sheet.dart';
 import '../entry_content.dart';
 import 'secondary_card.dart';
 
@@ -56,11 +57,6 @@ class _DeconstructorFooter extends StatelessWidget {
   Widget build(BuildContext context) {
     final docsUrl =
         'https://digitalpalidictionary.github.io/features/deconstructor/';
-    final suggestUrl = buildMistakeUrl(
-      word: Uri.decodeComponent(encodedHeadword),
-      feedbackType: 'Deconstructor',
-    );
-    final addWordsUrl = buildAddWordUrl();
 
     final footerStyle = TextStyle(fontSize: 12.8, color: DpdColors.gray);
     final linkStyle = TextStyle(
@@ -96,9 +92,10 @@ class _DeconstructorFooter extends StatelessWidget {
             const TextSpan(text: '. Please '),
             WidgetSpan(
               child: InkWell(
-                onTap: () => launchUrl(
-                  Uri.parse(suggestUrl),
-                  mode: LaunchMode.platformDefault,
+                onTap: () => showDpdFeedbackSheet(
+                  context,
+                  headword: Uri.decodeComponent(encodedHeadword),
+                  feedbackType: 'Deconstructor',
                 ),
                 child: Text('suggest any improvements here', style: linkStyle),
               ),
@@ -109,10 +106,7 @@ class _DeconstructorFooter extends StatelessWidget {
             ),
             WidgetSpan(
               child: InkWell(
-                onTap: () => launchUrl(
-                  Uri.parse(addWordsUrl),
-                  mode: LaunchMode.platformDefault,
-                ),
+                onTap: () => showAddWordSheet(context),
                 child: Text('add missing words here', style: linkStyle),
               ),
             ),

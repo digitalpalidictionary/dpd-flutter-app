@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../theme/dpd_colors.dart';
-import '../utils/feedback_urls.dart';
+import 'add_word_form_sheet.dart';
+import 'dpd_feedback_form_sheet.dart';
 import 'entry_content.dart';
 
 class FeedbackSection extends StatelessWidget {
@@ -15,10 +16,6 @@ class FeedbackSection extends StatelessWidget {
   final int headwordId;
   final String lemma1;
 
-  String get _addWordUrl => buildAddWordUrl();
-
-  String get _correctMistakeUrl =>
-      buildMistakeUrl(word: lemma1, headwordId: headwordId);
 
   static const _docsUrl = 'https://digitalpalidictionary.github.io/';
 
@@ -61,14 +58,18 @@ class FeedbackSection extends StatelessWidget {
               linkText: 'Add a missing word',
               description:
                   '. Please use this online form to add missing words, especially from Vinaya, commentaries, and other later texts.',
-              onTap: () => _openUrl(_addWordUrl),
+              onTap: () => showAddWordSheet(context),
             ),
             const SizedBox(height: 8),
             _FeedbackLink(
               linkText: 'Correct a mistake',
               description:
                   '. Did you spot a mistake in the dictionary? Have something to add? Please report it. It generally takes less than a minute and your corrections and suggestions help to improve the quality of this dictionary for everyone who uses it.',
-              onTap: () => _openUrl(_correctMistakeUrl),
+              onTap: () => showDpdFeedbackSheet(
+                context,
+                headword: lemma1,
+                headwordId: headwordId,
+              ),
             ),
             const SizedBox(height: 8),
             _FeedbackLink(
