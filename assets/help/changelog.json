@@ -1,6 +1,12 @@
 {
   "sections": [
     {
+      "title": "unreleased",
+      "items": [
+        "feat: dictionary feedback links now open in-app forms & work offline"
+      ]
+    },
+    {
       "title": "v0.1.7",
       "items": [
         "fix: exact search results are always shown",
