@@ -172,7 +172,7 @@ class _TapSearchWrapperState extends ConsumerState<TapSearchWrapper> {
       _selectionAreaKey.currentState?.selectableRegion.clearSelection();
       ref.read(searchQueryProvider.notifier).state = selectedText;
       if (shouldRecordCommittedSearch(selectedText)) {
-        ref.read(historyProvider.notifier).add(selectedText);
+        ref.read(historyProvider.notifier).navigateTo(selectedText);
       }
 
       if (widget.shouldPop) {

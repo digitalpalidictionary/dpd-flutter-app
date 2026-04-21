@@ -105,7 +105,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
         toRoman(_controller.text.trim()).replaceAll('?', '').replaceAll('!', '');
     _setSearchQuery(query);
     if (shouldRecordCommittedSearch(query)) {
-      ref.read(historyProvider.notifier).add(query);
+      ref.read(historyProvider.notifier).navigateTo(query);
     }
     FocusScope.of(context).unfocus();
   }
@@ -170,7 +170,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     _debounce?.cancel();
     ref.read(searchQueryProvider.notifier).state = term;
     if (shouldRecordCommittedSearch(term)) {
-      ref.read(historyProvider.notifier).add(term);
+      ref.read(historyProvider.notifier).navigateTo(term);
     }
     setState(() {});
   }
@@ -310,9 +310,9 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
         _dismissBackOverlays();
       case AndroidBackAction.navigateHistoryBack:
         ref.read(historyProvider.notifier).goBack();
-        final entry = ref.read(historyProvider).currentEntry;
-        if (entry != null) {
-          ref.read(searchQueryProvider.notifier).state = entry.query;
+        final query = ref.read(historyProvider).currentQuery;
+        if (query != null) {
+          ref.read(searchQueryProvider.notifier).state = query;
         }
       case AndroidBackAction.exitApp:
         showDialog<void>(
@@ -560,16 +560,8 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                         Builder(
                           builder: (context) {
                             final history = ref.watch(historyProvider);
-                            final backIndex = history.currentIndex + 1;
-                            final backWord = backIndex < history.entries.length
-                                ? history.entries[backIndex].query
-                                : null;
-                            final fwdIndex = history.currentIndex - 1;
-                            final fwdWord =
-                                fwdIndex >= 0 &&
-                                    fwdIndex < history.entries.length
-                                ? history.entries[fwdIndex].query
-                                : null;
+                            final backWord = history.backQuery;
+                            final fwdWord = history.forwardQuery;
                             return Row(
                               children: [
                                 _BarIconButton(
@@ -582,16 +574,15 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                                           ref
                                               .read(historyProvider.notifier)
                                               .goBack();
-                                          final entry = ref
+                                          final query = ref
                                               .read(historyProvider)
-                                              .currentEntry;
-                                          if (entry != null) {
+                                              .currentQuery;
+                                          if (query != null) {
                                             ref
                                                 .read(
                                                   searchQueryProvider.notifier,
                                                 )
-                                                .state = entry
-                                                .query;
+                                                .state = query;
                                           }
                                         }
                                       : null,
@@ -606,16 +597,15 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                                           ref
                                               .read(historyProvider.notifier)
                                               .goForward();
-                                          final entry = ref
+                                          final query = ref
                                               .read(historyProvider)
-                                              .currentEntry;
-                                          if (entry != null) {
+                                              .currentQuery;
+                                          if (query != null) {
                                             ref
                                                 .read(
                                                   searchQueryProvider.notifier,
                                                 )
-                                                .state = entry
-                                                .query;
+                                                .state = query;
                                           }
                                         }
                                       : null,

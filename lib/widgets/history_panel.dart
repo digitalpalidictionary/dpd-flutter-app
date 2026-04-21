@@ -218,7 +218,7 @@ class _HistoryTile extends ConsumerWidget {
           ),
         ),
         onTap: () {
-          ref.read(historyProvider.notifier).add(entry.query);
+          ref.read(historyProvider.notifier).navigateTo(entry.query);
           ref.read(searchQueryProvider.notifier).state = entry.query;
           if (onClose != null) {
             onClose!();

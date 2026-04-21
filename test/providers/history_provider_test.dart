@@ -13,109 +13,160 @@ void main() {
   });
 
   group('HistoryNotifier', () {
-    test('starts with empty state', () {
+    test('starts with empty recent and navigation state', () {
       final notifier = HistoryNotifier(prefs);
+
       expect(notifier.state.entries, isEmpty);
+      expect(notifier.state.navigationEntries, isEmpty);
       expect(notifier.state.currentIndex, -1);
+      expect(notifier.state.currentQuery, isNull);
     });
 
-    test('add inserts term at front', () {
+    test('navigateTo updates recency and appends navigation stack', () {
       final notifier = HistoryNotifier(prefs);
-      notifier.add('dhamma');
-      notifier.add('kamma');
-      expect(notifier.state.entries.map((e) => e.query).toList(), ['kamma', 'dhamma']);
-      expect(notifier.state.currentIndex, 0);
+
+      notifier.navigateTo('dhamma');
+      notifier.navigateTo('kamma');
+
+      expect(
+        notifier.state.entries.map((e) => e.query).toList(),
+        ['kamma', 'dhamma'],
+      );
+      expect(notifier.state.navigationEntries, ['dhamma', 'kamma']);
+      expect(notifier.state.currentIndex, 1);
+      expect(notifier.state.currentQuery, 'kamma');
     });
 
-    test('add deduplicates and moves to front', () {
+    test('navigateTo deduplicates recent history but preserves navigation path', () {
       final notifier = HistoryNotifier(prefs);
-      notifier.add('dhamma');
-      notifier.add('kamma');
-      notifier.add('dhamma');
-      expect(notifier.state.entries.map((e) => e.query).toList(), ['dhamma', 'kamma']);
-      expect(notifier.state.currentIndex, 0);
+
+      notifier.navigateTo('dhamma');
+      notifier.navigateTo('kamma');
+      notifier.navigateTo('dhamma');
+
+      expect(
+        notifier.state.entries.map((e) => e.query).toList(),
+        ['dhamma', 'kamma'],
+      );
+      expect(notifier.state.navigationEntries, ['dhamma', 'kamma', 'dhamma']);
+      expect(notifier.state.currentQuery, 'dhamma');
     });
 
-    test('add ignores empty string', () {
+    test('navigateTo prunes forward branch when branching from older entry', () {
       final notifier = HistoryNotifier(prefs);
-      notifier.add('');
+
+      notifier.navigateTo('a');
+      notifier.navigateTo('b');
+      notifier.navigateTo('c');
+
+      notifier.goBack();
+      notifier.goBack();
+      expect(notifier.state.currentQuery, 'a');
+      expect(notifier.state.forwardQuery, 'b');
+
+      notifier.navigateTo('d');
+
+      expect(notifier.state.navigationEntries, ['a', 'd']);
+      expect(notifier.state.currentQuery, 'd');
+      expect(notifier.state.backQuery, 'a');
+      expect(notifier.state.canGoForward, isFalse);
+      expect(
+        notifier.state.entries.map((e) => e.query).toList(),
+        ['d', 'c', 'b', 'a'],
+      );
+    });
+
+    test('goBack and goForward walk the navigation stack', () {
+      final notifier = HistoryNotifier(prefs);
+
+      notifier.navigateTo('a');
+      notifier.navigateTo('b');
+      notifier.navigateTo('c');
+
+      expect(notifier.state.currentQuery, 'c');
+      expect(notifier.state.backQuery, 'b');
+
+      notifier.goBack();
+      expect(notifier.state.currentQuery, 'b');
+      expect(notifier.state.backQuery, 'a');
+      expect(notifier.state.forwardQuery, 'c');
+
+      notifier.goBack();
+      expect(notifier.state.currentQuery, 'a');
+      expect(notifier.state.canGoBack, isFalse);
+
+      notifier.goForward();
+      expect(notifier.state.currentQuery, 'b');
+      expect(notifier.state.forwardQuery, 'c');
+    });
+
+    test('resetPosition leaves recent history intact and reopens latest navigation on back', () {
+      final notifier = HistoryNotifier(prefs);
+
+      notifier.navigateTo('a');
+      notifier.navigateTo('b');
+      notifier.resetPosition();
+
+      expect(notifier.state.currentQuery, isNull);
+      expect(notifier.state.canGoBack, isTrue);
+      expect(notifier.state.canGoForward, isFalse);
+      expect(notifier.state.backQuery, 'b');
+
+      notifier.goBack();
+      expect(notifier.state.currentQuery, 'b');
+    });
+
+    test('removeAt only removes recent history entries', () {
+      final notifier = HistoryNotifier(prefs);
+
+      notifier.navigateTo('a');
+      notifier.navigateTo('b');
+      notifier.navigateTo('c');
+      notifier.removeAt(1);
+
+      expect(
+        notifier.state.entries.map((e) => e.query).toList(),
+        ['c', 'a'],
+      );
+      expect(notifier.state.navigationEntries, ['a', 'b', 'c']);
+      expect(notifier.state.currentQuery, 'c');
+    });
+
+    test('clear empties recent history without breaking session navigation', () {
+      final notifier = HistoryNotifier(prefs);
+
+      notifier.navigateTo('a');
+      notifier.navigateTo('b');
+      notifier.clear();
+
       expect(notifier.state.entries, isEmpty);
+      expect(notifier.state.navigationEntries, ['a', 'b']);
+      expect(notifier.state.currentQuery, 'b');
+
+      notifier.goBack();
+      expect(notifier.state.currentQuery, 'a');
     });
 
-    test('add enforces max 50 entries', () {
+    test('navigateTo enforces max 50 entries for recent and navigation history', () {
       final notifier = HistoryNotifier(prefs);
+
       for (var i = 0; i < 55; i++) {
-        notifier.add('term$i');
+        notifier.navigateTo('term$i');
       }
+
       expect(notifier.state.entries.length, 50);
       expect(notifier.state.entries.first.query, 'term54');
+      expect(notifier.state.navigationEntries.length, 50);
+      expect(notifier.state.navigationEntries.first, 'term5');
+      expect(notifier.state.navigationEntries.last, 'term54');
+      expect(notifier.state.currentQuery, 'term54');
     });
 
-    test('goBack increments index', () {
+    test('persists recent history to SharedPreferences', () async {
       final notifier = HistoryNotifier(prefs);
-      notifier.add('a');
-      notifier.add('b');
-      notifier.add('c');
-      expect(notifier.state.currentIndex, 0);
 
-      notifier.goBack();
-      expect(notifier.state.currentIndex, 1);
-      expect(notifier.state.currentEntry?.query, 'b');
-
-      notifier.goBack();
-      expect(notifier.state.currentIndex, 2);
-      expect(notifier.state.currentEntry?.query, 'a');
-    });
-
-    test('goBack stops at end', () {
-      final notifier = HistoryNotifier(prefs);
-      notifier.add('a');
-      notifier.add('b');
-
-      notifier.goBack();
-      notifier.goBack();
-      expect(notifier.state.currentIndex, 1);
-      expect(notifier.state.canGoBack, false);
-    });
-
-    test('goForward decrements index', () {
-      final notifier = HistoryNotifier(prefs);
-      notifier.add('a');
-      notifier.add('b');
-      notifier.add('c');
-
-      notifier.goBack();
-      notifier.goBack();
-      expect(notifier.state.currentIndex, 2);
-
-      notifier.goForward();
-      expect(notifier.state.currentIndex, 1);
-      expect(notifier.state.currentEntry?.query, 'b');
-    });
-
-    test('goForward stops at index 0', () {
-      final notifier = HistoryNotifier(prefs);
-      notifier.add('a');
-      notifier.add('b');
-
-      notifier.goForward();
-      expect(notifier.state.currentIndex, 0);
-      expect(notifier.state.canGoForward, false);
-    });
-
-    test('clear resets state', () {
-      final notifier = HistoryNotifier(prefs);
-      notifier.add('a');
-      notifier.add('b');
-      notifier.clear();
-      expect(notifier.state.entries, isEmpty);
-      expect(notifier.state.currentIndex, -1);
-    });
-
-    test('persists to SharedPreferences', () async {
-      final notifier = HistoryNotifier(prefs);
-      notifier.add('dhamma');
-      notifier.add('kamma');
+      notifier.navigateTo('dhamma');
+      notifier.navigateTo('kamma');
 
       await Future<void>.delayed(Duration.zero);
       final stored = prefs.getString('dpd_history');
@@ -126,16 +177,23 @@ void main() {
       expect(list, ['kamma', 'dhamma']);
     });
 
-    test('loads from SharedPreferences', () async {
+    test('loads persisted recent history without restoring session navigation', () async {
       await prefs.setString('dpd_history', jsonEncode(['kamma', 'dhamma']));
+
       final notifier = HistoryNotifier(prefs);
-      expect(notifier.state.entries.map((e) => e.query).toList(), ['kamma', 'dhamma']);
+
+      expect(
+        notifier.state.entries.map((e) => e.query).toList(),
+        ['kamma', 'dhamma'],
+      );
+      expect(notifier.state.navigationEntries, isEmpty);
       expect(notifier.state.currentIndex, -1);
     });
 
-    test('clear persists empty state', () async {
+    test('clear persists empty recent history', () async {
       final notifier = HistoryNotifier(prefs);
-      notifier.add('a');
+
+      notifier.navigateTo('a');
       notifier.clear();
 
       await Future<void>.delayed(Duration.zero);
@@ -147,34 +205,40 @@ void main() {
   });
 
   group('HistoryState', () {
-    test('currentEntry returns null when index is -1', () {
+    test('currentEntry returns null when there is no active navigation query', () {
       const state = HistoryState();
       expect(state.currentEntry, isNull);
     });
 
-    test('currentEntry returns correct entry', () {
+    test('currentEntry falls back to the active navigation query', () {
       final state = HistoryState(
-        entries: [
+        recentEntries: [
           HistoryEntry(query: 'a', timestamp: DateTime(2024)),
-          HistoryEntry(query: 'b', timestamp: DateTime(2024, 1, 2)),
           HistoryEntry(query: 'c', timestamp: DateTime(2024, 1, 3)),
         ],
-        currentIndex: 1,
+        navigationEntries: const ['a', 'b', 'c'],
+        currentNavigationIndex: 1,
       );
+
       expect(state.currentEntry?.query, 'b');
+      expect(state.currentQuery, 'b');
     });
 
-    test('canGoBack is false for empty entries', () {
-      const state = HistoryState();
-      expect(state.canGoBack, false);
-    });
-
-    test('canGoForward is false at index 0', () {
+    test('backQuery and forwardQuery reflect the navigation cursor', () {
       final state = HistoryState(
-        entries: [HistoryEntry(query: 'a', timestamp: DateTime(2024))],
-        currentIndex: 0,
+        recentEntries: [
+          HistoryEntry(query: 'c', timestamp: DateTime(2024, 1, 3)),
+          HistoryEntry(query: 'b', timestamp: DateTime(2024, 1, 2)),
+          HistoryEntry(query: 'a', timestamp: DateTime(2024)),
+        ],
+        navigationEntries: const ['a', 'b', 'c'],
+        currentNavigationIndex: 1,
       );
-      expect(state.canGoForward, false);
+
+      expect(state.backQuery, 'a');
+      expect(state.forwardQuery, 'c');
+      expect(state.canGoBack, isTrue);
+      expect(state.canGoForward, isTrue);
     });
   });
 }

@@ -23,7 +23,8 @@ void main() {
 
     final history = container.read(historyProvider);
     expect(history.entries.map((e) => e.query).toList(), ['dhamma']);
-    expect(history.currentIndex, 0);
+    expect(history.navigationEntries, ['dhamma']);
+    expect(history.currentQuery, 'dhamma');
   });
 
   test('stores display text separately from normalized lookup query', () {
@@ -35,6 +36,7 @@ void main() {
       container.read(historyProvider).entries.map((e) => e.query).toList(),
       ['dhamma'],
     );
+    expect(container.read(historyProvider).navigationEntries, ['dhamma']);
   });
 
   test('deduplicates external searches through the shared history rule', () {
@@ -45,6 +47,7 @@ void main() {
       container.read(historyProvider).entries.map((e) => e.query).toList(),
       ['dhamma'],
     );
+    expect(container.read(historyProvider).navigationEntries, ['dhamma']);
   });
 
   test('ignores empty external search queries for history', () {

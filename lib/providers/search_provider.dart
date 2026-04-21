@@ -26,7 +26,7 @@ class ExternalSearchHandler {
     _ref.read(searchQueryProvider.notifier).state = query;
 
     if (shouldRecordCommittedSearch(query)) {
-      _ref.read(historyProvider.notifier).add(query);
+      _ref.read(historyProvider.notifier).navigateTo(query);
     }
   }
 }

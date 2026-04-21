@@ -41,30 +41,62 @@ class HistoryEntry {
 
 class HistoryState {
   const HistoryState({
-    this.entries = const [],
-    this.currentIndex = -1,
+    this.recentEntries = const [],
+    this.navigationEntries = const [],
+    this.currentNavigationIndex = -1,
   });
 
-  final List<HistoryEntry> entries;
-  final int currentIndex;
+  final List<HistoryEntry> recentEntries;
+  final List<String> navigationEntries;
+  final int currentNavigationIndex;
 
   HistoryState copyWith({
-    List<HistoryEntry>? entries,
-    int? currentIndex,
+    List<HistoryEntry>? recentEntries,
+    List<String>? navigationEntries,
+    int? currentNavigationIndex,
   }) {
     return HistoryState(
-      entries: entries ?? this.entries,
-      currentIndex: currentIndex ?? this.currentIndex,
+      recentEntries: recentEntries ?? this.recentEntries,
+      navigationEntries: navigationEntries ?? this.navigationEntries,
+      currentNavigationIndex:
+          currentNavigationIndex ?? this.currentNavigationIndex,
     );
   }
 
+  List<HistoryEntry> get entries => recentEntries;
+  int get currentIndex => currentNavigationIndex;
+
   HistoryEntry? get currentEntry =>
-      currentIndex >= 0 && currentIndex < entries.length
-          ? entries[currentIndex]
+      currentQuery == null
+          ? null
+          : recentEntries.cast<HistoryEntry?>().firstWhere(
+                (entry) => entry?.query == currentQuery,
+                orElse: () => HistoryEntry(
+                  query: currentQuery!,
+                  timestamp: DateTime.now(),
+                ),
+              );
+
+  String? get currentQuery =>
+      currentNavigationIndex >= 0 &&
+              currentNavigationIndex < navigationEntries.length
+          ? navigationEntries[currentNavigationIndex]
           : null;
 
-  bool get canGoBack => currentIndex < entries.length - 1;
-  bool get canGoForward => currentIndex > 0;
+  String? get backQuery => canGoBack
+      ? navigationEntries[
+          currentNavigationIndex.clamp(1, navigationEntries.length) - 1
+        ]
+      : null;
+
+  String? get forwardQuery => canGoForward
+      ? navigationEntries[currentNavigationIndex + 1]
+      : null;
+
+  bool get canGoBack => currentNavigationIndex > 0;
+  bool get canGoForward =>
+      currentNavigationIndex >= 0 &&
+      currentNavigationIndex < navigationEntries.length - 1;
 }
 
 class HistoryNotifier extends StateNotifier<HistoryState> {
@@ -78,60 +110,86 @@ class HistoryNotifier extends StateNotifier<HistoryState> {
     final json = _prefs.getString(_prefsKey);
     if (json != null) {
       final list = (jsonDecode(json) as List).map(HistoryEntry.fromJson).toList();
-      state = HistoryState(entries: list, currentIndex: -1);
+      state = state.copyWith(recentEntries: list);
     }
   }
 
   Future<void> _persist() async {
     await _prefs.setString(
       _prefsKey,
-      jsonEncode(state.entries.map((e) => e.toJson()).toList()),
+      jsonEncode(state.recentEntries.map((e) => e.toJson()).toList()),
     );
   }
 
   void removeAt(int index) {
-    if (index < 0 || index >= state.entries.length) return;
-    final entries = List<HistoryEntry>.from(state.entries);
+    if (index < 0 || index >= state.recentEntries.length) return;
+    final entries = List<HistoryEntry>.from(state.recentEntries);
     entries.removeAt(index);
-    int newIndex = state.currentIndex;
-    if (entries.isEmpty) {
-      newIndex = -1;
-    } else if (index <= state.currentIndex) {
-      newIndex = (state.currentIndex - 1).clamp(-1, entries.length - 1);
-    }
-    state = HistoryState(entries: entries, currentIndex: newIndex);
+    state = state.copyWith(recentEntries: entries);
     _persist();
   }
 
-  void add(String term) {
+  void navigateTo(String term) {
     if (term.isEmpty) return;
     final entry = HistoryEntry(query: term, timestamp: DateTime.now());
-    final entries = List<HistoryEntry>.from(state.entries);
+    final entries = List<HistoryEntry>.from(state.recentEntries);
     entries.removeWhere((e) => e == entry);
     entries.insert(0, entry);
     if (entries.length > _maxEntries) {
       entries.removeRange(_maxEntries, entries.length);
     }
-    state = HistoryState(entries: entries, currentIndex: 0);
+
+    final navigationEntries = List<String>.from(state.navigationEntries);
+    final currentQuery = state.currentQuery;
+    if (currentQuery != term) {
+      if (state.currentNavigationIndex >= 0 &&
+          state.currentNavigationIndex < navigationEntries.length - 1) {
+        navigationEntries.removeRange(
+          state.currentNavigationIndex + 1,
+          navigationEntries.length,
+        );
+      }
+      navigationEntries.add(term);
+      if (navigationEntries.length > _maxEntries) {
+        navigationEntries.removeAt(0);
+      }
+    }
+
+    state = HistoryState(
+      recentEntries: entries,
+      navigationEntries: navigationEntries,
+      currentNavigationIndex:
+          navigationEntries.isEmpty ? -1 : navigationEntries.length - 1,
+    );
     _persist();
   }
 
+  void add(String term) => navigateTo(term);
+
   void resetPosition() {
-    state = state.copyWith(currentIndex: -1);
+    state = state.copyWith(
+      currentNavigationIndex: state.navigationEntries.isEmpty
+          ? -1
+          : state.navigationEntries.length,
+    );
   }
 
   void goBack() {
     if (!state.canGoBack) return;
-    state = state.copyWith(currentIndex: state.currentIndex + 1);
+    state = state.copyWith(
+      currentNavigationIndex: state.currentNavigationIndex - 1,
+    );
   }
 
   void goForward() {
     if (!state.canGoForward) return;
-    state = state.copyWith(currentIndex: state.currentIndex - 1);
+    state = state.copyWith(
+      currentNavigationIndex: state.currentNavigationIndex + 1,
+    );
   }
 
   void clear() {
-    state = const HistoryState();
+    state = state.copyWith(recentEntries: const []);
     _persist();
   }
 }
