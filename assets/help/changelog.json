@@ -3,6 +3,10 @@
     {
       "title": "unreleased",
       "items": [
+        "feat: setting to hide summary's construction",
+        "style: app feedback form now matches DPD feedback form's look",
+        "fix: inflection table forms start grey instead of flashing white",
+        "fix: summary arrow now sits beside each word, not the headword",
         "feat: dictionary feedback links now open in-app forms & work offline"
       ]
     },
