@@ -105,7 +105,7 @@ InflectionTableData? buildInflectionTable({
         final e = ending as String;
         if (e.isEmpty) continue;
         final word = isIrregular ? e : '$cleanStem$e';
-        final isOccurring = lookupKeys == null || lookupKeys.contains(word);
+        final isOccurring = lookupKeys != null && lookupKeys.contains(word);
         forms.add(InflectionForm(stem: cleanStem, ending: e, word: word, isOccurring: isOccurring));
       }
       cells.add(InflectionCell(forms: forms, grammarTooltip: tooltip));
