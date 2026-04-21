@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../providers/dict_provider.dart';
 import 'compact_segmented.dart';
+import 'settings_help_dialog.dart';
 
 class DictSettingsWidget extends ConsumerWidget {
   const DictSettingsWidget({super.key});
@@ -78,7 +79,13 @@ class DictSettingsWidget extends ConsumerWidget {
             return ListTile(
               key: ValueKey(id),
               leading: _ReorderHandle(index: index),
-              title: Text(name),
+              title: Row(
+                children: [
+                  Flexible(child: Text(name)),
+                  const SizedBox(width: 4),
+                  SettingHelpButton(topic: _dictVisibilityTopic(name)),
+                ],
+              ),
               subtitle: count != null
                   ? Text(
                       '$count entries',
@@ -105,6 +112,13 @@ class DictSettingsWidget extends ConsumerWidget {
       ],
     );
   }
+}
+
+SettingHelpTopic _dictVisibilityTopic(String name) {
+  return SettingHelpTopic(
+    title: name,
+    description: 'Shows or hides search results from $name.',
+  );
 }
 
 class _ReorderHandle extends StatelessWidget {

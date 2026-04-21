@@ -10,6 +10,7 @@ import '../services/intent_service.dart';
 import '../theme/dpd_colors.dart';
 import 'compact_segmented.dart';
 import 'dict_settings_widget.dart';
+import 'settings_help_dialog.dart';
 
 class SettingsContent extends ConsumerStatefulWidget {
   const SettingsContent({super.key});
@@ -38,8 +39,9 @@ class _SettingsContentState extends ConsumerState<SettingsContent> {
         padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
         child: Text('Settings', style: theme.textTheme.titleLarge),
       ),
-      () => ListTile(
-        title: const Text('Result style'),
+      () => _buildSettingTile(
+        title: 'Result style',
+        topic: _resultStyleTopic(),
         trailing: CompactSegmented<DisplayMode>(
           segments: const [
             ButtonSegment(value: DisplayMode.classic, label: Text('Classic')),
@@ -49,8 +51,9 @@ class _SettingsContentState extends ConsumerState<SettingsContent> {
           onChanged: notifier.setDisplayMode,
         ),
       ),
-      () => ListTile(
-        title: const Text('Theme'),
+      () => _buildSettingTile(
+        title: 'Theme',
+        topic: _themeTopic(),
         trailing: CompactSegmented<ThemeMode>(
           segments: const [
             ButtonSegment(value: ThemeMode.system, label: Text('System')),
@@ -62,25 +65,25 @@ class _SettingsContentState extends ConsumerState<SettingsContent> {
         ),
       ),
       buildDivider,
-      () => ListTile(
-        title: Row(
-          children: [
-            const Text('Font size'),
-            Expanded(
-              child: Slider(
-                value: settings.fontSize,
-                min: 12,
-                max: 24,
-                divisions: 12,
-                label: settings.fontSize.toStringAsFixed(0),
-                onChanged: notifier.setFontSize,
-              ),
-            ),
-          ],
+      () => _buildSettingTile(
+        title: 'Font size',
+        topic: _fontSizeTopic(theme),
+        trailing: Text(
+          settings.fontSize.toStringAsFixed(0),
+          style: theme.textTheme.bodyMedium,
+        ),
+        subtitle: Slider(
+          value: settings.fontSize,
+          min: 12,
+          max: 24,
+          divisions: 12,
+          label: settings.fontSize.toStringAsFixed(0),
+          onChanged: notifier.setFontSize,
         ),
       ),
-      () => ListTile(
-        title: const Text('Font'),
+      () => _buildSettingTile(
+        title: 'Font',
+        topic: _fontTopic(theme),
         trailing: CompactSegmented<bool>(
           segments: const [
             ButtonSegment(value: false, label: Text('Sans')),
@@ -90,8 +93,9 @@ class _SettingsContentState extends ConsumerState<SettingsContent> {
           onChanged: notifier.setUseSerifFont,
         ),
       ),
-      () => ListTile(
-        title: const Text('Niggahīta'),
+      () => _buildSettingTile(
+        title: 'Niggahīta',
+        topic: _niggahitaTopic(),
         trailing: CompactSegmented<NiggahitaMode>(
           segments: const [
             ButtonSegment(value: NiggahitaMode.dot, label: Text('ṃ')),
@@ -101,8 +105,9 @@ class _SettingsContentState extends ConsumerState<SettingsContent> {
           onChanged: notifier.setNiggahitaMode,
         ),
       ),
-      () => ListTile(
-        title: const Text('Sandhi apostrophes'),
+      () => _buildSettingTile(
+        title: 'Sandhi apostrophes',
+        topic: _sandhiTopic(),
         trailing: CompactSegmented<bool>(
           segments: const [
             ButtonSegment(value: false, label: Text('Hide')),
@@ -113,8 +118,9 @@ class _SettingsContentState extends ConsumerState<SettingsContent> {
         ),
       ),
       buildDivider,
-      () => ListTile(
-        title: const Text('Construction in summary'),
+      () => _buildSettingTile(
+        title: 'Construction in summary',
+        topic: _constructionTopic(),
         trailing: CompactSegmented<bool>(
           segments: const [
             ButtonSegment(value: false, label: Text('Hide')),
@@ -124,8 +130,9 @@ class _SettingsContentState extends ConsumerState<SettingsContent> {
           onChanged: notifier.setShowConstructionInSummary,
         ),
       ),
-      () => ListTile(
-        title: const Text('Grammar button'),
+      () => _buildSettingTile(
+        title: 'Grammar button',
+        topic: _grammarButtonTopic(),
         trailing: CompactSegmented<bool>(
           segments: const [
             ButtonSegment(value: false, label: Text('Closed')),
@@ -135,8 +142,9 @@ class _SettingsContentState extends ConsumerState<SettingsContent> {
           onChanged: notifier.setGrammarOpen,
         ),
       ),
-      () => ListTile(
-        title: const Text('Examples button'),
+      () => _buildSettingTile(
+        title: 'Examples button',
+        topic: _examplesButtonTopic(),
         trailing: CompactSegmented<bool>(
           segments: const [
             ButtonSegment(value: false, label: Text('Closed')),
@@ -146,31 +154,22 @@ class _SettingsContentState extends ConsumerState<SettingsContent> {
           onChanged: notifier.setExamplesOpen,
         ),
       ),
-      () => Tooltip(
-        message: 'Opening one section closes any other open sections',
-        decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.primary,
-          borderRadius: BorderRadius.circular(8),
-        ),
-        textStyle: TextStyle(
-          color: Theme.of(context).colorScheme.onPrimary,
-          fontSize: 12,
-        ),
-        child: ListTile(
-          title: const Text('One button at a time'),
-          trailing: CompactSegmented<bool>(
-            segments: const [
-              ButtonSegment(value: false, label: Text('Off')),
-              ButtonSegment(value: true, label: Text('On')),
-            ],
-            selected: settings.oneButtonAtATime,
-            onChanged: notifier.setOneButtonAtATime,
-          ),
+      () => _buildSettingTile(
+        title: 'One button at a time',
+        topic: _oneButtonTopic(),
+        trailing: CompactSegmented<bool>(
+          segments: const [
+            ButtonSegment(value: false, label: Text('Off')),
+            ButtonSegment(value: true, label: Text('On')),
+          ],
+          selected: settings.oneButtonAtATime,
+          onChanged: notifier.setOneButtonAtATime,
         ),
       ),
       buildDivider,
-      () => ListTile(
-        title: const Text('Audio gender'),
+      () => _buildSettingTile(
+        title: 'Audio gender',
+        topic: _audioGenderTopic(),
         trailing: CompactSegmented<AudioGender>(
           segments: const [
             ButtonSegment(value: AudioGender.male, label: Text('Male')),
@@ -180,8 +179,9 @@ class _SettingsContentState extends ConsumerState<SettingsContent> {
           onChanged: notifier.setAudioGender,
         ),
       ),
-      () => ListTile(
-        title: const Text('Word search tap'),
+      () => _buildSettingTile(
+        title: 'Word search tap',
+        topic: _wordSearchTapTopic(),
         trailing: CompactSegmented<TapMode>(
           segments: const [
             ButtonSegment(value: TapMode.singleTap, label: Text('Single')),
@@ -191,8 +191,9 @@ class _SettingsContentState extends ConsumerState<SettingsContent> {
           onChanged: notifier.setTapMode,
         ),
       ),
-      () => ListTile(
-        title: const Text('Updates'),
+      () => _buildSettingTile(
+        title: 'Updates',
+        topic: _updatesTopic(),
         trailing: CompactSegmented<bool>(
           segments: const [
             ButtonSegment(value: false, label: Text('Any')),
@@ -208,8 +209,9 @@ class _SettingsContentState extends ConsumerState<SettingsContent> {
           onChanged: notifier.setLookupHotkey,
         ),
       buildDivider,
-      () => ListTile(
-        title: const Text('Partial results'),
+      () => _buildSettingTile(
+        title: 'Partial results',
+        topic: _partialResultsTopic(),
         trailing: CompactSegmented<bool>(
           segments: const [
             ButtonSegment(value: false, label: Text('Hide')),
@@ -219,8 +221,9 @@ class _SettingsContentState extends ConsumerState<SettingsContent> {
           onChanged: notifier.setShowPartialResults,
         ),
       ),
-      () => ListTile(
-        title: const Text('Fuzzy results'),
+      () => _buildSettingTile(
+        title: 'Fuzzy results',
+        topic: _fuzzyResultsTopic(),
         trailing: CompactSegmented<bool>(
           segments: const [
             ButtonSegment(value: false, label: Text('Hide')),
@@ -259,6 +262,135 @@ class _SettingsContentState extends ConsumerState<SettingsContent> {
       ),
     );
   }
+
+  Widget _buildSettingTile({
+    required String title,
+    required SettingHelpTopic topic,
+    required Widget trailing,
+    Widget? subtitle,
+  }) {
+    return ListTile(
+      title: Row(
+        children: [
+          Flexible(child: Text(title)),
+          const SizedBox(width: 4),
+          SettingHelpButton(topic: topic),
+        ],
+      ),
+      subtitle: subtitle,
+      trailing: trailing,
+    );
+  }
+
+  SettingHelpTopic _resultStyleTopic() {
+    return const SettingHelpTopic(
+      title: 'Result style',
+      description: 'Changes how search results are laid out on the screen.',
+    );
+  }
+
+  SettingHelpTopic _themeTopic() {
+    return const SettingHelpTopic(
+      title: 'Theme',
+      description:
+          'Chooses whether the app follows your device theme or stays light or dark.',
+    );
+  }
+
+  SettingHelpTopic _fontSizeTopic(ThemeData theme) {
+    return const SettingHelpTopic(
+      title: 'Font size',
+      description: 'Makes text throughout the app smaller or larger.',
+    );
+  }
+
+  SettingHelpTopic _fontTopic(ThemeData theme) {
+    return const SettingHelpTopic(
+      title: 'Font',
+      description: 'Changes the reading font used in the app.',
+    );
+  }
+
+  SettingHelpTopic _niggahitaTopic() {
+    return const SettingHelpTopic(
+      title: 'Niggahīta',
+      description: 'Chooses which niggahīta character style the app displays.',
+    );
+  }
+
+  SettingHelpTopic _sandhiTopic() {
+    return const SettingHelpTopic(
+      title: 'Sandhi apostrophes',
+      description:
+          'Shows or hides apostrophes used to mark sandhi in displayed words.',
+    );
+  }
+
+  SettingHelpTopic _constructionTopic() {
+    return const SettingHelpTopic(
+      title: 'Construction in summary',
+      description: 'Shows or hides construction notes in the entry summary.',
+    );
+  }
+
+  SettingHelpTopic _grammarButtonTopic() {
+    return const SettingHelpTopic(
+      title: 'Grammar button',
+      description: 'Sets whether the grammar section starts open or closed.',
+    );
+  }
+
+  SettingHelpTopic _examplesButtonTopic() {
+    return const SettingHelpTopic(
+      title: 'Examples button',
+      description: 'Sets whether the examples section starts open or closed.',
+    );
+  }
+
+  SettingHelpTopic _oneButtonTopic() {
+    return const SettingHelpTopic(
+      title: 'One button at a time',
+      description: 'Opening one entry section closes the others automatically.',
+    );
+  }
+
+  SettingHelpTopic _audioGenderTopic() {
+    return const SettingHelpTopic(
+      title: 'Audio gender',
+      description: 'Chooses which voice is used for available audio.',
+    );
+  }
+
+  SettingHelpTopic _wordSearchTapTopic() {
+    return const SettingHelpTopic(
+      title: 'Word search tap',
+      description:
+          'Chooses whether word lookup inside entries uses a single tap or double tap.',
+    );
+  }
+
+  SettingHelpTopic _updatesTopic() {
+    return const SettingHelpTopic(
+      title: 'Updates',
+      description:
+          'Chooses whether updates can download on any connection or only on WiFi.',
+    );
+  }
+
+  SettingHelpTopic _partialResultsTopic() {
+    return const SettingHelpTopic(
+      title: 'Partial results',
+      description:
+          'Shows or hides search results that partly match what you typed.',
+    );
+  }
+
+  SettingHelpTopic _fuzzyResultsTopic() {
+    return const SettingHelpTopic(
+      title: 'Fuzzy results',
+      description: 'Shows or hides close spelling matches in search results.',
+    );
+  }
 }
 
 class _HotkeyTile extends StatelessWidget {
@@ -273,7 +405,13 @@ class _HotkeyTile extends StatelessWidget {
     final display = hotkey.isEmpty ? 'Not set' : _gsettingsToDisplay(hotkey);
 
     return ListTile(
-      title: const Text('Lookup hotkey'),
+      title: Row(
+        children: [
+          const Flexible(child: Text('Lookup hotkey')),
+          const SizedBox(width: 4),
+          SettingHelpButton(topic: _lookupHotkeyTopic()),
+        ],
+      ),
       subtitle: Text(
         'Highlight text in any app, press hotkey to search in DPD.',
         style: theme.textTheme.bodySmall?.copyWith(
@@ -298,6 +436,14 @@ class _HotkeyTile extends StatelessWidget {
             ),
         ],
       ),
+    );
+  }
+
+  SettingHelpTopic _lookupHotkeyTopic() {
+    return const SettingHelpTopic(
+      title: 'Lookup hotkey',
+      description:
+          'Lets you set a keyboard shortcut to send highlighted text from another app into DPD.',
     );
   }
 
