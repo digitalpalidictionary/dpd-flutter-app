@@ -4,9 +4,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../services/feedback_draft_service.dart';
-import '../theme/dpd_colors.dart';
 import '../utils/app_feedback_url.dart';
 import '../utils/feedback_email_draft.dart';
+import 'feedback_form_components.dart';
 
 const _issueTypes = [
   'App crash or freeze',
@@ -20,14 +20,8 @@ Future<void> showFeedbackFormSheet(
   BuildContext context, {
   required String? dbVersion,
 }) {
-  return showModalBottomSheet<void>(
-    context: context,
-    isScrollControlled: true,
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(
-        top: Radius.circular(DpdColors.borderRadiusValue),
-      ),
-    ),
+  return showFeedbackBottomSheet(
+    context,
     builder: (context) {
       return _FeedbackFormSheet(dbVersion: dbVersion);
     },
@@ -53,6 +47,7 @@ class _FeedbackFormSheetState extends ConsumerState<_FeedbackFormSheet> {
 
   String? _issueType;
   bool _submitting = false;
+  bool _submitted = false;
   String? _errorMessage;
 
   @override
@@ -89,6 +84,8 @@ class _FeedbackFormSheetState extends ConsumerState<_FeedbackFormSheet> {
 
   Future<void> _submit() async {
     if (_submitting) return;
+
+    setState(() => _submitted = true);
     if (!(_formKey.currentState?.validate() ?? false)) return;
 
     setState(() {
@@ -193,80 +190,107 @@ class _FeedbackFormSheetState extends ConsumerState<_FeedbackFormSheet> {
               Expanded(
                 child: SingleChildScrollView(
                   controller: scrollController,
-                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
+                  padding: const EdgeInsets.fromLTRB(12, 0, 12, 24),
                   child: Form(
                     key: _formKey,
-                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    autovalidateMode: _submitted
+                        ? AutovalidateMode.always
+                        : AutovalidateMode.disabled,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        TextFormField(
-                          controller: _nameCtrl,
-                          decoration: const InputDecoration(labelText: 'Name *'),
-                          textCapitalization: TextCapitalization.sentences,
-                          textInputAction: TextInputAction.next,
-                          onChanged: (_) => _saveDraft(),
-                          validator: (v) =>
-                              (v == null || v.trim().isEmpty) ? 'Name is required' : null,
+                        const Padding(
+                          padding: EdgeInsets.only(bottom: 4),
+                          child: FeedbackRequiredFieldLabel(),
                         ),
-                        const SizedBox(height: 12),
-                        TextFormField(
-                          controller: _emailCtrl,
-                          decoration: const InputDecoration(labelText: 'Email address *'),
-                          keyboardType: TextInputType.emailAddress,
-                          textInputAction: TextInputAction.next,
-                          onChanged: (_) => _saveDraft(),
-                          validator: (v) {
-                            if (v == null || v.trim().isEmpty) {
-                              return 'Email is required';
-                            }
-                            if (!RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$').hasMatch(v.trim())) {
-                              return 'Enter a valid email address';
-                            }
-                            return null;
-                          },
-                        ),
-                        const SizedBox(height: 12),
-                        DropdownButtonFormField<String>(
-                          initialValue: _issueType,
-                          decoration: const InputDecoration(labelText: "What's the issue? *"),
-                          items: _issueTypes
-                              .map((t) => DropdownMenuItem(value: t, child: Text(t)))
-                              .toList(),
-                          onChanged: (v) {
-                            setState(() => _issueType = v);
-                            _saveDraft();
-                          },
-                          validator: (v) =>
-                              (v == null || v.isEmpty) ? 'Please select an issue type' : null,
-                        ),
-                        const SizedBox(height: 12),
-                        TextFormField(
-                          controller: _descriptionCtrl,
-                          decoration: const InputDecoration(
-                            labelText: 'Description *',
-                            alignLabelWithHint: true,
+                        const SizedBox(height: 8),
+                        FeedbackQuestionCard(
+                          question: 'Name',
+                          required: true,
+                          child: TextFormField(
+                            controller: _nameCtrl,
+                            decoration: const InputDecoration(border: InputBorder.none),
+                            textCapitalization: TextCapitalization.sentences,
+                            textInputAction: TextInputAction.next,
+                            onChanged: (_) => _saveDraft(),
+                            validator: (v) =>
+                                (v == null || v.trim().isEmpty) ? 'Name is required' : null,
                           ),
-                          textCapitalization: TextCapitalization.sentences,
-                          minLines: 3,
-                          maxLines: null,
-                          textInputAction: TextInputAction.newline,
-                          onChanged: (_) => _saveDraft(),
-                          validator: (v) =>
-                              (v == null || v.trim().isEmpty) ? 'Description is required' : null,
                         ),
                         const SizedBox(height: 12),
-                        TextFormField(
-                          controller: _improvementCtrl,
-                          decoration: const InputDecoration(
-                            labelText: 'What would make the app better for you?',
-                            alignLabelWithHint: true,
+                        FeedbackQuestionCard(
+                          question: 'Email address',
+                          required: true,
+                          child: TextFormField(
+                            controller: _emailCtrl,
+                            decoration: const InputDecoration(border: InputBorder.none),
+                            keyboardType: TextInputType.emailAddress,
+                            textInputAction: TextInputAction.next,
+                            onChanged: (_) => _saveDraft(),
+                            validator: (v) {
+                              if (v == null || v.trim().isEmpty) {
+                                return 'Email is required';
+                              }
+                              if (!RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$').hasMatch(v.trim())) {
+                                return 'Enter a valid email address';
+                              }
+                              return null;
+                            },
                           ),
-                          textCapitalization: TextCapitalization.sentences,
-                          minLines: 3,
-                          maxLines: null,
-                          textInputAction: TextInputAction.newline,
-                          onChanged: (_) => _saveDraft(),
+                        ),
+                        const SizedBox(height: 12),
+                        FeedbackQuestionCard(
+                          question: "What's the issue?",
+                          required: true,
+                          child: DropdownButtonFormField<String>(
+                            initialValue: _issueType,
+                            decoration: const InputDecoration(
+                              border: InputBorder.none,
+                              enabledBorder: InputBorder.none,
+                              focusedBorder: InputBorder.none,
+                              errorBorder: InputBorder.none,
+                              focusedErrorBorder: InputBorder.none,
+                            ),
+                            hint: const Text('Choose'),
+                            items: _issueTypes
+                                .map((t) => DropdownMenuItem(value: t, child: Text(t)))
+                                .toList(),
+                            onChanged: (v) {
+                              setState(() => _issueType = v);
+                              _saveDraft();
+                            },
+                            validator: (v) =>
+                                (v == null || v.isEmpty) ? 'Please select an issue type' : null,
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        FeedbackQuestionCard(
+                          question: 'Description',
+                          required: true,
+                          child: TextFormField(
+                            controller: _descriptionCtrl,
+                            decoration: const InputDecoration(border: InputBorder.none),
+                            textCapitalization: TextCapitalization.sentences,
+                            minLines: 3,
+                            maxLines: null,
+                            textInputAction: TextInputAction.newline,
+                            onChanged: (_) => _saveDraft(),
+                            validator: (v) =>
+                                (v == null || v.trim().isEmpty) ? 'Description is required' : null,
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        FeedbackQuestionCard(
+                          question: 'What would make the app better for you?',
+                          child: TextFormField(
+                            controller: _improvementCtrl,
+                            decoration: const InputDecoration(border: InputBorder.none),
+                            textCapitalization: TextCapitalization.sentences,
+                            minLines: 3,
+                            maxLines: null,
+                            textInputAction: TextInputAction.newline,
+                            onChanged: (_) => _saveDraft(),
+                          ),
                         ),
                         const SizedBox(height: 20),
                         if (_errorMessage != null) ...[
