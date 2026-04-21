@@ -107,18 +107,19 @@ class _SummaryRow extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 2),
         child: entry.type == SummaryEntryType.headword
-            ? Row(
+            ? Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Expanded(
-                    child: Column(
+                  if (showHeadwordHeading)
+                    Text(splitLabel.lemma, style: labelStyle),
+                  if (entry.typeLabel.isNotEmpty ||
+                      entry.meaning.isNotEmpty ||
+                      splitLabel.suffix != null)
+                    Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        if (showHeadwordHeading)
-                          Text(splitLabel.lemma, style: labelStyle),
-                        if (entry.typeLabel.isNotEmpty ||
-                            entry.meaning.isNotEmpty)
-                          Text.rich(
+                        Expanded(
+                          child: Text.rich(
                             TextSpan(
                               children: [
                                 if (splitLabel.suffix != null)
@@ -141,11 +142,11 @@ class _SummaryRow extends StatelessWidget {
                               ],
                             ),
                           ),
+                        ),
+                        const SizedBox(width: 8),
+                        Text('►', style: linkStyle),
                       ],
                     ),
-                  ),
-                  const SizedBox(width: 8),
-                  Text('►', style: linkStyle),
                 ],
               )
             : Row(
