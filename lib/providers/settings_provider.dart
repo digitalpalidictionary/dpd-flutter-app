@@ -29,6 +29,7 @@ class Settings {
     this.showPartialResults = true,
     this.showFuzzyResults = true,
     this.tapMode = TapMode.singleTap,
+    this.showConstructionInSummary = true,
   });
 
   final ThemeMode themeMode;
@@ -47,6 +48,7 @@ class Settings {
   final bool showPartialResults;
   final bool showFuzzyResults;
   final TapMode tapMode;
+  final bool showConstructionInSummary;
 
   Settings copyWith({
     ThemeMode? themeMode,
@@ -65,6 +67,7 @@ class Settings {
     bool? showPartialResults,
     bool? showFuzzyResults,
     TapMode? tapMode,
+    bool? showConstructionInSummary,
   }) {
     return Settings(
       themeMode: themeMode ?? this.themeMode,
@@ -83,6 +86,8 @@ class Settings {
       showPartialResults: showPartialResults ?? this.showPartialResults,
       showFuzzyResults: showFuzzyResults ?? this.showFuzzyResults,
       tapMode: tapMode ?? this.tapMode,
+      showConstructionInSummary:
+          showConstructionInSummary ?? this.showConstructionInSummary,
     );
   }
 
@@ -105,7 +110,8 @@ class Settings {
         other.lookupHotkey == lookupHotkey &&
         other.showPartialResults == showPartialResults &&
         other.showFuzzyResults == showFuzzyResults &&
-        other.tapMode == tapMode;
+        other.tapMode == tapMode &&
+        other.showConstructionInSummary == showConstructionInSummary;
   }
 
   @override
@@ -126,6 +132,7 @@ class Settings {
     showPartialResults,
     showFuzzyResults,
     tapMode,
+    showConstructionInSummary,
   );
 }
 
@@ -175,6 +182,8 @@ class SettingsNotifier extends StateNotifier<Settings> {
       (m) => m.name == tapModeName,
       orElse: () => TapMode.singleTap,
     );
+    final showConstructionInSummary =
+        _prefs.getBool('show_construction_in_summary') ?? true;
     state = Settings(
       themeMode: themeMode,
       fontSize: fontSize,
@@ -192,6 +201,7 @@ class SettingsNotifier extends StateNotifier<Settings> {
       showPartialResults: showPartialResults,
       showFuzzyResults: showFuzzyResults,
       tapMode: tapMode,
+      showConstructionInSummary: showConstructionInSummary,
     );
   }
 
@@ -274,13 +284,20 @@ class SettingsNotifier extends StateNotifier<Settings> {
     await _prefs.setString('tap_mode', mode.name);
     state = state.copyWith(tapMode: mode);
   }
+
+  Future<void> setShowConstructionInSummary(bool value) async {
+    await _prefs.setBool('show_construction_in_summary', value);
+    state = state.copyWith(showConstructionInSummary: value);
+  }
 }
 
 final sharedPreferencesProvider = Provider<SharedPreferences>((ref) {
   throw UnimplementedError('Must be overridden in ProviderScope');
 });
 
-final settingsProvider = StateNotifierProvider<SettingsNotifier, Settings>((ref) {
+final settingsProvider = StateNotifierProvider<SettingsNotifier, Settings>((
+  ref,
+) {
   final prefs = ref.watch(sharedPreferencesProvider);
   return SettingsNotifier(prefs);
 });

@@ -114,6 +114,17 @@ class _SettingsContentState extends ConsumerState<SettingsContent> {
       ),
       buildDivider,
       () => ListTile(
+        title: const Text('Construction in summary'),
+        trailing: CompactSegmented<bool>(
+          segments: const [
+            ButtonSegment(value: false, label: Text('Hide')),
+            ButtonSegment(value: true, label: Text('Show')),
+          ],
+          selected: settings.showConstructionInSummary,
+          onChanged: notifier.setShowConstructionInSummary,
+        ),
+      ),
+      () => ListTile(
         title: const Text('Grammar button'),
         trailing: CompactSegmented<bool>(
           segments: const [

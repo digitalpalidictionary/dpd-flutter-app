@@ -7,6 +7,7 @@ import '../models/summary_entry.dart';
 import 'dict_provider.dart';
 import 'search_provider.dart';
 import 'secondary_results_provider.dart';
+import 'settings_provider.dart';
 
 // Maps secondary result runtime type to its DPD source ID.
 const _secondarySourceId = {
@@ -30,12 +31,16 @@ final summaryEntriesProvider = Provider.autoDispose
       final secondary =
           ref.watch(secondaryResultsProvider(query)).valueOrNull ?? [];
       final enabled = ref.watch(dictVisibilityProvider).enabled;
+      final showConstruction = ref
+          .watch(settingsProvider)
+          .showConstructionInSummary;
 
       return buildSummaryEntries(
         exact,
         roots,
         secondary,
         enabledSources: enabled,
+        showConstruction: showConstruction,
       );
     });
 
@@ -44,6 +49,7 @@ List<SummaryEntry> buildSummaryEntries(
   List<RootWithFamilies> roots,
   List<Object> secondary, {
   Set<String>? enabledSources,
+  bool showConstruction = true,
 }) {
   bool sourceEnabled(String id) =>
       enabledSources == null || enabledSources.contains(id);
@@ -52,7 +58,10 @@ List<SummaryEntry> buildSummaryEntries(
 
   if (sourceEnabled('dpd_headwords')) {
     for (final hw in exact) {
-      final meaning = _buildHeadwordSummaryMeaning(hw.headword);
+      final meaning = _buildHeadwordSummaryMeaning(
+        hw.headword,
+        showConstruction: showConstruction,
+      );
       entries.add(
         SummaryEntry(
           type: SummaryEntryType.headword,
@@ -185,12 +194,16 @@ List<SummaryEntry> buildSummaryEntries(
   return entries;
 }
 
-String _buildHeadwordSummaryMeaning(DpdHeadword headword) {
+String _buildHeadwordSummaryMeaning(
+  DpdHeadword headword, {
+  bool showConstruction = true,
+}) {
   final meaning = headword.meaning1?.isNotEmpty == true
       ? headword.meaning1!
       : headword.meaning2 ?? '';
   final summary = headword.constructionSummary;
 
+  if (!showConstruction) return meaning;
   if (summary.isEmpty) return meaning;
   if (meaning.isEmpty) return '[$summary]';
   return '$meaning [$summary]';
