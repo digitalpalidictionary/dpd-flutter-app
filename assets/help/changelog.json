@@ -3,6 +3,8 @@
     {
       "title": "unreleased",
       "items": [
+        "feat: settings now include help popups for every option",
+        "fix: back navigation now follows actual search path",
         "feat: setting to hide summary's construction",
         "style: app feedback form now matches DPD feedback form's look",
         "fix: inflection table forms start grey instead of flashing white",
