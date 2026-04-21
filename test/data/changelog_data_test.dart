@@ -25,6 +25,24 @@ void main() {
       expect(changelog.sections[2].items, ['feat: initial release']);
     });
 
+    test('filters conductor and kamma commits', () {
+      final changelog = buildChangelogData(
+        unreleasedSubjects: const [
+          'feat: real feature',
+          'conductor: update plans',
+          'kamma: run thread',
+        ],
+        orderedTags: const ['v0.1.0'],
+        subjectsByTag: const {
+          'v0.1.0': ['kamma: setup', 'conductor: scaffold', 'fix: a fix'],
+        },
+      );
+
+      expect(changelog.sections.length, 2);
+      expect(changelog.sections[0].items, ['feat: real feature']);
+      expect(changelog.sections[1].items, ['fix: a fix']);
+    });
+
     test('omits empty unreleased and empty tags', () {
       final changelog = buildChangelogData(
         unreleasedSubjects: const ['chore: release prep'],

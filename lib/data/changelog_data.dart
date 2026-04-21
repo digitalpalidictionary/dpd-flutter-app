@@ -58,6 +58,8 @@ List<String> filterChangelogItems(Iterable<String> subjects) {
       .map((subject) => subject.trim())
       .where((subject) => subject.isNotEmpty)
       .where((subject) => !subject.startsWith('chore:'))
+      .where((subject) => !subject.startsWith('conductor:'))
+      .where((subject) => !subject.startsWith('kamma:'))
       .toList();
 }
 
