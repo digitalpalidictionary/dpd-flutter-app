@@ -430,10 +430,18 @@ class DpdDao extends DatabaseAccessor<AppDatabase> with _$DpdDaoMixin {
 
   // ── Sutta info ──────────────────────────────────────────────────────────
 
-  Future<SuttaInfoData?> getSuttaInfo(String lemma1) {
-    return (select(
-      suttaInfo,
-    )..where((t) => t.dpdSutta.equals(lemma1))).getSingleOrNull();
+  Future<SuttaInfoData?> getSuttaInfo(String lemma1) async {
+    final results = await (select(suttaInfo)
+          ..where(
+            (t) =>
+                t.dpdSutta.equals(lemma1) |
+                t.dpdSuttaVar.equals(lemma1) |
+                t.dpdSuttaVar.like('$lemma1;%') |
+                t.dpdSuttaVar.like('%; $lemma1') |
+                t.dpdSuttaVar.like('%; $lemma1;%'),
+          ))
+        .get();
+    return results.firstOrNull;
   }
 
   // ── DB metadata ───────────────────────────────────────────────────────────

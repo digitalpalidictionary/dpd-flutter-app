@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../database/database.dart';
 import '../database/dpd_headword_extensions.dart';
+import '../database/sutta_info_extensions.dart';
 import '../models/frequency_data.dart';
 import '../providers/database_provider.dart';
 import '../providers/internet_provider.dart';
@@ -117,7 +118,11 @@ mixin EntrySectionsMixin<T extends ConsumerStatefulWidget>
         ),
       if (suttaLoaded && suttaInfo != null)
         DpdSectionButton(
-          label: 'sutta',
+          label: suttaInfo!.isSamyutta
+              ? 'saṃyutta'
+              : suttaInfo!.isVagga
+              ? 'vagga'
+              : 'sutta',
           isActive: isOpen('sutta'),
           onTap: () => toggleSection('sutta'),
         ),

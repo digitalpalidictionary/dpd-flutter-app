@@ -20,3 +20,4 @@
 - 2026-04-12 [CONFUSION] An external review incorrectly flagged Dart `switch` cases as fall-through; validate review findings against the language semantics and current code before changing anything
 - 2026-04-15 [WORKFLOW] Archived a Kamma thread before the user completed manual review — in this repo, stop after local verification, wait for explicit user acceptance, then review/finalize
 - 2026-04-16 [WORKFLOW] Before starting a cleanup refactor after review, explicitly confirm whether the user wants strict behavior preservation and keep the refactor inside that boundary
+- 2026-04-22 [POSITIVE] Checking the TSV data for exact field values (dpd_sutta_var = 'mūlapaṇṇāsaka 1') caught a DB alias lookup gap mid-implementation that the spec missed — always spot-check representative rows in the source data before finalizing a DB query plan

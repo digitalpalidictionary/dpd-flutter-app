@@ -110,6 +110,21 @@ void main() {
     expect(keys, isEmpty);
   });
 
+  test('getSuttaInfo matches aliases in dpdSuttaVar', () async {
+    await dao.into(dao.suttaInfo).insert(
+      SuttaInfoCompanion.insert(
+        dpdSutta: 'mūlapaṇṇāsapāḷi',
+        dpdSuttaVar: const Value('mūlapaṇṇāsaka 1; mūlapaṇṇāsaka'),
+      ),
+    );
+
+    final exactAlias = await dao.getSuttaInfo('mūlapaṇṇāsaka 1');
+    final trailingAlias = await dao.getSuttaInfo('mūlapaṇṇāsaka');
+
+    expect(exactAlias?.dpdSutta, 'mūlapaṇṇāsapāḷi');
+    expect(trailingAlias?.dpdSutta, 'mūlapaṇṇāsapāḷi');
+  });
+
   group('searchDictPartial', () {
     Future<void> insertDictEntry(
       AppDatabase db, {

@@ -28,6 +28,8 @@ class SuttaInfoSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final s = suttaInfo;
+    final isVagga = s.isVagga;
+    final isSamyutta = s.isSamyutta;
 
     final sections = <Widget>[
       // CST — gated on cst_code
@@ -38,8 +40,8 @@ class SuttaInfoSection extends StatelessWidget {
           _textRow(context, 'Nikāya', s.cstNikaya),
           _textRow(context, 'Book', s.cstBook),
           _textRow(context, 'Section', s.cstSection),
-          _textRow(context, 'Vagga', s.cstVagga),
-          _textRow(context, 'Sutta', s.cstSutta),
+          if (!isSamyutta) _textRow(context, 'Vagga', s.cstVagga),
+          if (!isVagga && !isSamyutta) _textRow(context, 'Sutta', s.cstSutta),
           _textRow(context, 'Paragraph', s.cstParanum),
           _textRow(context, 'File', s.cstFile),
           _linkRow(context, 'GitHub', s.cstGithubLink),
@@ -67,21 +69,32 @@ class SuttaInfoSection extends StatelessWidget {
         ]),
       ],
 
-      // Sutta Central — gated on sc_code
-      if (_notEmpty(s.scCode)) ...[
+      // Sutta Central — gated on sc_code or sc_vagga (vagga rows may have only sc_vagga)
+      if (_notEmpty(s.scCode) || _notEmpty(s.scBook) || _notEmpty(s.scVagga)) ...[
         _heading(context, 'Sutta Central'),
         _table(context, [
           _textRow(context, 'SC Code', s.scCode),
           _textRow(context, 'Book', s.scBook),
-          _textRow(context, 'Vagga', s.scVagga),
-          _textRow(context, 'Sutta', s.scSutta),
-          _italicRow(context, 'Title', s.scEngSutta),
-          _italicRow(context, 'Blurb', s.scBlurb),
-          _multiLinkRow(context, 'Links', [
-            ('Sutta Card', s.scCardLink),
-            ('Pāḷi Text', s.scPaliLink),
-            ('English Translation', s.scEngLink),
-          ]),
+          if (!isSamyutta) _textRow(context, 'Vagga', s.scVagga),
+          if (!isVagga && !isSamyutta) _textRow(context, 'Sutta', s.scSutta),
+          if (!isVagga && !isSamyutta) _italicRow(context, 'Title', s.scEngSutta),
+          if (!isVagga && !isSamyutta) _italicRow(context, 'Blurb', s.scBlurb),
+          if (isVagga && s.scVaggaLink != null)
+            _multiLinkRow(context, 'Links', [
+              ('SC Vagga Card', s.scVaggaLink),
+              ('Pāḷi Text', s.scPaliLink),
+              ('English Translation', s.scEngLink),
+            ])
+          else if (isSamyutta && s.scVaggaLink != null)
+            _multiLinkRow(context, 'Links', [
+              ('SC Saṃyutta Card', s.scVaggaLink),
+            ])
+          else
+            _multiLinkRow(context, 'Links', [
+              ('SC Card', s.scCardLink),
+              ('Pāḷi Text', s.scPaliLink),
+              ('English Translation', s.scEngLink),
+            ]),
           _textRow(context, 'File', s.scFilePath),
           _linkRow(context, 'GitHub', s.scGithub),
         ]),
@@ -99,8 +112,14 @@ class SuttaInfoSection extends StatelessWidget {
         ]),
       ],
 
-      // BJT — gated on bjt_sutta_code
-      if (_notEmpty(s.bjtSuttaCode)) ...[
+      // BJT — gated on bjt_sutta_code or bjt fields presence
+      if (_notEmpty(s.bjtSuttaCode) ||
+          _notEmpty(s.bjtPitaka) ||
+          _notEmpty(s.bjtNikaya) ||
+          _notEmpty(s.bjtMajorSection) ||
+          _notEmpty(s.bjtBook) ||
+          _notEmpty(s.bjtMinorSection) ||
+          _notEmpty(s.bjtVagga)) ...[
         _heading(context, 'Buddha Jayanti Tipiṭaka (BJT)'),
         _table(context, [
           _textRow(context, 'Sutta Code', s.bjtSuttaCode),
@@ -109,8 +128,8 @@ class SuttaInfoSection extends StatelessWidget {
           _textRow(context, 'Major Section', s.bjtMajorSection),
           _textRow(context, 'Book', s.bjtBook),
           _textRow(context, 'Minor Section', s.bjtMinorSection),
-          _textRow(context, 'Vagga', s.bjtVagga),
-          _textRow(context, 'Sutta', s.bjtSutta),
+          if (!isSamyutta) _textRow(context, 'Vagga', s.bjtVagga),
+          if (!isVagga && !isSamyutta) _textRow(context, 'Sutta', s.bjtSutta),
           _textRow(context, 'Book ID', s.bjtBookId),
           _textRow(context, 'Page Number', s.bjtPageNum),
           _textRow(context, 'Filename', s.bjtFilename),
@@ -136,47 +155,48 @@ class SuttaInfoSection extends StatelessWidget {
         ]),
       ],
 
-      // DV Sutta Catalogue — gated on dv_exists
-      if (s.dvExists) ...[
-        _heading(context, 'Dhamma Vinaya Tools: Sutta Catalogue'),
-        _table(context, [
-          _textRow(context, 'PTS', s.dvPts),
-          _textRow(context, 'General Theme', s.dvMainTheme),
-          _textRow(context, 'Particular Topic', s.dvSubtopic),
-          _textRow(context, 'Summary', s.dvSummary),
-          _textRow(context, 'Key Excerpt 1', s.dvKeyExcerpt1),
-          _textRow(context, 'Key Excerpt 2', s.dvKeyExcerpt2),
-          _textRow(context, 'Similes', s.dvSimiles),
-          _textRow(context, 'Stage of Training', s.dvStage),
-          _textRow(context, 'Training In', s.dvTraining),
-          _textRow(context, 'Type of Teaching', s.dvAspect),
-          _textRow(context, 'Teacher', s.dvTeacher),
-          _textRow(context, 'Audience', s.dvAudience),
-          _textRow(context, 'Method of Teaching', s.dvMethod),
-          _textRow(context, 'Sutta Length', s.dvLength),
-          _textRow(context, 'Prominence', s.dvProminence),
-          _textRow(context, 'Suggested Reading', s.dvSuggestedSuttas),
-          _linkRow(
-            context,
-            'GitHub',
-            'https://github.com/dhammavinaya-tools/dhamma-vinaya-catalogue',
-          ),
-        ]),
-      ],
+      // DV Sutta Catalogue + Parallels — hidden for vagga and saṃyutta rows
+      if (!isVagga && !isSamyutta) ...[
+        if (s.dvExists) ...[
+          _heading(context, 'Dhamma Vinaya Tools: Sutta Catalogue'),
+          _table(context, [
+            _textRow(context, 'PTS', s.dvPts),
+            _textRow(context, 'General Theme', s.dvMainTheme),
+            _textRow(context, 'Particular Topic', s.dvSubtopic),
+            _textRow(context, 'Summary', s.dvSummary),
+            _textRow(context, 'Key Excerpt 1', s.dvKeyExcerpt1),
+            _textRow(context, 'Key Excerpt 2', s.dvKeyExcerpt2),
+            _textRow(context, 'Similes', s.dvSimiles),
+            _textRow(context, 'Stage of Training', s.dvStage),
+            _textRow(context, 'Training In', s.dvTraining),
+            _textRow(context, 'Type of Teaching', s.dvAspect),
+            _textRow(context, 'Teacher', s.dvTeacher),
+            _textRow(context, 'Audience', s.dvAudience),
+            _textRow(context, 'Method of Teaching', s.dvMethod),
+            _textRow(context, 'Sutta Length', s.dvLength),
+            _textRow(context, 'Prominence', s.dvProminence),
+            _textRow(context, 'Suggested Reading', s.dvSuggestedSuttas),
+            _linkRow(
+              context,
+              'GitHub',
+              'https://github.com/dhammavinaya-tools/dhamma-vinaya-catalogue',
+            ),
+          ]),
+        ],
 
-      // Parallels — gated on dv_parallels_exists
-      if (s.dvParallelsExists) ...[
-        _heading(context, 'Parallels'),
-        _table(context, [
-          _textRow(context, 'Nikāyas', s.dvNikayasParallels),
-          _textRow(context, 'Āgamas', s.dvAgamasParallels),
-          _textRow(context, 'Taisho', s.dvTaishoParallels),
-          _textRow(context, 'Sanskrit', s.dvSanskritParallels),
-          _textRow(context, 'Vinaya', s.dvVinayaParallels),
-          _textRow(context, 'Others', s.dvOthersParallels),
-          _textRow(context, 'Partial (Nikāya/Āgama)', s.dvPartialParallelsNa),
-          _textRow(context, 'Partial (All)', s.dvPartialParallelsAll),
-        ]),
+        if (s.dvParallelsExists) ...[
+          _heading(context, 'Parallels'),
+          _table(context, [
+            _textRow(context, 'Nikāyas', s.dvNikayasParallels),
+            _textRow(context, 'Āgamas', s.dvAgamasParallels),
+            _textRow(context, 'Taisho', s.dvTaishoParallels),
+            _textRow(context, 'Sanskrit', s.dvSanskritParallels),
+            _textRow(context, 'Vinaya', s.dvVinayaParallels),
+            _textRow(context, 'Others', s.dvOthersParallels),
+            _textRow(context, 'Partial (Nikāya/Āgama)', s.dvPartialParallelsNa),
+            _textRow(context, 'Partial (All)', s.dvPartialParallelsAll),
+          ]),
+        ],
       ],
     ];
 
