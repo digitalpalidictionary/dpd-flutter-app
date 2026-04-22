@@ -1,7 +1,7 @@
 {
   "sections": [
     {
-      "title": "unreleased",
+      "title": "v0.1.8",
       "items": [
         "fix: search history now restores correctly after restart",
         "feat: settings now include help popups for every option",
