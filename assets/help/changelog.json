@@ -3,6 +3,7 @@
     {
       "title": "unreleased",
       "items": [
+        "fix: search history now restores correctly after restart",
         "feat: settings now include help popups for every option",
         "fix: back navigation now follows actual search path",
         "feat: setting to hide summary's construction",

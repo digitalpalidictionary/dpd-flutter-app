@@ -35,6 +35,7 @@ final externalSearchHandlerProvider = Provider<ExternalSearchHandler>((ref) {
   return ExternalSearchHandler(ref);
 });
 
+
 final exactResultsProvider = FutureProvider.autoDispose
     .family<List<DpdHeadwordWithRoot>, String>((ref, query) async {
       if (query.isEmpty) return [];

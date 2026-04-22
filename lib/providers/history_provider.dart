@@ -7,6 +7,7 @@ import 'settings_provider.dart';
 
 const _maxEntries = 50;
 const _prefsKey = 'dpd_history';
+const _navPrefsKey = 'dpd_nav';
 
 class HistoryEntry {
   const HistoryEntry({required this.query, required this.timestamp});
@@ -107,17 +108,37 @@ class HistoryNotifier extends StateNotifier<HistoryState> {
   final SharedPreferences _prefs;
 
   void _load() {
+    var recent = state.recentEntries;
     final json = _prefs.getString(_prefsKey);
     if (json != null) {
-      final list = (jsonDecode(json) as List).map(HistoryEntry.fromJson).toList();
-      state = state.copyWith(recentEntries: list);
+      recent = (jsonDecode(json) as List).map(HistoryEntry.fromJson).toList();
     }
+
+    var nav = state.navigationEntries;
+    final navJson = _prefs.getString(_navPrefsKey);
+    if (navJson != null) {
+      try {
+        nav = (jsonDecode(navJson) as List).cast<String>();
+      } catch (_) {
+        nav = const [];
+      }
+    }
+
+    state = HistoryState(
+      recentEntries: recent,
+      navigationEntries: nav,
+      currentNavigationIndex: nav.isEmpty ? -1 : nav.length,
+    );
   }
 
   Future<void> _persist() async {
     await _prefs.setString(
       _prefsKey,
       jsonEncode(state.recentEntries.map((e) => e.toJson()).toList()),
+    );
+    await _prefs.setString(
+      _navPrefsKey,
+      jsonEncode(state.navigationEntries),
     );
   }
 
@@ -172,6 +193,7 @@ class HistoryNotifier extends StateNotifier<HistoryState> {
           ? -1
           : state.navigationEntries.length,
     );
+    _persist();
   }
 
   void goBack() {
@@ -179,6 +201,7 @@ class HistoryNotifier extends StateNotifier<HistoryState> {
     state = state.copyWith(
       currentNavigationIndex: state.currentNavigationIndex - 1,
     );
+    _persist();
   }
 
   void goForward() {
@@ -186,6 +209,7 @@ class HistoryNotifier extends StateNotifier<HistoryState> {
     state = state.copyWith(
       currentNavigationIndex: state.currentNavigationIndex + 1,
     );
+    _persist();
   }
 
   void clear() {

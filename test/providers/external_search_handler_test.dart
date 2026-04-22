@@ -57,4 +57,5 @@ void main() {
     expect(container.read(searchQueryProvider), '');
     expect(container.read(historyProvider).entries, isEmpty);
   });
+
 }

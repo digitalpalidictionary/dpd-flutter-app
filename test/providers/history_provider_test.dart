@@ -177,8 +177,12 @@ void main() {
       expect(list, ['kamma', 'dhamma']);
     });
 
-    test('loads persisted recent history without restoring session navigation', () async {
+    test('loads persisted recent history and navigation state', () async {
       await prefs.setString('dpd_history', jsonEncode(['kamma', 'dhamma']));
+      await prefs.setString(
+        'dpd_nav',
+        jsonEncode(['dhamma', 'kamma']),
+      );
 
       final notifier = HistoryNotifier(prefs);
 
@@ -186,8 +190,11 @@ void main() {
         notifier.state.entries.map((e) => e.query).toList(),
         ['kamma', 'dhamma'],
       );
-      expect(notifier.state.navigationEntries, isEmpty);
-      expect(notifier.state.currentIndex, -1);
+      expect(notifier.state.navigationEntries, ['dhamma', 'kamma']);
+      expect(notifier.state.currentIndex, 2);
+      expect(notifier.state.currentQuery, isNull);
+      expect(notifier.state.backQuery, 'kamma');
+      expect(notifier.state.canGoBack, isTrue);
     });
 
     test('clear persists empty recent history', () async {
@@ -201,6 +208,26 @@ void main() {
       expect(stored, isNotNull);
       final list = (jsonDecode(stored!) as List).cast<String>();
       expect(list, isEmpty);
+    });
+
+    test('resetPosition persists no-active-query sentinel across reload', () async {
+      final notifier = HistoryNotifier(prefs);
+
+      notifier.navigateTo('a');
+      notifier.navigateTo('b');
+      notifier.resetPosition();
+
+      await Future<void>.delayed(Duration.zero);
+
+      final restoredPrefs = await SharedPreferences.getInstance();
+      final restored = HistoryNotifier(restoredPrefs);
+
+      expect(restored.state.navigationEntries, ['a', 'b']);
+      expect(restored.state.currentIndex, 2);
+      expect(restored.state.currentQuery, isNull);
+      expect(restored.state.backQuery, 'b');
+      expect(restored.state.canGoBack, isTrue);
+      expect(restored.state.canGoForward, isFalse);
     });
   });
 
