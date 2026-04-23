@@ -139,10 +139,14 @@ class _AccordionCardState extends ConsumerState<AccordionCard>
               child: Wrap(
                 spacing: 0,
                 runSpacing: 0,
-                children: buildCoreSectionButtons(h),
+                children: [
+                  ...buildCoreSectionButtons(h),
+                  ...buildExtraSectionButtons(h),
+                ],
               ),
             ),
             ...buildCoreSections(h),
+            ...buildExtraSections(h),
           ],
         ],
       ),
