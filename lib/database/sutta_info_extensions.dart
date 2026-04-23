@@ -168,12 +168,13 @@ extension SuttaInfoExtensions on SuttaInfoData {
         (_notEmpty(cstVagga) || _notEmpty(scVagga) || _notEmpty(bjtVagga));
   }
 
-  bool get isSamyutta =>
-      dpdSutta.isNotEmpty &&
-      _notEmpty(dpdCode) &&
-      dpdSutta.endsWith('saṃyutta') &&
-      !(dpdCode!.contains('.')) &&
-      !(dpdCode!.contains('-'));
+  bool get isSamyutta {
+    if (dpdSutta.isEmpty || !_notEmpty(dpdCode)) return false;
+    if (dpdCode!.contains('.') || dpdCode!.contains('-')) return false;
+    // Strip trailing homonym number (e.g. "jhānasaṃyutta 1" → "jhānasaṃyutta")
+    final base = dpdSutta.replaceFirst(RegExp(r' \d+$'), '');
+    return base.endsWith('saṃyutta');
+  }
 
   // Mirrors Python SuttaInfo.sc_vagga_link — constructs SC vagga/saṃyutta URL.
   String? get scVaggaLink {
