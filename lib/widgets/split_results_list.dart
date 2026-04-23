@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 import '../database/database.dart';
 import '../models/lookup_results.dart';
@@ -49,27 +50,32 @@ class SplitResultsList extends StatefulWidget {
 }
 
 class _SplitResultsListState extends State<SplitResultsList> {
-  final Map<String, GlobalKey> _itemKeys = {};
-  final ScrollController _scrollController = ScrollController();
-
-  @override
-  void dispose() {
-    _scrollController.dispose();
-    super.dispose();
-  }
-
-  GlobalKey _keyFor(String id) => _itemKeys.putIfAbsent(id, GlobalKey.new);
+  final Map<String, int> _itemIndex = {};
+  final ItemScrollController _itemScrollController = ItemScrollController();
+  final ItemPositionsListener _itemPositionsListener =
+      ItemPositionsListener.create();
 
   void _scrollToEntry(String targetId) {
-    final key = _itemKeys[targetId];
-    if (key?.currentContext != null) {
-      Scrollable.ensureVisible(
-        key!.currentContext!,
+    final target = _itemIndex[targetId];
+    if (target == null || !_itemScrollController.isAttached) return;
+
+    final positions = _itemPositionsListener.itemPositions.value;
+    final firstVisible = positions.isEmpty
+        ? 0
+        : positions.map((p) => p.index).reduce((a, b) => a < b ? a : b);
+
+    const nearbyWindow = 6;
+    if ((target - firstVisible).abs() <= nearbyWindow) {
+      _itemScrollController.scrollTo(
+        index: target,
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeInOut,
         alignment: 0.1,
       );
+      return;
     }
+
+    _itemScrollController.jumpTo(index: target, alignment: 0.1);
   }
 
   Object? _secondaryForSource(String sourceId) => switch (sourceId) {
@@ -97,6 +103,14 @@ class _SplitResultsListState extends State<SplitResultsList> {
     final tier1 = <Widget>[];
     final tier2 = <Widget>[];
     final tier3 = <Widget>[];
+    _itemIndex.clear();
+
+    // All scroll-to targets live in tier1, which occupies the first
+    // contiguous block of allItems. So tier1 local index == final index.
+    void addTier1(Widget w, [String? id]) {
+      if (id != null && id.isNotEmpty) _itemIndex[id] = tier1.length;
+      tier1.add(w);
+    }
 
     for (final sourceId in order) {
       if (!enabled.contains(sourceId)) continue;
@@ -104,7 +118,7 @@ class _SplitResultsListState extends State<SplitResultsList> {
       switch (sourceId) {
         case 'dpd_summary':
           if (widget.showSummary && widget.summaryEntries.isNotEmpty) {
-            tier1.add(
+            addTier1(
               SummarySection(
                 entries: widget.summaryEntries,
                 onTap: _scrollToEntry,
@@ -113,12 +127,7 @@ class _SplitResultsListState extends State<SplitResultsList> {
           }
         case 'dpd_headwords':
           for (final hw in widget.exact) {
-            tier1.add(
-              KeyedSubtree(
-                key: _keyFor('hw_${hw.headword.id}'),
-                child: _buildItem(context, hw),
-              ),
-            );
+            addTier1(_buildItem(context, hw), 'hw_${hw.headword.id}');
           }
           for (final hw in widget.partial) {
             tier2.add(_buildItem(context, hw));
@@ -128,12 +137,7 @@ class _SplitResultsListState extends State<SplitResultsList> {
           }
         case 'dpd_roots':
           for (final rwf in widget.roots) {
-            tier1.add(
-              KeyedSubtree(
-                key: _keyFor('root_${rwf.root.root}'),
-                child: _buildRootItem(context, rwf),
-              ),
-            );
+            addTier1(_buildRootItem(context, rwf), 'root_${rwf.root.root}');
           }
         case 'dpd_abbreviations':
         case 'dpd_abbreviations_other':
@@ -146,15 +150,12 @@ class _SplitResultsListState extends State<SplitResultsList> {
         case 'dpd_see':
           final result = _secondaryForSource(sourceId);
           if (result != null) {
-            final secId = _secondaryTargetId(result);
-            tier1.add(
-              KeyedSubtree(
-                key: secId.isNotEmpty ? _keyFor(secId) : null,
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(8, 0, 8, 4),
-                  child: _buildSecondaryItem(result),
-                ),
+            addTier1(
+              Padding(
+                padding: const EdgeInsets.fromLTRB(8, 0, 8, 4),
+                child: _buildSecondaryItem(result),
               ),
+              _secondaryTargetId(result),
             );
           }
         default:
@@ -236,12 +237,10 @@ class _SplitResultsListState extends State<SplitResultsList> {
       ...tier3,
     ];
 
-    return ListView.separated(
-      controller: _scrollController,
-      cacheExtent: 5000,
-      keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+    return ScrollablePositionedList.builder(
+      itemScrollController: _itemScrollController,
+      itemPositionsListener: _itemPositionsListener,
       itemCount: allItems.length,
-      separatorBuilder: (context, index) => const SizedBox.shrink(),
       itemBuilder: (context, index) => allItems[index],
     );
   }

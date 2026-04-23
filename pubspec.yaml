@@ -70,6 +70,10 @@ dependencies:
 
   characters: ^1.4.0
 
+  # Index-based scrolling for the results list (needed so summary taps can
+  # jump to items that haven't been built yet).
+  scrollable_positioned_list: ^0.3.8
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
