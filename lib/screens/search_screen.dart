@@ -503,7 +503,9 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                                 focusNode: _focusNode,
                                 autofocus: false,
                                 autocorrect: false,
-                                enableSuggestions: false,
+                                // Keep suggestions enabled on Android so Gboard
+                                // still exposes long-press diacritics.
+                                enableSuggestions: true,
                                 onChanged: _onChanged,
                                 onSubmitted: (_) => _onSearch(),
                                 style: theme.textTheme.titleMedium,
