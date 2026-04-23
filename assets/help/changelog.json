@@ -3,6 +3,7 @@
     {
       "title": "unreleased",
       "items": [
+        "fix: search bar now allows Gboard diacritics on Android ṭ ḍ ṇ ṃ",
         "fix: frequency and feedback buttons now appear in compact mode",
         "feat: sutta info tab now handles vagga, saṃyutta, and paṇṇāsaka entries"
       ]
