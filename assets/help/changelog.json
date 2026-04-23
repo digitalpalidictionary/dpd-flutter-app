@@ -1,6 +1,13 @@
 {
   "sections": [
     {
+      "title": "unreleased",
+      "items": [
+        "fix: frequency and feedback buttons now appear in compact mode",
+        "feat: sutta info tab now handles vagga, saṃyutta, and paṇṇāsaka entries"
+      ]
+    },
+    {
       "title": "v0.1.8",
       "items": [
         "fix: search history now restores correctly after restart",
