@@ -103,3 +103,10 @@ The search bar (`_controller`) must never be overwritten by transliteration or q
 
 ### External Entry Points
 When reviewing any search or navigation change, explicitly verify all external entry points: share intents (`intentStream`), lookup intents (`lookupStream`), and CLI args (`_IntentBoot`). These bypass the normal typing flow and must be tested separately.
+
+### Two Search Paths — Always Update Both
+**CRITICAL:** The app has two independent text-cleaning paths. Any change to one MUST be applied to the other:
+- **Tap-to-search**: `_cleanPali()` in `lib/widgets/tap_search_wrapper.dart`
+- **Share/intent**: `IntentService._clean()` in `lib/services/intent_service.dart`
+
+These paths diverged in history and caused a bug where bracket stripping was added to tap-to-search but missed in share/intent. Never fix or extend one without checking the other.
