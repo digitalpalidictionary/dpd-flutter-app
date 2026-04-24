@@ -3,6 +3,8 @@
     {
       "title": "unreleased",
       "items": [
+        "fix: sutta info tab now correct for numbered saṃyutta homonyms",
+        "fix: summary taps now scroll to any entry, even far off-screen ones",
         "fix: search bar now allows Gboard diacritics on Android ṭ ḍ ṇ ṃ",
         "fix: frequency and feedback buttons now appear in compact mode",
         "feat: sutta info tab now handles vagga, saṃyutta, and paṇṇāsaka entries"
