@@ -75,11 +75,16 @@ class IntentService {
   static final _quotePattern = RegExp(
     r'''["'\u201C\u201D\u2018\u2019]''',
   );
+  static final _bracketPattern = RegExp(r'[\[\](){}]');
+
+  @visibleForTesting
+  static String? clean(String? text) => _clean(text);
 
   static String? _clean(String? text) {
     if (text == null) return null;
     var s = text.replaceAll(_urlPattern, '').trim();
     s = s.replaceAll(_quotePattern, '').trim();
+    s = s.replaceAll(_bracketPattern, '').trim();
     return s;
   }
 }
