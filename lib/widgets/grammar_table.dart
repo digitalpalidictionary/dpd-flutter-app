@@ -47,7 +47,7 @@ class GrammarTable extends ConsumerWidget {
       _buildCompoundRow(headword, n),
       _buildAntonymRow(headword, n),
       _buildSynonymRow(headword, n),
-      _buildVariantRow(headword, n),
+      ..._buildVariantRows(headword, n),
       _buildCommentaryRow(headword, n),
       _buildNotesRow(headword, n),
       _buildCognateRow(headword, n),
@@ -234,11 +234,18 @@ class GrammarTable extends ConsumerWidget {
     return buildKvTextRow('Synonym', headword.synonym, filter: n);
   }
 
-  TableRow? _buildVariantRow(
+  List<TableRow?> _buildVariantRows(
     DpdHeadwordWithRoot headword,
     String Function(String) n,
   ) {
-    return buildKvTextRow('Variant', headword.variant, filter: n);
+    return [
+      if (headword.variant != null && headword.varPhonetic == null && headword.varText == null)
+        buildKvTextRow('Variant', headword.variant, filter: n),
+      if (headword.varPhonetic != null)
+        buildKvTextRow('Phonetic Variant', headword.varPhonetic, filter: n),
+      if (headword.varText != null)
+        buildKvTextRow('Textual Variant', headword.varText, filter: n),
+    ];
   }
 
   TableRow? _buildCommentaryRow(
