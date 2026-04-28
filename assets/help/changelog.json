@@ -3,6 +3,7 @@
     {
       "title": "unreleased",
       "items": [
+        "fix: share now strips brackets from sutta codes like (SN12.34)",
         "fix: sutta info tab now correct for numbered saṃyutta homonyms",
         "fix: summary taps now scroll to any entry, even far off-screen ones",
         "fix: search bar now allows Gboard diacritics on Android ṭ ḍ ṇ ṃ",
