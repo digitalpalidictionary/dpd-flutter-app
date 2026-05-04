@@ -100,10 +100,21 @@ class RootInfoTable extends StatelessWidget {
               style: valueStyle,
               children: [
                 TextSpan(text: '${root.dhatupathaRoot} '),
-                TextSpan(text: root.dhatupathaPali, style: italicStyle),
                 TextSpan(
-                  text: ' (${root.dhatupathaEnglish}) #${root.dhatupathaNum}',
+                  style: italicStyle,
+                  children: parseSimpleMarkup(
+                    root.dhatupathaPali,
+                    boldStyle: italicStyle?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ),
+                TextSpan(text: ' ('),
+                ...parseSimpleMarkup(
+                  root.dhatupathaEnglish,
+                  boldStyle: valueStyle?.copyWith(fontWeight: FontWeight.bold),
+                ),
+                TextSpan(text: ') #${root.dhatupathaNum}'),
               ],
             ),
           ),
@@ -131,11 +142,21 @@ class RootInfoTable extends StatelessWidget {
               style: valueStyle,
               children: [
                 TextSpan(text: '${root.dhatumanjusaRoot} '),
-                TextSpan(text: root.dhatumanjusaPali, style: italicStyle),
                 TextSpan(
-                  text:
-                      ' (${root.dhatumanjusaEnglish}) #${root.dhatumanjusaNum}',
+                  style: italicStyle,
+                  children: parseSimpleMarkup(
+                    root.dhatumanjusaPali,
+                    boldStyle: italicStyle?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ),
+                TextSpan(text: ' ('),
+                ...parseSimpleMarkup(
+                  root.dhatumanjusaEnglish,
+                  boldStyle: valueStyle?.copyWith(fontWeight: FontWeight.bold),
+                ),
+                TextSpan(text: ') #${root.dhatumanjusaNum}'),
               ],
             ),
           ),
@@ -226,15 +247,10 @@ class RootInfoTable extends StatelessWidget {
       );
     }
 
-    // Notes (optional)
+    // Notes (optional) — may contain inline HTML (<i>, <b>, <a>)
     if (root.note.isNotEmpty) {
       rows.add(
-        buildKvTextRow(
-          'Notes:',
-          root.note,
-          labelStyle: labelStyle,
-          valueStyle: valueStyle,
-        )!,
+        buildKvRichRow('Notes:', root.note, labelStyle: labelStyle)!,
       );
     }
 
