@@ -176,6 +176,13 @@ extension SuttaInfoExtensions on SuttaInfoData {
     return base.endsWith('saṃyutta');
   }
 
+  bool get isNipata {
+    if (dpdSutta.isEmpty || !_notEmpty(dpdCode)) return false;
+    if (dpdCode!.contains('.') || dpdCode!.contains('-')) return false;
+    final names = [dpdSutta, dpdSuttaVar ?? ''];
+    return names.any((n) => n.contains('nipāta'));
+  }
+
   // Mirrors Python SuttaInfo.sc_vagga_link — constructs SC vagga/saṃyutta URL.
   String? get scVaggaLink {
     final bookCode = _scBookCode;
@@ -201,6 +208,15 @@ extension SuttaInfoExtensions on SuttaInfoData {
         if (slug != null) {
           return 'https://suttacentral.net/pitaka/sutta/linked/sn/sn-$slug/sn$n';
         }
+      }
+      return null;
+    }
+
+    // AN individual nipāta: pitaka path with nipāta number (e.g. AN1 → an1)
+    if (bc == 'an' && isNipata && _notEmpty(dpdCode)) {
+      final m = RegExp(r'^AN(\d+)$', caseSensitive: false).firstMatch(dpdCode!);
+      if (m != null) {
+        return 'https://suttacentral.net/pitaka/sutta/numbered/an/an${m.group(1)}';
       }
       return null;
     }

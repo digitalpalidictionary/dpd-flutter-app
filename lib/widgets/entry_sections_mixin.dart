@@ -122,6 +122,8 @@ mixin EntrySectionsMixin<T extends ConsumerStatefulWidget>
               ? 'saṃyutta'
               : suttaInfo!.isVagga
               ? 'vagga'
+              : suttaInfo!.isNipata
+              ? 'nipāta'
               : 'sutta',
           isActive: isOpen('sutta'),
           onTap: () => toggleSection('sutta'),

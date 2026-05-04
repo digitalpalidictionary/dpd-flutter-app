@@ -30,6 +30,7 @@ class SuttaInfoSection extends StatelessWidget {
     final s = suttaInfo;
     final isVagga = s.isVagga;
     final isSamyutta = s.isSamyutta;
+    final isNipata = s.isNipata;
 
     final sections = <Widget>[
       // CST — gated on cst_code
@@ -88,6 +89,10 @@ class SuttaInfoSection extends StatelessWidget {
           else if (isSamyutta && s.scVaggaLink != null)
             _multiLinkRow(context, 'Links', [
               ('SC Saṃyutta Card', s.scVaggaLink),
+            ])
+          else if (isNipata && s.scVaggaLink != null)
+            _multiLinkRow(context, 'Links', [
+              ('SC Nipāta Card', s.scVaggaLink),
             ])
           else
             _multiLinkRow(context, 'Links', [
