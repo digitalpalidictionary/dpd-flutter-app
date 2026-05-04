@@ -45,6 +45,14 @@ class SummarySection extends StatelessWidget {
   Widget build(BuildContext context) {
     if (entries.isEmpty) return const SizedBox.shrink();
 
+    final lemmaCounts = <String, int>{};
+    for (final e in entries) {
+      if (e.type == SummaryEntryType.headword) {
+        final lemma = splitSummaryLemma(e.label).lemma;
+        lemmaCounts[lemma] = (lemmaCounts[lemma] ?? 0) + 1;
+      }
+    }
+
     final theme = Theme.of(context);
     return Padding(
       padding: const EdgeInsets.fromLTRB(8, 12, 8, 0),
@@ -65,6 +73,10 @@ class SummarySection extends StatelessWidget {
                 entries[i],
                 i > 0 ? entries[i - 1] : null,
               ),
+              isSingletonGroup:
+                  (lemmaCounts[splitSummaryLemma(entries[i].label).lemma] ??
+                      0) <=
+                  1,
               onTap: () => onTap(entries[i].targetId),
             ),
           const SizedBox(height: 12),
@@ -79,11 +91,13 @@ class _SummaryRow extends StatelessWidget {
   const _SummaryRow({
     required this.entry,
     required this.showHeadwordHeading,
+    required this.isSingletonGroup,
     required this.onTap,
   });
 
   final SummaryEntry entry;
   final bool showHeadwordHeading;
+  final bool isSingletonGroup;
   final VoidCallback onTap;
 
   @override
@@ -106,7 +120,9 @@ class _SummaryRow extends StatelessWidget {
       borderRadius: DpdColors.borderRadius,
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 2),
-        child: entry.type == SummaryEntryType.headword
+        child: entry.type == SummaryEntryType.headword &&
+                splitLabel.suffix != null &&
+                !isSingletonGroup
             ? Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
