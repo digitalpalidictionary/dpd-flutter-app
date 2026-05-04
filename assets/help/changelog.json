@@ -3,6 +3,14 @@
     {
       "title": "unreleased",
       "items": [
+        "fix: root info now renders bold and italic text correctly",
+        "fix: summary now shows single-result headwords inline"
+      ]
+    },
+    {
+      "title": "v0.1.9",
+      "items": [
+        "feat: grammar table now shows phonetic variants and textual variants",
         "fix: share now strips brackets from sutta codes like (SN12.34)",
         "fix: sutta info tab now correct for numbered saṃyutta homonyms",
         "fix: summary taps now scroll to any entry, even far off-screen ones",
