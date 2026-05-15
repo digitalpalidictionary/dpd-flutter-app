@@ -58,3 +58,9 @@ just build-db           # rebuild the packaged mobile DB in ../dpd-db; only for 
 just linux-run          # build and run the Linux app
 just linux-push-db      # copy local DB from ../dpd-db into the Linux app location used for local testing
 ```
+
+## License
+
+**App source code** — [MIT License](LICENSE)
+
+**DPD database** — [CC BY-NC-SA 4.0](LICENSE-database) — the dictionary database is a separate work; see <https://digitalpalidictionary.github.io/license/>
