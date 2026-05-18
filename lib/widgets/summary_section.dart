@@ -33,6 +33,22 @@ bool shouldShowHeadwordHeading(SummaryEntry entry, SummaryEntry? previous) {
   return prior.lemma != current.lemma;
 }
 
+List<InlineSpan> _parseBoldSpans(String text, {TextStyle? boldStyle}) {
+  final spans = <InlineSpan>[];
+  text.splitMapJoin(
+    RegExp(r'<b>(.*?)</b>'),
+    onMatch: (m) {
+      spans.add(TextSpan(text: m.group(1), style: boldStyle));
+      return '';
+    },
+    onNonMatch: (s) {
+      if (s.isNotEmpty) spans.add(TextSpan(text: s));
+      return '';
+    },
+  );
+  return spans;
+}
+
 /// Displays a summary list at the top of search results.
 /// Each entry shows label, type, meaning, and a ► tap target.
 class SummarySection extends StatelessWidget {
@@ -113,7 +129,12 @@ class _SummaryRow extends StatelessWidget {
       color: DpdColors.primaryText,
       fontWeight: FontWeight.w700,
     );
+    final boldStyle = baseStyle?.copyWith(fontWeight: FontWeight.bold);
     final splitLabel = splitSummaryLemma(entry.label);
+
+    List<InlineSpan> meaningSpans(String text) => entry.meaningHasBold
+        ? _parseBoldSpans(text, boldStyle: boldStyle)
+        : [TextSpan(text: text, style: baseStyle)];
 
     return InkWell(
       onTap: onTap,
@@ -149,11 +170,10 @@ class _SummaryRow extends StatelessWidget {
                                     style: baseStyle,
                                   ),
                                 if (entry.meaning.isNotEmpty)
-                                  TextSpan(
-                                    text: entry.typeLabel.isNotEmpty
+                                  ...meaningSpans(
+                                    entry.typeLabel.isNotEmpty
                                         ? ' ${entry.meaning}'
                                         : entry.meaning,
-                                    style: baseStyle,
                                   ),
                               ],
                             ),
@@ -179,10 +199,7 @@ class _SummaryRow extends StatelessWidget {
                               style: baseStyle,
                             ),
                           if (entry.meaning.isNotEmpty)
-                            TextSpan(
-                              text: ' ${entry.meaning}',
-                              style: baseStyle,
-                            ),
+                            ...meaningSpans(' ${entry.meaning}'),
                         ],
                       ),
                     ),

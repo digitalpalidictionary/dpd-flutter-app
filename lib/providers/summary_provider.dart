@@ -58,7 +58,7 @@ List<SummaryEntry> buildSummaryEntries(
 
   if (sourceEnabled('dpd_headwords')) {
     for (final hw in exact) {
-      final meaning = _buildHeadwordSummaryMeaning(
+      final (meaning, hasBold) = _buildHeadwordSummaryMeaning(
         hw.headword,
         showConstruction: showConstruction,
       );
@@ -70,6 +70,7 @@ List<SummaryEntry> buildSummaryEntries(
               ? '${hw.headword.pos}.'
               : '',
           meaning: meaning,
+          meaningHasBold: hasBold,
           targetId: 'hw_${hw.headword.id}',
         ),
       );
@@ -194,17 +195,16 @@ List<SummaryEntry> buildSummaryEntries(
   return entries;
 }
 
-String _buildHeadwordSummaryMeaning(
+(String, bool) _buildHeadwordSummaryMeaning(
   DpdHeadword headword, {
   bool showConstruction = true,
 }) {
-  final meaning = headword.meaning1?.isNotEmpty == true
-      ? headword.meaning1!
-      : headword.meaning2 ?? '';
+  final usesMeaning1 = headword.meaning1?.isNotEmpty == true;
+  final meaning = usesMeaning1 ? headword.meaning1! : headword.meaning2 ?? '';
   final summary = headword.constructionSummary;
 
-  if (!showConstruction) return meaning;
-  if (summary.isEmpty) return meaning;
-  if (meaning.isEmpty) return '[$summary]';
-  return '$meaning [$summary]';
+  if (!showConstruction) return (meaning, usesMeaning1);
+  if (summary.isEmpty) return (meaning, usesMeaning1);
+  if (meaning.isEmpty) return ('[$summary]', false);
+  return ('$meaning [$summary]', usesMeaning1);
 }

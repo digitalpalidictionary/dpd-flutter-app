@@ -18,6 +18,7 @@ class SummaryEntry {
   final String typeLabel;
   final String meaning;
   final String targetId;
+  final bool meaningHasBold;
 
   const SummaryEntry({
     required this.type,
@@ -25,5 +26,6 @@ class SummaryEntry {
     required this.typeLabel,
     required this.meaning,
     required this.targetId,
+    this.meaningHasBold = false,
   });
 }
