@@ -3,6 +3,9 @@
     {
       "title": "unreleased",
       "items": [
+        "feat: add Edgerton Buddhist Hybrid Sanskrit dicitonary",
+        "fix: summary now shows bold text for meaning_1",
+        "feat: add licenses",
         "feat: nipāta entries now show a nipāta button and SC Nipāta Card link",
         "fix: root info now renders bold and italic text correctly",
         "fix: summary now shows single-result headwords inline"
