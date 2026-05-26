@@ -6,7 +6,7 @@ enum DpdScheme { nila, kapila }
 
 extension DpdSchemeLabel on DpdScheme {
   String get label => switch (this) {
-    DpdScheme.nila => 'nīḷa',
+    DpdScheme.nila => 'nīla',
     DpdScheme.kapila => 'kapila',
   };
 }

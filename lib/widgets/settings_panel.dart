@@ -321,7 +321,7 @@ class _SettingsContentState extends ConsumerState<SettingsContent> {
     return const SettingHelpTopic(
       title: 'Colour scheme',
       description:
-          'Switches between colour palettes. nīḷa is the classic blue, kapila uses warm copper-brown and parchment-cream tones.',
+          'Switches between colour palettes. nīla is the classic blue, kapila uses warm copper-brown and parchment-cream tones.',
     );
   }
 
