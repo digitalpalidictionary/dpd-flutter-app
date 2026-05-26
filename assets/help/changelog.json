@@ -3,6 +3,8 @@
     {
       "title": "unreleased",
       "items": [
+        "fix: font size slider now scales only results, leaving the UI intact",
+        "feat: add switchable colour schemes (nīḷa and kapila)",
         "feat: add Edgerton Buddhist Hybrid Sanskrit dicitonary",
         "fix: summary now shows bold text for meaning_1",
         "feat: add licenses",

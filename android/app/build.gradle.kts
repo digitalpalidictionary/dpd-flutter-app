@@ -54,7 +54,7 @@ android {
         }
         release {
             signingConfig = signingConfigs.getByName("release")
-            resValue("string", "app_name", "DPD")
+            resValue("string", "app_name", "Digital Pāḷi Dictionary")
         }
     }
 }
