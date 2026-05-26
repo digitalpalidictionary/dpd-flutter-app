@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../providers/database_update_provider.dart';
 import '../services/database_update_service.dart';
-import '../theme/dpd_colors.dart';
+import '../theme/dpd_palette.dart';
 
 class DownloadFooter extends ConsumerWidget {
   const DownloadFooter({super.key});
@@ -33,7 +33,7 @@ class DownloadFooter extends ConsumerWidget {
         LinearProgressIndicator(
           value: status == DbStatus.extracting ? null : percent,
           backgroundColor: theme.colorScheme.outlineVariant,
-          color: DpdColors.primary,
+          color: context.palette.primary,
           minHeight: 3,
         ),
         Padding(

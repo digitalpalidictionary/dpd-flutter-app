@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../models/frequency_data.dart';
 import '../theme/dpd_colors.dart';
+import '../theme/dpd_palette.dart';
 
 /// Font size for FrequencyTable cells/labels — matches Material3 bodySmall (12sp).
 /// Fixed rather than theme-derived because the layout uses pixel-precise positioning.
@@ -68,6 +69,7 @@ class FrequencyTable extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final palette = context.palette;
 
     // Total rows: 2 headers + 5 vinaya + 7 sutta + 7 abhidhamma + 9 aññā = 30
     const totalRows = 30;
@@ -78,16 +80,16 @@ class FrequencyTable extends StatelessWidget {
     _addHeaders(children);
 
     // Vinaya section (rows 2-6, vertical label spans 5)
-    _addVinaya(children, isDark);
+    _addVinaya(children, isDark, palette);
 
     // Sutta section (rows 7-13, vertical label spans 7)
-    _addSutta(children, isDark);
+    _addSutta(children, isDark, palette);
 
     // Abhidhamma section (rows 14-20, vertical label spans 7)
-    _addAbhidhamma(children, isDark);
+    _addAbhidhamma(children, isDark, palette);
 
     // Aññā section (rows 21-29, vertical label spans 9)
-    _addAnna(children, isDark);
+    _addAnna(children, isDark, palette);
 
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
@@ -103,6 +105,7 @@ class FrequencyTable extends StatelessWidget {
 
   Widget _posFreqCell(
       int row, int col, List<int> freq, List<int> grad, int idx, bool isDark,
+      DpdPalette palette,
       {int rowSpan = 1}) {
     if (idx < 0 || idx >= freq.length) return _posVoidCell(row, col);
 
@@ -116,13 +119,13 @@ class FrequencyTable extends StatelessWidget {
     if (level == 0) {
       bgColor = Colors.transparent;
       textColor = Colors.transparent;
-      borderColor = DpdColors.grayTransparent;
+      borderColor = palette.grayTransparent;
     } else {
-      bgColor = DpdColors.freq[level.clamp(0, 10)];
+      bgColor = palette.freq[level.clamp(0, 10)];
       borderColor = bgColor;
       textColor = isDark
-          ? DpdColors.light
-          : (level <= 5 ? DpdColors.dark : DpdColors.light);
+          ? palette.light
+          : (level <= 5 ? palette.dark : palette.light);
     }
 
     return Positioned(
@@ -153,7 +156,7 @@ class FrequencyTable extends StatelessWidget {
     );
   }
 
-  Widget _posRowLabel(int row, String text) {
+  Widget _posRowLabel(int row, String text, DpdPalette palette) {
     return Positioned(
       left: _colX(1),
       top: row * _cellH,
@@ -162,7 +165,7 @@ class FrequencyTable extends StatelessWidget {
         height: _cellH,
         padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
         decoration: BoxDecoration(
-          border: Border.all(color: DpdColors.primary, width: 1),
+          border: Border.all(color: palette.primary, width: 1),
           borderRadius: DpdColors.borderRadius,
         ),
         alignment: Alignment.center,
@@ -176,7 +179,7 @@ class FrequencyTable extends StatelessWidget {
     );
   }
 
-  Widget _posVerticalLabel(int startRow, int span, String text) {
+  Widget _posVerticalLabel(int startRow, int span, String text, DpdPalette palette) {
     return Positioned(
       left: _colX(0),
       top: startRow * _cellH,
@@ -184,7 +187,7 @@ class FrequencyTable extends StatelessWidget {
         width: _vertLabelW,
         height: _cellH * span,
         decoration: BoxDecoration(
-          border: Border.all(color: DpdColors.primary, width: 1),
+          border: Border.all(color: palette.primary, width: 1),
           borderRadius: DpdColors.borderRadius,
         ),
         alignment: Alignment.center,
@@ -261,219 +264,219 @@ class FrequencyTable extends StatelessWidget {
     ]);
   }
 
-  void _addVinaya(List<Widget> children, bool isDark) {
+  void _addVinaya(List<Widget> children, bool isDark, DpdPalette palette) {
     final d = data;
     const base = 2; // first data row
 
-    children.add(_posVerticalLabel(base, 5, 'Vinaya'));
+    children.add(_posVerticalLabel(base, 5, 'Vinaya', palette));
 
     // Row labels
     const labels = ['Pārājika', 'Pācittiya', 'Mahāvagga', 'Cūḷavagga', 'Parivāra'];
     for (var i = 0; i < labels.length; i++) {
-      children.add(_posRowLabel(base + i, labels[i]));
+      children.add(_posRowLabel(base + i, labels[i], palette));
     }
 
     // CST M (col 2): indices 0-4
     for (var i = 0; i < 5; i++) {
-      children.add(_posFreqCell(base + i, 2, d.cstFreq, d.cstGrad, i, isDark));
+      children.add(_posFreqCell(base + i, 2, d.cstFreq, d.cstGrad, i, isDark, palette));
     }
 
     // CST A (col 3): indices 19-23
     for (var i = 0; i < 5; i++) {
       children.add(
-          _posFreqCell(base + i, 3, d.cstFreq, d.cstGrad, 19 + i, isDark));
+          _posFreqCell(base + i, 3, d.cstFreq, d.cstGrad, 19 + i, isDark, palette));
     }
 
     // CST Ṭ (col 4): index 33, rowspan=5
     children.add(
-        _posFreqCell(base, 4, d.cstFreq, d.cstGrad, 33, isDark, rowSpan: 5));
+        _posFreqCell(base, 4, d.cstFreq, d.cstGrad, 33, isDark, palette, rowSpan: 5));
 
     // BJT M (col 6): indices 0-4
     for (var i = 0; i < 5; i++) {
       children.add(
-          _posFreqCell(base + i, 6, d.bjtFreq, d.bjtGrad, i, isDark));
+          _posFreqCell(base + i, 6, d.bjtFreq, d.bjtGrad, i, isDark, palette));
     }
 
     // BJT A (col 7): indices 19-23
     for (var i = 0; i < 5; i++) {
       children.add(
-          _posFreqCell(base + i, 7, d.bjtFreq, d.bjtGrad, 19 + i, isDark));
+          _posFreqCell(base + i, 7, d.bjtFreq, d.bjtGrad, 19 + i, isDark, palette));
     }
 
     // SYA M (col 9): index 0 rowspan=2, then 1,2,3
     children.add(
-        _posFreqCell(base, 9, d.syaFreq, d.syaGrad, 0, isDark, rowSpan: 2));
+        _posFreqCell(base, 9, d.syaFreq, d.syaGrad, 0, isDark, palette, rowSpan: 2));
     for (var i = 2; i < 5; i++) {
       children.add(
-          _posFreqCell(base + i, 9, d.syaFreq, d.syaGrad, i - 1, isDark));
+          _posFreqCell(base + i, 9, d.syaFreq, d.syaGrad, i - 1, isDark, palette));
     }
 
     // SYA A (col 10): index 17, rowspan=5
     children.add(
-        _posFreqCell(base, 10, d.syaFreq, d.syaGrad, 17, isDark, rowSpan: 5));
+        _posFreqCell(base, 10, d.syaFreq, d.syaGrad, 17, isDark, palette, rowSpan: 5));
 
     // SC M (col 12): indices 0-4
     for (var i = 0; i < 5; i++) {
       children
-          .add(_posFreqCell(base + i, 12, d.scFreq, d.scGrad, i, isDark));
+          .add(_posFreqCell(base + i, 12, d.scFreq, d.scGrad, i, isDark, palette));
     }
   }
 
-  void _addSutta(List<Widget> children, bool isDark) {
+  void _addSutta(List<Widget> children, bool isDark, DpdPalette palette) {
     final d = data;
     const base = 7;
 
-    children.add(_posVerticalLabel(base, 7, 'Sutta'));
+    children.add(_posVerticalLabel(base, 7, 'Sutta', palette));
 
     const labels = [
       'Dīgha', 'Majjhima', 'Saṃyutta', 'Aṅguttara',
       'Khuddaka 1', 'Khuddaka 2', 'Khuddaka 3',
     ];
     for (var i = 0; i < labels.length; i++) {
-      children.add(_posRowLabel(base + i, labels[i]));
+      children.add(_posRowLabel(base + i, labels[i], palette));
     }
 
     // CST M (col 2): indices 5-11
     for (var i = 0; i < 7; i++) {
       children.add(
-          _posFreqCell(base + i, 2, d.cstFreq, d.cstGrad, 5 + i, isDark));
+          _posFreqCell(base + i, 2, d.cstFreq, d.cstGrad, 5 + i, isDark, palette));
     }
 
     // CST A (col 3): indices 24-30
     for (var i = 0; i < 7; i++) {
       children.add(
-          _posFreqCell(base + i, 3, d.cstFreq, d.cstGrad, 24 + i, isDark));
+          _posFreqCell(base + i, 3, d.cstFreq, d.cstGrad, 24 + i, isDark, palette));
     }
 
     // CST Ṭ (col 4): indices 34-38, with voids at Khuddaka 1 (row 4) and Khuddaka 2 (row 5)
     children.add(
-        _posFreqCell(base, 4, d.cstFreq, d.cstGrad, 34, isDark)); // Dīgha
+        _posFreqCell(base, 4, d.cstFreq, d.cstGrad, 34, isDark, palette)); // Dīgha
     children.add(
-        _posFreqCell(base + 1, 4, d.cstFreq, d.cstGrad, 35, isDark)); // Majjhima
+        _posFreqCell(base + 1, 4, d.cstFreq, d.cstGrad, 35, isDark, palette)); // Majjhima
     children.add(
-        _posFreqCell(base + 2, 4, d.cstFreq, d.cstGrad, 36, isDark)); // Saṃyutta
+        _posFreqCell(base + 2, 4, d.cstFreq, d.cstGrad, 36, isDark, palette)); // Saṃyutta
     children.add(
-        _posFreqCell(base + 3, 4, d.cstFreq, d.cstGrad, 37, isDark)); // Aṅguttara
+        _posFreqCell(base + 3, 4, d.cstFreq, d.cstGrad, 37, isDark, palette)); // Aṅguttara
     children.add(_posVoidCell(base + 4, 4)); // Khuddaka 1 — void
     children.add(_posVoidCell(base + 5, 4)); // Khuddaka 2 — void
     children.add(
-        _posFreqCell(base + 6, 4, d.cstFreq, d.cstGrad, 38, isDark)); // Khuddaka 3
+        _posFreqCell(base + 6, 4, d.cstFreq, d.cstGrad, 38, isDark, palette)); // Khuddaka 3
 
     // BJT M (col 6): indices 5-11
     for (var i = 0; i < 7; i++) {
       children.add(
-          _posFreqCell(base + i, 6, d.bjtFreq, d.bjtGrad, 5 + i, isDark));
+          _posFreqCell(base + i, 6, d.bjtFreq, d.bjtGrad, 5 + i, isDark, palette));
     }
 
     // BJT A (col 7): indices 24-30
     for (var i = 0; i < 7; i++) {
       children.add(
-          _posFreqCell(base + i, 7, d.bjtFreq, d.bjtGrad, 24 + i, isDark));
+          _posFreqCell(base + i, 7, d.bjtFreq, d.bjtGrad, 24 + i, isDark, palette));
     }
 
     // SYA M (col 9): indices 4-10
     for (var i = 0; i < 7; i++) {
       children.add(
-          _posFreqCell(base + i, 9, d.syaFreq, d.syaGrad, 4 + i, isDark));
+          _posFreqCell(base + i, 9, d.syaFreq, d.syaGrad, 4 + i, isDark, palette));
     }
 
     // SYA A (col 10): indices 18-24
     for (var i = 0; i < 7; i++) {
       children.add(
-          _posFreqCell(base + i, 10, d.syaFreq, d.syaGrad, 18 + i, isDark));
+          _posFreqCell(base + i, 10, d.syaFreq, d.syaGrad, 18 + i, isDark, palette));
     }
 
     // SC M (col 12): indices 5-11
     for (var i = 0; i < 7; i++) {
       children.add(
-          _posFreqCell(base + i, 12, d.scFreq, d.scGrad, 5 + i, isDark));
+          _posFreqCell(base + i, 12, d.scFreq, d.scGrad, 5 + i, isDark, palette));
     }
   }
 
-  void _addAbhidhamma(List<Widget> children, bool isDark) {
+  void _addAbhidhamma(List<Widget> children, bool isDark, DpdPalette palette) {
     final d = data;
     const base = 14;
 
-    children.add(_posVerticalLabel(base, 7, 'Abhidhamma'));
+    children.add(_posVerticalLabel(base, 7, 'Abhidhamma', palette));
 
     const labels = [
       'Dhammasaṅgaṇī', 'Vibhaṅga', 'Dhātukathā', 'Puggalapaññatti',
       'Kathāvatthu', 'Yamaka', 'Paṭṭhāna',
     ];
     for (var i = 0; i < labels.length; i++) {
-      children.add(_posRowLabel(base + i, labels[i]));
+      children.add(_posRowLabel(base + i, labels[i], palette));
     }
 
     // CST M (col 2): indices 12-18
     for (var i = 0; i < 7; i++) {
       children.add(
-          _posFreqCell(base + i, 2, d.cstFreq, d.cstGrad, 12 + i, isDark));
+          _posFreqCell(base + i, 2, d.cstFreq, d.cstGrad, 12 + i, isDark, palette));
     }
 
     // CST A (col 3): index 31, rowspan=7
-    children.add(_posFreqCell(base, 3, d.cstFreq, d.cstGrad, 31, isDark,
+    children.add(_posFreqCell(base, 3, d.cstFreq, d.cstGrad, 31, isDark, palette,
         rowSpan: 7));
 
     // CST Ṭ (col 4): index 39, rowspan=7
-    children.add(_posFreqCell(base, 4, d.cstFreq, d.cstGrad, 39, isDark,
+    children.add(_posFreqCell(base, 4, d.cstFreq, d.cstGrad, 39, isDark, palette,
         rowSpan: 7));
 
     // BJT M (col 6): indices 12-18
     for (var i = 0; i < 7; i++) {
       children.add(
-          _posFreqCell(base + i, 6, d.bjtFreq, d.bjtGrad, 12 + i, isDark));
+          _posFreqCell(base + i, 6, d.bjtFreq, d.bjtGrad, 12 + i, isDark, palette));
     }
 
     // BJT A (col 7): indices 31-37
     for (var i = 0; i < 7; i++) {
       children.add(
-          _posFreqCell(base + i, 7, d.bjtFreq, d.bjtGrad, 31 + i, isDark));
+          _posFreqCell(base + i, 7, d.bjtFreq, d.bjtGrad, 31 + i, isDark, palette));
     }
 
     // SYA M (col 9): indices 11-16, with rowspan=2 at index 13 (Dhātukathā+Puggalapaññatti)
     children.add(
-        _posFreqCell(base, 9, d.syaFreq, d.syaGrad, 11, isDark)); // Dhammasaṅgaṇī
+        _posFreqCell(base, 9, d.syaFreq, d.syaGrad, 11, isDark, palette)); // Dhammasaṅgaṇī
     children.add(
-        _posFreqCell(base + 1, 9, d.syaFreq, d.syaGrad, 12, isDark)); // Vibhaṅga
-    children.add(_posFreqCell(base + 2, 9, d.syaFreq, d.syaGrad, 13, isDark,
+        _posFreqCell(base + 1, 9, d.syaFreq, d.syaGrad, 12, isDark, palette)); // Vibhaṅga
+    children.add(_posFreqCell(base + 2, 9, d.syaFreq, d.syaGrad, 13, isDark, palette,
         rowSpan: 2)); // Dhātukathā+Puggalapaññatti
     children.add(
-        _posFreqCell(base + 4, 9, d.syaFreq, d.syaGrad, 14, isDark)); // Kathāvatthu
+        _posFreqCell(base + 4, 9, d.syaFreq, d.syaGrad, 14, isDark, palette)); // Kathāvatthu
     children.add(
-        _posFreqCell(base + 5, 9, d.syaFreq, d.syaGrad, 15, isDark)); // Yamaka
+        _posFreqCell(base + 5, 9, d.syaFreq, d.syaGrad, 15, isDark, palette)); // Yamaka
     children.add(
-        _posFreqCell(base + 6, 9, d.syaFreq, d.syaGrad, 16, isDark)); // Paṭṭhāna
+        _posFreqCell(base + 6, 9, d.syaFreq, d.syaGrad, 16, isDark, palette)); // Paṭṭhāna
 
     // SYA A (col 10): index 25, rowspan=7
-    children.add(_posFreqCell(base, 10, d.syaFreq, d.syaGrad, 25, isDark,
+    children.add(_posFreqCell(base, 10, d.syaFreq, d.syaGrad, 25, isDark, palette,
         rowSpan: 7));
 
     // SC M (col 12): indices 12-18
     for (var i = 0; i < 7; i++) {
       children.add(
-          _posFreqCell(base + i, 12, d.scFreq, d.scGrad, 12 + i, isDark));
+          _posFreqCell(base + i, 12, d.scFreq, d.scGrad, 12 + i, isDark, palette));
     }
   }
 
-  void _addAnna(List<Widget> children, bool isDark) {
+  void _addAnna(List<Widget> children, bool isDark, DpdPalette palette) {
     final d = data;
     const base = 21;
 
-    children.add(_posVerticalLabel(base, 9, 'Aññā'));
+    children.add(_posVerticalLabel(base, 9, 'Aññā', palette));
 
     // Visuddhimagga (row 21) — full row with voids
-    children.add(_posRowLabel(base, 'Visuddhimagga'));
+    children.add(_posRowLabel(base, 'Visuddhimagga', palette));
     children.add(_posVoidCell(base, 2)); // CST M void
     children.add(
-        _posFreqCell(base, 3, d.cstFreq, d.cstGrad, 32, isDark)); // CST A
+        _posFreqCell(base, 3, d.cstFreq, d.cstGrad, 32, isDark, palette)); // CST A
     children.add(
-        _posFreqCell(base, 4, d.cstFreq, d.cstGrad, 40, isDark)); // CST Ṭ
+        _posFreqCell(base, 4, d.cstFreq, d.cstGrad, 40, isDark, palette)); // CST Ṭ
     children.add(_posVoidCell(base, 6)); // BJT M void
     children.add(
-        _posFreqCell(base, 7, d.bjtFreq, d.bjtGrad, 38, isDark)); // BJT A
+        _posFreqCell(base, 7, d.bjtFreq, d.bjtGrad, 38, isDark, palette)); // BJT A
     children.add(_posVoidCell(base, 9)); // SYA M void
     children.add(
-        _posFreqCell(base, 10, d.syaFreq, d.syaGrad, 26, isDark)); // SYA A
+        _posFreqCell(base, 10, d.syaFreq, d.syaGrad, 26, isDark, palette)); // SYA A
     children.add(_posVoidCell(base, 12)); // SC M void
 
     // Rows 22-29: CST-only (void CST M, void CST A, CstṬ value)
@@ -483,11 +486,11 @@ class FrequencyTable extends StatelessWidget {
     ];
     for (var i = 0; i < annaLabels.length; i++) {
       final row = base + 1 + i;
-      children.add(_posRowLabel(row, annaLabels[i]));
+      children.add(_posRowLabel(row, annaLabels[i], palette));
       children.add(_posVoidCell(row, 2)); // CST M void
       children.add(_posVoidCell(row, 3)); // CST A void
       children.add(_posFreqCell(
-          row, 4, d.cstFreq, d.cstGrad, 41 + i, isDark)); // CST Ṭ
+          row, 4, d.cstFreq, d.cstGrad, 41 + i, isDark, palette)); // CST Ṭ
     }
   }
 }

@@ -8,6 +8,7 @@ import '../database/dpd_headword_extensions.dart';
 import '../providers/settings_provider.dart';
 import '../services/audio_service.dart';
 import '../theme/dpd_colors.dart';
+import '../theme/dpd_palette.dart';
 import 'dpd_feedback_form_sheet.dart';
 import '../utils/text_filters.dart';
 
@@ -18,7 +19,7 @@ const kDpdTableLabelPadding = EdgeInsets.only(right: 5.0, bottom: 2.0);
 const kDpdTableValuePadding = EdgeInsets.only(bottom: 2.0);
 
 /// Builds a [TableRow] with a bold primary-coloured label and arbitrary [content].
-TableRow buildKvRow(String label, Widget content, {TextStyle? labelStyle}) {
+TableRow buildKvRow(BuildContext context, String label, Widget content, {TextStyle? labelStyle}) {
   return TableRow(
     children: [
       Padding(
@@ -29,7 +30,7 @@ TableRow buildKvRow(String label, Widget content, {TextStyle? labelStyle}) {
               labelStyle ??
               TextStyle(
                 fontWeight: FontWeight.bold,
-                color: DpdColors.primaryText,
+                color: context.palette.primaryText,
               ),
         ),
       ),
@@ -40,6 +41,7 @@ TableRow buildKvRow(String label, Widget content, {TextStyle? labelStyle}) {
 
 /// Builds a nullable text [TableRow]; returns null when [text] is empty or null.
 TableRow? buildKvTextRow(
+  BuildContext context,
   String label,
   String? text, {
   String Function(String)? filter,
@@ -49,6 +51,7 @@ TableRow? buildKvTextRow(
   if (text == null || text.isEmpty) return null;
   final display = filter != null ? filter(text) : text;
   return buildKvRow(
+    context,
     label,
     Text(display, style: valueStyle),
     labelStyle: labelStyle,
@@ -107,6 +110,7 @@ List<InlineSpan> parseSimpleMarkup(
 /// Builds a nullable rich-text [TableRow] parsing simple markup (`<b>`, `<i>`, `<a href>`).
 /// Returns null when [html] is empty or null.
 TableRow? buildKvRichRow(
+  BuildContext context,
   String label,
   String? html, {
   String Function(String)? filter,
@@ -116,20 +120,22 @@ TableRow? buildKvRichRow(
   if (html == null || html.isEmpty) return null;
   final data = filter != null ? filter(html) : html;
   return buildKvRow(
+    context,
     label,
     Builder(
-      builder: (context) {
-        final theme = Theme.of(context);
+      builder: (ctx) {
+        final theme = Theme.of(ctx);
         final base = theme.textTheme.bodyMedium;
+        final palette = ctx.palette;
         final spans = parseSimpleMarkup(
           data,
           boldStyle: base?.copyWith(fontWeight: FontWeight.bold),
           italicStyle: base?.copyWith(fontStyle: FontStyle.italic),
           linkStyle: TextStyle(
-            color: DpdColors.primaryText,
+            color: palette.primaryText,
             fontWeight: FontWeight.w700,
             decoration: TextDecoration.underline,
-            decorationColor: DpdColors.primaryText,
+            decorationColor: palette.primaryText,
           ),
           onLinkTap: onLinkTap,
         );
@@ -144,13 +150,16 @@ TableRow? buildKvRichRow(
 ///
 /// Tapping calls [onOpen] with the resolved URL.
 TableRow? buildKvLinkRow(
+  BuildContext context,
   String label,
   String? url, {
   required void Function(String) onOpen,
   TextStyle? labelStyle,
 }) {
   if (url == null || url.isEmpty) return null;
+  final palette = context.palette;
   return buildKvRow(
+    context,
     label,
     SingleChildScrollView(
       scrollDirection: Axis.horizontal,
@@ -164,10 +173,10 @@ TableRow? buildKvLinkRow(
               maxLines: 1,
               softWrap: false,
               style: TextStyle(
-                color: DpdColors.primaryText,
+                color: palette.primaryText,
                 fontWeight: FontWeight.w700,
                 decoration: TextDecoration.underline,
-                decorationColor: DpdColors.primaryText,
+                decorationColor: palette.primaryText,
               ),
             ),
           ),
@@ -209,7 +218,7 @@ class DpdFooter extends StatelessWidget {
       margin: const EdgeInsets.only(top: 12.0),
       padding: const EdgeInsets.symmetric(vertical: 5.0),
       decoration: BoxDecoration(
-        border: Border(top: BorderSide(color: DpdColors.primary, width: 1)),
+        border: Border(top: BorderSide(color: context.palette.primary, width: 1)),
       ),
       child: Align(
         alignment: Alignment.centerLeft,
@@ -238,13 +247,13 @@ class DpdFooter extends StatelessWidget {
               },
               child: Text.rich(
                 TextSpan(
-                  style: TextStyle(fontSize: 12.8, color: DpdColors.gray),
+                  style: TextStyle(fontSize: 12.8, color: context.palette.gray),
                   children: [
                     TextSpan(text: '$messagePrefix '),
                     TextSpan(
                       text: linkText,
                       style: TextStyle(
-                        color: DpdColors.primaryText,
+                        color: context.palette.primaryText,
                         fontWeight: FontWeight.w700,
                         decoration: TextDecoration.none,
                       ),
@@ -304,7 +313,7 @@ class EntryLabelValue extends StatelessWidget {
             child: Text(
               label,
               style: theme.textTheme.bodySmall?.copyWith(
-                color: DpdColors.primaryText,
+                color: context.palette.primaryText,
                 fontWeight: FontWeight.w700,
               ),
               maxLines: 1,
@@ -409,7 +418,7 @@ class _SingleExampleBlock extends ConsumerWidget {
             child: Text(
               [source, sutta].whereType<String>().map(n).join(' '),
               style: theme.textTheme.bodySmall?.copyWith(
-                color: DpdColors.primaryText,
+                color: context.palette.primaryText,
                 fontStyle: FontStyle.italic,
               ),
             ),
@@ -436,7 +445,7 @@ class EntrySummaryBox extends ConsumerWidget {
     final h = headword.headword;
     final baseStyle = theme.textTheme.bodyMedium?.copyWith(height: 1.5);
     final boldStyle = baseStyle?.copyWith(fontWeight: FontWeight.w700);
-    final grayStyle = baseStyle?.copyWith(color: DpdColors.gray);
+    final grayStyle = baseStyle?.copyWith(color: context.palette.gray);
 
     String f(String? text) => filterNiggahita(
       filterApostrophe(text ?? '', show: showApostrophe),
@@ -529,7 +538,7 @@ class DpdSectionButton extends StatelessWidget {
     final fg = isActive
         ? theme.colorScheme.onSecondary
         : theme.colorScheme.onPrimary;
-    final shadow = isActive ? DpdColors.shadowHover : DpdColors.shadowDefault;
+    final shadow = isActive ? context.palette.shadowHover : context.palette.shadowDefault;
     return MouseRegion(
       cursor: SystemMouseCursors.click,
       child: SelectionContainer.disabled(
@@ -606,11 +615,11 @@ class _DpdPlayButtonState extends State<DpdPlayButton> {
     } else if (_playing) {
       bg = theme.colorScheme.secondary;
       fg = theme.colorScheme.onSecondary;
-      shadow = DpdColors.shadowHover;
+      shadow = context.palette.shadowHover;
     } else {
       bg = theme.colorScheme.primary;
       fg = theme.colorScheme.onPrimary;
-      shadow = DpdColors.shadowDefault;
+      shadow = context.palette.shadowDefault;
     }
     final compact = widget.compact;
     return MouseRegion(

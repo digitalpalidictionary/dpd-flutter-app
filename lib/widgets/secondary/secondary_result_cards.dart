@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../models/lookup_results.dart';
-import '../../theme/dpd_colors.dart';
+import '../../theme/dpd_palette.dart';
 import '../../utils/pali_sort.dart';
 import '../add_word_form_sheet.dart';
 import '../dpd_feedback_form_sheet.dart';
@@ -58,10 +58,11 @@ class _DeconstructorFooter extends StatelessWidget {
     final docsUrl =
         'https://digitalpalidictionary.github.io/features/deconstructor/';
 
-    final footerStyle = TextStyle(fontSize: 12.8, color: DpdColors.gray);
+    final palette = context.palette;
+    final footerStyle = TextStyle(fontSize: 12.8, color: palette.gray);
     final linkStyle = TextStyle(
       fontSize: 12.8,
-      color: DpdColors.primaryText,
+      color: palette.primaryText,
       fontWeight: FontWeight.w700,
       decoration: TextDecoration.none,
     );
@@ -70,7 +71,7 @@ class _DeconstructorFooter extends StatelessWidget {
       margin: const EdgeInsets.only(top: 5),
       padding: const EdgeInsets.symmetric(vertical: 5),
       decoration: BoxDecoration(
-        border: Border(top: BorderSide(color: DpdColors.primary, width: 1)),
+        border: Border(top: BorderSide(color: palette.primary, width: 1)),
       ),
       child: Text.rich(
         TextSpan(
@@ -413,7 +414,7 @@ class _HelpStyleTable extends StatelessWidget {
               child: Text(
                 label,
                 style: bodyStyle?.copyWith(
-                  color: DpdColors.secondary,
+                  color: context.palette.secondary,
                   fontWeight: FontWeight.w700,
                 ),
               ),
@@ -459,7 +460,7 @@ class EpdCard extends StatelessWidget {
                 TextSpan(
                   text: entry.headword,
                   style: TextStyle(
-                    color: DpdColors.primaryText,
+                    color: context.palette.primaryText,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
@@ -521,7 +522,7 @@ class _VariantTableState extends State<_VariantTable> {
     ).textTheme.bodyMedium?.copyWith(height: _lineHeight);
     final headerStyle = bodyStyle?.copyWith(fontWeight: FontWeight.w700);
     final linkStyle = bodyStyle?.copyWith(
-      color: DpdColors.primaryText,
+      color: context.palette.primaryText,
       fontWeight: FontWeight.w700,
     );
 
@@ -568,7 +569,7 @@ class _VariantTableState extends State<_VariantTable> {
           TableRow(
             decoration: BoxDecoration(
               border: Border(
-                top: BorderSide(color: DpdColors.grayTransparent, width: 1),
+                top: BorderSide(color: context.palette.grayTransparent, width: 1),
               ),
             ),
             children: List.generate(4, (_) => const SizedBox(height: 1)),

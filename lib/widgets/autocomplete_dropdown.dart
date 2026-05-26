@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../theme/dpd_colors.dart';
+import '../theme/dpd_palette.dart';
 
 class AutocompleteDropdown extends StatelessWidget {
   const AutocompleteDropdown({
@@ -31,7 +32,7 @@ class AutocompleteDropdown extends StatelessWidget {
           bottomLeft: Radius.circular(DpdColors.borderRadiusValue),
           bottomRight: Radius.circular(DpdColors.borderRadiusValue),
         ),
-        color: isDark ? DpdColors.darkShade : DpdColors.light,
+        color: isDark ? context.palette.darkShade : context.palette.light,
         child: Container(
           constraints: BoxConstraints(
             maxHeight: 300,
@@ -54,7 +55,7 @@ class AutocompleteDropdown extends StatelessWidget {
             itemCount: suggestions.length,
             separatorBuilder: (_, i) => Divider(
               height: 1,
-              color: DpdColors.grayTransparent,
+              color: context.palette.grayTransparent,
             ),
             itemBuilder: (context, index) {
               final term = suggestions[index];

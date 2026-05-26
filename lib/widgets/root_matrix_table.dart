@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../theme/dpd_colors.dart';
+import '../theme/dpd_palette.dart';
 import 'entry_content.dart';
 import 'feedback_type.dart';
 import 'root_matrix_builder.dart';
@@ -16,11 +17,11 @@ class RootMatrixTable extends StatelessWidget {
     final theme = Theme.of(context);
     final textStyle = theme.textTheme.bodyMedium?.copyWith(height: 1.5);
     final labelStyle = textStyle?.copyWith(
-      color: DpdColors.primaryText,
+      color: context.palette.primaryText,
       fontWeight: FontWeight.w700,
     );
     final headerStyle = textStyle?.copyWith(
-      color: DpdColors.primaryText,
+      color: context.palette.primaryText,
       fontWeight: FontWeight.w700,
     );
 
@@ -43,7 +44,7 @@ class RootMatrixTable extends StatelessWidget {
           width: double.infinity,
           margin: const EdgeInsets.only(bottom: 2),
           decoration: BoxDecoration(
-            border: Border.all(color: DpdColors.primary, width: 1),
+            border: Border.all(color: context.palette.primary, width: 1),
             borderRadius: BorderRadius.circular(5),
           ),
           padding: const EdgeInsets.all(5),
@@ -94,7 +95,7 @@ class RootMatrixTable extends StatelessWidget {
           padding: DpdColors.sectionPadding,
           child: Text(
             'No matrix data',
-            style: textStyle?.copyWith(color: DpdColors.gray),
+            style: textStyle?.copyWith(color: context.palette.gray),
           ),
         ),
       );
@@ -152,7 +153,7 @@ class _Cell extends StatelessWidget {
     return Container(
       margin: margin,
       decoration: BoxDecoration(
-        border: Border.all(color: DpdColors.grayTransparent, width: 1),
+        border: Border.all(color: context.palette.grayTransparent, width: 1),
         borderRadius: BorderRadius.circular(5),
       ),
       padding: const EdgeInsets.all(5),

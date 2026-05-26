@@ -5,7 +5,7 @@ import 'package:percent_indicator/linear_percent_indicator.dart';
 
 import '../providers/database_update_provider.dart';
 import '../services/database_update_service.dart';
-import '../theme/dpd_colors.dart';
+import '../theme/dpd_palette.dart';
 
 class DownloadScreen extends ConsumerWidget {
   const DownloadScreen({super.key});
@@ -157,7 +157,7 @@ class DownloadScreen extends ConsumerWidget {
           lineHeight: 12,
           percent: percent.clamp(0.0, 1.0),
           backgroundColor: theme.colorScheme.outlineVariant,
-          progressColor: DpdColors.primary,
+          progressColor: context.palette.primary,
           barRadius: const Radius.circular(6),
           padding: EdgeInsets.zero,
         ),

@@ -33,28 +33,28 @@ class GrammarTable extends ConsumerWidget {
     final hasInternet = ref.watch(hasInternetProvider).valueOrNull ?? true;
 
     final rows = [
-      _buildLemmaRow(headword, n),
-      _buildLemmaTradRow(headword, n),
-      _buildLemmaIpaRow(headword, hasInternet),
-      _buildGrammarRow(headword, n),
-      _buildFamilyRootRow(headword, n),
-      _buildRootDetailsRow(headword, n),
-      _buildRootInCompsRow(headword, n),
-      _buildBaseRow(headword, n),
-      _buildConstructionRow(headword, n),
-      _buildDerivativeRow(headword, n),
-      _buildPhoneticRow(headword, n),
-      _buildCompoundRow(headword, n),
-      _buildAntonymRow(headword, n),
-      _buildSynonymRow(headword, n),
-      ..._buildVariantRows(headword, n),
-      _buildCommentaryRow(headword, n),
-      _buildNotesRow(headword, n),
-      _buildCognateRow(headword, n),
-      _buildLinkRow(headword),
-      _buildNonIaRow(headword, n),
-      _buildSanskritRow(headword, n),
-      _buildSanskritRootDetailsRow(headword, n),
+      _buildLemmaRow(context, headword, n),
+      _buildLemmaTradRow(context, headword, n),
+      _buildLemmaIpaRow(context, headword, hasInternet),
+      _buildGrammarRow(context, headword, n),
+      _buildFamilyRootRow(context, headword, n),
+      _buildRootDetailsRow(context, headword, n),
+      _buildRootInCompsRow(context, headword, n),
+      _buildBaseRow(context, headword, n),
+      _buildConstructionRow(context, headword, n),
+      _buildDerivativeRow(context, headword, n),
+      _buildPhoneticRow(context, headword, n),
+      _buildCompoundRow(context, headword, n),
+      _buildAntonymRow(context, headword, n),
+      _buildSynonymRow(context, headword, n),
+      ..._buildVariantRows(context, headword, n),
+      _buildCommentaryRow(context, headword, n),
+      _buildNotesRow(context, headword, n),
+      _buildCognateRow(context, headword, n),
+      _buildLinkRow(context, headword),
+      _buildNonIaRow(context, headword, n),
+      _buildSanskritRow(context, headword, n),
+      _buildSanskritRootDetailsRow(context, headword, n),
     ].whereType<TableRow>().toList();
 
     return DpdSectionContainer(
@@ -87,29 +87,30 @@ class GrammarTable extends ConsumerWidget {
     );
   }
 
-  TableRow? _buildLemmaRow(
+  TableRow? _buildLemmaRow(BuildContext context,
     DpdHeadwordWithRoot headword,
     String Function(String) n,
   ) {
     final lemma = headword.headword.lemmaClean;
     if (lemma.isEmpty) return null;
-    return buildKvTextRow('Lemma', lemma, filter: n);
+    return buildKvTextRow(context, 'Lemma', lemma, filter: n);
   }
 
-  TableRow? _buildLemmaTradRow(
+  TableRow? _buildLemmaTradRow(BuildContext context,
     DpdHeadwordWithRoot headword,
     String Function(String) n,
   ) {
     final lemmaTrad = headword.headword.lemmaTradClean;
     if (lemmaTrad.isEmpty) return null;
     if (lemmaTrad == headword.headword.lemmaClean) return null;
-    return buildKvTextRow('Traditional Lemma', lemmaTrad, filter: n);
+    return buildKvTextRow(context, 'Traditional Lemma', lemmaTrad, filter: n);
   }
 
-  TableRow? _buildLemmaIpaRow(DpdHeadwordWithRoot headword, bool hasInternet) {
+  TableRow? _buildLemmaIpaRow(BuildContext context, DpdHeadwordWithRoot headword, bool hasInternet) {
     final ipa = headword.headword.lemmaIpa;
     if (ipa == null || ipa.isEmpty) return null;
     return buildKvRow(
+      context,
       'IPA',
       _IpaRowContent(
         ipa: ipa,
@@ -119,23 +120,23 @@ class GrammarTable extends ConsumerWidget {
     );
   }
 
-  TableRow? _buildGrammarRow(
+  TableRow? _buildGrammarRow(BuildContext context,
     DpdHeadwordWithRoot headword,
     String Function(String) n,
   ) {
     final grammar = headword.headword.grammarLine;
     if (grammar.isEmpty) return null;
-    return buildKvTextRow('Grammar', grammar, filter: n);
+    return buildKvTextRow(context, 'Grammar', grammar, filter: n);
   }
 
-  TableRow? _buildFamilyRootRow(
+  TableRow? _buildFamilyRootRow(BuildContext context,
     DpdHeadwordWithRoot headword,
     String Function(String) n,
   ) {
-    return buildKvTextRow('Root Family', headword.familyRoot, filter: n);
+    return buildKvTextRow(context, 'Root Family', headword.familyRoot, filter: n);
   }
 
-  TableRow? _buildRootDetailsRow(
+  TableRow? _buildRootDetailsRow(BuildContext context,
     DpdHeadwordWithRoot headword,
     String Function(String) n,
   ) {
@@ -149,10 +150,10 @@ class GrammarTable extends ConsumerWidget {
     ];
     final details = parts.join(' ').trim();
     if (details.isEmpty) return null;
-    return buildKvTextRow('Root', details, filter: n);
+    return buildKvTextRow(context, 'Root', details, filter: n);
   }
 
-  TableRow? _buildRootInCompsRow(
+  TableRow? _buildRootInCompsRow(BuildContext context,
     DpdHeadwordWithRoot headword,
     String Function(String) n,
   ) {
@@ -160,41 +161,43 @@ class GrammarTable extends ConsumerWidget {
     if (root == null) return null;
     final inComps = root.rootInComps;
     if (inComps.isEmpty) return null;
-    return buildKvTextRow('√ In Sandhi', inComps, filter: n);
+    return buildKvTextRow(context, '√ In Sandhi', inComps, filter: n);
   }
 
-  TableRow? _buildBaseRow(
+  TableRow? _buildBaseRow(BuildContext context,
     DpdHeadwordWithRoot headword,
     String Function(String) n,
   ) {
-    return buildKvTextRow('Base', headword.rootBase, filter: n);
+    return buildKvTextRow(context, 'Base', headword.rootBase, filter: n);
   }
 
-  TableRow? _buildConstructionRow(
+  TableRow? _buildConstructionRow(BuildContext context,
     DpdHeadwordWithRoot headword,
     String Function(String) n,
   ) {
     return buildKvTextRow(
+      context,
       'Construction',
       headword.headword.cleanConstruction(),
       filter: n,
     );
   }
 
-  TableRow? _buildDerivativeRow(
+  TableRow? _buildDerivativeRow(BuildContext context,
     DpdHeadwordWithRoot headword,
     String Function(String) n,
   ) {
     final suffix = headword.suffix;
     if (suffix == null || suffix.isEmpty) return null;
-    return buildKvTextRow('Derivative', '($suffix)', filter: n);
+    return buildKvTextRow(context, 'Derivative', '($suffix)', filter: n);
   }
 
-  TableRow? _buildPhoneticRow(
+  TableRow? _buildPhoneticRow(BuildContext context,
     DpdHeadwordWithRoot headword,
     String Function(String) n,
   ) {
     return buildKvRichRow(
+      context,
       'Phonetic Change',
       headword.phonetic,
       filter: n,
@@ -202,7 +205,7 @@ class GrammarTable extends ConsumerWidget {
     );
   }
 
-  TableRow? _buildCompoundRow(
+  TableRow? _buildCompoundRow(BuildContext context,
     DpdHeadwordWithRoot headword,
     String Function(String) n,
   ) {
@@ -217,38 +220,38 @@ class GrammarTable extends ConsumerWidget {
       if (type != null && type.isNotEmpty) type,
       if (construction != null && construction.isNotEmpty) '($construction)',
     ].join(' ').trim();
-    return buildKvRichRow('Compound', text, filter: n, onLinkTap: _openUrl);
+    return buildKvRichRow(context, 'Compound', text, filter: n, onLinkTap: _openUrl);
   }
 
-  TableRow? _buildAntonymRow(
+  TableRow? _buildAntonymRow(BuildContext context,
     DpdHeadwordWithRoot headword,
     String Function(String) n,
   ) {
-    return buildKvTextRow('Antonym', headword.antonym, filter: n);
+    return buildKvTextRow(context, 'Antonym', headword.antonym, filter: n);
   }
 
-  TableRow? _buildSynonymRow(
+  TableRow? _buildSynonymRow(BuildContext context,
     DpdHeadwordWithRoot headword,
     String Function(String) n,
   ) {
-    return buildKvTextRow('Synonym', headword.synonym, filter: n);
+    return buildKvTextRow(context, 'Synonym', headword.synonym, filter: n);
   }
 
-  List<TableRow?> _buildVariantRows(
+  List<TableRow?> _buildVariantRows(BuildContext context,
     DpdHeadwordWithRoot headword,
     String Function(String) n,
   ) {
     return [
       if (headword.variant != null && headword.varPhonetic == null && headword.varText == null)
-        buildKvTextRow('Variant', headword.variant, filter: n),
+        buildKvTextRow(context, 'Variant', headword.variant, filter: n),
       if (headword.varPhonetic != null)
-        buildKvTextRow('Phonetic Variant', headword.varPhonetic, filter: n),
+        buildKvTextRow(context, 'Phonetic Variant', headword.varPhonetic, filter: n),
       if (headword.varText != null)
-        buildKvTextRow('Textual Variant', headword.varText, filter: n),
+        buildKvTextRow(context, 'Textual Variant', headword.varText, filter: n),
     ];
   }
 
-  TableRow? _buildCommentaryRow(
+  TableRow? _buildCommentaryRow(BuildContext context,
     DpdHeadwordWithRoot headword,
     String Function(String) n,
   ) {
@@ -257,6 +260,7 @@ class GrammarTable extends ConsumerWidget {
       return null;
     }
     return buildKvRichRow(
+      context,
       'Commentary',
       commentary,
       filter: n,
@@ -264,11 +268,12 @@ class GrammarTable extends ConsumerWidget {
     );
   }
 
-  TableRow? _buildNotesRow(
+  TableRow? _buildNotesRow(BuildContext context,
     DpdHeadwordWithRoot headword,
     String Function(String) n,
   ) {
     return buildKvRichRow(
+      context,
       'Notes',
       headword.notes,
       filter: n,
@@ -276,41 +281,42 @@ class GrammarTable extends ConsumerWidget {
     );
   }
 
-  TableRow? _buildCognateRow(
+  TableRow? _buildCognateRow(BuildContext context,
     DpdHeadwordWithRoot headword,
     String Function(String) n,
   ) {
-    return buildKvTextRow('English Cognate', headword.cognate, filter: n);
+    return buildKvTextRow(context, 'English Cognate', headword.cognate, filter: n);
   }
 
   static Future<void> _openUrl(String url) async {
     await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
   }
 
-  TableRow? _buildLinkRow(DpdHeadwordWithRoot headword) {
-    return buildKvLinkRow('Web Link', headword.link, onOpen: _openUrl);
+  TableRow? _buildLinkRow(BuildContext context, DpdHeadwordWithRoot headword) {
+    return buildKvLinkRow(context, 'Web Link', headword.link, onOpen: _openUrl);
   }
 
-  TableRow? _buildNonIaRow(
+  TableRow? _buildNonIaRow(BuildContext context,
     DpdHeadwordWithRoot headword,
     String Function(String) n,
   ) {
-    return buildKvTextRow('Non IA', headword.nonIa, filter: n);
+    return buildKvTextRow(context, 'Non IA', headword.nonIa, filter: n);
   }
 
-  TableRow? _buildSanskritRow(
+  TableRow? _buildSanskritRow(BuildContext context,
     DpdHeadwordWithRoot headword,
     String Function(String) n,
   ) {
     final sanskrit = headword.sanskrit;
     if (sanskrit == null || sanskrit.isEmpty) return null;
     return buildKvRow(
+      context,
       'Sanskrit',
       Text(n(sanskrit), style: const TextStyle(fontStyle: FontStyle.italic)),
     );
   }
 
-  TableRow? _buildSanskritRootDetailsRow(
+  TableRow? _buildSanskritRootDetailsRow(BuildContext context,
     DpdHeadwordWithRoot headword,
     String Function(String) n,
   ) {
@@ -326,6 +332,7 @@ class GrammarTable extends ConsumerWidget {
     final details = parts.join(' ').trim();
     if (details.isEmpty) return null;
     return buildKvRow(
+      context,
       'Sanskrit Root',
       Text(n(details), style: const TextStyle(fontStyle: FontStyle.italic)),
     );

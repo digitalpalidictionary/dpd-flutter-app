@@ -6,6 +6,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../database/database.dart';
 import '../theme/dpd_colors.dart';
+import '../theme/dpd_palette.dart';
 
 final _hTagRe = RegExp(r'<strong>\((?:H\d[A-Z]?|C\d)\)</strong>\s*');
 final _docWrapRe = RegExp(
@@ -77,11 +78,12 @@ class DictHtmlCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
-    final stylesBuilder = _buildStylesBuilder(isDark);
+    final palette = context.palette;
+    final stylesBuilder = _buildStylesBuilder(isDark, palette);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Divider(height: 1, color: DpdColors.primary.withValues(alpha: 0.3)),
+        Divider(height: 1, color: palette.primary.withValues(alpha: 0.3)),
         const SizedBox(height: 12),
         Text(
           dictName,
@@ -90,7 +92,7 @@ class DictHtmlCard extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 12),
-        Divider(height: 1, color: DpdColors.primary.withValues(alpha: 0.3)),
+        Divider(height: 1, color: palette.primary.withValues(alpha: 0.3)),
         const SizedBox(height: 8),
         for (final entry in entries) ...[
           ..._buildEntryWidgets(context, entry, stylesBuilder),
@@ -138,36 +140,34 @@ class DictHtmlCard extends StatelessWidget {
   }
 }
 
-Map<String, String>? Function(dom.Element) _buildStylesBuilder(bool isDark) {
+Map<String, String>? Function(dom.Element) _buildStylesBuilder(bool isDark, DpdPalette palette) {
   final lemmaColor = _colorToCSS(
-    isDark ? DpdColors.primaryTextDark : DpdColors.primaryText,
+    isDark ? palette.primaryTextDark : palette.primaryText,
   );
   final highlightBg = _colorToCSS(
-    isDark
-        ? DpdColors.primaryAlt.withValues(alpha: 0.4)
-        : DpdColors.primaryAlt.withValues(alpha: 0.4),
+    palette.primaryAlt.withValues(alpha: 0.4),
   );
   final highlightText = isDark ? 'black' : 'white';
 
   final blueColor = _colorToCSS(
-    isDark ? DpdColors.primaryTextDark : DpdColors.primaryText,
+    isDark ? palette.primaryTextDark : palette.primaryText,
   );
   final redColor = _colorToCSS(
-    isDark ? DpdColors.accentRedDark : DpdColors.accentRed,
+    isDark ? palette.accentRedDark : palette.accentRed,
   );
   final greenColor = _colorToCSS(
-    isDark ? DpdColors.accentGreenDark : DpdColors.accentGreen,
+    isDark ? palette.accentGreenDark : palette.accentGreen,
   );
   final orangeColor = _colorToCSS(
-    isDark ? DpdColors.accentOrangeDark : DpdColors.accentOrange,
+    isDark ? palette.accentOrangeDark : palette.accentOrange,
   );
   final purpleColor = _colorToCSS(
-    isDark ? DpdColors.accentPurpleDark : DpdColors.accentPurple,
+    isDark ? palette.accentPurpleDark : palette.accentPurple,
   );
   final brownColor = _colorToCSS(
-    isDark ? DpdColors.accentBrownDark : DpdColors.accentBrown,
+    isDark ? palette.accentBrownDark : palette.accentBrown,
   );
-  final grayColor = _colorToCSS(isDark ? DpdColors.grayLight : DpdColors.gray);
+  final grayColor = _colorToCSS(isDark ? palette.grayLight : palette.gray);
 
   return (dom.Element element) {
     final classes = element.classes;
@@ -286,7 +286,7 @@ Map<String, String>? Function(dom.Element) _buildStylesBuilder(bool isDark) {
       return {
         'font-size': 'smaller',
         'background-color': _colorToCSS(
-          isDark ? DpdColors.darkShade : DpdColors.lightShade,
+          isDark ? palette.darkShade : palette.lightShade,
         ),
       };
     }
@@ -323,6 +323,7 @@ void _showTooltip(BuildContext context, String text) {
   late OverlayEntry entry;
   entry = OverlayEntry(
     builder: (ctx) {
+      final overlayPalette = ctx.palette;
       return GestureDetector(
         onTap: () => entry.remove(),
         behavior: HitTestBehavior.translucent,
@@ -336,7 +337,7 @@ void _showTooltip(BuildContext context, String text) {
                 child: Material(
                   elevation: 4,
                   borderRadius: DpdColors.borderRadius,
-                  color: DpdColors.primaryAlt,
+                  color: overlayPalette.primaryAlt,
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
                       horizontal: 12,
@@ -344,7 +345,7 @@ void _showTooltip(BuildContext context, String text) {
                     ),
                     child: Text(
                       text,
-                      style: TextStyle(color: DpdColors.light, fontSize: 12),
+                      style: TextStyle(color: overlayPalette.light, fontSize: 12),
                     ),
                   ),
                 ),

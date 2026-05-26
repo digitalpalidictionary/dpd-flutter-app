@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../database/database.dart';
 import '../theme/dpd_colors.dart';
+import '../theme/dpd_palette.dart';
 import 'entry_content.dart';
 import 'feedback_type.dart';
 
@@ -26,11 +27,11 @@ class RootInfoTable extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final labelStyle = theme.textTheme.bodyMedium?.copyWith(
-      color: DpdColors.primaryText,
+      color: context.palette.primaryText,
       fontWeight: FontWeight.w700,
     );
     final valueStyle = theme.textTheme.bodyMedium;
-    final grayStyle = valueStyle?.copyWith(color: DpdColors.gray);
+    final grayStyle = valueStyle?.copyWith(color: context.palette.gray);
     final italicStyle = valueStyle?.copyWith(fontStyle: FontStyle.italic);
 
     final rows = <TableRow>[];
@@ -40,6 +41,7 @@ class RootInfoTable extends StatelessWidget {
     final groupPali = _rootGroupPali[root.rootGroup] ?? '';
     rows.add(
       buildKvRow(
+        context,
         'Pāḷi Root:',
         Text.rich(
           TextSpan(
@@ -71,6 +73,7 @@ class RootInfoTable extends StatelessWidget {
     final basesValue = b == null ? '…' : (b.isEmpty ? '-' : b.join(', '));
     rows.add(
       buildKvTextRow(
+        context,
         basesLabel,
         basesValue,
         labelStyle: labelStyle,
@@ -82,6 +85,7 @@ class RootInfoTable extends StatelessWidget {
     if (root.rootInComps.isNotEmpty) {
       rows.add(
         buildKvTextRow(
+          context,
           'Root in Compounds:',
           root.rootInComps,
           labelStyle: labelStyle,
@@ -94,6 +98,7 @@ class RootInfoTable extends StatelessWidget {
     if (root.dhatupathaRoot != '-') {
       rows.add(
         buildKvRow(
+          context,
           'Dhātupātha:',
           Text.rich(
             TextSpan(
@@ -124,6 +129,7 @@ class RootInfoTable extends StatelessWidget {
     } else {
       rows.add(
         buildKvTextRow(
+          context,
           'Dhātupātha:',
           '-',
           labelStyle: labelStyle,
@@ -136,6 +142,7 @@ class RootInfoTable extends StatelessWidget {
     if (root.dhatumanjusaRoot != '-') {
       rows.add(
         buildKvRow(
+          context,
           'Dhātumañjūsa:',
           Text.rich(
             TextSpan(
@@ -166,6 +173,7 @@ class RootInfoTable extends StatelessWidget {
     } else {
       rows.add(
         buildKvTextRow(
+          context,
           'Dhātumañjūsa:',
           '-',
           labelStyle: labelStyle,
@@ -178,6 +186,7 @@ class RootInfoTable extends StatelessWidget {
     if (root.dhatumalaRoot != '-') {
       rows.add(
         buildKvRow(
+          context,
           'Saddanīti:',
           Text.rich(
             TextSpan(
@@ -195,6 +204,7 @@ class RootInfoTable extends StatelessWidget {
     } else {
       rows.add(
         buildKvTextRow(
+          context,
           'Saddanīti:',
           '-',
           labelStyle: labelStyle,
@@ -206,6 +216,7 @@ class RootInfoTable extends StatelessWidget {
     // Sanskrit Root (gray)
     rows.add(
       buildKvRow(
+        context,
         'Sanskrit Root:',
         Text(
           '${root.sanskritRoot} ${root.sanskritRootClass} (${root.sanskritRootMeaning})',
@@ -219,6 +230,7 @@ class RootInfoTable extends StatelessWidget {
     if (root.paniniRoot != '-') {
       rows.add(
         buildKvRow(
+          context,
           'Pāṇinīya Dhātupāṭha:',
           Text.rich(
             TextSpan(
@@ -239,6 +251,7 @@ class RootInfoTable extends StatelessWidget {
     } else {
       rows.add(
         buildKvTextRow(
+          context,
           'Pāṇinīya Dhātupāṭha:',
           '-',
           labelStyle: labelStyle,
@@ -250,7 +263,7 @@ class RootInfoTable extends StatelessWidget {
     // Notes (optional) — may contain inline HTML (<i>, <b>, <a>)
     if (root.note.isNotEmpty) {
       rows.add(
-        buildKvRichRow('Notes:', root.note, labelStyle: labelStyle)!,
+        buildKvRichRow(context, 'Notes:', root.note, labelStyle: labelStyle)!,
       );
     }
 

@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../theme/dpd_scheme.dart';
+
 enum DisplayMode { classic, compact }
 
 enum NiggahitaMode { dot, circle }
@@ -14,6 +16,7 @@ enum TapMode { singleTap, doubleTap }
 class Settings {
   const Settings({
     this.themeMode = ThemeMode.system,
+    this.colourScheme = DpdScheme.nila,
     this.fontSize = 16.0,
     this.useSerifFont = false,
     this.grammarOpen = false,
@@ -33,6 +36,7 @@ class Settings {
   });
 
   final ThemeMode themeMode;
+  final DpdScheme colourScheme;
   final double fontSize;
   final bool useSerifFont;
   final bool grammarOpen;
@@ -52,6 +56,7 @@ class Settings {
 
   Settings copyWith({
     ThemeMode? themeMode,
+    DpdScheme? colourScheme,
     double? fontSize,
     bool? useSerifFont,
     bool? grammarOpen,
@@ -71,6 +76,7 @@ class Settings {
   }) {
     return Settings(
       themeMode: themeMode ?? this.themeMode,
+      colourScheme: colourScheme ?? this.colourScheme,
       fontSize: fontSize ?? this.fontSize,
       useSerifFont: useSerifFont ?? this.useSerifFont,
       grammarOpen: grammarOpen ?? this.grammarOpen,
@@ -96,6 +102,7 @@ class Settings {
     if (identical(this, other)) return true;
     return other is Settings &&
         other.themeMode == themeMode &&
+        other.colourScheme == colourScheme &&
         other.fontSize == fontSize &&
         other.useSerifFont == useSerifFont &&
         other.grammarOpen == grammarOpen &&
@@ -117,6 +124,7 @@ class Settings {
   @override
   int get hashCode => Object.hash(
     themeMode,
+    colourScheme,
     fontSize,
     useSerifFont,
     grammarOpen,
@@ -150,6 +158,11 @@ class SettingsNotifier extends StateNotifier<Settings> {
       'dark' => ThemeMode.dark,
       _ => ThemeMode.system,
     };
+    final schemeName = _prefs.getString('colour_scheme') ?? 'nila';
+    final colourScheme = DpdScheme.values.firstWhere(
+      (s) => s.name == schemeName,
+      orElse: () => DpdScheme.nila,
+    );
     final fontSize = _prefs.getDouble('font_size') ?? 16.0;
     final useSerifFont = _prefs.getBool('use_serif_font') ?? false;
     final grammarOpen = _prefs.getBool('grammar_open') ?? false;
@@ -186,6 +199,7 @@ class SettingsNotifier extends StateNotifier<Settings> {
         _prefs.getBool('show_construction_in_summary') ?? true;
     state = Settings(
       themeMode: themeMode,
+      colourScheme: colourScheme,
       fontSize: fontSize,
       useSerifFont: useSerifFont,
       grammarOpen: grammarOpen,
@@ -208,6 +222,11 @@ class SettingsNotifier extends StateNotifier<Settings> {
   Future<void> setThemeMode(ThemeMode mode) async {
     await _prefs.setString('theme_mode', mode.name);
     state = state.copyWith(themeMode: mode);
+  }
+
+  Future<void> setColourScheme(DpdScheme scheme) async {
+    await _prefs.setString('colour_scheme', scheme.name);
+    state = state.copyWith(colourScheme: scheme);
   }
 
   Future<void> setFontSize(double size) async {

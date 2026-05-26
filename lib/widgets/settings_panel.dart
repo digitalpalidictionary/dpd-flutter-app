@@ -8,6 +8,7 @@ import '../providers/database_update_provider.dart';
 import '../providers/settings_provider.dart';
 import '../services/intent_service.dart';
 import '../theme/dpd_colors.dart';
+import '../theme/dpd_scheme.dart';
 import 'compact_segmented.dart';
 import 'dict_settings_widget.dart';
 import 'settings_help_dialog.dart';
@@ -62,6 +63,18 @@ class _SettingsContentState extends ConsumerState<SettingsContent> {
           ],
           selected: settings.themeMode,
           onChanged: notifier.setThemeMode,
+        ),
+      ),
+      () => _buildSettingTile(
+        title: 'Colour scheme',
+        topic: _schemeTopic(),
+        trailing: CompactSegmented<DpdScheme>(
+          segments: [
+            for (final s in DpdScheme.values)
+              ButtonSegment(value: s, label: Text(s.label)),
+          ],
+          selected: settings.colourScheme,
+          onChanged: notifier.setColourScheme,
         ),
       ),
       buildDivider,
@@ -294,6 +307,14 @@ class _SettingsContentState extends ConsumerState<SettingsContent> {
       title: 'Theme',
       description:
           'Chooses whether the app follows your device theme or stays light or dark.',
+    );
+  }
+
+  SettingHelpTopic _schemeTopic() {
+    return const SettingHelpTopic(
+      title: 'Colour scheme',
+      description:
+          'Switches between colour palettes. nīḷa is the classic blue, kapila uses warm copper-brown and parchment-cream tones.',
     );
   }
 

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../models/family_data.dart';
 import '../theme/dpd_colors.dart';
+import '../theme/dpd_palette.dart';
 import 'entry_content.dart';
 import 'family_table.dart';
 
@@ -188,7 +189,7 @@ class _JumpToNav extends StatelessWidget {
       children: [
         Text(
           'jump to: ',
-          style: TextStyle(fontSize: 12, color: DpdColors.primaryText),
+          style: TextStyle(fontSize: 12, color: context.palette.primaryText),
         ),
         for (int i = 0; i < keys.length; i++)
           MouseRegion(
@@ -200,7 +201,7 @@ class _JumpToNav extends StatelessWidget {
                   i < keys.length - 1 ? '${keys[i]}, ' : keys[i],
                   style: TextStyle(
                     fontSize: 12,
-                    color: DpdColors.primaryText,
+                    color: context.palette.primaryText,
                     fontWeight: FontWeight.w700,
                     decoration: TextDecoration.none,
                   ),
@@ -225,8 +226,8 @@ class _HeadingDoublelined extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 4),
       decoration: BoxDecoration(
         border: Border(
-          top: BorderSide(color: DpdColors.primary, width: 1),
-          bottom: BorderSide(color: DpdColors.primary, width: 1),
+          top: BorderSide(color: context.palette.primary, width: 1),
+          bottom: BorderSide(color: context.palette.primary, width: 1),
         ),
       ),
       child: child,

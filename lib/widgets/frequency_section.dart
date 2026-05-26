@@ -3,6 +3,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../models/frequency_data.dart';
 import '../theme/dpd_colors.dart';
+import '../theme/dpd_palette.dart';
 import 'entry_content.dart';
 import 'feedback_type.dart';
 import 'frequency_table.dart';
@@ -70,7 +71,7 @@ class FrequencySection extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.symmetric(vertical: 2),
       decoration: BoxDecoration(
-        border: Border(bottom: BorderSide(color: DpdColors.primary, width: 1)),
+        border: Border(bottom: BorderSide(color: context.palette.primary, width: 1)),
       ),
       margin: const EdgeInsets.only(bottom: 5),
       child: Text.rich(TextSpan(style: baseStyle, children: spans)),
@@ -155,7 +156,7 @@ class FrequencySection extends StatelessWidget {
                   child: Text(
                     'this webpage',
                     style: TextStyle(
-                      color: DpdColors.primaryText,
+                      color: context.palette.primaryText,
                       fontWeight: FontWeight.bold,
                       decoration: TextDecoration.none,
                     ),

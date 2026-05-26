@@ -17,6 +17,7 @@ import '../providers/database_update_provider.dart';
 import '../providers/settings_provider.dart';
 import '../providers/summary_provider.dart';
 import '../theme/dpd_colors.dart';
+import '../theme/dpd_palette.dart';
 import '../utils/transliteration.dart';
 import '../utils/velthuis.dart';
 import '../utils/back_navigation.dart';
@@ -341,6 +342,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final palette = context.palette;
     final isDark = theme.brightness == Brightness.dark;
     final query = ref.watch(searchQueryProvider);
     final exactAsync = ref.watch(exactResultsProvider(query));
@@ -391,12 +393,26 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                     padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
                     child: Row(
                       children: [
-                        SvgPicture.asset(
-                          isDark
-                              ? 'assets/images/dpd-logo-dark.svg'
-                              : 'assets/images/dpd-logo.svg',
-                          height: 30,
+                        SizedBox(
                           width: 30,
+                          height: 30,
+                          child: Stack(
+                            children: [
+                              Container(
+                                width: 30,
+                                height: 30,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: context.palette.primary,
+                                ),
+                              ),
+                              SvgPicture.asset(
+                                'assets/images/dpd-logo-mask.svg',
+                                width: 30,
+                                height: 30,
+                              ),
+                            ],
+                          ),
                         ),
                         const SizedBox(width: 8),
                         Expanded(
@@ -412,11 +428,11 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                           child: Tooltip(
                             message: 'Information',
                             decoration: BoxDecoration(
-                              color: DpdColors.primaryAlt,
+                              color: palette.primaryAlt,
                               borderRadius: DpdColors.borderRadius,
                             ),
                             textStyle: TextStyle(
-                              color: DpdColors.light,
+                              color: palette.light,
                               fontSize: 12,
                             ),
                             child: IconButton(
@@ -433,11 +449,11 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                           key: _historyButtonKey,
                           message: 'Search history',
                           decoration: BoxDecoration(
-                            color: DpdColors.primaryAlt,
+                            color: palette.primaryAlt,
                             borderRadius: DpdColors.borderRadius,
                           ),
                           textStyle: TextStyle(
-                            color: DpdColors.light,
+                            color: palette.light,
                             fontSize: 12,
                           ),
                           child: IconButton(
@@ -459,11 +475,11 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                         Tooltip(
                           message: 'Settings',
                           decoration: BoxDecoration(
-                            color: DpdColors.primaryAlt,
+                            color: palette.primaryAlt,
                             borderRadius: DpdColors.borderRadius,
                           ),
                           textStyle: TextStyle(
-                            color: DpdColors.light,
+                            color: palette.light,
                             fontSize: 12,
                           ),
                           child: IconButton(
@@ -849,17 +865,17 @@ class _BarIconButton extends StatelessWidget {
       child: Tooltip(
         message: tooltip ?? '',
         decoration: BoxDecoration(
-          color: DpdColors.primaryAlt,
+          color: context.palette.primaryAlt,
           borderRadius: DpdColors.borderRadius,
         ),
-        textStyle: TextStyle(color: DpdColors.light, fontSize: 12),
+        textStyle: TextStyle(color: context.palette.light, fontSize: 12),
         child: SizedBox(
           width: 40,
           height: 40,
           child: Material(
             color: enabled
-                ? DpdColors.primary
-                : DpdColors.primary.withValues(alpha: 0.4),
+                ? context.palette.primary
+                : context.palette.primary.withValues(alpha: 0.4),
             borderRadius: DpdColors.borderRadius,
             elevation: enabled ? 2 : 0,
             child: InkWell(
@@ -869,8 +885,8 @@ class _BarIconButton extends StatelessWidget {
                 icon,
                 size: 20,
                 color: enabled
-                    ? DpdColors.light
-                    : DpdColors.light.withValues(alpha: 0.5),
+                    ? context.palette.light
+                    : context.palette.light.withValues(alpha: 0.5),
               ),
             ),
           ),

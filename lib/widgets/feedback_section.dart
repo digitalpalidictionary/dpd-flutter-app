@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../theme/dpd_colors.dart';
+import '../theme/dpd_palette.dart';
 import 'add_word_form_sheet.dart';
 import 'dpd_feedback_form_sheet.dart';
 import 'entry_content.dart';
@@ -128,7 +129,7 @@ class _FeedbackLink extends StatelessWidget {
                   child: Text(
                     linkText,
                     style: style?.copyWith(
-                      color: DpdColors.primaryText,
+                      color: context.palette.primaryText,
                       fontWeight: FontWeight.w700,
                     ),
                   ),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../models/inflection_table_data.dart';
 import '../theme/dpd_colors.dart';
+import '../theme/dpd_palette.dart';
 import 'tap_search_wrapper.dart';
 
 class InflectionTable extends StatelessWidget {
@@ -16,7 +17,8 @@ class InflectionTable extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final headerBg = isDark ? DpdColors.dark : DpdColors.light;
+    final palette = context.palette;
+    final headerBg = isDark ? palette.dark : palette.light;
 
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -88,7 +90,7 @@ class InflectionTable extends StatelessWidget {
     final headers = data.headers;
     final style = theme.textTheme.bodyMedium?.copyWith(
       fontWeight: FontWeight.bold,
-      color: DpdColors.primaryText,
+      color: context.palette.primaryText,
     );
 
     return TableRow(
@@ -96,7 +98,7 @@ class InflectionTable extends StatelessWidget {
         for (final header in headers)
           _buildCellContainer(
             color: headerBg,
-            borderColor: DpdColors.primary,
+            borderColor: context.palette.primary,
             child: Text(header, textAlign: TextAlign.center, style: style),
           ),
       ],
@@ -112,7 +114,7 @@ class InflectionTable extends StatelessWidget {
     final surfaceColor = theme.colorScheme.surface;
     final labelStyle = theme.textTheme.bodyMedium?.copyWith(
       fontWeight: FontWeight.bold,
-      color: DpdColors.primaryText,
+      color: context.palette.primaryText,
     );
     final (rowLabel, cells) = row;
 
@@ -120,13 +122,13 @@ class InflectionTable extends StatelessWidget {
       children: [
         _buildCellContainer(
           color: headerBg,
-          borderColor: DpdColors.primary,
+          borderColor: context.palette.primary,
           child: Text(rowLabel, textAlign: TextAlign.center, style: labelStyle),
         ),
         for (final cell in cells)
           _buildCellContainer(
             color: surfaceColor,
-            borderColor: DpdColors.grayTransparent,
+            borderColor: context.palette.grayTransparent,
             child: cell.isEmpty
                 ? const SizedBox.shrink()
                 : Column(
@@ -171,7 +173,7 @@ class InflectionTable extends StatelessWidget {
     final textStyle = isMatch
         ? base.copyWith(color: Theme.of(context).colorScheme.onPrimary)
         : !form.isOccurring
-        ? base.copyWith(color: DpdColors.gray)
+        ? base.copyWith(color: context.palette.gray)
         : base;
 
     final richText = Text.rich(
@@ -193,7 +195,7 @@ class InflectionTable extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
-        color: DpdColors.primary,
+        color: context.palette.primary,
         borderRadius: BorderRadius.circular(3),
       ),
       padding: const EdgeInsets.symmetric(horizontal: 2),

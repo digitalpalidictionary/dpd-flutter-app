@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../theme/dpd_colors.dart';
+import '../theme/dpd_palette.dart';
 
 class VelthuisHelpPopup extends StatelessWidget {
   const VelthuisHelpPopup({super.key});
@@ -26,7 +27,7 @@ class VelthuisHelpPopup extends StatelessWidget {
     return Material(
       elevation: 4,
       borderRadius: DpdColors.borderRadius,
-      color: isDark ? DpdColors.darkShade : DpdColors.light,
+      color: isDark ? context.palette.darkShade : context.palette.light,
       child: Container(
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(

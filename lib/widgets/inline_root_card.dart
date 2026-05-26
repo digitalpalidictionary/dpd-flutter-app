@@ -5,6 +5,7 @@ import '../database/database.dart';
 import '../models/family_data.dart';
 import '../providers/database_provider.dart';
 import '../theme/dpd_colors.dart';
+import '../theme/dpd_palette.dart';
 import 'entry_content.dart';
 import 'family_section_builders.dart';
 import 'family_table.dart';
@@ -43,7 +44,7 @@ class _InlineRootCardState extends ConsumerState<InlineRootCard> {
     final families = widget.rwf.families;
     final baseStyle = theme.textTheme.bodyMedium?.copyWith(height: 1.5);
     final boldStyle = baseStyle?.copyWith(fontWeight: FontWeight.w700);
-    final grayStyle = baseStyle?.copyWith(color: DpdColors.gray);
+    final grayStyle = baseStyle?.copyWith(color: context.palette.gray);
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
@@ -188,7 +189,7 @@ class _AccordionRootCardState extends ConsumerState<AccordionRootCard> {
     final families = widget.rwf.families;
     final baseStyle = theme.textTheme.bodyMedium?.copyWith(height: 1.5);
     final boldStyle = baseStyle?.copyWith(fontWeight: FontWeight.w700);
-    final grayStyle = baseStyle?.copyWith(color: DpdColors.gray);
+    final grayStyle = baseStyle?.copyWith(color: context.palette.gray);
 
     if (_isExpanded) {
       ref.watch(basesForRootProvider(root.root));

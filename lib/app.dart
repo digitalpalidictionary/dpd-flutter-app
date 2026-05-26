@@ -22,15 +22,16 @@ import 'screens/root_screen.dart';
 import 'screens/search_screen.dart';
 import 'services/database_update_service.dart';
 import 'services/intent_service.dart';
-import 'theme/dpd_colors.dart';
+import 'theme/dpd_palette.dart';
+import 'theme/dpd_scheme.dart';
 
-final _switchTheme = SwitchThemeData(
+SwitchThemeData _buildSwitchTheme(DpdPalette palette) => SwitchThemeData(
   thumbColor: WidgetStateProperty.resolveWith((states) {
-    if (states.contains(WidgetState.selected)) return Colors.white;
+    if (states.contains(WidgetState.selected)) return palette.dark;
     return null;
   }),
   trackColor: WidgetStateProperty.resolveWith((states) {
-    if (states.contains(WidgetState.selected)) return DpdColors.primary;
+    if (states.contains(WidgetState.selected)) return palette.primary;
     return null;
   }),
 );
@@ -137,36 +138,40 @@ class _DpdAppState extends ConsumerState<DpdApp> {
   Widget build(BuildContext context) {
     final settings = ref.watch(settingsProvider);
 
+    final palettes = palettesFor(settings.colourScheme);
+    final lightPalette = palettes.light;
+    final darkPalette = palettes.dark;
+
     final lightScheme = ColorScheme(
       brightness: Brightness.light,
-      primary: DpdColors.primary,
-      onPrimary: DpdColors.dark,
-      secondary: DpdColors.primaryAlt,
-      onSecondary: DpdColors.light,
-      secondaryContainer: DpdColors.primary,
-      onSecondaryContainer: DpdColors.dark,
-      surface: DpdColors.light,
-      onSurface: DpdColors.dark,
-      surfaceContainerHighest: DpdColors.lightShade,
-      outline: DpdColors.gray,
-      outlineVariant: DpdColors.grayLight,
+      primary: lightPalette.primary,
+      onPrimary: lightPalette.dark,
+      secondary: lightPalette.primaryAlt,
+      onSecondary: lightPalette.light,
+      secondaryContainer: lightPalette.primary,
+      onSecondaryContainer: lightPalette.dark,
+      surface: lightPalette.light,
+      onSurface: lightPalette.dark,
+      surfaceContainerHighest: lightPalette.lightShade,
+      outline: lightPalette.gray,
+      outlineVariant: lightPalette.grayLight,
       error: Colors.red,
       onError: Colors.white,
     );
 
     final darkScheme = ColorScheme(
       brightness: Brightness.dark,
-      primary: DpdColors.primary,
-      onPrimary: DpdColors.dark,
-      secondary: DpdColors.primaryAlt,
-      onSecondary: DpdColors.light,
-      secondaryContainer: DpdColors.primary,
-      onSecondaryContainer: DpdColors.dark,
-      surface: DpdColors.dark,
-      onSurface: DpdColors.light,
-      surfaceContainerHighest: DpdColors.darkShade,
-      outline: DpdColors.gray,
-      outlineVariant: DpdColors.grayDark,
+      primary: darkPalette.primary,
+      onPrimary: darkPalette.dark,
+      secondary: darkPalette.primaryAlt,
+      onSecondary: darkPalette.light,
+      secondaryContainer: darkPalette.primary,
+      onSecondaryContainer: darkPalette.dark,
+      surface: darkPalette.dark,
+      onSurface: darkPalette.light,
+      surfaceContainerHighest: darkPalette.darkShade,
+      outline: darkPalette.gray,
+      outlineVariant: darkPalette.grayDark,
       error: Colors.red,
       onError: Colors.white,
     );
@@ -210,20 +215,22 @@ class _DpdAppState extends ConsumerState<DpdApp> {
           themeMode: settings.themeMode,
           theme: ThemeData(
             colorScheme: lightScheme,
-            scaffoldBackgroundColor: DpdColors.light,
+            scaffoldBackgroundColor: lightPalette.light,
             textTheme: buildTextTheme(
               ThemeData(colorScheme: lightScheme).textTheme,
             ),
-            switchTheme: _switchTheme,
+            switchTheme: _buildSwitchTheme(lightPalette),
+            extensions: [lightPalette],
             useMaterial3: true,
           ),
           darkTheme: ThemeData(
             colorScheme: darkScheme,
-            scaffoldBackgroundColor: DpdColors.dark,
+            scaffoldBackgroundColor: darkPalette.dark,
             textTheme: buildTextTheme(
               ThemeData.dark().copyWith(colorScheme: darkScheme).textTheme,
             ),
-            switchTheme: _switchTheme,
+            switchTheme: _buildSwitchTheme(darkPalette),
+            extensions: [darkPalette],
             useMaterial3: true,
           ),
           builder: (context, child) {

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../models/family_data.dart';
 import '../theme/dpd_colors.dart';
+import '../theme/dpd_palette.dart';
 import 'entry_content.dart';
 import 'feedback_type.dart';
 
@@ -77,7 +78,7 @@ class HeadingUnderlined extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.only(bottom: 4),
       decoration: BoxDecoration(
-        border: Border(bottom: BorderSide(color: DpdColors.primary, width: 1)),
+        border: Border(bottom: BorderSide(color: context.palette.primary, width: 1)),
       ),
       child: child,
     );
@@ -97,7 +98,7 @@ class FamilyEntryTable extends StatelessWidget {
     final theme = Theme.of(context);
     final lemmaStyle = theme.textTheme.bodyMedium?.copyWith(
       fontWeight: FontWeight.bold,
-      color: DpdColors.primaryText,
+      color: context.palette.primaryText,
     );
     final boldStyle = theme.textTheme.bodyMedium?.copyWith(
       fontWeight: FontWeight.bold,
@@ -131,7 +132,7 @@ class FamilyEntryTable extends StatelessWidget {
               padding: const EdgeInsets.only(bottom: 2),
               child: Text(
                 entry.completion,
-                style: regularStyle?.copyWith(color: DpdColors.gray),
+                style: regularStyle?.copyWith(color: context.palette.gray),
               ),
             ),
           ],

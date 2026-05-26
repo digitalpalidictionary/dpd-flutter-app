@@ -6,6 +6,7 @@ import '../data/changelog_data.dart';
 import '../models/help_results.dart';
 import '../providers/settings_provider.dart';
 import '../theme/dpd_colors.dart';
+import '../theme/dpd_palette.dart';
 import '../widgets/secondary/bibliography_card.dart';
 import '../widgets/secondary/thanks_card.dart';
 
@@ -30,18 +31,19 @@ class InfoPopup extends ConsumerWidget {
     final appVersion = ref.watch(appVersionProvider).valueOrNull;
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
+    final palette = context.palette;
     final divider = Divider(
       height: 1,
-      color: DpdColors.primary.withValues(alpha: 0.3),
+      color: palette.primary.withValues(alpha: 0.3),
     );
 
     return Material(
       elevation: 4,
       borderRadius: DpdColors.borderRadius,
-      color: isDark ? DpdColors.darkShade : DpdColors.light,
+      color: isDark ? palette.darkShade : palette.light,
       child: Container(
         decoration: BoxDecoration(
-          border: Border.all(color: DpdColors.primary, width: 1.5),
+          border: Border.all(color: palette.primary, width: 1.5),
           borderRadius: DpdColors.borderRadius,
         ),
         child: Column(
@@ -262,7 +264,7 @@ class ChangelogCard extends StatelessWidget {
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
               color: colorScheme.surface,
-              border: Border.all(color: DpdColors.primary, width: 1.5),
+              border: Border.all(color: context.palette.primary, width: 1.5),
               borderRadius: DpdColors.borderRadius,
             ),
             child: Column(

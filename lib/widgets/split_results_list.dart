@@ -3,6 +3,7 @@ import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 import '../database/database.dart';
 import '../models/lookup_results.dart';
+import '../theme/dpd_palette.dart';
 import '../models/summary_entry.dart';
 import '../providers/dict_provider.dart';
 import '../providers/settings_provider.dart';
@@ -374,9 +375,8 @@ class TierDivider extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
-    final bgColor = isDark
-        ? HSLColor.fromAHSL(1, 198, 1, 0.18).toColor()
-        : HSLColor.fromAHSL(1, 198, 1, 0.82).toColor();
+    final palette = context.palette;
+    final bgColor = isDark ? palette.darkShade : palette.lightShade;
     final textColor = theme.colorScheme.onSurface;
     final textStyle = isCompact
         ? theme.textTheme.bodySmall?.copyWith(

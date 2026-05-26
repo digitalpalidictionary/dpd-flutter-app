@@ -5,6 +5,7 @@ import '../database/database.dart';
 import '../models/family_data.dart';
 import '../providers/database_provider.dart';
 import '../theme/dpd_colors.dart';
+import '../theme/dpd_palette.dart';
 import '../widgets/entry_content.dart';
 import '../widgets/family_section_builders.dart';
 import '../widgets/family_table.dart';
@@ -73,7 +74,7 @@ class _RootViewState extends ConsumerState<_RootView> {
     final families = widget.rwf.families;
     final baseStyle = theme.textTheme.bodyMedium?.copyWith(height: 1.5);
     final boldStyle = baseStyle?.copyWith(fontWeight: FontWeight.w700);
-    final grayStyle = baseStyle?.copyWith(color: DpdColors.gray);
+    final grayStyle = baseStyle?.copyWith(color: context.palette.gray);
 
     return Scaffold(
       bottomNavigationBar: const FeedbackFooter(),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../theme/dpd_colors.dart';
+import '../../theme/dpd_palette.dart';
 
 /// A card matching the webapp's `h3 + div.dpd` pattern.
 /// Header is h3-equivalent (130% bold), content is in a primary-bordered box.
@@ -34,7 +35,7 @@ class DpdSecondaryCard extends StatelessWidget {
           Container(
             width: double.infinity,
             decoration: BoxDecoration(
-              border: Border.all(color: DpdColors.primary, width: 2),
+              border: Border.all(color: context.palette.primary, width: 2),
               borderRadius: DpdColors.borderRadius,
             ),
             padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
@@ -85,7 +86,7 @@ class TertiaryCard extends StatelessWidget {
           Container(
             width: double.infinity,
             decoration: BoxDecoration(
-              border: Border.all(color: DpdColors.secondary, width: 2),
+              border: Border.all(color: context.palette.secondary, width: 2),
               borderRadius: DpdColors.borderRadius,
             ),
             padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 3),

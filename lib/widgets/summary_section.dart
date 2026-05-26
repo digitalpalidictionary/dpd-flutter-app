@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../models/summary_entry.dart';
 import '../theme/dpd_colors.dart';
+import '../theme/dpd_palette.dart';
 
 @visibleForTesting
 ({String lemma, String? suffix}) splitSummaryLemma(String label) {
@@ -96,7 +97,7 @@ class SummarySection extends StatelessWidget {
               onTap: () => onTap(entries[i].targetId),
             ),
           const SizedBox(height: 12),
-          Divider(height: 1, color: DpdColors.primary.withValues(alpha: 0.3)),
+          Divider(height: 1, color: context.palette.primary.withValues(alpha: 0.3)),
         ],
       ),
     );
@@ -122,11 +123,11 @@ class _SummaryRow extends StatelessWidget {
     final baseStyle = theme.textTheme.bodyMedium;
     final isDark = theme.brightness == Brightness.dark;
     final labelStyle = baseStyle?.copyWith(
-      color: isDark ? DpdColors.primaryTextDark : DpdColors.primaryText,
+      color: isDark ? context.palette.primaryTextDark : context.palette.primaryText,
       fontWeight: FontWeight.w700,
     );
     final linkStyle = baseStyle?.copyWith(
-      color: DpdColors.primaryText,
+      color: context.palette.primaryText,
       fontWeight: FontWeight.w700,
     );
     final boldStyle = baseStyle?.copyWith(fontWeight: FontWeight.bold);

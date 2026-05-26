@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../providers/database_update_provider.dart';
 import '../theme/dpd_colors.dart';
+import '../theme/dpd_palette.dart';
 import '../widgets/feedback_form_sheet.dart';
 
 class FeedbackFooter extends ConsumerWidget {
@@ -24,7 +25,7 @@ class FeedbackFooter extends ConsumerWidget {
             margin: EdgeInsets.only(left: 8, right: 8, top: 4, bottom: 4 + bottomPadding),
             padding: const EdgeInsets.all(5),
             decoration: BoxDecoration(
-              border: Border.all(color: DpdColors.grayTransparent, width: 2),
+              border: Border.all(color: context.palette.grayTransparent, width: 2),
               borderRadius: DpdColors.borderRadius,
             ),
             child: Center(
@@ -32,7 +33,7 @@ class FeedbackFooter extends ConsumerWidget {
                 'Having a problem? Click here to report it',
                 style: TextStyle(
                   fontSize: 12.8,
-                  color: DpdColors.primaryText,
+                  color: context.palette.primaryText,
                   fontWeight: FontWeight.w700,
                 ),
               ),

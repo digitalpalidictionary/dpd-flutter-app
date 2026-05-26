@@ -4,6 +4,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../database/database.dart';
 import '../database/sutta_info_extensions.dart';
 import '../theme/dpd_colors.dart';
+import '../theme/dpd_palette.dart';
 import 'entry_content.dart';
 import 'feedback_type.dart';
 
@@ -245,17 +246,18 @@ class SuttaInfoSection extends StatelessWidget {
   // ── Row builders ─────────────────────────────────────────────────────────
 
   TableRow? _textRow(BuildContext context, String label, String? value) =>
-      buildKvTextRow(label, value);
+      buildKvTextRow(context, label, value);
 
   TableRow? _italicRow(BuildContext context, String label, String? value) =>
       buildKvTextRow(
+        context,
         label,
         value,
         valueStyle: const TextStyle(fontStyle: FontStyle.italic),
       );
 
   TableRow? _linkRow(BuildContext context, String label, String? url) =>
-      buildKvLinkRow(label, url, onOpen: _openUrl);
+      buildKvLinkRow(context, label, url, onOpen: _openUrl);
 
   TableRow? _multiLinkRow(
     BuildContext context,
@@ -272,7 +274,7 @@ class SuttaInfoSection extends StatelessWidget {
             label,
             style: TextStyle(
               fontWeight: FontWeight.bold,
-              color: DpdColors.primaryText,
+              color: context.palette.primaryText,
             ),
           ),
         ),
@@ -290,10 +292,10 @@ class SuttaInfoSection extends StatelessWidget {
                       child: Text(
                         validLinks[i].$1,
                         style: TextStyle(
-                          color: DpdColors.primaryText,
+                          color: context.palette.primaryText,
                           fontWeight: FontWeight.w700,
                           decoration: TextDecoration.underline,
-                          decorationColor: DpdColors.primaryText,
+                          decorationColor: context.palette.primaryText,
                         ),
                       ),
                     ),
