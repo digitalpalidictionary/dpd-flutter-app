@@ -3,6 +3,7 @@ import 'dart:io' show Platform;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../providers/database_update_provider.dart';
 import '../providers/settings_provider.dart';
@@ -98,9 +99,15 @@ class _SettingsContentState extends ConsumerState<SettingsContent> {
         title: 'Font',
         topic: _fontTopic(theme),
         trailing: CompactSegmented<bool>(
-          segments: const [
-            ButtonSegment(value: false, label: Text('Sans')),
-            ButtonSegment(value: true, label: Text('Serif')),
+          segments: [
+            ButtonSegment(
+              value: false,
+              label: Text('Sans', style: GoogleFonts.inter()),
+            ),
+            ButtonSegment(
+              value: true,
+              label: Text('Serif', style: GoogleFonts.notoSerif()),
+            ),
           ],
           selected: settings.useSerifFont,
           onChanged: notifier.setUseSerifFont,
