@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../database/database.dart';
 import '../providers/database_provider.dart';
 import '../providers/settings_provider.dart';
+import '../widgets/content_text_scale.dart';
 import '../widgets/tap_search_wrapper.dart';
 import '../widgets/entry_content.dart';
 import '../widgets/entry_sections_mixin.dart';
@@ -75,7 +76,7 @@ class _EntryViewState extends ConsumerState<_EntryView>
 
     return Scaffold(
       bottomNavigationBar: const FeedbackFooter(),
-      body: TapSearchWrapper(
+      body: ContentTextScale(child: TapSearchWrapper(
         shouldPop: true,
         child: CustomScrollView(
           slivers: [
@@ -135,7 +136,7 @@ class _EntryViewState extends ConsumerState<_EntryView>
             ),
           ],
         ),
-      ),
+      )),
     );
   }
 }

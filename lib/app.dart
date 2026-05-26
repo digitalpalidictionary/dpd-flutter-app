@@ -233,15 +233,6 @@ class _DpdAppState extends ConsumerState<DpdApp> {
             extensions: [darkPalette],
             useMaterial3: true,
           ),
-          builder: (context, child) {
-            final scale = settings.fontSize / 16.0;
-            return MediaQuery(
-              data: MediaQuery.of(
-                context,
-              ).copyWith(textScaler: TextScaler.linear(scale)),
-              child: child!,
-            );
-          },
           initialRoute: '/',
           onGenerateRoute: _onGenerateRoute,
         ),

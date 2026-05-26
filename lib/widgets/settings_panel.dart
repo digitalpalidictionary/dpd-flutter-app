@@ -79,7 +79,7 @@ class _SettingsContentState extends ConsumerState<SettingsContent> {
       ),
       buildDivider,
       () => _buildSettingTile(
-        title: 'Font size',
+        title: 'Results font size',
         topic: _fontSizeTopic(theme),
         trailing: Text(
           settings.fontSize.toStringAsFixed(0),
@@ -320,8 +320,8 @@ class _SettingsContentState extends ConsumerState<SettingsContent> {
 
   SettingHelpTopic _fontSizeTopic(ThemeData theme) {
     return const SettingHelpTopic(
-      title: 'Font size',
-      description: 'Makes text throughout the app smaller or larger.',
+      title: 'Results font size',
+      description: 'Scales the text in search results, entries, and root pages. The app UI (header, settings, buttons) stays at its fixed size.',
     );
   }
 

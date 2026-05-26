@@ -31,6 +31,7 @@ import '../widgets/history_panel.dart';
 import '../widgets/info_popup.dart';
 import '../widgets/settings_panel.dart';
 import '../widgets/split_results_list.dart';
+import '../widgets/content_text_scale.dart';
 import '../widgets/tap_search_wrapper.dart';
 import '../widgets/velthuis_help_popup.dart';
 
@@ -640,12 +641,14 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                   Expanded(
                     child: _activeInfo != null
                         ? InfoContentView(content: _activeInfo!)
-                        : TapSearchWrapper(
-                            child: _buildBody(
-                              context,
-                              query,
-                              exactAsync,
-                              partialAsync,
+                        : ContentTextScale(
+                            child: TapSearchWrapper(
+                              child: _buildBody(
+                                context,
+                                query,
+                                exactAsync,
+                                partialAsync,
+                              ),
                             ),
                           ),
                   ),

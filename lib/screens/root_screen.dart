@@ -12,6 +12,7 @@ import '../widgets/family_table.dart';
 import '../widgets/feedback_type.dart';
 import '../widgets/root_info_table.dart';
 import '../widgets/root_matrix_table.dart';
+import '../widgets/content_text_scale.dart';
 import '../widgets/tap_search_wrapper.dart';
 import '../widgets/feedback_footer.dart';
 
@@ -78,7 +79,7 @@ class _RootViewState extends ConsumerState<_RootView> {
 
     return Scaffold(
       bottomNavigationBar: const FeedbackFooter(),
-      body: TapSearchWrapper(
+      body: ContentTextScale(child: TapSearchWrapper(
         shouldPop: true,
         child: CustomScrollView(
         slivers: [
@@ -194,7 +195,7 @@ class _RootViewState extends ConsumerState<_RootView> {
           ),
         ],
         ),
-      ),
+      )),
     );
   }
 
