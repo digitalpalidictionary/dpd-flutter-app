@@ -344,7 +344,6 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final palette = context.palette;
-    final isDark = theme.brightness == Brightness.dark;
     final query = ref.watch(searchQueryProvider);
     final exactAsync = ref.watch(exactResultsProvider(query));
     final partialAsync = ref.watch(partialResultsProvider(query));

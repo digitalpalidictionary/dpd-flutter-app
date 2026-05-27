@@ -435,7 +435,7 @@ String fromSin(String input) {
   sinhala['ඹ'] = 'mb';
   sinhala['ඟ'] = 'rg';
 
-  var im, i0, i1, i2, i3;
+  var i1;
   var output = '';
   var i = 0;
 
@@ -724,16 +724,6 @@ const _asciiToDevaDigits = {
 String _withDevaDigits(String s) =>
     s.split('').map((ch) => _asciiToDevaDigits[ch] ?? ch).join();
 
-String _withDandaStops(String s) {
-  // replace period that ends a sentence/section with danda
-  // simple + robust: ". " -> "। ", ".\n" -> "।\n", "." at end -> "।"
-  s = s.replaceAll(". ", "। ");
-  s = s.replaceAll(".\n", "।\n");
-  if (s.endsWith(".")) s = s.substring(0, s.length - 1) + "।";
-  // optional: "||" → "॥"
-  s = s.replaceAll("||", "॥");
-  return s;
-}
 
 /// Post-process Devanāgarī output to a chosen house style.
 /// - devaDigits: use ०१२३… (Tipitaka.org style)

@@ -28,7 +28,7 @@ class SimpleDao {
     final normalized = _normalizeQuery(query);
     final sw = Stopwatch()..start();
 
-    final results = db.select(
+    db.select(
       '''SELECT * FROM lookup
          WHERE lookup_key LIKE ?
          AND lookup_key != ?
@@ -46,7 +46,7 @@ class SimpleDao {
     final sw = Stopwatch()..start();
 
     // Use range query instead of LIKE - uses the index
-    final results = db.select(
+    db.select(
       '''SELECT * FROM lookup
          WHERE lookup_key >= ?
          AND lookup_key < ?
@@ -63,7 +63,7 @@ class SimpleDao {
     final normalized = _stripDiacritics(_normalizeQuery(query));
     final sw = Stopwatch()..start();
 
-    final results = db.select(
+    db.select(
       'SELECT * FROM lookup WHERE fuzzy_key LIKE ? LIMIT 50',
       ['$normalized%'],
     );
@@ -77,7 +77,7 @@ class SimpleDao {
     final normalized = _stripDiacritics(_normalizeQuery(query));
     final sw = Stopwatch()..start();
 
-    final results = db.select(
+    db.select(
       '''SELECT * FROM lookup
          WHERE fuzzy_key >= ?
          AND fuzzy_key < ?
@@ -94,7 +94,7 @@ class SimpleDao {
     final normalized = _normalizeQuery(query);
     final sw = Stopwatch()..start();
 
-    final results = db.select(
+    db.select(
       'SELECT * FROM lookup WHERE lookup_key = ?',
       [normalized],
     );
