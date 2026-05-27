@@ -65,6 +65,8 @@ When implementing webapp parity, compare against:
 
 ## Database Notes
 
+**CRITICAL: The DPD database uses empty strings `''` for missing values — there are no NULLs.** Never filter with `.isNotNull()` alone; always also exclude empty strings with `.isNotValue('')`. Use `isNotEmpty` checks in Dart-side code, not null checks.
+
 When rebuilding the DPD database, add these computed fields:
 - `dpd_roots.root_count`: COUNT of headwords with each root
 - `dpd_headwords.lemma_ipa`: IPA transcription via Aksharamukha (`transliterate.process("IASTPali", "IPA", lemma_clean)`)
