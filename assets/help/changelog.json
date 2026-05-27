@@ -3,6 +3,8 @@
     {
       "title": "unreleased",
       "items": [
+        "feat: add dhūma, tiṇa, and sūriya colour schemes",
+        "fix: declutter search bar",
         "fix: correct nīla spelling in scheme label and UI text",
         "feat: Sans and Serif labels in the font picker now show in their own fonts",
         "fix: app now shows full name and clean icon on all Android shapes",
