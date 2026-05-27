@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:drift/drift.dart';
 
@@ -621,6 +622,38 @@ class DpdDao extends DatabaseAccessor<AppDatabase> with _$DpdDaoMixin {
 
   Future<List<DictMetaData>> getAllDictMeta() {
     return select(dictMeta).get();
+  }
+
+  Future<DpdHeadwordWithRoot?> fetchRandomWord() async {
+    final isEligible =
+        dpdHeadwords.ebtCount.isBiggerThanValue(0) &
+            dpdHeadwords.meaning1.isNotNull() &
+            dpdHeadwords.meaning1.isNotValue('') &
+            dpdHeadwords.source1.isNotNull() &
+            dpdHeadwords.source1.isNotValue('');
+
+    final countQuery = await (selectOnly(dpdHeadwords)
+          ..addColumns([dpdHeadwords.id.count()])
+          ..where(isEligible))
+        .getSingle();
+    final total = countQuery.read(dpdHeadwords.id.count()) ?? 0;
+    if (total == 0) return null;
+
+    final idx = Random().nextInt(total);
+
+    final row = await (select(dpdHeadwords).join([
+      leftOuterJoin(dpdRoots, dpdRoots.root.equalsExp(dpdHeadwords.rootKey)),
+    ])
+          ..where(isEligible)
+          ..orderBy([OrderingTerm(expression: dpdHeadwords.id)])
+          ..limit(1, offset: idx))
+        .getSingleOrNull();
+
+    if (row == null) return null;
+    return DpdHeadwordWithRoot(
+      row.readTable(dpdHeadwords),
+      row.readTableOrNull(dpdRoots),
+    );
   }
 
   // ── Helpers ───────────────────────────────────────────────────────────────

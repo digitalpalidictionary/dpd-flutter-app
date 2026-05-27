@@ -27,6 +27,7 @@ import '../widgets/autocomplete_dropdown.dart';
 import '../widgets/download_footer.dart';
 import '../widgets/empty_prompt.dart';
 import '../widgets/feedback_footer.dart';
+import '../widgets/home_content.dart';
 import '../widgets/history_panel.dart';
 import '../widgets/info_popup.dart';
 import '../widgets/settings_panel.dart';
@@ -57,6 +58,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   bool _showSettingsPanel = false;
   bool _showHistoryPanel = false;
   bool _suppressProviderSync = false;
+  bool _showHome = true;
   final _historyButtonKey = GlobalKey();
   InfoContent? _activeInfo;
 
@@ -119,8 +121,33 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     _debounce?.cancel();
     ref.read(searchQueryProvider.notifier).state = '';
     ref.read(historyProvider.notifier).resetPosition();
+    _showHome = false;
     setState(() {});
     _focusNode.requestFocus();
+  }
+
+  void _searchFromHome(String query) {
+    _removeOverlay();
+    _autocompleteDebounce?.cancel();
+    _debounce?.cancel();
+    _controller.text = query;
+    _setSearchQuery(query);
+    if (shouldRecordCommittedSearch(query)) {
+      ref.read(historyProvider.notifier).navigateTo(query);
+    }
+    FocusScope.of(context).unfocus();
+    setState(() {});
+  }
+
+  void _goHome() {
+    _removeOverlay();
+    _autocompleteDebounce?.cancel();
+    _debounce?.cancel();
+    _controller.clear();
+    ref.read(searchQueryProvider.notifier).state = '';
+    _showHome = true;
+    FocusScope.of(context).unfocus();
+    setState(() {});
   }
 
   void _updateAutocomplete(String query) {
@@ -393,33 +420,39 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                     padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
                     child: Row(
                       children: [
-                        SizedBox(
-                          width: 30,
-                          height: 30,
-                          child: Stack(
-                            children: [
-                              Container(
-                                width: 30,
-                                height: 30,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: context.palette.primary,
+                        GestureDetector(
+                          onTap: _goHome,
+                          child: SizedBox(
+                            width: 30,
+                            height: 30,
+                            child: Stack(
+                              children: [
+                                Container(
+                                  width: 30,
+                                  height: 30,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: context.palette.primary,
+                                  ),
                                 ),
-                              ),
-                              SvgPicture.asset(
-                                'assets/images/dpd-logo-mask.svg',
-                                width: 30,
-                                height: 30,
-                              ),
-                            ],
+                                SvgPicture.asset(
+                                  'assets/images/dpd-logo-mask.svg',
+                                  width: 30,
+                                  height: 30,
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                         const SizedBox(width: 8),
                         Expanded(
-                          child: Text(
-                            'Digital Pāḷi Dictionary',
-                            style: theme.textTheme.titleLarge?.copyWith(
-                              fontWeight: FontWeight.w700,
+                          child: GestureDetector(
+                            onTap: _goHome,
+                            child: Text(
+                              'Digital Pāḷi Dictionary',
+                              style: theme.textTheme.titleLarge?.copyWith(
+                                fontWeight: FontWeight.w700,
+                              ),
                             ),
                           ),
                         ),
@@ -567,7 +600,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                         const SizedBox(width: 4),
                         _BarIconButton(
                           icon: Icons.close,
-                          onPressed: _controller.text.isEmpty ? null : _onClear,
+                          onPressed: (_controller.text.isNotEmpty || _showHome) ? _onClear : null,
                           tooltip: 'Clear',
                         ),
                         Builder(
@@ -739,7 +772,11 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     AsyncValue<List<DpdHeadwordWithRoot>> exactAsync,
     AsyncValue<List<DpdHeadwordWithRoot>> partialAsync,
   ) {
-    if (query.isEmpty) return const EmptyPrompt();
+    if (query.isEmpty) {
+      return _showHome
+          ? HomeContent(onSearch: _searchFromHome)
+          : const EmptyPrompt();
+    }
 
     final exact = exactAsync.valueOrNull ?? [];
     final exactIds = exact.map((e) => e.headword.id).toSet();
