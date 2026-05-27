@@ -3,6 +3,7 @@
     {
       "title": "unreleased",
       "items": [
+        "feat: home screen shows a random Pāḷi word and recent searches",
         "feat: add dhūma, tiṇa, and sūriya colour schemes",
         "fix: declutter search bar",
         "fix: correct nīla spelling in scheme label and UI text",
