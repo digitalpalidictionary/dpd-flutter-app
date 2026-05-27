@@ -567,11 +567,6 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                         ),
                         const SizedBox(width: 4),
                         _BarIconButton(
-                          icon: Icons.search,
-                          onPressed: _onSearch,
-                          tooltip: 'Search',
-                        ),
-                        _BarIconButton(
                           icon: Icons.close,
                           onPressed: _controller.text.isEmpty ? null : _onClear,
                           tooltip: 'Clear',
