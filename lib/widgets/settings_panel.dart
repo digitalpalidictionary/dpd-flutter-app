@@ -67,7 +67,7 @@ class _SettingsContentState extends ConsumerState<SettingsContent> {
         ),
       ),
       () => _buildSettingTile(
-        title: 'Colour scheme',
+        title: 'Colour',
         topic: _schemeTopic(),
         trailing: CompactSegmented<DpdScheme>(
           segments: [
@@ -319,9 +319,9 @@ class _SettingsContentState extends ConsumerState<SettingsContent> {
 
   SettingHelpTopic _schemeTopic() {
     return const SettingHelpTopic(
-      title: 'Colour scheme',
+      title: 'Colour',
       description:
-          'Switches between colour palettes. nīla is the classic blue, kapila uses warm copper-brown and parchment-cream tones.',
+          'Switches between colour palettes. nīla is the classic blue, suriya is warm golden sunshine, tiṇa is fresh grass-green, dhūma is a monochrome smoke palette.',
     );
   }
 

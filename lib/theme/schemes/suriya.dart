@@ -1,0 +1,112 @@
+import 'package:flutter/material.dart';
+
+import '../dpd_palette.dart';
+
+// suriya — sunshine/solar palette. H=45 (vivid golden-yellow) in light mode,
+// warm amber-gold on near-black in dark mode. Named after the Pāḷi sun-god.
+
+final suriyaLight = DpdPalette(
+  primary: HSLColor.fromAHSL(1, 45, 0.82, 0.48).toColor(),
+  primaryAlt: HSLColor.fromAHSL(1, 42, 0.80, 0.32).toColor(),
+  primaryText: HSLColor.fromAHSL(1, 42, 0.75, 0.36).toColor(),
+  primaryTextDark: HSLColor.fromAHSL(1, 42, 0.75, 0.42).toColor(),
+  light: HSLColor.fromAHSL(1, 45, 0.12, 0.97).toColor(),
+  lightShade: HSLColor.fromAHSL(1, 45, 0.10, 0.93).toColor(),
+  dark: HSLColor.fromAHSL(1, 45, 0.15, 0.10).toColor(),
+  darkShade: HSLColor.fromAHSL(1, 45, 0.14, 0.14).toColor(),
+  gray: HSLColor.fromAHSL(1, 42, 0.08, 0.55).toColor(),
+  grayLight: HSLColor.fromAHSL(1, 42, 0.06, 0.75).toColor(),
+  grayDark: HSLColor.fromAHSL(1, 42, 0.10, 0.32).toColor(),
+  grayTransparent: HSLColor.fromAHSL(0.25, 42, 0.08, 0.55).toColor(),
+  secondary: HSLColor.fromAHSL(1, 28, 0.30, 0.42).toColor(),
+  freq: [
+    HSLColor.fromAHSL(0.1, 45, 0.80, 0.48).toColor(),
+    HSLColor.fromAHSL(0.2, 45, 0.80, 0.48).toColor(),
+    HSLColor.fromAHSL(0.3, 45, 0.80, 0.48).toColor(),
+    HSLColor.fromAHSL(0.4, 45, 0.80, 0.48).toColor(),
+    HSLColor.fromAHSL(0.5, 45, 0.80, 0.48).toColor(),
+    HSLColor.fromAHSL(0.6, 45, 0.80, 0.48).toColor(),
+    HSLColor.fromAHSL(0.7, 45, 0.80, 0.48).toColor(),
+    HSLColor.fromAHSL(0.8, 45, 0.80, 0.48).toColor(),
+    HSLColor.fromAHSL(0.9, 45, 0.80, 0.48).toColor(),
+    HSLColor.fromAHSL(1.0, 45, 0.80, 0.48).toColor(),
+    HSLColor.fromAHSL(1.0, 45, 0.80, 0.48).toColor(),
+  ],
+  accentRed: const Color(0xFF8B2A1A),
+  accentRedDark: const Color(0xFFCC6050),
+  accentGreen: const Color(0xFF3A5A1A),
+  accentGreenDark: const Color(0xFF78A850),
+  accentOrange: const Color(0xFF8A4A10),
+  accentOrangeDark: const Color(0xFFC89040),
+  accentPurple: const Color(0xFF5A3870),
+  accentPurpleDark: const Color(0xFF9870B8),
+  accentBrown: const Color(0xFF6A4818),
+  accentBrownDark: const Color(0xFFC09050),
+  shadowDefault: [
+    BoxShadow(
+      offset: const Offset(2, 2),
+      blurRadius: 4,
+      color: HSLColor.fromAHSL(0.35, 42, 0.18, 0.16).toColor(),
+    ),
+  ],
+  shadowHover: [
+    BoxShadow(
+      offset: const Offset(2, 2),
+      blurRadius: 4,
+      color: HSLColor.fromAHSL(0.50, 42, 0.18, 0.16).toColor(),
+    ),
+  ],
+);
+
+final suriyaDark = DpdPalette(
+  primary: HSLColor.fromAHSL(1, 42, 0.65, 0.52).toColor(),
+  primaryAlt: HSLColor.fromAHSL(1, 40, 0.60, 0.36).toColor(),
+  primaryText: HSLColor.fromAHSL(1, 42, 0.70, 0.62).toColor(),
+  primaryTextDark: HSLColor.fromAHSL(1, 42, 0.70, 0.62).toColor(),
+  light: HSLColor.fromAHSL(1, 40, 0.15, 0.87).toColor(),
+  lightShade: HSLColor.fromAHSL(1, 38, 0.12, 0.78).toColor(),
+  dark: HSLColor.fromAHSL(1, 38, 0.20, 0.09).toColor(),
+  darkShade: HSLColor.fromAHSL(1, 38, 0.20, 0.13).toColor(),
+  gray: HSLColor.fromAHSL(1, 38, 0.08, 0.50).toColor(),
+  grayLight: HSLColor.fromAHSL(1, 38, 0.06, 0.62).toColor(),
+  grayDark: HSLColor.fromAHSL(1, 38, 0.10, 0.35).toColor(),
+  grayTransparent: HSLColor.fromAHSL(0.25, 38, 0.08, 0.50).toColor(),
+  secondary: HSLColor.fromAHSL(1, 25, 0.32, 0.52).toColor(),
+  freq: [
+    HSLColor.fromAHSL(0.1, 42, 0.65, 0.52).toColor(),
+    HSLColor.fromAHSL(0.2, 42, 0.65, 0.52).toColor(),
+    HSLColor.fromAHSL(0.3, 42, 0.65, 0.52).toColor(),
+    HSLColor.fromAHSL(0.4, 42, 0.65, 0.52).toColor(),
+    HSLColor.fromAHSL(0.5, 42, 0.65, 0.52).toColor(),
+    HSLColor.fromAHSL(0.6, 42, 0.65, 0.52).toColor(),
+    HSLColor.fromAHSL(0.7, 42, 0.65, 0.52).toColor(),
+    HSLColor.fromAHSL(0.8, 42, 0.65, 0.52).toColor(),
+    HSLColor.fromAHSL(0.9, 42, 0.65, 0.52).toColor(),
+    HSLColor.fromAHSL(1.0, 42, 0.65, 0.52).toColor(),
+    HSLColor.fromAHSL(1.0, 42, 0.65, 0.52).toColor(),
+  ],
+  accentRed: const Color(0xFFCC6050),
+  accentRedDark: const Color(0xFFEE9080),
+  accentGreen: const Color(0xFF70A840),
+  accentGreenDark: const Color(0xFF98C868),
+  accentOrange: const Color(0xFFB88030),
+  accentOrangeDark: const Color(0xFFD8A858),
+  accentPurple: const Color(0xFF9070B8),
+  accentPurpleDark: const Color(0xFFB898D0),
+  accentBrown: const Color(0xFFA07838),
+  accentBrownDark: const Color(0xFFC8A060),
+  shadowDefault: [
+    BoxShadow(
+      offset: const Offset(2, 2),
+      blurRadius: 4,
+      color: Color.fromRGBO(0, 0, 0, 0.5),
+    ),
+  ],
+  shadowHover: [
+    BoxShadow(
+      offset: const Offset(2, 2),
+      blurRadius: 4,
+      color: Color.fromRGBO(0, 0, 0, 0.6),
+    ),
+  ],
+);
