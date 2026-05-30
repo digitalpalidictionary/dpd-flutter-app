@@ -919,8 +919,8 @@ class _BarIconButton extends StatelessWidget {
                 icon,
                 size: 20,
                 color: enabled
-                    ? context.palette.light
-                    : context.palette.light.withValues(alpha: 0.5),
+                    ? context.palette.dark
+                    : context.palette.dark.withValues(alpha: 0.5),
               ),
             ),
           ),

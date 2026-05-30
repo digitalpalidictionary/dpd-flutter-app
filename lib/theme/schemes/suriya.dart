@@ -59,14 +59,14 @@ final suriyaLight = DpdPalette(
 );
 
 final suriyaDark = DpdPalette(
-  primary: HSLColor.fromAHSL(1, 42, 0.65, 0.52).toColor(),
-  primaryAlt: HSLColor.fromAHSL(1, 40, 0.60, 0.36).toColor(),
-  primaryText: HSLColor.fromAHSL(1, 42, 0.70, 0.62).toColor(),
-  primaryTextDark: HSLColor.fromAHSL(1, 42, 0.70, 0.62).toColor(),
-  light: HSLColor.fromAHSL(1, 40, 0.15, 0.87).toColor(),
-  lightShade: HSLColor.fromAHSL(1, 38, 0.12, 0.78).toColor(),
-  dark: HSLColor.fromAHSL(1, 38, 0.20, 0.09).toColor(),
-  darkShade: HSLColor.fromAHSL(1, 38, 0.20, 0.13).toColor(),
+  primary: HSLColor.fromAHSL(1, 45, 0.82, 0.46).toColor(),
+  primaryAlt: HSLColor.fromAHSL(1, 45, 0.82, 0.30).toColor(),
+  primaryText: HSLColor.fromAHSL(1, 45, 0.82, 0.68).toColor(),
+  primaryTextDark: HSLColor.fromAHSL(1, 45, 0.82, 0.68).toColor(),
+  light: HSLColor.fromAHSL(1, 44, 0.60, 0.88).toColor(),
+  lightShade: HSLColor.fromAHSL(1, 44, 0.50, 0.78).toColor(),
+  dark: HSLColor.fromAHSL(1, 38, 0.45, 0.07).toColor(),
+  darkShade: HSLColor.fromAHSL(1, 38, 0.40, 0.11).toColor(),
   gray: HSLColor.fromAHSL(1, 38, 0.08, 0.50).toColor(),
   grayLight: HSLColor.fromAHSL(1, 38, 0.06, 0.62).toColor(),
   grayDark: HSLColor.fromAHSL(1, 38, 0.10, 0.35).toColor(),
