@@ -104,7 +104,7 @@ Use `DpdFooter` for all section footers with feedback links:
 The search bar (`_controller`) must never be overwritten by transliteration or query normalization. Only Velthuis live conversion may rewrite the field. Use `_suppressProviderSync` (or equivalent flag) to prevent provider→controller sync from clobbering the user's original script when a local search fires.
 
 ### External Entry Points
-When reviewing any search or navigation change, explicitly verify all external entry points: share intents (`intentStream`), lookup intents (`lookupStream`), and CLI args (`_IntentBoot`). These bypass the normal typing flow and must be tested separately.
+When reviewing any search or navigation change, explicitly verify all external entry points: share intents (`intentStream`), lookup intents (`lookupStream`), and CLI args (`_IntentBoot`). These bypass the normal typing flow and must be tested separately. On external cold start the query can be set *before* `SearchScreen` mounts, so the `searchQueryProvider` change-listener never fires for it — the screen seeds the field in an `initState` post-frame callback. Never write to a Riverpod provider during `initState`/`build` (it crashes with a red screen); always defer such writes to `addPostFrameCallback` guarded by `mounted`.
 
 ### Two Search Paths — Always Update Both
 **CRITICAL:** The app has two independent text-cleaning paths. Any change to one MUST be applied to the other:
