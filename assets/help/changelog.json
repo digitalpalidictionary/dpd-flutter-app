@@ -1,8 +1,9 @@
 {
   "sections": [
     {
-      "title": "unreleased",
+      "title": "v0.1.10",
       "items": [
+        "feat: warm up sūriya dark palette, fix bar button contrast",
         "feat: home screen shows a random Pāḷi word and recent searches",
         "feat: add dhūma, tiṇa, and sūriya colour schemes",
         "fix: declutter search bar",
