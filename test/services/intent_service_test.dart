@@ -44,5 +44,29 @@ void main() {
     test('strips brackets in the middle of text', () {
       expect(IntentService.clean('see (SN12.34) for ref'), 'see SN12.34 for ref');
     });
+
+    test('strips markdown emphasis characters', () {
+      expect(IntentService.clean('*dhamma*'), 'dhamma');
+      expect(IntentService.clean('**dhamma**'), 'dhamma');
+      expect(IntentService.clean('_dhamma_'), 'dhamma');
+      expect(IntentService.clean('`dhamma`'), 'dhamma');
+      expect(IntentService.clean('~dhamma~'), 'dhamma');
+      expect(IntentService.clean('#dhamma'), 'dhamma');
+    });
+
+    test('keeps internal apostrophe but trims wrapping ones', () {
+      expect(IntentService.clean("'dhamma'"), 'dhamma');
+      expect(IntentService.clean("tatr'idaṃ"), "tatr'idaṃ");
+      expect(IntentService.clean('tatr‘idaṃ’'), "tatr'idaṃ");
+    });
+
+    test('keeps internal hyphen in compounds', () {
+      expect(IntentService.clean('pubba-anta'), 'pubba-anta');
+      expect(IntentService.clean('-dhamma-'), 'dhamma');
+    });
+
+    test('keeps non-roman scripts while stripping stray characters', () {
+      expect(IntentService.clean('*धम्म*'), 'धम्म');
+    });
   });
 }

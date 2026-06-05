@@ -63,6 +63,27 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   InfoContent? _activeInfo;
 
   @override
+  void initState() {
+    super.initState();
+    // An external lookup (share/intent) can set the query before this screen
+    // mounts, so the change-listener never fires for it. Seed the field once
+    // the first frame is done (mutating providers during initState crashes).
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || _controller.text.isNotEmpty) return;
+      final initialQuery = ref.read(searchQueryProvider);
+      if (initialQuery.isEmpty) return;
+      final displayText = ref.read(searchBarTextProvider);
+      final textToShow = displayText ?? initialQuery;
+      _controller.text = textToShow;
+      _controller.selection =
+          TextSelection.collapsed(offset: textToShow.length);
+      if (displayText != null) {
+        ref.read(searchBarTextProvider.notifier).state = null;
+      }
+    });
+  }
+
+  @override
   void dispose() {
     _removeOverlay();
     _removeHelpOverlay();
