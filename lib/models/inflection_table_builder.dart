@@ -36,8 +36,8 @@ const _conjugationPos = {
 /// the full table structure. Used for targeted lookup-table occurrence checks.
 Set<String> extractWordForms({required String? stem, required String templateData}) {
   if (stem == null || stem == '-') return {};
-  final isIrregular = stem == '*';
-  final cleanStem = isIrregular ? '' : stem.replaceAll(RegExp(r'^[!]'), '');
+  final isIrregular = RegExp(r'^[!*]+$').hasMatch(stem);
+  final cleanStem = stem.replaceAll(RegExp(r'[!*]'), '');
   final grid = jsonDecode(templateData) as List;
   final words = <String>{};
   for (int row = 1; row < grid.length; row++) {
@@ -69,8 +69,8 @@ InflectionTableData? buildInflectionTable({
 }) {
   if (stem == null || stem == '-') return null;
 
-  final isIrregular = stem == '*';
-  final cleanStem = isIrregular ? '' : stem.replaceAll(RegExp(r'^[!]'), '');
+  final isIrregular = RegExp(r'^[!*]+$').hasMatch(stem);
+  final cleanStem = stem.replaceAll(RegExp(r'[!*]'), '');
 
   final grid = jsonDecode(templateData) as List;
 
@@ -105,7 +105,7 @@ InflectionTableData? buildInflectionTable({
         final e = ending as String;
         if (e.isEmpty) continue;
         final word = isIrregular ? e : '$cleanStem$e';
-        final isOccurring = lookupKeys != null && lookupKeys.contains(word);
+        final isOccurring = lookupKeys == null || lookupKeys.contains(word);
         forms.add(InflectionForm(stem: cleanStem, ending: e, word: word, isOccurring: isOccurring));
       }
       cells.add(InflectionCell(forms: forms, grammarTooltip: tooltip));

@@ -120,6 +120,11 @@ void main() {
       final words = extractWordForms(stem: '!dhamm', templateData: _aMascGrid);
       expect(words, containsAll(['dhammo', 'dhammā']));
     });
+
+    test('handles irregular stem (!*) — uses endings as full forms', () {
+      final words = extractWordForms(stem: '!*', templateData: _irregularGrid);
+      expect(words, {'atthi'});
+    });
   });
 
   group('buildInflectionTable', () {
@@ -188,6 +193,25 @@ void main() {
 
       // heading mentions irregular
       expect(result.headingText.toLowerCase(), contains('irregular'));
+    });
+
+    test('irregular stem (!*) strips both markers, no stray * in forms', () {
+      final result = buildInflectionTable(
+        stem: '!*',
+        pattern: 'pivi aor',
+        pos: 'aor',
+        lemma1: 'apaṃsu',
+        templateLike: 'pivi',
+        templateData: _irregularGrid,
+      );
+
+      expect(result, isNotNull);
+      final nomRow = result!.rows[0];
+      final form = nomRow.$2[0].forms.first;
+      expect(form.word, 'atthi');
+      expect(form.word, isNot(contains('*')));
+      expect(form.stem, '');
+      expect(form.ending, 'atthi');
     });
 
     test('already-inflected stem (!) strips marker and builds table', () {

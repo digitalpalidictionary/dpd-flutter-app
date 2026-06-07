@@ -159,6 +159,7 @@ class _TapSearchWrapperState extends ConsumerState<TapSearchWrapper> {
         .replaceFirst(RegExp(r'''^[\s''—.–।॥|…"""\[\](){}]+'''), '')
         .replaceFirst(RegExp(r'''[\s'',—.—–।॥|""…:;"\[\](){}]+$'''), '')
         .replaceAll(RegExp(r'''[''''""""]+'''), "'")
+        .replaceAll('*', '')
         .trim();
   }
 

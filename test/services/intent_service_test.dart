@@ -47,6 +47,7 @@ void main() {
 
     test('strips markdown emphasis characters', () {
       expect(IntentService.clean('*dhamma*'), 'dhamma');
+      expect(IntentService.clean('*pivi'), 'pivi');
       expect(IntentService.clean('**dhamma**'), 'dhamma');
       expect(IntentService.clean('_dhamma_'), 'dhamma');
       expect(IntentService.clean('`dhamma`'), 'dhamma');
