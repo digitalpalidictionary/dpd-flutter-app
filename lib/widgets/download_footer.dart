@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../providers/app_update_provider.dart';
 import '../providers/database_update_provider.dart';
 import '../services/database_update_service.dart';
 import '../theme/dpd_palette.dart';
@@ -11,27 +12,44 @@ class DownloadFooter extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final updateState = ref.watch(dbUpdateProvider);
+    final appUpdate = ref.watch(appUpdateProvider);
     final theme = Theme.of(context);
 
     final status = updateState.status;
-    if (status != DbStatus.downloading && status != DbStatus.extracting) {
+    final dbBusy =
+        status == DbStatus.downloading || status == DbStatus.extracting;
+    final appDownloading = appUpdate.status == AppUpdateStatus.downloading;
+    if (!dbBusy && !appDownloading) {
       return const SizedBox.shrink();
     }
 
-    final percent = updateState.progress.clamp(0.0, 1.0);
-    final release = updateState.releaseInfo;
-    final sizeLabel = release != null
-        ? ' (${DatabaseUpdateService.formatBytes(release.size)})'
-        : '';
-    final label = status == DbStatus.extracting
-        ? 'Applying update…'
-        : 'Downloading database… ${(percent * 100).toStringAsFixed(0)}%$sizeLabel';
+    final double? value;
+    final String label;
+    if (dbBusy) {
+      final percent = updateState.progress.clamp(0.0, 1.0);
+      final release = updateState.releaseInfo;
+      final sizeLabel = release != null
+          ? ' (${DatabaseUpdateService.formatBytes(release.size)})'
+          : '';
+      value = status == DbStatus.extracting ? null : percent;
+      label = status == DbStatus.extracting
+          ? 'Applying update…'
+          : 'Downloading database… ${(percent * 100).toStringAsFixed(0)}%$sizeLabel';
+    } else {
+      final percent = appUpdate.progress.clamp(0.0, 1.0);
+      final size = appUpdate.sizeBytes;
+      final sizeLabel =
+          size != null ? ' (${DatabaseUpdateService.formatBytes(size)})' : '';
+      value = percent;
+      label =
+          'Downloading app update… ${(percent * 100).toStringAsFixed(0)}%$sizeLabel';
+    }
 
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         LinearProgressIndicator(
-          value: status == DbStatus.extracting ? null : percent,
+          value: value,
           backgroundColor: theme.colorScheme.outlineVariant,
           color: context.palette.primary,
           minHeight: 3,

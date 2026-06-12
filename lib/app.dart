@@ -339,6 +339,11 @@ class _DbGateState extends ConsumerState<_DbGate> {
         );
         _maybeInstallAppUpdate();
       }
+
+      if (next.status == AppUpdateStatus.error &&
+          previous?.status != AppUpdateStatus.error) {
+        _showUpdateSnackBar(context, 'App update download failed');
+      }
     });
 
     ref.listen<DbUpdateState>(dbUpdateProvider, (previous, next) {

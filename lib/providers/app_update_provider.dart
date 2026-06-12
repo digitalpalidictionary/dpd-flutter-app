@@ -15,12 +15,16 @@ class AppUpdateState {
   final double progress;
   final String? apkPath;
   final String? latestTag;
+  final int? sizeBytes;
+  final String? errorMessage;
 
   const AppUpdateState({
     this.status = AppUpdateStatus.idle,
     this.progress = 0,
     this.apkPath,
     this.latestTag,
+    this.sizeBytes,
+    this.errorMessage,
   });
 
   AppUpdateState copyWith({
@@ -28,12 +32,16 @@ class AppUpdateState {
     double? progress,
     String? apkPath,
     String? latestTag,
+    int? sizeBytes,
+    String? errorMessage,
   }) {
     return AppUpdateState(
       status: status ?? this.status,
       progress: progress ?? this.progress,
       apkPath: apkPath ?? this.apkPath,
       latestTag: latestTag ?? this.latestTag,
+      sizeBytes: sizeBytes ?? this.sizeBytes,
+      errorMessage: errorMessage ?? this.errorMessage,
     );
   }
 }
@@ -93,6 +101,7 @@ class AppUpdateNotifier extends StateNotifier<AppUpdateState> {
     state = state.copyWith(
       status: AppUpdateStatus.downloading,
       latestTag: release.tagName,
+      sizeBytes: release.size,
       progress: 0,
     );
 
@@ -109,8 +118,11 @@ class AppUpdateNotifier extends StateNotifier<AppUpdateState> {
         status: AppUpdateStatus.readyToInstall,
         apkPath: file.path,
       );
-    } catch (_) {
-      state = state.copyWith(status: AppUpdateStatus.idle);
+    } catch (e) {
+      state = state.copyWith(
+        status: AppUpdateStatus.error,
+        errorMessage: e.toString(),
+      );
     } finally {
       await ForegroundDownloadService.stop();
     }

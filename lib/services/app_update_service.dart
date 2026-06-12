@@ -96,9 +96,4 @@ class AppUpdateService {
       return null;
     }
   }
-
-  String formatBytes(int bytes) {
-    final mb = bytes / (1024 * 1024);
-    return '${mb.toStringAsFixed(0)} MB';
-  }
 }

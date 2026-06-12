@@ -8,6 +8,10 @@ void _noOpCallback() {}
 class ForegroundDownloadService {
   static bool get _isAndroid => Platform.isAndroid;
 
+  // Android sheds notification updates above 5/sec; Dio reports progress far
+  // more often, so only notify when the integer percent changes.
+  static int _lastPercent = -1;
+
   static void initialize() {
     if (!_isAndroid) return;
 
@@ -30,6 +34,7 @@ class ForegroundDownloadService {
 
   static Future<void> startDbDownload() async {
     if (!_isAndroid) return;
+    _lastPercent = -1;
     await FlutterForegroundTask.requestNotificationPermission();
     await FlutterForegroundTask.startService(
       serviceId: 1001,
@@ -42,6 +47,7 @@ class ForegroundDownloadService {
 
   static Future<void> startAppDownload() async {
     if (!_isAndroid) return;
+    _lastPercent = -1;
     await FlutterForegroundTask.requestNotificationPermission();
     await FlutterForegroundTask.startService(
       serviceId: 1002,
@@ -54,7 +60,9 @@ class ForegroundDownloadService {
 
   static Future<void> updateProgress(double progress) async {
     if (!_isAndroid) return;
-    final pct = (progress * 100).toStringAsFixed(0);
+    final pct = (progress.clamp(0.0, 1.0) * 100).floor();
+    if (pct == _lastPercent) return;
+    _lastPercent = pct;
     await FlutterForegroundTask.updateService(
       notificationText: 'Downloading: $pct%',
     );
