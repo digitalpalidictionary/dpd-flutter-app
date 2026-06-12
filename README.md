@@ -47,13 +47,15 @@ flutter test
 just run                # generate the changelog asset and run the app; normal local development entry point
 just analyze            # run static analysis; use this to catch lint and type issues quickly
 just test               # run the test suite; use this for automated verification
-just android-fresh      # build/install debug APK, push local DB from ../dpd-db, launch app; use when testing against a fresh local DB export
-just android-update     # rebuild and reinstall debug APK without replacing the on-device DB; normal Android app-code iteration
-just android-push-db    # push local DB from ../dpd-db and restart app; use when only the DB changed
-just android-install-no-db  # install debug APK with no DB push and clear app data; use to test first-run download flow
-just android-delete-db      # delete the on-device DB and restart app; use to force a re-download
-just android-build      # build a debug APK only
-just android-build-release  # build a release APK and copy it to build/app/outputs/flutter-apk/dpd.apk
+just android-debug-build            # build a debug APK only
+just android-debug-install          # build/install debug APK, push local DB from ../dpd-db, launch app
+just android-debug-install-no-db    # install debug APK with cleared app data and no DB; test first-run download flow
+just android-debug-update           # rebuild and reinstall debug APK without replacing the on-device DB
+just android-debug-push-db          # push local DB from ../dpd-db and restart app; use when only the DB changed
+just android-debug-delete-db        # delete the on-device DB and restart app; use to force a re-download
+just android-release-build          # build a release APK only
+just android-release-install        # build/install release APK, push local DB from ../dpd-db, launch app
+just android-release-install-no-db  # install release APK with cleared app data and no DB; real first-run experience
 just build-db           # rebuild the packaged mobile DB in ../dpd-db; only for local DB export work
 just linux-run          # build and run the Linux app
 just linux-push-db      # copy local DB from ../dpd-db into the Linux app location used for local testing
