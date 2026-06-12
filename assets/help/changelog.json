@@ -3,6 +3,8 @@
     {
       "title": "unreleased",
       "items": [
+        "feat: random word on the home screen is now a full dictionary entry",
+        "feat: app update downloads now show progress inside the app",
         "fix: app and database updates no longer download at the same time",
         "fix: irregular conjugations no longer show a stray * before the word",
         "fix: clean stray characters from shared words"
