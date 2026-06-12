@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../database/dao.dart';
-import '../database/dpd_headword_extensions.dart';
 import '../providers/history_provider.dart';
+import '../providers/settings_provider.dart';
 import '../providers/word_of_day_provider.dart';
-import '../theme/dpd_palette.dart';
+import 'accordion_card.dart';
+import 'inline_entry_card.dart';
 
 class HomeContent extends ConsumerWidget {
   const HomeContent({super.key, required this.onSearch});
@@ -47,7 +47,8 @@ class _WordOfDaySection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final wordAsync = ref.watch(randomWordProvider);
-    final palette = context.palette;
+    final displayMode =
+        ref.watch(settingsProvider.select((s) => s.displayMode));
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -86,47 +87,10 @@ class _WordOfDaySection extends ConsumerWidget {
             error: (e, _) => const SizedBox.shrink(),
             data: (hw) {
               if (hw == null) return const SizedBox.shrink();
-              final baseStyle = theme.textTheme.bodyMedium?.copyWith(height: 1.5);
-              final boldStyle = baseStyle?.copyWith(fontWeight: FontWeight.w700);
-
-              return Padding(
-                padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      hw.lemma1,
-                      style: theme.textTheme.titleLarge?.copyWith(
-                        fontWeight: FontWeight.w700,
-                        color: theme.colorScheme.primary,
-                      ),
-                    ),
-                    const SizedBox(height: 2),
-                    Text.rich(
-                      TextSpan(
-                        style: baseStyle,
-                        children: [
-                          if (hw.pos != null && hw.pos!.isNotEmpty)
-                            TextSpan(text: '${hw.pos}. '),
-                          if (hw.meaning1 != null && hw.meaning1!.isNotEmpty) ...[
-                            TextSpan(text: hw.meaning1, style: boldStyle),
-                            if (hw.meaningLit != null && hw.meaningLit!.isNotEmpty)
-                              TextSpan(
-                                text: '; lit. ${hw.meaningLit}',
-                                style: baseStyle?.copyWith(color: palette.gray),
-                              ),
-                          ],
-                          if (hw.headword.constructionSummary.isNotEmpty)
-                            TextSpan(
-                              text: ' [${hw.headword.constructionSummary}]',
-                              style: baseStyle?.copyWith(color: palette.gray),
-                            ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              );
+              return switch (displayMode) {
+                DisplayMode.classic => InlineEntryCard(headword: hw),
+                DisplayMode.compact => AccordionCard(headword: hw),
+              };
             },
           ),
         ],

@@ -38,6 +38,14 @@ class _AccordionCardState extends ConsumerState<AccordionCard>
     initSectionState();
   }
 
+  @override
+  void didUpdateWidget(AccordionCard oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.headword.id != widget.headword.id) {
+      handleHeadwordChange();
+    }
+  }
+
   void _toggleCard() {
     setState(() {
       _cardState = _cardState == _CardState.compact

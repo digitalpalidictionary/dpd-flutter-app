@@ -116,6 +116,17 @@ mixin FamilyStateMixin<T extends ConsumerStatefulWidget> on ConsumerState<T> {
     _showSets = false;
   }
 
+  /// Call when the card is reused for a different headword: hides family
+  /// sections and clears cached data so the next toggle loads fresh.
+  void familyHandleHeadwordChange() {
+    familyResetAll();
+    _rootFamilyData = null;
+    _wordFamilyData = null;
+    _compoundData = null;
+    _idiomData = null;
+    _setsData = null;
+  }
+
   void familyToggleRoot() {
     if (!_showRootFamily) onBeforeOpenFamilySection();
     setState(() => _showRootFamily = !_showRootFamily);

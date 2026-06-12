@@ -36,7 +36,7 @@ class _InlineEntryCardState extends ConsumerState<InlineEntryCard>
   void didUpdateWidget(InlineEntryCard oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.headword.id != widget.headword.id) {
-      resetFrequencyCache();
+      handleHeadwordChange();
     }
   }
 

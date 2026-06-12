@@ -42,6 +42,17 @@ mixin EntrySectionsMixin<T extends ConsumerStatefulWidget>
 
   void resetFrequencyCache() => _cachedFrequencyData = null;
 
+  /// Call from didUpdateWidget when the card is reused for a different
+  /// headword: clears all per-word cached data (frequency, sutta info,
+  /// family data) while preserving open/closed section state.
+  void handleHeadwordChange() {
+    resetFrequencyCache();
+    _suttaInfo = null;
+    _suttaLoaded = false;
+    _loadSuttaInfo();
+    familyHandleHeadwordChange();
+  }
+
   @override
   void onBeforeOpenFamilySection() {
     if (ref.read(settingsProvider).oneButtonAtATime) {
