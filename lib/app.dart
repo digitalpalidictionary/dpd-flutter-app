@@ -102,12 +102,17 @@ class _DpdAppState extends ConsumerState<DpdApp> {
     _firstFrameReleased = true;
     WidgetsBinding.instance.allowFirstFrame();
 
-    // Only fire app update check once DB is fully ready — never during download/extract.
+    // Only fire app update check once the DB update cycle is fully complete —
+    // never while a background DB download could still start or be running.
+    // Otherwise both downloads run at once and fight over the single
+    // foreground notification.
     _appUpdateGateSub = ref.listenManual<DbUpdateState>(dbUpdateProvider, (
       previous,
       next,
     ) {
-      if (!_appUpdateChecked && next.status == DbStatus.ready) {
+      if (!_appUpdateChecked &&
+          next.status == DbStatus.ready &&
+          next.updateCycleComplete) {
         _appUpdateChecked = true;
         _appUpdateGateSub?.close();
         _appUpdateGateSub = null;

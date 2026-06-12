@@ -51,6 +51,12 @@ class DbUpdateState {
   final bool shouldPromptForDownload;
   final String? statusLabel;
 
+  /// True once the DB update cycle is fully finished — no background check or
+  /// download can still start. The app-update gate waits for this so the APK
+  /// download never runs concurrently with a DB download (they would share a
+  /// single foreground notification).
+  final bool updateCycleComplete;
+
   const DbUpdateState({
     this.status = DbStatus.checking,
     this.progress = 0,
@@ -60,6 +66,7 @@ class DbUpdateState {
     this.hasLocalDatabase = false,
     this.shouldPromptForDownload = false,
     this.statusLabel,
+    this.updateCycleComplete = false,
   });
 
   DbUpdateState copyWith({
@@ -71,6 +78,7 @@ class DbUpdateState {
     bool? hasLocalDatabase,
     bool? shouldPromptForDownload,
     String? statusLabel,
+    bool? updateCycleComplete,
     bool clearStatusLabel = false,
     bool clearErrorMessage = false,
   }) {
@@ -84,6 +92,7 @@ class DbUpdateState {
       shouldPromptForDownload:
           shouldPromptForDownload ?? this.shouldPromptForDownload,
       statusLabel: clearStatusLabel ? null : (statusLabel ?? this.statusLabel),
+      updateCycleComplete: updateCycleComplete ?? this.updateCycleComplete,
     );
   }
 }
@@ -168,6 +177,8 @@ class DbUpdateNotifier extends StateNotifier<DbUpdateState> {
 
         if (!kDebugMode) {
           _backgroundCheck(localVersion);
+        } else {
+          state = state.copyWith(updateCycleComplete: true);
         }
         return;
       }
@@ -228,6 +239,8 @@ class DbUpdateNotifier extends StateNotifier<DbUpdateState> {
     // Skip background updates in debug — DB is pushed manually via `just push-mobile-db`.
     if (!kDebugMode) {
       _backgroundCheck(localVersion);
+    } else {
+      state = state.copyWith(updateCycleComplete: true);
     }
   }
 
@@ -276,6 +289,7 @@ class DbUpdateNotifier extends StateNotifier<DbUpdateState> {
         hasLocalDatabase: true,
         localVersion: newVersion,
         releaseInfo: release,
+        updateCycleComplete: true,
       );
     } on DownloadCancelledException {
       state = DbUpdateState(
@@ -299,14 +313,18 @@ class DbUpdateNotifier extends StateNotifier<DbUpdateState> {
         const Duration(seconds: 30),
       );
     } catch (_) {
+      state = state.copyWith(updateCycleComplete: true);
       return;
     }
 
-    if (release == null) return;
+    if (release == null) {
+      state = state.copyWith(updateCycleComplete: true);
+      return;
+    }
 
     final installedTag = _installedTag;
     if (installedTag == release.tagName) {
-      state = state.copyWith(releaseInfo: release);
+      state = state.copyWith(releaseInfo: release, updateCycleComplete: true);
       return;
     }
 
@@ -314,7 +332,10 @@ class DbUpdateNotifier extends StateNotifier<DbUpdateState> {
     final wifiOnly = _ref.read(settingsProvider).wifiOnlyUpdates;
     if (wifiOnly) {
       final connectivity = await Connectivity().checkConnectivity();
-      if (!connectivity.contains(ConnectivityResult.wifi)) return;
+      if (!connectivity.contains(ConnectivityResult.wifi)) {
+        state = state.copyWith(updateCycleComplete: true);
+        return;
+      }
     }
 
     await _backgroundDownload(release);
@@ -368,6 +389,7 @@ class DbUpdateNotifier extends StateNotifier<DbUpdateState> {
         hasLocalDatabase: true,
         localVersion: newVersion,
         releaseInfo: release,
+        updateCycleComplete: true,
       );
     } on DownloadCancelledException {
       // Background download cancelled — stay ready with existing DB.
@@ -375,12 +397,14 @@ class DbUpdateNotifier extends StateNotifier<DbUpdateState> {
         status: DbStatus.ready,
         clearStatusLabel: true,
         clearErrorMessage: true,
+        updateCycleComplete: true,
       );
     } catch (e) {
       state = state.copyWith(
         status: DbStatus.ready,
         errorMessage: _errorMessage(e),
         clearStatusLabel: true,
+        updateCycleComplete: true,
       );
     }
   }

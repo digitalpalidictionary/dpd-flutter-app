@@ -13,9 +13,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 // These tests verify the DB status transitions that the app-update gate in
 // app.dart depends on. The gate fires checkForUpdates() only when
-// DbStatus.ready, and _maybeInstallAppUpdate() only installs when not
-// downloading/extracting. We verify those state values are produced correctly
-// by the DB provider so the gate conditions are sound.
+// DbStatus.ready AND updateCycleComplete, and _maybeInstallAppUpdate() only
+// installs when not downloading/extracting. We verify those state values are
+// produced correctly by the DB provider so the gate conditions are sound.
 
 void main() {
   late SharedPreferences prefs;
@@ -56,6 +56,8 @@ void main() {
       final state = container.read(dbUpdateProvider);
       expect(state.status, DbStatus.ready);
       expect(state.hasLocalDatabase, true);
+      expect(state.updateCycleComplete, true,
+          reason: 'gate must open after a successful initial download');
     });
 
     test('DB provider is in downloading state during an active download', () async {
@@ -97,12 +99,45 @@ void main() {
         reason: 'DB must be in a busy state during download so the gate blocks app update',
       );
       expect(state.hasLocalDatabase, false);
+      expect(state.updateCycleComplete, false,
+          reason: 'gate must stay closed while a DB download is in flight');
 
       // Complete and await before cleanup to avoid post-dispose state writes.
       completer.complete();
       await downloadFuture;
       container.dispose();
       await database.close();
+    });
+
+    test('existing compatible DB marks the update cycle complete when no '
+        'background check runs', () async {
+      // In debug mode (which tests run in) the background check is skipped,
+      // so the ready state must open the gate immediately.
+      final database = AppDatabase.forTesting(NativeDatabase.memory());
+      final dao = _FakeDao(database);
+      final service = _FakeDatabaseUpdateService(
+        databaseExistsResult: true,
+        schemaCompatible: true,
+      );
+
+      final container = ProviderContainer(
+        overrides: [
+          sharedPreferencesProvider.overrideWithValue(prefs),
+          databaseUpdateServiceProvider.overrideWithValue(service),
+          databaseProvider.overrideWithValue(database),
+          daoProvider.overrideWithValue(dao),
+        ],
+      );
+      addTearDown(() async {
+        container.dispose();
+        await database.close();
+      });
+
+      await container.read(dbUpdateProvider.notifier).checkForUpdates();
+
+      final state = container.read(dbUpdateProvider);
+      expect(state.status, DbStatus.ready);
+      expect(state.updateCycleComplete, true);
     });
 
     test('install gate condition: busy states are downloading and extracting', () {
@@ -147,14 +182,19 @@ class _FakeDatabaseUpdateService extends DatabaseUpdateService {
     required this.databaseExistsResult,
     this.latestRelease,
     this.downloadCompleter,
+    this.schemaCompatible = false,
   });
 
   final bool databaseExistsResult;
   final ReleaseInfo? latestRelease;
   final Completer<void>? downloadCompleter;
+  final bool schemaCompatible;
 
   @override
   Future<bool> databaseExists() async => databaseExistsResult;
+
+  @override
+  Future<bool> isSchemaCompatible(AppDatabase db) async => schemaCompatible;
 
   @override
   Future<ReleaseInfo?> fetchLatestRelease() async => latestRelease;
