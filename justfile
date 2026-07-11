@@ -76,6 +76,12 @@ android-debug-update: android-debug-build (_android-install "app-debug.apk")
 android-debug-push-db: (_android-push-db _android_pkg_debug) (_android-launch _android_pkg_debug)
     @echo "DB pushed (WAL/SHM cleaned) and app restarted."
 
+# Push a local mobile DB from ../dpd-db onto the device WITHOUT relaunching.
+# Use this for an automated refresh (e.g. on device plug-in) where the app
+# should stay closed after the database is replaced.
+android-debug-push-db-no-launch: (_android-push-db _android_pkg_debug)
+    @echo "DB pushed (WAL/SHM cleaned), app left stopped."
+
 # Delete the on-device database and restart the app.
 # Use this to force the app back into its download-required state without
 # reinstalling the APK.
@@ -107,7 +113,7 @@ android-release-install-no-db: android-release-build (_android-install "app-rele
 # Rebuild the packaged mobile database in the sibling ../dpd-db repo.
 # Use this only when the database export itself needs to be regenerated locally.
 build-db:
-    cd ../dpd-db && uv run python exporter/mobile/mobile_exporter.py --cone
+    cd ../dpd-db && uv run python exporter/mobile/mobile_exporter.py --cone --wordnet
 
 # ---------- LINUX ----------
 

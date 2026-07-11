@@ -112,3 +112,6 @@ When reviewing any search or navigation change, explicitly verify all external e
 - **Share/intent**: `IntentService._clean()` in `lib/services/intent_service.dart`
 
 These paths diverged in history and caused a bug where bracket stripping was added to tap-to-search but missed in share/intent. Never fix or extend one without checking the other.
+
+### External Dictionary Attribution
+The app renders only `dict_meta.name` (in the dictionary list and on each result card); it never renders `dict_meta.author`. For any CC-licensed external dictionary, the required attribution MUST be placed in `dict_meta.name` (set in `../dpd-db/exporter/mobile/mobile_exporter.py`), not `author`.
