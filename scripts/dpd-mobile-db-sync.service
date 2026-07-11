@@ -1,0 +1,13 @@
+# Install: copy to /etc/systemd/system/, replace the placeholders below with
+# your login user and the absolute path to this repo, then run
+# `sudo systemctl daemon-reload`.
+[Unit]
+Description=Push DPD mobile db to plugged-in Pixel (debug app)
+
+[Service]
+Type=oneshot
+User=YOUR_USER
+Group=YOUR_USER
+Environment=HOME=/home/YOUR_USER
+Environment=PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+ExecStart=/path/to/dpd-flutter-app/scripts/plug_sync_db.sh

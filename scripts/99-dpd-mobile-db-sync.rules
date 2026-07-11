@@ -1,0 +1,6 @@
+# Push the DPD mobile db to a Google Pixel when it is plugged in.
+# Vendor 18d1 = Google; product id is intentionally not pinned (it changes
+# with USB mode). Uses the systemd device-unit mechanism (TAG+="systemd" +
+# SYSTEMD_WANTS) rather than RUN+=, which systemd-udevd does not reliably run
+# for starting services.
+ACTION=="add", SUBSYSTEM=="usb", ENV{DEVTYPE}=="usb_device", ATTR{idVendor}=="18d1", TAG+="systemd", ENV{SYSTEMD_WANTS}+="dpd-mobile-db-sync.service"
