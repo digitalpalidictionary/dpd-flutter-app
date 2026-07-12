@@ -805,6 +805,7 @@ extension DpdHeadwordGetters on DpdHeadwordWithRoot {
   String? get variant => headword.variant;
   String? get stem => headword.stem;
   String? get pattern => headword.pattern;
+  String? get derivative => headword.derivative;
   String? get suffix => headword.suffix;
   String? get freqData => headword.freqData;
   int? get ebtCount => headword.ebtCount;

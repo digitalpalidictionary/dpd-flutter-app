@@ -1866,6 +1866,17 @@ class $DpdHeadwordsTable extends DpdHeadwords
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _derivativeMeta = const VerificationMeta(
+    'derivative',
+  );
+  @override
+  late final GeneratedColumn<String> derivative = GeneratedColumn<String>(
+    'derivative',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _suffixMeta = const VerificationMeta('suffix');
   @override
   late final GeneratedColumn<String> suffix = GeneratedColumn<String>(
@@ -2047,6 +2058,7 @@ class $DpdHeadwordsTable extends DpdHeadwords
     variant,
     stem,
     pattern,
+    derivative,
     suffix,
     freqData,
     lemmaIpa,
@@ -2301,6 +2313,12 @@ class $DpdHeadwordsTable extends DpdHeadwords
         pattern.isAcceptableOrUnknown(data['pattern']!, _patternMeta),
       );
     }
+    if (data.containsKey('derivative')) {
+      context.handle(
+        _derivativeMeta,
+        derivative.isAcceptableOrUnknown(data['derivative']!, _derivativeMeta),
+      );
+    }
     if (data.containsKey('suffix')) {
       context.handle(
         _suffixMeta,
@@ -2537,6 +2555,10 @@ class $DpdHeadwordsTable extends DpdHeadwords
         DriftSqlType.string,
         data['${effectivePrefix}pattern'],
       ),
+      derivative: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}derivative'],
+      ),
       suffix: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}suffix'],
@@ -2638,6 +2660,7 @@ class DpdHeadword extends DataClass implements Insertable<DpdHeadword> {
   final String? variant;
   final String? stem;
   final String? pattern;
+  final String? derivative;
   final String? suffix;
   final String? freqData;
   final String? lemmaIpa;
@@ -2688,6 +2711,7 @@ class DpdHeadword extends DataClass implements Insertable<DpdHeadword> {
     this.variant,
     this.stem,
     this.pattern,
+    this.derivative,
     this.suffix,
     this.freqData,
     this.lemmaIpa,
@@ -2806,6 +2830,9 @@ class DpdHeadword extends DataClass implements Insertable<DpdHeadword> {
     }
     if (!nullToAbsent || pattern != null) {
       map['pattern'] = Variable<String>(pattern);
+    }
+    if (!nullToAbsent || derivative != null) {
+      map['derivative'] = Variable<String>(derivative);
     }
     if (!nullToAbsent || suffix != null) {
       map['suffix'] = Variable<String>(suffix);
@@ -2947,6 +2974,9 @@ class DpdHeadword extends DataClass implements Insertable<DpdHeadword> {
       pattern: pattern == null && nullToAbsent
           ? const Value.absent()
           : Value(pattern),
+      derivative: derivative == null && nullToAbsent
+          ? const Value.absent()
+          : Value(derivative),
       suffix: suffix == null && nullToAbsent
           ? const Value.absent()
           : Value(suffix),
@@ -3033,6 +3063,7 @@ class DpdHeadword extends DataClass implements Insertable<DpdHeadword> {
       variant: serializer.fromJson<String?>(json['variant']),
       stem: serializer.fromJson<String?>(json['stem']),
       pattern: serializer.fromJson<String?>(json['pattern']),
+      derivative: serializer.fromJson<String?>(json['derivative']),
       suffix: serializer.fromJson<String?>(json['suffix']),
       freqData: serializer.fromJson<String?>(json['freqData']),
       lemmaIpa: serializer.fromJson<String?>(json['lemmaIpa']),
@@ -3088,6 +3119,7 @@ class DpdHeadword extends DataClass implements Insertable<DpdHeadword> {
       'variant': serializer.toJson<String?>(variant),
       'stem': serializer.toJson<String?>(stem),
       'pattern': serializer.toJson<String?>(pattern),
+      'derivative': serializer.toJson<String?>(derivative),
       'suffix': serializer.toJson<String?>(suffix),
       'freqData': serializer.toJson<String?>(freqData),
       'lemmaIpa': serializer.toJson<String?>(lemmaIpa),
@@ -3141,6 +3173,7 @@ class DpdHeadword extends DataClass implements Insertable<DpdHeadword> {
     Value<String?> variant = const Value.absent(),
     Value<String?> stem = const Value.absent(),
     Value<String?> pattern = const Value.absent(),
+    Value<String?> derivative = const Value.absent(),
     Value<String?> suffix = const Value.absent(),
     Value<String?> freqData = const Value.absent(),
     Value<String?> lemmaIpa = const Value.absent(),
@@ -3195,6 +3228,7 @@ class DpdHeadword extends DataClass implements Insertable<DpdHeadword> {
     variant: variant.present ? variant.value : this.variant,
     stem: stem.present ? stem.value : this.stem,
     pattern: pattern.present ? pattern.value : this.pattern,
+    derivative: derivative.present ? derivative.value : this.derivative,
     suffix: suffix.present ? suffix.value : this.suffix,
     freqData: freqData.present ? freqData.value : this.freqData,
     lemmaIpa: lemmaIpa.present ? lemmaIpa.value : this.lemmaIpa,
@@ -3265,6 +3299,9 @@ class DpdHeadword extends DataClass implements Insertable<DpdHeadword> {
       variant: data.variant.present ? data.variant.value : this.variant,
       stem: data.stem.present ? data.stem.value : this.stem,
       pattern: data.pattern.present ? data.pattern.value : this.pattern,
+      derivative: data.derivative.present
+          ? data.derivative.value
+          : this.derivative,
       suffix: data.suffix.present ? data.suffix.value : this.suffix,
       freqData: data.freqData.present ? data.freqData.value : this.freqData,
       lemmaIpa: data.lemmaIpa.present ? data.lemmaIpa.value : this.lemmaIpa,
@@ -3324,6 +3361,7 @@ class DpdHeadword extends DataClass implements Insertable<DpdHeadword> {
           ..write('variant: $variant, ')
           ..write('stem: $stem, ')
           ..write('pattern: $pattern, ')
+          ..write('derivative: $derivative, ')
           ..write('suffix: $suffix, ')
           ..write('freqData: $freqData, ')
           ..write('lemmaIpa: $lemmaIpa, ')
@@ -3379,6 +3417,7 @@ class DpdHeadword extends DataClass implements Insertable<DpdHeadword> {
     variant,
     stem,
     pattern,
+    derivative,
     suffix,
     freqData,
     lemmaIpa,
@@ -3433,6 +3472,7 @@ class DpdHeadword extends DataClass implements Insertable<DpdHeadword> {
           other.variant == this.variant &&
           other.stem == this.stem &&
           other.pattern == this.pattern &&
+          other.derivative == this.derivative &&
           other.suffix == this.suffix &&
           other.freqData == this.freqData &&
           other.lemmaIpa == this.lemmaIpa &&
@@ -3485,6 +3525,7 @@ class DpdHeadwordsCompanion extends UpdateCompanion<DpdHeadword> {
   final Value<String?> variant;
   final Value<String?> stem;
   final Value<String?> pattern;
+  final Value<String?> derivative;
   final Value<String?> suffix;
   final Value<String?> freqData;
   final Value<String?> lemmaIpa;
@@ -3535,6 +3576,7 @@ class DpdHeadwordsCompanion extends UpdateCompanion<DpdHeadword> {
     this.variant = const Value.absent(),
     this.stem = const Value.absent(),
     this.pattern = const Value.absent(),
+    this.derivative = const Value.absent(),
     this.suffix = const Value.absent(),
     this.freqData = const Value.absent(),
     this.lemmaIpa = const Value.absent(),
@@ -3586,6 +3628,7 @@ class DpdHeadwordsCompanion extends UpdateCompanion<DpdHeadword> {
     this.variant = const Value.absent(),
     this.stem = const Value.absent(),
     this.pattern = const Value.absent(),
+    this.derivative = const Value.absent(),
     this.suffix = const Value.absent(),
     this.freqData = const Value.absent(),
     this.lemmaIpa = const Value.absent(),
@@ -3637,6 +3680,7 @@ class DpdHeadwordsCompanion extends UpdateCompanion<DpdHeadword> {
     Expression<String>? variant,
     Expression<String>? stem,
     Expression<String>? pattern,
+    Expression<String>? derivative,
     Expression<String>? suffix,
     Expression<String>? freqData,
     Expression<String>? lemmaIpa,
@@ -3689,6 +3733,7 @@ class DpdHeadwordsCompanion extends UpdateCompanion<DpdHeadword> {
       if (variant != null) 'variant': variant,
       if (stem != null) 'stem': stem,
       if (pattern != null) 'pattern': pattern,
+      if (derivative != null) 'derivative': derivative,
       if (suffix != null) 'suffix': suffix,
       if (freqData != null) 'freq_data': freqData,
       if (lemmaIpa != null) 'lemma_ipa': lemmaIpa,
@@ -3742,6 +3787,7 @@ class DpdHeadwordsCompanion extends UpdateCompanion<DpdHeadword> {
     Value<String?>? variant,
     Value<String?>? stem,
     Value<String?>? pattern,
+    Value<String?>? derivative,
     Value<String?>? suffix,
     Value<String?>? freqData,
     Value<String?>? lemmaIpa,
@@ -3793,6 +3839,7 @@ class DpdHeadwordsCompanion extends UpdateCompanion<DpdHeadword> {
       variant: variant ?? this.variant,
       stem: stem ?? this.stem,
       pattern: pattern ?? this.pattern,
+      derivative: derivative ?? this.derivative,
       suffix: suffix ?? this.suffix,
       freqData: freqData ?? this.freqData,
       lemmaIpa: lemmaIpa ?? this.lemmaIpa,
@@ -3920,6 +3967,9 @@ class DpdHeadwordsCompanion extends UpdateCompanion<DpdHeadword> {
     if (pattern.present) {
       map['pattern'] = Variable<String>(pattern.value);
     }
+    if (derivative.present) {
+      map['derivative'] = Variable<String>(derivative.value);
+    }
     if (suffix.present) {
       map['suffix'] = Variable<String>(suffix.value);
     }
@@ -4003,6 +4053,7 @@ class DpdHeadwordsCompanion extends UpdateCompanion<DpdHeadword> {
           ..write('variant: $variant, ')
           ..write('stem: $stem, ')
           ..write('pattern: $pattern, ')
+          ..write('derivative: $derivative, ')
           ..write('suffix: $suffix, ')
           ..write('freqData: $freqData, ')
           ..write('lemmaIpa: $lemmaIpa, ')
@@ -11786,6 +11837,7 @@ typedef $$DpdHeadwordsTableCreateCompanionBuilder =
       Value<String?> variant,
       Value<String?> stem,
       Value<String?> pattern,
+      Value<String?> derivative,
       Value<String?> suffix,
       Value<String?> freqData,
       Value<String?> lemmaIpa,
@@ -11838,6 +11890,7 @@ typedef $$DpdHeadwordsTableUpdateCompanionBuilder =
       Value<String?> variant,
       Value<String?> stem,
       Value<String?> pattern,
+      Value<String?> derivative,
       Value<String?> suffix,
       Value<String?> freqData,
       Value<String?> lemmaIpa,
@@ -12054,6 +12107,11 @@ class $$DpdHeadwordsTableFilterComposer
 
   ColumnFilters<String> get pattern => $composableBuilder(
     column: $table.pattern,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get derivative => $composableBuilder(
+    column: $table.derivative,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -12330,6 +12388,11 @@ class $$DpdHeadwordsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get derivative => $composableBuilder(
+    column: $table.derivative,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get suffix => $composableBuilder(
     column: $table.suffix,
     builder: (column) => ColumnOrderings(column),
@@ -12553,6 +12616,11 @@ class $$DpdHeadwordsTableAnnotationComposer
   GeneratedColumn<String> get pattern =>
       $composableBuilder(column: $table.pattern, builder: (column) => column);
 
+  GeneratedColumn<String> get derivative => $composableBuilder(
+    column: $table.derivative,
+    builder: (column) => column,
+  );
+
   GeneratedColumn<String> get suffix =>
       $composableBuilder(column: $table.suffix, builder: (column) => column);
 
@@ -12686,6 +12754,7 @@ class $$DpdHeadwordsTableTableManager
                 Value<String?> variant = const Value.absent(),
                 Value<String?> stem = const Value.absent(),
                 Value<String?> pattern = const Value.absent(),
+                Value<String?> derivative = const Value.absent(),
                 Value<String?> suffix = const Value.absent(),
                 Value<String?> freqData = const Value.absent(),
                 Value<String?> lemmaIpa = const Value.absent(),
@@ -12736,6 +12805,7 @@ class $$DpdHeadwordsTableTableManager
                 variant: variant,
                 stem: stem,
                 pattern: pattern,
+                derivative: derivative,
                 suffix: suffix,
                 freqData: freqData,
                 lemmaIpa: lemmaIpa,
@@ -12788,6 +12858,7 @@ class $$DpdHeadwordsTableTableManager
                 Value<String?> variant = const Value.absent(),
                 Value<String?> stem = const Value.absent(),
                 Value<String?> pattern = const Value.absent(),
+                Value<String?> derivative = const Value.absent(),
                 Value<String?> suffix = const Value.absent(),
                 Value<String?> freqData = const Value.absent(),
                 Value<String?> lemmaIpa = const Value.absent(),
@@ -12838,6 +12909,7 @@ class $$DpdHeadwordsTableTableManager
                 variant: variant,
                 stem: stem,
                 pattern: pattern,
+                derivative: derivative,
                 suffix: suffix,
                 freqData: freqData,
                 lemmaIpa: lemmaIpa,

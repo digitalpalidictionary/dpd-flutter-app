@@ -42,6 +42,7 @@ class DpdHeadwords extends Table {
   TextColumn get variant => text().nullable()();
   TextColumn get stem => text().nullable()();
   TextColumn get pattern => text().nullable()();
+  TextColumn get derivative => text().nullable()();
   TextColumn get suffix => text().nullable()();
   TextColumn get freqData => text().named('freq_data').nullable()();
   TextColumn get lemmaIpa => text().named('lemma_ipa').nullable()();
