@@ -113,7 +113,7 @@ android-release-install-no-db: android-release-build (_android-install "app-rele
 # Rebuild the packaged mobile database in the sibling ../dpd-db repo.
 # Use this only when the database export itself needs to be regenerated locally.
 build-db:
-    cd ../dpd-db && uv run python exporter/mobile/mobile_exporter.py --cone --wordnet
+    cd ../dpd-db && uv run python exporter/mobile/mobile_exporter.py --cone --peu --wordnet
 
 # ---------- LINUX ----------
 
