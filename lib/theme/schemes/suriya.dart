@@ -65,7 +65,7 @@ final suriyaDark = DpdPalette(
   primaryTextDark: HSLColor.fromAHSL(1, 45, 0.82, 0.68).toColor(),
   light: HSLColor.fromAHSL(1, 44, 0.60, 0.88).toColor(),
   lightShade: HSLColor.fromAHSL(1, 44, 0.50, 0.78).toColor(),
-  dark: HSLColor.fromAHSL(1, 38, 0.45, 0.07).toColor(),
+  dark: HSLColor.fromAHSL(1, 34.3, 0.636, 0.043).toColor(),
   darkShade: HSLColor.fromAHSL(1, 38, 0.40, 0.11).toColor(),
   gray: HSLColor.fromAHSL(1, 38, 0.08, 0.50).toColor(),
   grayLight: HSLColor.fromAHSL(1, 38, 0.06, 0.62).toColor(),
