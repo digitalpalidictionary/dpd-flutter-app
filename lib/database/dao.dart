@@ -343,18 +343,22 @@ class DpdDao extends DatabaseAccessor<AppDatabase> with _$DpdDaoMixin {
   }
 
   Future<LookupData?> getLookupRow(String key) async {
-    final normalized = _normalizeQuery(key);
-    final exact = await (select(
-      lookup,
-    )..where((t) => t.lookupKey.equals(normalized))).getSingleOrNull();
-    if (exact != null) return exact;
-    if (!normalized.contains(RegExp(r'\d'))) return null;
-    final rows = await (select(lookup)
-          ..where(
-            (t) => t.lookupKey.equals(normalized.toUpperCase()),
-          ))
-        .get();
-    return rows.isEmpty ? null : rows.first;
+    // Abbreviation keys are stored capitalised (e.g. "VVa", "DN", "NIDD1a"),
+    // so try the lower-cased query first (normal words), then the query as
+    // typed, then upper-cased. Each is a primary-key lookup, so the extra
+    // attempts only run when the previous one misses.
+    final cased = _normalizePunctuation(key);
+    for (final candidate in <String>{
+      cased.toLowerCase(),
+      cased,
+      cased.toUpperCase(),
+    }) {
+      final row = await (select(
+        lookup,
+      )..where((t) => t.lookupKey.equals(candidate))).getSingleOrNull();
+      if (row != null) return row;
+    }
+    return null;
   }
 
   Future<DpdRoot?> getRoot(String rootKey) {
@@ -658,10 +662,11 @@ class DpdDao extends DatabaseAccessor<AppDatabase> with _$DpdDaoMixin {
 
   // ── Helpers ───────────────────────────────────────────────────────────────
 
-  String _normalizeQuery(String input) {
+  String _normalizeQuery(String input) => _normalizePunctuation(input).toLowerCase();
+
+  String _normalizePunctuation(String input) {
     return input
         .trim()
-        .toLowerCase()
         .replaceAll("'", '')
         .replaceAll('-', '')
         .replaceAll('?', '')
