@@ -3,6 +3,7 @@
     {
       "title": "unreleased",
       "items": [
+        "style: sūriya dark theme now uses a deeper, warmer background",
         "fix: derivative grammar row now shows its type, not just the suffix",
         "feat: random word on the home screen is now a full dictionary entry",
         "feat: app update downloads now show progress inside the app",
