@@ -142,8 +142,12 @@ class GrammarTable extends ConsumerWidget {
   ) {
     final root = headword.root;
     if (root == null) return null;
+    final rootClean = root.root.replaceAll(
+      RegExp(r' \d.*$', multiLine: true, unicode: true),
+      '',
+    );
     final parts = [
-      if (root.root.isNotEmpty) root.root,
+      if (rootClean.isNotEmpty) rootClean,
       root.rootGroup.toString(),
       if (root.rootSign.isNotEmpty) root.rootSign,
       if (root.rootMeaning.isNotEmpty) '(${root.rootMeaning})',
