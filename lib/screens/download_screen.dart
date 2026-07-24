@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 
 import '../providers/database_update_provider.dart';
 import '../services/database_update_service.dart';
 import '../theme/dpd_palette.dart';
+import '../widgets/dpd_logo.dart';
 
 class DownloadScreen extends ConsumerWidget {
   const DownloadScreen({super.key});
@@ -14,7 +14,6 @@ class DownloadScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final updateState = ref.watch(dbUpdateProvider);
     final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
     final subtitle = _subtitleFor(updateState);
 
     return Scaffold(
@@ -25,13 +24,7 @@ class DownloadScreen extends ConsumerWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                SvgPicture.asset(
-                  isDark
-                      ? 'assets/images/dpd-logo-dark.svg'
-                      : 'assets/images/dpd-logo.svg',
-                  height: 80,
-                  width: 80,
-                ),
+                const DpdLogo(size: 80),
                 const SizedBox(height: 24),
                 Text(
                   'Digital Pāḷi Dictionary',

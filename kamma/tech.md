@@ -27,5 +27,29 @@ The `lookup` table in the mobile DB uses `lookup_key` as a PRIMARY KEY (created 
 ## Change Log Asset (2026-04-12)
 The in-app change log is generated at build time from local git tags and commit subjects by `tool/generate_changelog.dart`, which writes `assets/help/changelog.json`. Standard local build/run Just recipes and `.github/workflows/release.yml` regenerate that asset before packaging so the shipped app never depends on runtime git access or GitHub API calls.
 
+## Floating Lookup Bubble (Android, 2026-07-24)
+Android-only system-wide lookup. A custom `AccessibilityService`
+(`SelectionAccessibilityService.kt`) draws a `TYPE_ACCESSIBILITY_OVERLAY` "dpd" bubble over
+all apps — no `SYSTEM_ALERT_WINDOW` needed; the accessibility grant authorises the overlay.
+Two-tier word capture: Tier 1 reads the passive `TYPE_VIEW_TEXT_SELECTION_CHANGED` event
+(`fromIndex/toIndex + text`, never `node.textSelectionStart/End`); Tier 2 clicks the app's
+own Copy button across all windows then reads the clipboard once DPD is foregrounded. The
+captured word is routed through the *existing* `net.dpdict.app/intent/stream` eventSink →
+`ExternalSearchHandler.apply()`, the same funnel as share/PROCESS_TEXT (no new Dart search
+plumbing). Controlled by a shared `bubbleOnProvider` (settings toggle + header `touch_app`
+button); on/off + colour + position persist in the `dpd_bubble` SharedPref. Bubble is tied
+to the app being open (shown in `MainActivity.onResume`, removed in `onDestroy`). Uses a
+custom `MethodChannel` `net.dpdict.app/bubble`. Play compliance: a first-enable consent
+dialog discloses the accessibility use (required, not optional). iOS has no equivalent — out
+of scope.
+
+## Brand Logo As Code (2026-07-24)
+`lib/widgets/dpd_logo.dart` renders the DPD mark ("dpd" in Inter Bold inside a circle) purely
+as a widget — verified pixel-identical to `identity/logo/dpd-icon.svg`. Scales to any size,
+tints to any theme, and auto-contrasts its label (black on light circles, white on dark). It
+replaced the `dpd-logo*.svg` usages in the header and download/splash screen; `flutter_svg` is
+no longer referenced by app code. Reuse `DpdLogo` for any future logo placement rather than
+adding SVG assets.
+
 ## External Dictionaries & English WordNet (2026-07-11)
 External (non-DPD) dictionaries are not app code: the app auto-discovers any dictionary present in the mobile DB's `dict_meta`/`dict_entries` tables (built by `../dpd-db/exporter/mobile/mobile_exporter.py`) and renders (`flutter_widget_from_html`), searches, and toggles it with no Flutter changes. Open English WordNet (English–English, `dict_id = "wordnet"`, CC BY 4.0) is included this way. Attribution for CC-licensed dictionaries must live in `dict_meta.name` (shown in the UI) — the app never renders `dict_meta.author`. Inclusion is gated by a `--wordnet` exporter flag: local `just build-db` passes it (default on), while dpd-db's `mobile_release.yml` gates it behind a `workflow_dispatch` input (default off), so the public released DB omits it unless explicitly requested. The source data is generated once by `../dpd-db/resources/other-dictionaries/dictionaries/wordnet/wordnet_to_json.py` (uses the `wn` library, build-time only) and committed as `wordnet.tar.zst`; `other-dictionaries` is a git submodule, so CI needs the submodule commit pushed and its pointer bumped before `include_wordnet=true` works.

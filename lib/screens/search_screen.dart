@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 import '../database/database.dart';
 import '../providers/autocomplete_provider.dart';
@@ -23,7 +22,10 @@ import '../utils/velthuis.dart';
 import '../utils/back_navigation.dart';
 import '../utils/history_recording.dart';
 import '../utils/search_timing.dart';
+import '../services/bubble_service.dart';
 import '../widgets/autocomplete_dropdown.dart';
+import '../widgets/bubble_toggle.dart';
+import '../widgets/dpd_logo.dart';
 import '../widgets/download_footer.dart';
 import '../widgets/empty_prompt.dart';
 import '../widgets/feedback_footer.dart';
@@ -443,27 +445,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                       children: [
                         GestureDetector(
                           onTap: _goHome,
-                          child: SizedBox(
-                            width: 30,
-                            height: 30,
-                            child: Stack(
-                              children: [
-                                Container(
-                                  width: 30,
-                                  height: 30,
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: context.palette.primary,
-                                  ),
-                                ),
-                                SvgPicture.asset(
-                                  'assets/images/dpd-logo-mask.svg',
-                                  width: 30,
-                                  height: 30,
-                                ),
-                              ],
-                            ),
-                          ),
+                          child: const DpdLogo(size: 30),
                         ),
                         const SizedBox(width: 8),
                         Expanded(
@@ -526,6 +508,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                                 : () => showHistoryOverlay(context),
                           ),
                         ),
+                        if (Platform.isAndroid) const _BubbleHeaderButton(),
                         Tooltip(
                           message: 'Settings',
                           decoration: BoxDecoration(
@@ -900,6 +883,70 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+
+// Header toggle for the system-wide floating lookup bubble. Shares
+// bubbleOnProvider + the same action as the Settings toggle, so the two
+// controls always agree and users can reach it either way.
+class _BubbleHeaderButton extends ConsumerStatefulWidget {
+  const _BubbleHeaderButton();
+
+  @override
+  ConsumerState<_BubbleHeaderButton> createState() =>
+      _BubbleHeaderButtonState();
+}
+
+class _BubbleHeaderButtonState extends ConsumerState<_BubbleHeaderButton>
+    with WidgetsBindingObserver {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    refreshBubbleState(ref);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  // Re-sync after returning from the accessibility settings page.
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) refreshBubbleState(ref);
+  }
+
+  // Keep the live bubble matching the app theme (light/dark/scheme changes).
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (ref.read(bubbleOnProvider)) {
+      final primary = Theme.of(context).colorScheme.primary;
+      BubbleService.setBubbleColors(
+        primary.toARGB32(),
+        DpdLogo.contrastOn(primary).toARGB32(),
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final palette = context.palette;
+    final on = ref.watch(bubbleOnProvider);
+    return Tooltip(
+      message: on ? 'Floating bubble on' : 'Floating bubble off',
+      decoration: BoxDecoration(
+        color: palette.primaryAlt,
+        borderRadius: DpdColors.borderRadius,
+      ),
+      textStyle: TextStyle(color: palette.light, fontSize: 12),
+      child: IconButton(
+        icon: Icon(on ? Icons.touch_app : Icons.touch_app_outlined),
+        onPressed: () => setBubbleOn(context, ref, !on),
+      ),
+    );
+  }
+}
 
 class _BarIconButton extends StatelessWidget {
   const _BarIconButton({

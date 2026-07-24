@@ -8,6 +8,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../providers/database_update_provider.dart';
 import '../providers/settings_provider.dart';
 import '../services/intent_service.dart';
+import 'bubble_toggle.dart';
 import '../theme/dpd_colors.dart';
 import '../theme/dpd_scheme.dart';
 import 'compact_segmented.dart';
@@ -41,6 +42,7 @@ class _SettingsContentState extends ConsumerState<SettingsContent> {
         padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
         child: Text('Settings', style: theme.textTheme.titleLarge),
       ),
+      if (Platform.isAndroid) () => const _BubbleTile(),
       () => _buildSettingTile(
         title: 'Result style',
         topic: _resultStyleTopic(),
@@ -417,6 +419,65 @@ class _SettingsContentState extends ConsumerState<SettingsContent> {
     return const SettingHelpTopic(
       title: 'Fuzzy results',
       description: 'Shows or hides close spelling matches in search results.',
+    );
+  }
+}
+
+// A single On/Off toggle for the system-wide floating lookup bubble. Turning it
+// on the first time prompts the user to grant the accessibility permission;
+// after that the bubble simply stays on. Shares [bubbleOnProvider] with the
+// header button so the two controls always agree.
+class _BubbleTile extends ConsumerStatefulWidget {
+  const _BubbleTile();
+
+  @override
+  ConsumerState<_BubbleTile> createState() => _BubbleTileState();
+}
+
+class _BubbleTileState extends ConsumerState<_BubbleTile> {
+  @override
+  void initState() {
+    super.initState();
+    refreshBubbleState(ref);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final on = ref.watch(bubbleOnProvider);
+    return _buildSettingTile(
+      title: 'Floating bubble',
+      topic: const SettingHelpTopic(
+        title: 'Floating bubble',
+        description:
+            'Shows a draggable DPD button over other apps. Highlight a word in '
+            'any app and tap the button to look it up. Requires DPD to be turned '
+            'on in your phone’s Accessibility settings.',
+      ),
+      trailing: CompactSegmented<bool>(
+        segments: const [
+          ButtonSegment(value: false, label: Text('Off')),
+          ButtonSegment(value: true, label: Text('On')),
+        ],
+        selected: on,
+        onChanged: (v) => setBubbleOn(context, ref, v),
+      ),
+    );
+  }
+
+  Widget _buildSettingTile({
+    required String title,
+    required SettingHelpTopic topic,
+    required Widget trailing,
+  }) {
+    return ListTile(
+      title: Row(
+        children: [
+          Flexible(child: Text(title)),
+          const SizedBox(width: 4),
+          SettingHelpButton(topic: topic),
+        ],
+      ),
+      trailing: trailing,
     );
   }
 }
