@@ -3,6 +3,8 @@
     {
       "title": "unreleased",
       "items": [
+        "fix: root in grammar section no longer shows a double number",
+        "fix: abbreviations like \"VVa\" and \"DN\" now show when searched",
         "style: sūriya dark theme now uses a deeper, warmer background",
         "fix: derivative grammar row now shows its type, not just the suffix",
         "feat: random word on the home screen is now a full dictionary entry",
