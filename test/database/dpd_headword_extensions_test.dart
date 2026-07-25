@@ -20,27 +20,6 @@ void main() {
       expect(hw2.rootClean, '√sut');
     });
 
-    test('cleanConstruction removes phonetic changes and brackets', () {
-      final hw = const DpdHeadword(
-        id: 1,
-        lemma1: 'test',
-        construction: 'a + [b] + c > d\nsecond line',
-      );
-      expect(hw.cleanConstruction(), 'a + c > d');
-
-      final hw2 = const DpdHeadword(
-        id: 2,
-        lemma1: 'test',
-        construction: '[a] + ?? b > phonetic + c + [d]',
-      );
-      expect(hw2.cleanConstruction(), 'b + c');
-    });
-
-    test('cleanConstruction handles empty construction', () {
-      final hw = const DpdHeadword(id: 1, lemma1: 'test');
-      expect(hw.cleanConstruction(), '');
-    });
-
     test('grammarLine constructs grammar correctly', () {
       final hw = const DpdHeadword(
         id: 1,

@@ -179,10 +179,10 @@ class GrammarTable extends ConsumerWidget {
     DpdHeadwordWithRoot headword,
     String Function(String) n,
   ) {
-    return buildKvTextRow(
+    return buildKvRichRow(
       context,
       'Construction',
-      headword.headword.cleanConstruction(),
+      headword.headword.construction,
       filter: n,
     );
   }
