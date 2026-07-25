@@ -3,6 +3,7 @@
     {
       "title": "unreleased",
       "items": [
+        "feat: add a floating bubble to look up highlighted words from any app",
         "fix: root in grammar section no longer shows a double number",
         "fix: abbreviations like \"VVa\" and \"DN\" now show when searched",
         "style: sūriya dark theme now uses a deeper, warmer background",
