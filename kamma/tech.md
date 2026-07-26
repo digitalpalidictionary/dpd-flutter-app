@@ -51,5 +51,31 @@ replaced the `dpd-logo*.svg` usages in the header and download/splash screen; `f
 no longer referenced by app code. Reuse `DpdLogo` for any future logo placement rather than
 adding SVG assets.
 
+## Autocomplete Dropdown Fallback Tiers (2026-07-26)
+The suggestion dropdown under the search box tries three sources in order, each
+only when the one above finds nothing: (1) the in-memory headword/root/family
+index (`searchIndexProvider`), (2) enabled external dictionaries
+(`searchDictWordsPrefix`), (3) the DPD lookup table as last resort
+(`searchLookupKeysPrefix`). Tiers 2-3 match on exact prefix only — never
+`fuzzy_key`/`word_fuzzy` — so no diacritic/aspirate/double-consonant folding
+happens in the dropdown; that stays exclusive to search results and the
+closest-matches screen. Sutta codes are stored uppercase (`DN1.1`), so any
+lookup-table range query on a query containing a digit must also widen to the
+uppercase range, matching `searchExact`/`searchPartial`/`searchClosestMatches`.
+
+Async debounced UI updates that can dismiss/reopen an overlay (autocomplete,
+any future similar widget) need a monotonic generation counter, not just timer
+cancellation — cancelling a `Timer` only stops it from firing, it cannot stop
+an already-running `async` body from resuming after the user has moved on
+(committed a search, cleared the field, navigated away). Bump the counter at
+every such action; capture it once before the first `await`; abandon the
+result on mismatch.
+
+**DB path pitfall:** `../dpd-db/dpd-mobile.db` and
+`../dpd-db/exporter/mobile/dpd-mobile.db` are both zero-byte placeholders.
+The real, current exported mobile DB (all 6 dictionaries) is
+`../dpd-db/exporter/share/dpd-mobile.db` (`tools/paths.py:259`), produced by
+`just export-mobile`. Never measure or benchmark against the placeholders.
+
 ## External Dictionaries & English WordNet (2026-07-11)
 External (non-DPD) dictionaries are not app code: the app auto-discovers any dictionary present in the mobile DB's `dict_meta`/`dict_entries` tables (built by `../dpd-db/exporter/mobile/mobile_exporter.py`) and renders (`flutter_widget_from_html`), searches, and toggles it with no Flutter changes. Open English WordNet (English–English, `dict_id = "wordnet"`, CC BY 4.0) is included this way. Attribution for CC-licensed dictionaries must live in `dict_meta.name` (shown in the UI) — the app never renders `dict_meta.author`. Inclusion is gated by a `--wordnet` exporter flag: local `just build-db` passes it (default on), while dpd-db's `mobile_release.yml` gates it behind a `workflow_dispatch` input (default off), so the public released DB omits it unless explicitly requested. The source data is generated once by `../dpd-db/resources/other-dictionaries/dictionaries/wordnet/wordnet_to_json.py` (uses the `wn` library, build-time only) and committed as `wordnet.tar.zst`; `other-dictionaries` is a git submodule, so CI needs the submodule commit pushed and its pointer bumped before `include_wordnet=true` works.

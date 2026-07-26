@@ -7,6 +7,7 @@ import 'package:path/path.dart' as p;
 
 import '../utils/diacritics.dart';
 import 'database_provider.dart';
+import 'dict_provider.dart';
 
 final searchIndexProvider = FutureProvider<List<String>>((ref) async {
   final cacheFile = await _cacheFile();
@@ -94,17 +95,66 @@ final autocompleteSuggestionsProvider = Provider.family<List<String>, String>((
     if (matches.length >= 100) break;
   }
 
-  matches.sort((a, b) {
-    final cleanA = stripDiacritics(a).toLowerCase();
-    final cleanB = stripDiacritics(b).toLowerCase();
-    final lenDiff = cleanA.length - cleanB.length;
-    if (lenDiff != 0) return lenDiff;
-    if (cleanA != cleanB) return cleanA.compareTo(cleanB);
-    return a.compareTo(b);
-  });
+  matches.sort(_suggestionComparator);
 
   return matches.length > 100 ? matches.sublist(0, 100) : matches;
 });
+
+/// Shortest-first, then alphabetical (diacritic-insensitive), then exact —
+/// shared by the headword index and both fallback tiers so suggestions from
+/// any tier are ordered the same way.
+int _suggestionComparator(String a, String b) {
+  final cleanA = stripDiacritics(a).toLowerCase();
+  final cleanB = stripDiacritics(b).toLowerCase();
+  final lenDiff = cleanA.length - cleanB.length;
+  if (lenDiff != 0) return lenDiff;
+  if (cleanA != cleanB) return cleanA.compareTo(cleanB);
+  return a.compareTo(b);
+}
+
+/// Fallback: exact-prefix suggestions from the lookup table. Where this fits
+/// in the tier order is decided by the caller (`_updateAutocomplete()` in
+/// `search_screen.dart`), not here — currently the last resort.
+final lookupSuggestionsProvider = FutureProvider.autoDispose
+    .family<List<String>, String>((ref, query) async {
+      if (query.length < 2) return [];
+      final dao = ref.watch(daoProvider);
+      final matches = await dao.searchLookupKeysPrefix(query);
+      if (matches.isEmpty) return [];
+
+      matches.sort(_suggestionComparator);
+      return matches.length > 100 ? matches.sublist(0, 100) : matches;
+    });
+
+/// Fallback: exact-prefix suggestions from the enabled external dictionaries.
+/// Where this fits in the tier order is decided by the caller
+/// (`_updateAutocomplete()` in `search_screen.dart`), not here — currently
+/// tried before [lookupSuggestionsProvider].
+final dictSuggestionsProvider = FutureProvider.autoDispose
+    .family<List<String>, String>((ref, query) async {
+      if (query.length < 2) return [];
+      final dao = ref.watch(daoProvider);
+      final visibility = ref.watch(dictVisibilityProvider);
+      // Nothing can be in both `externalIds` and an empty `enabled` set, so
+      // skip the await entirely when every dictionary is switched off.
+      if (visibility.enabled.isEmpty) return [];
+      final allMeta = await ref.watch(dictMetaAllProvider.future);
+      // `visibility.order` also lists DPD's own internal sections (grammar,
+      // roots, ...); only real external dictionary ids belong in dict_entries.
+      final externalIds = allMeta.map((m) => m.dictId).toSet();
+      final dictIds = visibility.order
+          .where(
+            (id) => externalIds.contains(id) && visibility.enabled.contains(id),
+          )
+          .toList();
+      if (dictIds.isEmpty) return [];
+
+      final matches = await dao.searchDictWordsPrefix(dictIds, query);
+      if (matches.isEmpty) return [];
+
+      matches.sort(_suggestionComparator);
+      return matches.length > 100 ? matches.sublist(0, 100) : matches;
+    });
 
 List<String> _buildIndex(Set<String> terms) {
   final indexDict = <String, Set<String>>{};

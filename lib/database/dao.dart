@@ -321,6 +321,42 @@ class DpdDao extends DatabaseAccessor<AppDatabase> with _$DpdDaoMixin {
     return sorted.take(maxResults).toList();
   }
 
+  /// Exact-prefix suggestions from the lookup table, for the autocomplete
+  /// dropdown's fallback tier. Deliberately not fuzzy: matches on `lookup_key`
+  /// (the primary key), not `fuzzy_key`, so it does not fold diacritics,
+  /// aspirates, or double consonants.
+  Future<List<String>> searchLookupKeysPrefix(
+    String query, {
+    int limit = 200,
+  }) async {
+    final normalized = _normalizeQuery(query);
+    if (normalized.length < 2) return [];
+
+    // Sutta codes are stored uppercase (e.g. "DN1.1"); a digit in the query
+    // means it might be one, so widen the range to also cover the uppercase
+    // form — same rule as searchExact/searchPartial/searchClosestMatches.
+    final isSuttaCode = normalized.contains(RegExp(r'\d'));
+    final nextKey = _nextString(normalized);
+    var whereExpr =
+        lookup.lookupKey.isBiggerOrEqualValue(normalized) &
+            lookup.lookupKey.isSmallerThanValue(nextKey);
+    if (isSuttaCode) {
+      final upper = normalized.toUpperCase();
+      final upperNextKey = _nextString(upper);
+      whereExpr = whereExpr |
+          (lookup.lookupKey.isBiggerOrEqualValue(upper) &
+              lookup.lookupKey.isSmallerThanValue(upperNextKey));
+    }
+    final rows =
+        await (selectOnly(lookup)
+              ..addColumns([lookup.lookupKey])
+              ..where(whereExpr)
+              ..limit(limit))
+            .get();
+
+    return rows.map((r) => r.read(lookup.lookupKey)!).toList();
+  }
+
   Future<Set<String>> checkWordsInLookup(Set<String> words) async {
     if (words.isEmpty) return {};
     final allKeys = {
@@ -616,6 +652,43 @@ class DpdDao extends DatabaseAccessor<AppDatabase> with _$DpdDaoMixin {
           ..where((t) => t.wordFuzzy.like('$fuzzyKey%'))
           ..limit(limit))
         .get();
+  }
+
+  /// Exact-prefix suggestions from the enabled external dictionaries, for the
+  /// autocomplete dropdown's second fallback tier. One range query per dict id
+  /// so each can seek the composite `(dict_id, word)` index — a single
+  /// unfiltered query across all dicts cannot. Matches on `word`, not
+  /// `word_fuzzy`: deliberately not fuzzy, same reasoning as
+  /// [searchLookupKeysPrefix].
+  Future<List<String>> searchDictWordsPrefix(
+    List<String> dictIds,
+    String query, {
+    int limit = 50,
+  }) async {
+    if (dictIds.isEmpty) return [];
+    final normalized = _normalizeQuery(query);
+    if (normalized.length < 2) return [];
+
+    final nextKey = _nextString(normalized);
+    final words = <String>{};
+
+    for (final dictId in dictIds) {
+      final rows =
+          await (selectOnly(dictEntries)
+                ..addColumns([dictEntries.word])
+                ..where(
+                  dictEntries.dictId.equals(dictId) &
+                      dictEntries.word.isBiggerOrEqualValue(normalized) &
+                      dictEntries.word.isSmallerThanValue(nextKey),
+                )
+                ..limit(limit))
+              .get();
+      for (final row in rows) {
+        words.add(row.read(dictEntries.word)!);
+      }
+    }
+
+    return words.toList();
   }
 
   Future<DictMetaData?> getDictMeta(String dictId) {

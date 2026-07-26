@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io' show Platform;
 
+import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -61,6 +62,20 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   bool _showHistoryPanel = false;
   bool _suppressProviderSync = false;
   bool _showHome = true;
+  // Mirrors whether the autocomplete dropdown is on screen, inside setState so
+  // the results area rebuilds when it changes. While suggestions are visible
+  // the no-results verdict is withheld — the user is still mid-word.
+  bool _suggestionsVisible = false;
+  // Bumped by every action that should invalidate whatever autocomplete
+  // fallback query is currently in flight: a new keystroke, or the user
+  // committing/clearing/navigating away before the awaited tiers resolve.
+  // `_updateAutocomplete` captures the value once, before its first await, and
+  // abandons its result the moment the counter no longer matches — this is
+  // what stops a stale query from reopening the dropdown after the user has
+  // already moved on. Cancelling `_autocompleteDebounce` only stops a timer
+  // that hasn't fired yet; it cannot stop one that already has and is
+  // mid-`await`, which is why the counter exists at all.
+  int _autocompleteGeneration = 0;
   final _historyButtonKey = GlobalKey();
   InfoContent? _activeInfo;
 
@@ -87,7 +102,11 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
 
   @override
   void dispose() {
-    _removeOverlay();
+    // Inline overlay cleanup — _removeOverlay() calls setState, which is not
+    // allowed during dispose.
+    _overlayEntry?.remove();
+    _overlayEntry?.dispose();
+    _overlayEntry = null;
     _removeHelpOverlay();
     _removeInfoOverlay();
     _focusNode.dispose();
@@ -104,6 +123,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   }
 
   void _onChanged(String raw) {
+    _autocompleteGeneration++;
     final converted = velthuis(raw);
     if (converted != raw) {
       _controller.value = TextEditingValue(
@@ -124,6 +144,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   }
 
   void _onSearch() {
+    _autocompleteGeneration++;
     _removeOverlay();
     _hideVelthuisHelp();
     _autocompleteDebounce?.cancel();
@@ -138,6 +159,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   }
 
   void _onClear() {
+    _autocompleteGeneration++;
     _controller.clear();
     _removeOverlay();
     _autocompleteDebounce?.cancel();
@@ -150,6 +172,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   }
 
   void _searchFromHome(String query) {
+    _autocompleteGeneration++;
     _removeOverlay();
     _autocompleteDebounce?.cancel();
     _debounce?.cancel();
@@ -163,6 +186,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   }
 
   void _goHome() {
+    _autocompleteGeneration++;
     _removeOverlay();
     _autocompleteDebounce?.cancel();
     _debounce?.cancel();
@@ -173,17 +197,62 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     setState(() {});
   }
 
-  void _updateAutocomplete(String query) {
+  Future<void> _updateAutocomplete(String query) async {
+    // Guard 3: short queries stay synchronous, same as today.
     if (query.length < 2) {
       _removeOverlay();
       return;
     }
+
+    // Tier 1 — unchanged, and returned before any `await` in this function
+    // (Guard 1) so its timing stays exactly as synchronous as today.
     final suggestions = ref.read(autocompleteSuggestionsProvider(query));
-    if (suggestions.isEmpty) {
+    if (suggestions.isNotEmpty) {
+      _showOverlay(suggestions);
+      return;
+    }
+
+    // Guard 2: an empty tier 1 can mean "no match" or "index still loading".
+    // Falling through while loading would hit the database on every
+    // keystroke during startup. `searchIndexProvider` must stay a
+    // FutureProvider for `.hasValue` to distinguish the two; if it ever
+    // becomes synchronous, `hasValue` is always true and this guard stops
+    // guarding.
+    if (!ref.read(searchIndexProvider).hasValue) {
       _removeOverlay();
       return;
     }
-    _showOverlay(suggestions);
+
+    // Snapshot the generation now, before the first await. Any action that
+    // should invalidate this call — a new keystroke, a committed search, a
+    // clear, navigating home, or picking a suggestion — bumps the counter, so
+    // a mismatch after an await means this call is stale and must not touch
+    // the overlay, no matter what `_controller.text` says by then.
+    final requestGeneration = _autocompleteGeneration;
+
+    // Tier 2 — enabled external dictionaries, only reached when tier 1 found
+    // nothing.
+    final dictMatches = await ref.read(dictSuggestionsProvider(query).future);
+    if (!mounted || _autocompleteGeneration != requestGeneration) return;
+    if (dictMatches.isNotEmpty) {
+      if (kDebugMode) debugPrint('autocomplete: tier 2 (dict) answered "$query"');
+      _showOverlay(dictMatches);
+      return;
+    }
+
+    // Tier 3 — the lookup table, last resort: tried only when both the
+    // headword index and the external dictionaries found nothing.
+    final lookupMatches = await ref.read(
+      lookupSuggestionsProvider(query).future,
+    );
+    if (!mounted || _autocompleteGeneration != requestGeneration) return;
+    if (lookupMatches.isNotEmpty) {
+      if (kDebugMode) debugPrint('autocomplete: tier 3 (lookup) answered "$query"');
+      _showOverlay(lookupMatches);
+      return;
+    }
+
+    _removeOverlay();
   }
 
   void _showOverlay(List<String> suggestions) {
@@ -212,9 +281,13 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
       ),
     );
     overlay.insert(_overlayEntry!);
+    if (!_suggestionsVisible) {
+      setState(() => _suggestionsVisible = true);
+    }
   }
 
   void _onSuggestionSelected(String term) {
+    _autocompleteGeneration++;
     _controller.text = term;
     _controller.selection = TextSelection.collapsed(offset: term.length);
     _removeOverlay();
@@ -231,6 +304,9 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     _overlayEntry?.remove();
     _overlayEntry?.dispose();
     _overlayEntry = null;
+    if (_suggestionsVisible && mounted) {
+      setState(() => _suggestionsVisible = false);
+    }
   }
 
   void _toggleHelpPopup() {
@@ -845,6 +921,13 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
         !partialLoading &&
         !fuzzyAsync.isLoading &&
         !dictAsync.isLoading) {
+      // While the dropdown is offering completions the user is still mid-word,
+      // so withhold the no-results verdict — declaring failure and suggesting
+      // words at the same time is contradictory. The verdict appears as soon
+      // as the dropdown closes (word finished, tapped, or no completions).
+      if (_suggestionsVisible) {
+        return const EmptyPrompt();
+      }
       return NoResultsWithSuggestions(query: query);
     }
 
