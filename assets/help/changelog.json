@@ -3,6 +3,7 @@
     {
       "title": "unreleased",
       "items": [
+        "feat: dropdown features inflections, compounds and English words",
         "fix: tapping on compounds joined by a plus sign",
         "fix: word construction now shows both lines",
         "feat: add a floating bubble to look up highlighted words from any app",
