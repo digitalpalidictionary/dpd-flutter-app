@@ -3,6 +3,8 @@
     {
       "title": "unreleased",
       "items": [
+        "fix: tapping on compounds joined by a plus sign",
+        "fix: word construction now shows both lines",
         "feat: add a floating bubble to look up highlighted words from any app",
         "fix: root in grammar section no longer shows a double number",
         "fix: abbreviations like \"VVa\" and \"DN\" now show when searched",
