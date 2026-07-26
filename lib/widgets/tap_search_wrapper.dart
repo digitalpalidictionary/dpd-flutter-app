@@ -8,6 +8,35 @@ import '../providers/search_provider.dart';
 import '../utils/history_recording.dart';
 import '../providers/settings_provider.dart';
 
+/// Expands [offset] outwards to the surrounding word.
+///
+/// `+` counts as a boundary so that tapping either half of a plus-joined
+/// compound like `Abhimaṅgala+sammata` searches only the half that was tapped.
+@visibleForTesting
+String extractWordAt(String text, int offset) {
+  if (offset < 0 || offset >= text.length) return '';
+
+  int start = offset;
+  int end = offset;
+
+  while (start > 0 && !_isWordBoundary(text[start - 1])) {
+    start--;
+  }
+  while (end < text.length && !_isWordBoundary(text[end])) {
+    end++;
+  }
+
+  return text.substring(start, end);
+}
+
+bool _isWordBoundary(String char) {
+  return char == ' ' ||
+      char == '\n' ||
+      char == '\t' ||
+      char == '\r' ||
+      char == '+';
+}
+
 class TapSearchWrapper extends ConsumerStatefulWidget {
   final Widget child;
   final bool shouldPop;
@@ -111,7 +140,7 @@ class _TapSearchWrapperState extends ConsumerState<TapSearchWrapper> {
         final localPosition = target.globalToLocal(globalPosition);
         final textPosition = target.getPositionForOffset(localPosition);
         final text = target.text.toPlainText();
-        return _extractWordAt(text, textPosition.offset);
+        return extractWordAt(text, textPosition.offset);
       }
     }
     return null;
@@ -129,26 +158,6 @@ class _TapSearchWrapperState extends ConsumerState<TapSearchWrapper> {
       current = current.parent;
     }
     return false;
-  }
-
-  String _extractWordAt(String text, int offset) {
-    if (offset < 0 || offset >= text.length) return '';
-
-    int start = offset;
-    int end = offset;
-
-    while (start > 0 && !_isWordBoundary(text[start - 1])) {
-      start--;
-    }
-    while (end < text.length && !_isWordBoundary(text[end])) {
-      end++;
-    }
-
-    return text.substring(start, end);
-  }
-
-  bool _isWordBoundary(String char) {
-    return char == ' ' || char == '\n' || char == '\t' || char == '\r';
   }
 
   /// Exact ported cleaning logic from DPD Web App / paliLookup.js
