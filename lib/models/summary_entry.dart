@@ -10,6 +10,7 @@ enum SummaryEntryType {
   epd,
   help,
   deconstructor,
+  dict,
 }
 
 class SummaryEntry {

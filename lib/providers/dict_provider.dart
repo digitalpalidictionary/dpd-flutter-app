@@ -16,6 +16,27 @@ class DpdSourceMeta {
   const DpdSourceMeta(this.id, this.label);
 }
 
+const _dictShortNames = {
+  'cone': 'Cone',
+  'cpd': 'CPD',
+  'dppn': 'DPPN',
+  'mw': 'MW',
+  'peu': 'PEU',
+  'bhs': 'BHS',
+  'apte': 'Apte',
+  'wordnet': 'WordNet',
+  'nyanatiloka': 'Nyanatiloka',
+};
+
+/// Short, one-word label for an external dictionary, for use in the summary.
+/// Falls back to a capitalised dictId for a dictionary not in the map yet.
+String dictShortName(String dictId) {
+  final known = _dictShortNames[dictId];
+  if (known != null) return known;
+  if (dictId.isEmpty) return dictId;
+  return dictId[0].toUpperCase() + dictId.substring(1);
+}
+
 const kDpdSources = [
   DpdSourceMeta('dpd_summary', 'DPD Summary'),
   DpdSourceMeta('dpd_headwords', 'DPD Headwords'),

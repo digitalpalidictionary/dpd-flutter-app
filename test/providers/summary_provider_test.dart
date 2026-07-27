@@ -1,8 +1,23 @@
 import 'package:dpd_flutter_app/database/database.dart';
 import 'package:dpd_flutter_app/models/lookup_results.dart';
 import 'package:dpd_flutter_app/models/summary_entry.dart';
+import 'package:dpd_flutter_app/providers/dict_provider.dart';
 import 'package:dpd_flutter_app/providers/summary_provider.dart';
 import 'package:flutter_test/flutter_test.dart';
+
+DictResult _dictResult({
+  required String dictId,
+  required List<String> words,
+}) {
+  return DictResult(
+    dictId: dictId,
+    dictName: dictId,
+    entries: [
+      for (var i = 0; i < words.length; i++)
+        DictEntry(id: i, dictId: dictId, word: words[i]),
+    ],
+  );
+}
 
 DpdHeadword _headword({
   required int id,
@@ -411,6 +426,113 @@ void main() {
         enabledSources: const {'dpd_roots'},
       );
       expect(entries.any((e) => e.type == SummaryEntryType.root), isTrue);
+    });
+  });
+
+  group('buildSummaryEntries — external dictionaries', () {
+    test('one dictionary with one exact entry produces one row', () {
+      final dictExact = [
+        _dictResult(dictId: 'cone', words: ['dhamma']),
+      ];
+      final entries = buildSummaryEntries(
+        [],
+        [],
+        [],
+        dictExact: dictExact,
+        order: const ['cone'],
+      );
+
+      expect(entries, hasLength(1));
+      expect(entries[0].type, SummaryEntryType.dict);
+      expect(entries[0].label, 'dhamma');
+      expect(entries[0].typeLabel, 'Cone.');
+      expect(entries[0].meaning, '');
+      expect(entries[0].targetId, 'dict_cone');
+    });
+
+    test('a dictionary with several exact entries still produces one row', () {
+      final dictExact = [
+        _dictResult(dictId: 'dppn', words: ['Dhamma', 'Dhamma (2)', 'Dhamma (3)']),
+      ];
+      final entries = buildSummaryEntries(
+        [],
+        [],
+        [],
+        dictExact: dictExact,
+        order: const ['dppn'],
+      );
+
+      expect(entries, hasLength(1));
+      expect(entries[0].label, 'Dhamma');
+      expect(entries[0].typeLabel, 'DPPN.');
+    });
+
+    test('rows follow the supplied Settings order, interleaved with DPD rows', () {
+      final hw = DpdHeadwordWithRoot(
+        _headword(id: 1, lemma1: 'dhamma', pos: 'masc', meaning1: 'truth'),
+        null,
+      );
+      final rwf = RootWithFamilies(
+        root: _root(root: '√dhar', meaning: 'to hold'),
+        families: [],
+        count: 1,
+      );
+      final dictExact = [
+        _dictResult(dictId: 'cone', words: ['dhamma']),
+        _dictResult(dictId: 'peu', words: ['dhamma']),
+      ];
+
+      final entries = buildSummaryEntries(
+        [hw],
+        [rwf],
+        [],
+        dictExact: dictExact,
+        order: const ['cone', 'dpd_headwords', 'dpd_roots', 'peu'],
+      );
+
+      expect(entries.map((e) => e.type), [
+        SummaryEntryType.dict,
+        SummaryEntryType.headword,
+        SummaryEntryType.root,
+        SummaryEntryType.dict,
+      ]);
+      expect(entries[0].targetId, 'dict_cone');
+      expect(entries[3].targetId, 'dict_peu');
+    });
+
+    test('an empty dictionary list produces the same output as today', () {
+      final hw = DpdHeadwordWithRoot(
+        _headword(id: 1, lemma1: 'dhamma', pos: 'masc', meaning1: 'truth'),
+        null,
+      );
+
+      final withoutOrder = buildSummaryEntries([hw], [], []);
+      final withOrderNoDicts = buildSummaryEntries(
+        [hw],
+        [],
+        [],
+        dictExact: const [],
+        order: null,
+      );
+
+      expect(withOrderNoDicts.length, withoutOrder.length);
+      expect(withOrderNoDicts[0].type, withoutOrder[0].type);
+      expect(withOrderNoDicts[0].label, withoutOrder[0].label);
+    });
+
+    test('an unknown dictionary id still renders a sensible short name', () {
+      final dictExact = [
+        _dictResult(dictId: 'newdict', words: ['word']),
+      ];
+      final entries = buildSummaryEntries(
+        [],
+        [],
+        [],
+        dictExact: dictExact,
+        order: const ['newdict'],
+      );
+
+      expect(entries[0].typeLabel, 'Newdict.');
     });
   });
 }

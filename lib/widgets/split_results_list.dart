@@ -164,7 +164,7 @@ class _SplitResultsListState extends State<SplitResultsList> {
               .where((dr) => dr.dictId == sourceId)
               .firstOrNull;
           if (exactResult != null) {
-            tier1.add(
+            addTier1(
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 child: DictHtmlCard(
@@ -173,6 +173,7 @@ class _SplitResultsListState extends State<SplitResultsList> {
                   entries: exactResult.entries,
                 ),
               ),
+              'dict_$sourceId',
             );
           }
           final partialResult = widget.dictPartial

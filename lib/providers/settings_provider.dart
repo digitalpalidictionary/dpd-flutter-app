@@ -33,6 +33,7 @@ class Settings {
     this.showFuzzyResults = true,
     this.tapMode = TapMode.singleTap,
     this.showConstructionInSummary = true,
+    this.showOtherDictsInSummary = true,
   });
 
   final ThemeMode themeMode;
@@ -53,6 +54,7 @@ class Settings {
   final bool showFuzzyResults;
   final TapMode tapMode;
   final bool showConstructionInSummary;
+  final bool showOtherDictsInSummary;
 
   Settings copyWith({
     ThemeMode? themeMode,
@@ -73,6 +75,7 @@ class Settings {
     bool? showFuzzyResults,
     TapMode? tapMode,
     bool? showConstructionInSummary,
+    bool? showOtherDictsInSummary,
   }) {
     return Settings(
       themeMode: themeMode ?? this.themeMode,
@@ -94,6 +97,8 @@ class Settings {
       tapMode: tapMode ?? this.tapMode,
       showConstructionInSummary:
           showConstructionInSummary ?? this.showConstructionInSummary,
+      showOtherDictsInSummary:
+          showOtherDictsInSummary ?? this.showOtherDictsInSummary,
     );
   }
 
@@ -118,7 +123,8 @@ class Settings {
         other.showPartialResults == showPartialResults &&
         other.showFuzzyResults == showFuzzyResults &&
         other.tapMode == tapMode &&
-        other.showConstructionInSummary == showConstructionInSummary;
+        other.showConstructionInSummary == showConstructionInSummary &&
+        other.showOtherDictsInSummary == showOtherDictsInSummary;
   }
 
   @override
@@ -141,6 +147,7 @@ class Settings {
     showFuzzyResults,
     tapMode,
     showConstructionInSummary,
+    showOtherDictsInSummary,
   );
 }
 
@@ -197,6 +204,8 @@ class SettingsNotifier extends StateNotifier<Settings> {
     );
     final showConstructionInSummary =
         _prefs.getBool('show_construction_in_summary') ?? true;
+    final showOtherDictsInSummary =
+        _prefs.getBool('show_other_dicts_in_summary') ?? true;
     state = Settings(
       themeMode: themeMode,
       colourScheme: colourScheme,
@@ -216,6 +225,7 @@ class SettingsNotifier extends StateNotifier<Settings> {
       showFuzzyResults: showFuzzyResults,
       tapMode: tapMode,
       showConstructionInSummary: showConstructionInSummary,
+      showOtherDictsInSummary: showOtherDictsInSummary,
     );
   }
 
@@ -307,6 +317,11 @@ class SettingsNotifier extends StateNotifier<Settings> {
   Future<void> setShowConstructionInSummary(bool value) async {
     await _prefs.setBool('show_construction_in_summary', value);
     state = state.copyWith(showConstructionInSummary: value);
+  }
+
+  Future<void> setShowOtherDictsInSummary(bool value) async {
+    await _prefs.setBool('show_other_dicts_in_summary', value);
+    state = state.copyWith(showOtherDictsInSummary: value);
   }
 }
 

@@ -692,4 +692,22 @@ void main() {
       expect(presented.fuzzy, isEmpty);
     });
   });
+
+  group('dictShortName', () {
+    test('returns the known abbreviation for each shipped dictionary', () {
+      expect(dictShortName('cone'), 'Cone');
+      expect(dictShortName('cpd'), 'CPD');
+      expect(dictShortName('dppn'), 'DPPN');
+      expect(dictShortName('mw'), 'MW');
+      expect(dictShortName('peu'), 'PEU');
+      expect(dictShortName('bhs'), 'BHS');
+      expect(dictShortName('apte'), 'Apte');
+      expect(dictShortName('wordnet'), 'WordNet');
+      expect(dictShortName('nyanatiloka'), 'Nyanatiloka');
+    });
+
+    test('falls back to a capitalised dictId for an unknown dictionary', () {
+      expect(dictShortName('newdict'), 'Newdict');
+    });
+  });
 }

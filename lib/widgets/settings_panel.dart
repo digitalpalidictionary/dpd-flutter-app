@@ -153,6 +153,18 @@ class _SettingsContentState extends ConsumerState<SettingsContent> {
         ),
       ),
       () => _buildSettingTile(
+        title: 'Other dictionaries in summary',
+        topic: _otherDictsInSummaryTopic(),
+        trailing: CompactSegmented<bool>(
+          segments: const [
+            ButtonSegment(value: false, label: Text('Hide')),
+            ButtonSegment(value: true, label: Text('Show')),
+          ],
+          selected: settings.showOtherDictsInSummary,
+          onChanged: notifier.setShowOtherDictsInSummary,
+        ),
+      ),
+      () => _buildSettingTile(
         title: 'Grammar button',
         topic: _grammarButtonTopic(),
         trailing: CompactSegmented<bool>(
@@ -360,6 +372,14 @@ class _SettingsContentState extends ConsumerState<SettingsContent> {
     return const SettingHelpTopic(
       title: 'Construction in summary',
       description: 'Shows or hides construction notes in the entry summary.',
+    );
+  }
+
+  SettingHelpTopic _otherDictsInSummaryTopic() {
+    return const SettingHelpTopic(
+      title: 'Other dictionaries in summary',
+      description:
+          'Shows or hides rows in the summary for other dictionaries (Cone, CPD, DPPN, etc.) with an exact match for the searched word.',
     );
   }
 
