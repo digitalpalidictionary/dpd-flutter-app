@@ -636,8 +636,30 @@ class DpdDao extends DatabaseAccessor<AppDatabase> with _$DpdDaoMixin {
 
   // ── External dictionaries ────────────────────────────────────────────────
 
-  Future<List<DictEntry>> searchDictExact(String word) {
-    return (select(dictEntries)..where((t) => t.word.equals(word))).get();
+  /// Case-insensitive exact match across the given dictionaries.
+  ///
+  /// SQLite's `=`, `LIKE` and `lower()` all fold ASCII only, so none of them can
+  /// match `Ānanda` against `ānanda`. Instead this seeks the indexed, already
+  /// case-folded `word_fuzzy` column for a small candidate superset, then does
+  /// the real comparison in Dart, whose `toLowerCase` is Unicode-aware.
+  ///
+  /// `dictIds` must be supplied: `idx_dict_entries_fuzzy` leads on `dict_id`,
+  /// so without it SQLite falls back to a full table scan.
+  Future<List<DictEntry>> searchDictExact(
+    List<String> dictIds,
+    String query,
+  ) async {
+    if (dictIds.isEmpty || query.isEmpty) return [];
+
+    final fuzzyKey = stripDiacritics(query.toLowerCase());
+    final rows =
+        await (select(dictEntries)..where(
+              (t) => t.dictId.isIn(dictIds) & t.wordFuzzy.equals(fuzzyKey),
+            ))
+            .get();
+
+    final lowered = query.toLowerCase();
+    return rows.where((row) => row.word.toLowerCase() == lowered).toList();
   }
 
   Future<List<DictEntry>> searchDictPartial(String word, {int limit = 50}) {

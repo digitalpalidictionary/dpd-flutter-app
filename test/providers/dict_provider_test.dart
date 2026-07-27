@@ -4,6 +4,7 @@ import 'package:dpd_flutter_app/database/database.dart';
 import 'package:dpd_flutter_app/providers/database_provider.dart';
 import 'package:dpd_flutter_app/providers/dict_provider.dart';
 import 'package:dpd_flutter_app/providers/settings_provider.dart';
+import 'package:dpd_flutter_app/utils/diacritics.dart';
 import 'package:drift/drift.dart' hide isNull;
 import 'package:drift/native.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -24,7 +25,10 @@ class _ThrowingDao extends DpdDao {
   }
 
   @override
-  Future<List<DictEntry>> searchDictExact(String word) async {
+  Future<List<DictEntry>> searchDictExact(
+    List<String> dictIds,
+    String query,
+  ) async {
     throw Exception('exact unavailable');
   }
 
@@ -233,7 +237,7 @@ void main() {
               id: const Value(1),
               dictId: 'cone',
               word: 'buddha',
-              wordFuzzy: const Value('buddha'),
+              wordFuzzy: Value(stripDiacritics('buddha')),
             ),
           );
       await database
@@ -243,7 +247,7 @@ void main() {
               id: const Value(2),
               dictId: 'mw',
               word: 'buddha',
-              wordFuzzy: const Value('buddha'),
+              wordFuzzy: Value(stripDiacritics('buddha')),
             ),
           );
       await database
@@ -253,7 +257,7 @@ void main() {
               id: const Value(3),
               dictId: 'cone',
               word: 'buddho',
-              wordFuzzy: const Value('buddha'),
+              wordFuzzy: Value(stripDiacritics('buddha')),
             ),
           );
       await database
@@ -263,7 +267,7 @@ void main() {
               id: const Value(2),
               dictId: 'mw',
               word: 'buddha',
-              wordFuzzy: const Value('buddha'),
+              wordFuzzy: Value(stripDiacritics('buddha')),
             ),
             mode: InsertMode.insertOrReplace,
           );
@@ -321,7 +325,7 @@ void main() {
                 id: const Value(1),
                 dictId: 'cone',
                 word: 'buddha',
-                wordFuzzy: const Value('buddha'),
+                wordFuzzy: Value(stripDiacritics('buddha')),
               ),
             );
         await database
@@ -331,7 +335,7 @@ void main() {
                 id: const Value(2),
                 dictId: 'mw',
                 word: 'buddha',
-                wordFuzzy: const Value('buddha'),
+                wordFuzzy: Value(stripDiacritics('buddha')),
               ),
             );
 

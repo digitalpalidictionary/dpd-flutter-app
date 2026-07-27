@@ -2,6 +2,7 @@ import 'package:drift/drift.dart' hide isNull, isNotNull;
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:dpd_flutter_app/database/database.dart';
+import 'package:dpd_flutter_app/utils/diacritics.dart';
 
 void main() {
   late AppDatabase db;
@@ -137,6 +138,7 @@ void main() {
           id: Value(id),
           dictId: dictId,
           word: word,
+          wordFuzzy: Value(stripDiacritics(word.toLowerCase())),
         ),
       );
     }
@@ -186,10 +188,94 @@ void main() {
       await insertDictEntry(db, id: 1, dictId: 'cone', word: 'dharma');
 
       final partial = await dao.searchDictPartial('buddha');
-      final exact = await dao.searchDictExact('buddha');
+      final exact = await dao.searchDictExact(['cone'], 'buddha');
 
       expect(partial, isEmpty);
       expect(exact, isEmpty);
+    });
+  });
+
+  group('searchDictExact', () {
+    Future<void> insertDictEntry(
+      AppDatabase db, {
+      required int id,
+      required String dictId,
+      required String word,
+    }) async {
+      await db.into(db.dictEntries).insert(
+        DictEntriesCompanion.insert(
+          id: Value(id),
+          dictId: dictId,
+          word: word,
+          wordFuzzy: Value(stripDiacritics(word.toLowerCase())),
+        ),
+      );
+    }
+
+    test('matches a capitalised headword from a lowercase query', () async {
+      await insertDictEntry(db, id: 1, dictId: 'dppn', word: 'Anāthapiṇḍika');
+
+      final results = await dao.searchDictExact(['dppn'], 'anāthapiṇḍika');
+
+      expect(results.map((e) => e.word), ['Anāthapiṇḍika']);
+    });
+
+    test('matches an accented capital, which SQLite lower() cannot fold', () async {
+      await insertDictEntry(db, id: 1, dictId: 'dppn', word: 'Ānanda');
+      await insertDictEntry(db, id: 2, dictId: 'dppn', word: 'Ñāṇamoli');
+
+      final ananda = await dao.searchDictExact(['dppn'], 'ānanda');
+      final nanamoli = await dao.searchDictExact(['dppn'], 'ñāṇamoli');
+
+      expect(ananda.map((e) => e.word), ['Ānanda']);
+      expect(nanamoli.map((e) => e.word), ['Ñāṇamoli']);
+    });
+
+    test('matches regardless of how the query itself is capitalised', () async {
+      await insertDictEntry(db, id: 1, dictId: 'dppn', word: 'Akatti');
+
+      for (final query in ['akatti', 'Akatti', 'AKATTI', 'aKaTTi']) {
+        final results = await dao.searchDictExact(['dppn'], query);
+        expect(results.map((e) => e.word), ['Akatti'], reason: query);
+      }
+    });
+
+    test('returns every entry sharing the headword', () async {
+      await insertDictEntry(db, id: 1, dictId: 'dppn', word: 'Tissa');
+      await insertDictEntry(db, id: 2, dictId: 'dppn', word: 'Tissa');
+      await insertDictEntry(db, id: 3, dictId: 'cpd', word: 'tissa');
+
+      final results = await dao.searchDictExact(['dppn', 'cpd'], 'tissa');
+
+      expect(results.map((e) => e.id).toSet(), {1, 2, 3});
+    });
+
+    test('does not match a merely similar word sharing a fuzzy key', () async {
+      // stripDiacritics folds diacritics and doubled consonants, so these
+      // three collapse to the same fuzzy key but are not the same word.
+      await insertDictEntry(db, id: 1, dictId: 'dppn', word: 'Kassapa');
+      await insertDictEntry(db, id: 2, dictId: 'dppn', word: 'Kasapa');
+      await insertDictEntry(db, id: 3, dictId: 'dppn', word: 'Kāsapā');
+
+      final results = await dao.searchDictExact(['dppn'], 'kassapa');
+
+      expect(results.map((e) => e.word), ['Kassapa']);
+    });
+
+    test('only searches the dictionaries it is given', () async {
+      await insertDictEntry(db, id: 1, dictId: 'dppn', word: 'Tissa');
+      await insertDictEntry(db, id: 2, dictId: 'cone', word: 'tissa');
+
+      final results = await dao.searchDictExact(['cone'], 'tissa');
+
+      expect(results.map((e) => e.id), [2]);
+    });
+
+    test('returns empty for no dictionaries or an empty query', () async {
+      await insertDictEntry(db, id: 1, dictId: 'dppn', word: 'Tissa');
+
+      expect(await dao.searchDictExact([], 'tissa'), isEmpty);
+      expect(await dao.searchDictExact(['dppn'], ''), isEmpty);
     });
   });
 

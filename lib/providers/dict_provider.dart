@@ -209,7 +209,13 @@ class DictRawSearchResults {
     List<DictEntry> fuzzyRows = const [],
   }) {
     final exactIds = exactRows.map((entry) => entry.id).toSet();
-    final partialIds = partialRows.map((entry) => entry.id).toSet();
+
+    // A capitalised headword matches the partial prefix query too, so a row
+    // promoted to exact has to be dropped from the partial tier.
+    final partialOnly = partialRows
+        .where((entry) => !exactIds.contains(entry.id))
+        .toList();
+    final partialIds = partialOnly.map((entry) => entry.id).toSet();
     final excludedFromFuzzy = exactIds.union(partialIds);
 
     final fuzzySorted = [...fuzzyRows]
@@ -223,7 +229,7 @@ class DictRawSearchResults {
     return DictRawSearchResults(
       metaNames: {for (final item in meta) item.dictId: item.name},
       exact: _groupDictEntries(exactRows),
-      partial: _groupDictEntries(partialRows),
+      partial: _groupDictEntries(partialOnly),
       fuzzy: fuzzyGrouped,
     );
   }
@@ -287,7 +293,10 @@ final _dictRawResultsProvider = FutureProvider.autoDispose
 
       List<DictEntry> exactRows;
       try {
-        exactRows = await dao.searchDictExact(query.toLowerCase());
+        exactRows = await dao.searchDictExact(
+          allMeta.map((m) => m.dictId).toList(),
+          query,
+        );
       } catch (_) {
         exactRows = const [];
       }
