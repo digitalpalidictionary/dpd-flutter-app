@@ -52,9 +52,33 @@ String _cleanMwHtml(String html) {
   return html;
 }
 
+final _dppnHeadRe = RegExp(r'<span class="Head">(.*?)</span>', dotAll: true);
+final _tagRe = RegExp(r'<[^>]+>');
+final _wsRe = RegExp(r'\s+');
+final _leadingPunctRe = RegExp(r'^[,.;:]');
+
+/// DPPN keeps alternative names, variant readings and reference numbers on the
+/// head line beside the headword. They belong with the title, not stranded at
+/// the start of the definition, so [prepareDictHtml] drops that span from the
+/// body and this rebuilds the title from it.
+String dppnDisplayTitle(String word, String html) {
+  final match = _dppnHeadRe.firstMatch(html);
+  if (match == null) return word;
+
+  var extra = match[1]!
+      .replaceAll(_tagRe, '')
+      .replaceAll(_wsRe, ' ')
+      .trim()
+      .replaceAll('..', '.');
+  if (extra.isEmpty || extra == '.') return word;
+
+  return _leadingPunctRe.hasMatch(extra) ? '$word$extra' : '$word $extra';
+}
+
 String prepareDictHtml(String dictId, String html) {
   if (dictId == 'cone') return _prepareConeHtml(html);
-  if (dictId == 'mw') return _cleanMwHtml(html);
+  if (dictId == 'mw' || dictId == 'apte') return _cleanMwHtml(html);
+  if (dictId == 'dppn') return html.replaceFirst(_dppnHeadRe, '');
   if (dictId == 'cpd') {
     html = html.replaceAll(_cpdH2OpenRe, '<strong>');
     html = html.replaceAll(_cpdH2CloseRe, '</strong>');
@@ -109,10 +133,13 @@ class DictHtmlCard extends StatelessWidget {
   ) {
     final raw = entry.definitionHtml ?? '';
     final html = prepareDictHtml(dictId, raw);
+    final title = dictId == 'dppn'
+        ? dppnDisplayTitle(entry.word, raw)
+        : entry.word;
 
     return [
       Text(
-        entry.word,
+        title,
         style: Theme.of(
           context,
         ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
