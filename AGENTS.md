@@ -113,5 +113,15 @@ When reviewing any search or navigation change, explicitly verify all external e
 
 These paths diverged in history and caused a bug where bracket stripping was added to tap-to-search but missed in share/intent. Never fix or extend one without checking the other.
 
+### Fuzzy Keys Must Match The Exporter Byte-For-Byte
+**CRITICAL:** `stripDiacritics()` in `lib/utils/diacritics.dart` reimplements `_strip_diacritics_mobile()` in `../dpd-db/exporter/mobile/mobile_exporter.py`, which generates the stored `word_fuzzy` and `fuzzy_key` columns. Any query that computes a key in Dart and matches it against those columns breaks silently — no error, just zero results — the moment the two disagree.
+
+The Python side drops *every* Unicode combining mark via NFD decomposition; the Dart side uses an explicit codepoint map, which can only ever be a closed subset. Sanskrit letters (`ś`, `ṣ`, `ṛ`) were missing once and broke exact lookups for 12% of all dictionary entries, including a quarter of Apte.
+
+When changing either implementation, verify parity **across the whole built database**, not with sample words — port the Dart algorithm and compare against every row of `dict_entries` and `lookup`. Hand-picked examples will be Pāḷi, and Pāḷi is the subset that already works.
+
+### Generated Files — Never Edit By Hand
+`assets/help/changelog.json` is generated at build time from commit subject lines. Never edit it manually; write a good commit subject instead. This is why commit subjects must read as user-facing release notes.
+
 ### External Dictionary Attribution
 The app renders only `dict_meta.name` (in the dictionary list and on each result card); it never renders `dict_meta.author`. For any CC-licensed external dictionary, the required attribution MUST be placed in `dict_meta.name` (set in `../dpd-db/exporter/mobile/mobile_exporter.py`), not `author`.
