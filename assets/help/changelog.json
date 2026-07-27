@@ -3,6 +3,9 @@
     {
       "title": "unreleased",
       "items": [
+        "fix: proper names now count as exact matches instead of partial ones",
+        "fix: Apte and proper name entries now display correctly",
+        "fix: bibliography and build-db flags for Nyanatiloka dictionary",
         "feat: dropdown features inflections, compounds and English words",
         "fix: tapping on compounds joined by a plus sign",
         "fix: word construction now shows both lines",
