@@ -1,8 +1,9 @@
 {
   "sections": [
     {
-      "title": "unreleased",
+      "title": "v0.1.11",
       "items": [
+        "feat: show other dictionaries in search summary",
         "fix: proper names now count as exact matches instead of partial ones",
         "fix: Apte and proper name entries now display correctly",
         "fix: bibliography and build-db flags for Nyanatiloka dictionary",
