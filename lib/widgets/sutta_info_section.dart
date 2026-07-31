@@ -115,6 +115,7 @@ class SuttaInfoSection extends StatelessWidget {
           _linkRow(context, 'Dhamma.gift', s.dhammaGift),
           _linkRow(context, 'SC Express', s.scExpressLink),
           _linkRow(context, 'SC Voice', s.scVoiceLink),
+          _linkRow(context, 's.4nt.org', s.s4ntLink),
         ]),
       ],
 

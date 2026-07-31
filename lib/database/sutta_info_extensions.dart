@@ -69,6 +69,94 @@ extension SuttaInfoExtensions on SuttaInfoData {
       ? 'https://find.dhamma.gift/read/?q=$scCode'
       : null;
 
+  // s.4nt.org container pages (SN saṃyutta, AN nipāta, KN book) embed one TOC
+  // anchor id per sutta/verse, almost always exactly `sc_code.lower()`. These
+  // 45 sc_codes are the exceptions where the site groups things differently
+  // than DPD does — mirrors `_S4NT_ANCHOR_OVERRIDES` in `db/models.py`.
+  static const _s4ntAnchorOverrides = {
+    'AN3.156': 'an3.156-162',
+    'AN3.163': 'an3.163-182',
+    'DHP1-20': 'dhp1',
+    'DHP100-115': 'dhp100',
+    'DHP116-128': 'dhp116',
+    'DHP129-145': 'dhp129',
+    'DHP146-156': 'dhp146',
+    'DHP157-166': 'dhp157',
+    'DHP167-178': 'dhp167',
+    'DHP179-196': 'dhp179',
+    'DHP197-208': 'dhp197',
+    'DHP209-220': 'dhp209',
+    'DHP21-32': 'dhp21',
+    'DHP221-234': 'dhp221',
+    'DHP235-255': 'dhp235',
+    'DHP256-272': 'dhp256',
+    'DHP273-289': 'dhp273',
+    'DHP290-305': 'dhp290',
+    'DHP306-319': 'dhp306',
+    'DHP320-333': 'dhp320',
+    'DHP33-43': 'dhp33',
+    'DHP334-359': 'dhp334',
+    'DHP360-382': 'dhp360',
+    'DHP383-423': 'dhp383',
+    'DHP44-59': 'dhp44',
+    'DHP60-75': 'dhp60',
+    'DHP76-89': 'dhp76',
+    'DHP90-00': 'dhp90',
+    'SN12.83': 'sn12.83-92',
+    'SN12.93-103': 'sn12.93-213',
+    'SN23.23': 'sn23.23-33',
+    'SN23.35': 'sn23.35-45',
+    'SN33.11': 'sn33.11-15',
+    'SN33.16': 'sn33.16-20',
+    'SN33.51': 'sn33.51-54',
+    'SN34.46': 'sn34.46-49',
+    'SN34.50': 'sn34.50-52',
+    'SN34.53': 'sn34.53-54',
+    'SN35.33': 'sn35.33-42',
+    'SN35.43': 'sn35.43-51',
+    'SN43.14': 'sn43.14-43',
+    'SN45.104': 'sn45.104-108',
+    'SN45.110': 'sn45.110-114',
+    'SN45.116': 'sn45.116-120',
+    'SN45.141': 'sn45.141-145',
+  };
+
+  static const _s4ntKnBooks = {
+    'kp', 'dhp', 'ud', 'iti', 'snp', 'vv', 'pv', 'thag', 'thig', 'ja', 'mnd',
+    'cnd', 'ps', 'ne', 'pe', 'cp', 'bv', 'mil', 'tha-ap', 'thi-ap',
+  };
+
+  // Mirrors Python SuttaInfo.s_4nt_link — there is no raw DB column for this.
+  String? get s4ntLink {
+    final scBookCode = _scBookCode;
+    if (!_notEmpty(scCode) || !_notEmpty(scBookCode)) return null;
+
+    final book = scBookCode!.replaceAll(RegExp(r'-+$'), '').toLowerCase();
+    final code = scCode!.toLowerCase();
+
+    if (book == 'dn' || book == 'mn') {
+      return 'https://s.4nt.org/$book/$code/index.html';
+    }
+
+    if (book == 'sn' || book == 'an') {
+      final m = RegExp('^$book(\\d+)').firstMatch(code);
+      if (m == null) return null;
+      final path = '$book/$book${m.group(1)}';
+      if (code == '$book${m.group(1)}') {
+        return 'https://s.4nt.org/$path/index.html';
+      }
+      final fragment = _s4ntAnchorOverrides[scCode] ?? code;
+      return 'https://s.4nt.org/$path/index.html#$fragment';
+    }
+
+    if (_s4ntKnBooks.contains(book)) {
+      final fragment = _s4ntAnchorOverrides[scCode] ?? code;
+      return 'https://s.4nt.org/kn/$book/index.html#$fragment';
+    }
+
+    return null;
+  }
+
   // ── The Buddha's Words links ─────────────────────────────────────────────
 
   static const _tbwBookCodes = {
