@@ -15,6 +15,12 @@ The public beta is for Android.
 
 The app is still beta software. Installation uses a direct APK download rather than the Play Store. On first launch, the app downloads the dictionary database.
 
+## Deep Links
+
+External sites can open DPD at a word with a link of the form
+`dpd://word/<word>` (percent-encode the word). Example: `dpd://word/bhavana`.
+Android only for now; the app opens to search results for that word.
+
 ## For Developers
 
 If you want to work on the app locally, it helps to have:

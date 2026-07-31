@@ -36,6 +36,13 @@
                 <category android:name="android.intent.category.DEFAULT"/>
                 <data android:mimeType="text/plain"/>
             </intent-filter>
+            <!-- Deep link: dpd://word/<word> opens DPD at that word -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data android:scheme="dpd" android:host="word"/>
+            </intent-filter>
         </activity>
         <!-- Trampoline for text selection → forwards to MainActivity and finishes -->
         <activity

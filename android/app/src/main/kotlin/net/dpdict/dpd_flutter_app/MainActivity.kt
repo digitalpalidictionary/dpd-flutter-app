@@ -195,6 +195,8 @@ class MainActivity : FlutterActivity() {
             Intent.ACTION_PROCESS_TEXT ->
                 intent.getCharSequenceExtra(Intent.EXTRA_PROCESS_TEXT)
                     ?.toString()?.trim()?.takeIf { it.isNotEmpty() }
+            Intent.ACTION_VIEW ->
+                intent.data?.lastPathSegment?.trim()?.takeIf { it.isNotEmpty() }
             else -> null
         }
     }
