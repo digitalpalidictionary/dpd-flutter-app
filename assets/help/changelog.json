@@ -1,6 +1,12 @@
 {
   "sections": [
     {
+      "title": "unreleased",
+      "items": [
+        "feat: sutta info now shows an s.4nt.org link"
+      ]
+    },
+    {
       "title": "v0.1.11",
       "items": [
         "feat: show other dictionaries in search summary",
