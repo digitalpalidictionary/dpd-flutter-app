@@ -18,6 +18,61 @@ void main() {
       );
     });
 
+    group('dhammaGift', () {
+      test('read link uses f.dhamma.gift host', () {
+        const suttaInfo = SuttaInfoData(dpdSutta: 'aggisutta', scCode: 'SN35.28');
+        expect(
+          suttaInfo.dhammaGift,
+          'https://f.dhamma.gift/read/?q=SN35.28',
+        );
+      });
+
+      test('no scCode -> null', () {
+        const suttaInfo = SuttaInfoData(dpdSutta: 'something');
+        expect(suttaInfo.dhammaGift, isNull);
+      });
+    });
+
+    group('tbwLegacy', () {
+      test('generic book link uses f.dhamma.gift host', () {
+        const suttaInfo = SuttaInfoData(
+          dpdSutta: 'aggisutta',
+          scCode: 'SN35.28',
+          bookCode: 'SN',
+        );
+        expect(
+          suttaInfo.tbwLegacy,
+          'https://f.dhamma.gift/bw/sn/sn35.28.html',
+        );
+      });
+
+      test('iti book uses it/it.html page', () {
+        const suttaInfo = SuttaInfoData(
+          dpdSutta: 'it',
+          scCode: 'iti1',
+          bookCode: 'ITI',
+        );
+        expect(
+          suttaInfo.tbwLegacy,
+          'https://f.dhamma.gift/bw/it/it.html',
+        );
+      });
+
+      test('unsupported book code -> null', () {
+        const suttaInfo = SuttaInfoData(
+          dpdSutta: 'pātimokkha',
+          scCode: 'pli-tv-bu-vb-pj1',
+          bookCode: 'VIN',
+        );
+        expect(suttaInfo.tbwLegacy, isNull);
+      });
+
+      test('no scCode -> null', () {
+        const suttaInfo = SuttaInfoData(dpdSutta: 'something');
+        expect(suttaInfo.tbwLegacy, isNull);
+      });
+    });
+
     group('s4ntLink', () {
       test('DN/MN sutta -> exact page, no fragment', () {
         const suttaInfo = SuttaInfoData(

@@ -66,7 +66,7 @@ extension SuttaInfoExtensions on SuttaInfoData {
       : null;
 
   String? get dhammaGift => _notEmpty(scCode)
-      ? 'https://find.dhamma.gift/read/?q=$scCode'
+      ? 'https://f.dhamma.gift/read/?q=$scCode'
       : null;
 
   // s.4nt.org container pages (SN saṃyutta, AN nipāta, KN book) embed one TOC
@@ -178,8 +178,8 @@ extension SuttaInfoExtensions on SuttaInfoData {
   String? get tbwLegacy {
     if (!_notEmpty(scCode) || !_tbwBookCodes.contains(bookCode)) return null;
     final code = _scBookCode!.toLowerCase();
-    if (code == 'iti') return 'https://find.dhamma.gift/bw/it/it.html';
-    return 'https://find.dhamma.gift/bw/$code/${scCode!.toLowerCase()}.html';
+    if (code == 'iti') return 'https://f.dhamma.gift/bw/it/it.html';
+    return 'https://f.dhamma.gift/bw/$code/${scCode!.toLowerCase()}.html';
   }
 
   // ── CST links ──────────────────────────────────────────────────────────
