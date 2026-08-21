@@ -42,7 +42,16 @@ final exactResultsProvider = FutureProvider.autoDispose
       final dao = ref.watch(daoProvider);
 
       final sw = Stopwatch()..start();
-      final result = await dao.searchExact(query);
+      final literalMatches = await dao.searchExact(query);
+      // A query with no literal exact hit may still be an exact match once
+      // diacritics/aspirates/doubled consonants are folded (e.g. "kammam"
+      // for "kammaṃ") — promote that rescue into the exact tier so it
+      // outranks a merely coincidental Partial-tier hit, which renders above
+      // Fuzzy regardless of relevance. Skipped entirely when a literal hit
+      // already exists, so every already-working exact search is unaffected.
+      final result = literalMatches.isEmpty
+          ? await dao.searchFuzzyExact(query)
+          : literalMatches;
       sw.stop();
 
       if (enableSearchTiming) {

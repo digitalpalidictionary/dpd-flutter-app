@@ -6,6 +6,7 @@ import 'package:drift/drift.dart';
 import 'database.dart';
 import 'tables.dart';
 import '../utils/diacritics.dart';
+import '../utils/fuzzy_rank.dart';
 import '../utils/search_timing.dart';
 
 part 'dao.g.dart';
@@ -129,24 +130,28 @@ class DpdDao extends DatabaseAccessor<AppDatabase> with _$DpdDaoMixin {
     int limit = 50,
   }) async {
     if (query.isEmpty) return [];
-    final normalized = stripDiacritics(_normalizeQuery(query));
-    if (normalized.isEmpty) return [];
+    final normalizedQuery = _normalizeQuery(query);
+    final queryFuzzyKey = stripDiacritics(normalizedQuery);
+    if (queryFuzzyKey.isEmpty) return [];
 
     final sw = Stopwatch()..start();
     // Use range query instead of LIKE — allows SQLite to use the index
-    final nextKey = _nextString(normalized);
+    final nextKey = _nextString(queryFuzzyKey);
     final lookupRows =
         await (select(lookup)
               ..where(
                 (t) =>
-                    t.fuzzyKey.isBiggerOrEqualValue(normalized) &
+                    t.fuzzyKey.isBiggerOrEqualValue(queryFuzzyKey) &
                     t.fuzzyKey.isSmallerThanValue(nextKey),
               )
               ..limit(limit))
             .get();
 
-    final idSet = _extractIds(lookupRows);
-    final results = await _fetchHeadwords(idSet);
+    final results = await _rankedHeadwordsByCloseness(
+      lookupRows,
+      normalizedQuery,
+      queryFuzzyKey,
+    );
     sw.stop();
 
     if (enableSearchTiming) {
@@ -156,6 +161,123 @@ class DpdDao extends DatabaseAccessor<AppDatabase> with _$DpdDaoMixin {
     }
 
     return results;
+  }
+
+  /// Resolves lookup rows to headwords ranked by [fuzzyCloseness] to
+  /// `normalizedQuery`/`queryFuzzyKey`, keeping each headword's best score
+  /// when several lookup rows reach the same id (e.g. multiple inflected
+  /// forms of one word). Shared by `searchFuzzy` and `searchFuzzyExact` so
+  /// their ranking can never drift apart.
+  Future<List<DpdHeadwordWithRoot>> _rankedHeadwordsByCloseness(
+    List<LookupData> lookupRows,
+    String normalizedQuery,
+    String queryFuzzyKey,
+  ) async {
+    final bestScoreById = <int, int>{};
+    for (final row in lookupRows) {
+      final score = fuzzyCloseness(
+        query: normalizedQuery,
+        queryFuzzyKey: queryFuzzyKey,
+        candidate: row.lookupKey,
+        candidateFuzzyKey: row.fuzzyKey ?? '',
+      );
+      for (final id in _extractIds([row])) {
+        final current = bestScoreById[id];
+        if (current == null || score < current) {
+          bestScoreById[id] = score;
+        }
+      }
+    }
+
+    final results = await _fetchHeadwords(bestScoreById.keys.toSet());
+    results.sort((a, b) {
+      final scoreCompare = (bestScoreById[a.headword.id] ?? 0).compareTo(
+        bestScoreById[b.headword.id] ?? 0,
+      );
+      if (scoreCompare != 0) return scoreCompare;
+      return paliSortKey(
+        a.headword.lemma1,
+      ).compareTo(paliSortKey(b.headword.lemma1));
+    });
+    return results;
+  }
+
+  /// Headwords reachable only via a genuine exact `fuzzy_key` match — the
+  /// same tier-0 signal `searchFuzzy` already ranks first, resolved directly
+  /// to headwords for promotion into the exact tier. `searchPartial` can
+  /// otherwise turn up a real but coincidental literal-prefix hit (e.g.
+  /// `kammam` literally prefixes the unrelated headword `kammamakāsi` via
+  /// Pāḷi sandhi liaison) that would visually outrank this far stronger
+  /// match, since Partial renders above Fuzzy. Deliberately narrower than
+  /// `searchFuzzy`: equality, not a prefix range.
+  ///
+  /// Multiple genuinely equidistant words can share one folded key (folding
+  /// `kammam` matches `kamaṃ`, `kammaṃ`, `kāmaṃ`, `khamaṃ` and `kkamaṃ`
+  /// alike) — plain alphabetical order would bury `kammaṃ` under `kamaṃ`
+  /// exactly as `_fetchHeadwords` buried `rūpa` under `ruppa` before this
+  /// thread's fix, so results are still ranked by `fuzzyCloseness` (here,
+  /// purely by length delta, since every candidate is already tier 0).
+  Future<List<DpdHeadwordWithRoot>> searchFuzzyExact(String query) async {
+    if (query.isEmpty) return [];
+    final normalizedQuery = _normalizeQuery(query);
+    final queryFuzzyKey = stripDiacritics(normalizedQuery);
+    if (queryFuzzyKey.isEmpty) return [];
+
+    final rows = await (select(
+      lookup,
+    )..where((t) => t.fuzzyKey.equals(queryFuzzyKey))).get();
+
+    return _rankedHeadwordsByCloseness(rows, normalizedQuery, queryFuzzyKey);
+  }
+
+  /// Exact `fuzzy_key` equality rescue for the autocomplete dropdown.
+  ///
+  /// `searchFuzzy`'s prefix range scan finds every candidate that *starts
+  /// with* the query's key; this instead finds only rows whose key **equals**
+  /// it — a real word differing from the query solely by a folded diacritic,
+  /// aspirate, or doubled consonant. The dropdown's own headword index
+  /// (`searchIndexProvider`) can miss this entirely: it's built from bare
+  /// lemmas, and a lemma's own collapsed key can be *shorter* than an
+  /// inflected query's, so it can never even be a prefix match. The inflected
+  /// `lookup_key` row that does carry the identical key (e.g. `kammaṃ` for a
+  /// mistyped `kammam`) rescues it here instead.
+  Future<List<String>> searchFuzzyExactKeyMatches(
+    String query, {
+    int limit = 20,
+  }) async {
+    if (query.isEmpty) return [];
+    final normalizedQuery = _normalizeQuery(query);
+    final queryFuzzyKey = stripDiacritics(normalizedQuery);
+    if (queryFuzzyKey.isEmpty) return [];
+
+    // No SQL-level limit: this is an equality match, so every row is already
+    // tier 0 and the closeness ranking below must see all of them before
+    // truncating — limiting first could silently drop the actual closest
+    // match on a key ambiguous enough to have more than `limit` real words.
+    final rows = await (select(
+      lookup,
+    )..where((t) => t.fuzzyKey.equals(queryFuzzyKey))).get();
+
+    final sorted = rows.toList()
+      ..sort((a, b) {
+        final scoreCompare = fuzzyCloseness(
+          query: normalizedQuery,
+          queryFuzzyKey: queryFuzzyKey,
+          candidate: a.lookupKey,
+          candidateFuzzyKey: a.fuzzyKey ?? '',
+        ).compareTo(
+          fuzzyCloseness(
+            query: normalizedQuery,
+            queryFuzzyKey: queryFuzzyKey,
+            candidate: b.lookupKey,
+            candidateFuzzyKey: b.fuzzyKey ?? '',
+          ),
+        );
+        if (scoreCompare != 0) return scoreCompare;
+        return paliSortKey(a.lookupKey).compareTo(paliSortKey(b.lookupKey));
+      });
+
+    return sorted.take(limit).map((row) => row.lookupKey).toList();
   }
 
   Set<int> _extractIds(List<LookupData> lookupRows) {

@@ -54,17 +54,20 @@ DictEntry _entry({
   required int id,
   required String dictId,
   String word = 'buddha',
+  String? wordFuzzy,
 }) {
-  return DictEntry(id: id, dictId: dictId, word: word);
+  return DictEntry(id: id, dictId: dictId, word: word, wordFuzzy: wordFuzzy);
 }
 
 DictRawSearchResults _raw({
+  String query = 'buddha',
   List<DictMetaData> meta = const [],
   List<DictEntry> exact = const [],
   List<DictEntry> partial = const [],
   List<DictEntry> fuzzy = const [],
 }) {
   return DictRawSearchResults.fromRows(
+    query: query,
     meta: meta,
     exactRows: exact,
     partialRows: partial,
@@ -421,6 +424,21 @@ void main() {
       expect(raw.fuzzy.keys, ['mw']);
       expect(raw.fuzzy['mw']!.first.id, 3);
     });
+
+    test(
+      'a diacritics-only match outranks a doubled-consonant near-miss within one dictionary group',
+      () {
+        final raw = _raw(
+          query: 'rupam',
+          fuzzy: [
+            _entry(id: 1, dictId: 'mw', word: 'ruppam', wordFuzzy: 'rupam'),
+            _entry(id: 2, dictId: 'mw', word: 'rūpam', wordFuzzy: 'rupam'),
+          ],
+        );
+
+        expect(raw.fuzzy['mw']!.map((e) => e.id), [2, 1]);
+      },
+    );
 
     test('presentDictSearchResults includes partial tier with visibility/ordering', () {
       final raw = _raw(

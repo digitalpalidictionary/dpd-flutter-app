@@ -24,6 +24,21 @@ The `lookup` table in the mobile DB uses `lookup_key` as a PRIMARY KEY (created 
 - Partial match: 200-250μs
 - Fuzzy match: 75-90μs
 
+## Fuzzy Result Ranking (2026-08-21)
+`fuzzyCloseness()` (`lib/utils/fuzzy_rank.dart`) scores a fuzzy candidate as
+`tier*1000 + lengthDelta`: tier 0 when the candidate's `fuzzy_key` equals the
+query's exactly (a diacritic/aspirate/doubled-consonant-only difference),
+tier 1 for a mere prefix match; length delta breaks ties within a tier. Used
+in three places that must not drift apart: `DpdDao.searchFuzzy` (main-screen
+Fuzzy tier), `DpdDao.searchFuzzyExact` (promotes a tier-0 match into the Exact
+tier via `exactResultsProvider`, only when there's no literal exact hit — this
+outranks a merely coincidental literal-prefix match `searchPartial` can turn
+up via Pāḷi sandhi liaison), and `DpdDao.searchFuzzyExactKeyMatches` (the
+autocomplete dropdown's tier-0 rescue, since its headword-only index can miss
+an inflected form whose own collapsed key is longer than the base lemma's).
+`_updateAutocomplete` in `search_screen.dart` runs the dropdown rescue after
+tier 1's synchronous paint so it can only upgrade the overlay, never delay it.
+
 ## Change Log Asset (2026-04-12)
 The in-app change log is generated at build time from local git tags and commit subjects by `tool/generate_changelog.dart`, which writes `assets/help/changelog.json`. Standard local build/run Just recipes and `.github/workflows/release.yml` regenerate that asset before packaging so the shipped app never depends on runtime git access or GitHub API calls.
 

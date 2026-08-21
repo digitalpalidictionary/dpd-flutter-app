@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../database/database.dart';
 import '../utils/diacritics.dart';
+import '../utils/fuzzy_rank.dart';
 import 'database_provider.dart';
 import 'settings_provider.dart';
 
@@ -224,6 +225,7 @@ class DictRawSearchResults {
   });
 
   factory DictRawSearchResults.fromRows({
+    required String query,
     List<DictMetaData> meta = const [],
     List<DictEntry> exactRows = const [],
     List<DictEntry> partialRows = const [],
@@ -239,8 +241,25 @@ class DictRawSearchResults {
     final partialIds = partialOnly.map((entry) => entry.id).toSet();
     final excludedFromFuzzy = exactIds.union(partialIds);
 
-    final fuzzySorted = [...fuzzyRows]
-      ..sort((a, b) => paliSortKey(a.word).compareTo(paliSortKey(b.word)));
+    final queryLower = query.toLowerCase();
+    final queryFuzzyKey = stripDiacritics(queryLower);
+    final fuzzySorted = [...fuzzyRows]..sort((a, b) {
+      final scoreCompare = fuzzyCloseness(
+            query: queryLower,
+            queryFuzzyKey: queryFuzzyKey,
+            candidate: a.word,
+            candidateFuzzyKey: a.wordFuzzy ?? '',
+          ).compareTo(
+            fuzzyCloseness(
+              query: queryLower,
+              queryFuzzyKey: queryFuzzyKey,
+              candidate: b.word,
+              candidateFuzzyKey: b.wordFuzzy ?? '',
+            ),
+          );
+      if (scoreCompare != 0) return scoreCompare;
+      return paliSortKey(a.word).compareTo(paliSortKey(b.word));
+    });
     final fuzzyGrouped = <String, List<DictEntry>>{};
     for (final entry in fuzzySorted) {
       if (excludedFromFuzzy.contains(entry.id)) continue;
@@ -338,6 +357,7 @@ final _dictRawResultsProvider = FutureProvider.autoDispose
       }
 
       return DictRawSearchResults.fromRows(
+        query: query,
         meta: allMeta,
         exactRows: exactRows,
         partialRows: partialRows,

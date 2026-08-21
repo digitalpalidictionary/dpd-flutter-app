@@ -112,6 +112,21 @@ int _suggestionComparator(String a, String b) {
   return a.compareTo(b);
 }
 
+/// Rescue tier: a genuine exact `fuzzy_key` match from the lookup table —
+/// e.g. `kammaṃ` for a mistyped `kammam`. [autocompleteSuggestionsProvider]'s
+/// index is built from bare lemmas only, so it can miss this entirely: a
+/// lemma's own collapsed key can be *shorter* than an inflected query's,
+/// which means it can never satisfy that index's prefix rule. Where this
+/// fits in the tier order is decided by the caller (`_updateAutocomplete()`
+/// in `search_screen.dart`) — it runs after tier 1's synchronous check and
+/// can only upgrade an already-shown dropdown, never delay its first paint.
+final fuzzyExactSuggestionsProvider = FutureProvider.autoDispose
+    .family<List<String>, String>((ref, query) async {
+      if (query.length < 2) return [];
+      final dao = ref.watch(daoProvider);
+      return dao.searchFuzzyExactKeyMatches(query);
+    });
+
 /// Fallback: exact-prefix suggestions from the lookup table. Where this fits
 /// in the tier order is decided by the caller (`_updateAutocomplete()` in
 /// `search_screen.dart`), not here — currently the last resort.

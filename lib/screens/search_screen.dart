@@ -208,12 +208,13 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
       return;
     }
 
-    // Tier 1 — unchanged, and returned before any `await` in this function
-    // (Guard 1) so its timing stays exactly as synchronous as today.
+    // Tier 1 — unchanged, and shown before any `await` in this function
+    // (Guard 1) so its timing stays exactly as synchronous as today. Does
+    // not `return` on a hit: the rescue tier below may still need to upgrade
+    // this overlay a moment later.
     final suggestions = ref.read(autocompleteSuggestionsProvider(query));
     if (suggestions.isNotEmpty) {
       _showOverlay(suggestions);
-      return;
     }
 
     // Guard 2: an empty tier 1 can mean "no match" or "index still loading".
@@ -221,9 +222,11 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     // keystroke during startup. `searchIndexProvider` must stay a
     // FutureProvider for `.hasValue` to distinguish the two; if it ever
     // becomes synchronous, `hasValue` is always true and this guard stops
-    // guarding.
+    // guarding. Only tier 1 can have answered anything by this point (index
+    // not loaded means tier 1's own index is empty too), so it's safe to
+    // bail out here exactly as before.
     if (!ref.read(searchIndexProvider).hasValue) {
-      _removeOverlay();
+      if (suggestions.isEmpty) _removeOverlay();
       return;
     }
 
@@ -234,8 +237,32 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     // the overlay, no matter what `_controller.text` says by then.
     final requestGeneration = _autocompleteGeneration;
 
-    // Tier 2 — enabled external dictionaries, only reached when tier 1 found
-    // nothing.
+    // Tier 0 rescue — a genuine exact fuzzy-key match (the user typed an
+    // inflected form differing from a real lookup key only by a folded
+    // diacritic, aspirate, or doubled consonant, e.g. "kammam" for
+    // "kammaṃ"). Tier 1 can't find this: its index holds bare lemmas only,
+    // and a lemma's own collapsed key ("kama") can be *shorter* than the
+    // inflected query's ("kamam"), so it never satisfies tier 1's prefix
+    // rule. Runs after tier 1 has already been shown (if it had a hit) so
+    // Guard 1's synchronous paint is preserved — this only ever upgrades the
+    // overlay, never delays its first appearance.
+    final rescueMatches = await ref.read(
+      fuzzyExactSuggestionsProvider(query).future,
+    );
+    if (!mounted || _autocompleteGeneration != requestGeneration) return;
+    if (rescueMatches.isNotEmpty) {
+      if (kDebugMode) debugPrint('autocomplete: tier 0 (rescue) answered "$query"');
+      final merged = [
+        ...rescueMatches,
+        ...suggestions.where((s) => !rescueMatches.contains(s)),
+      ];
+      _showOverlay(merged);
+      return;
+    }
+    if (suggestions.isNotEmpty) return;
+
+    // Tier 2 — enabled external dictionaries, only reached when tier 1 and
+    // the rescue both found nothing.
     final dictMatches = await ref.read(dictSuggestionsProvider(query).future);
     if (!mounted || _autocompleteGeneration != requestGeneration) return;
     if (dictMatches.isNotEmpty) {
@@ -244,8 +271,8 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
       return;
     }
 
-    // Tier 3 — the lookup table, last resort: tried only when both the
-    // headword index and the external dictionaries found nothing.
+    // Tier 3 — the lookup table, last resort: tried only when the headword
+    // index, the rescue, and the external dictionaries all found nothing.
     final lookupMatches = await ref.read(
       lookupSuggestionsProvider(query).future,
     );
