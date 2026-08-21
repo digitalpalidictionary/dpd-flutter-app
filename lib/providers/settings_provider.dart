@@ -13,6 +13,8 @@ enum AudioGender { male, female }
 
 enum TapMode { singleTap, doubleTap }
 
+enum WordLookupMode { page, popup }
+
 class Settings {
   const Settings({
     this.themeMode = ThemeMode.system,
@@ -34,6 +36,7 @@ class Settings {
     this.tapMode = TapMode.singleTap,
     this.showConstructionInSummary = true,
     this.showOtherDictsInSummary = true,
+    this.wordLookupMode = WordLookupMode.page,
   });
 
   final ThemeMode themeMode;
@@ -55,6 +58,7 @@ class Settings {
   final TapMode tapMode;
   final bool showConstructionInSummary;
   final bool showOtherDictsInSummary;
+  final WordLookupMode wordLookupMode;
 
   Settings copyWith({
     ThemeMode? themeMode,
@@ -76,6 +80,7 @@ class Settings {
     TapMode? tapMode,
     bool? showConstructionInSummary,
     bool? showOtherDictsInSummary,
+    WordLookupMode? wordLookupMode,
   }) {
     return Settings(
       themeMode: themeMode ?? this.themeMode,
@@ -99,6 +104,7 @@ class Settings {
           showConstructionInSummary ?? this.showConstructionInSummary,
       showOtherDictsInSummary:
           showOtherDictsInSummary ?? this.showOtherDictsInSummary,
+      wordLookupMode: wordLookupMode ?? this.wordLookupMode,
     );
   }
 
@@ -124,7 +130,8 @@ class Settings {
         other.showFuzzyResults == showFuzzyResults &&
         other.tapMode == tapMode &&
         other.showConstructionInSummary == showConstructionInSummary &&
-        other.showOtherDictsInSummary == showOtherDictsInSummary;
+        other.showOtherDictsInSummary == showOtherDictsInSummary &&
+        other.wordLookupMode == wordLookupMode;
   }
 
   @override
@@ -148,6 +155,7 @@ class Settings {
     tapMode,
     showConstructionInSummary,
     showOtherDictsInSummary,
+    wordLookupMode,
   );
 }
 
@@ -206,6 +214,11 @@ class SettingsNotifier extends StateNotifier<Settings> {
         _prefs.getBool('show_construction_in_summary') ?? true;
     final showOtherDictsInSummary =
         _prefs.getBool('show_other_dicts_in_summary') ?? true;
+    final wordLookupModeName = _prefs.getString('word_lookup_mode') ?? 'page';
+    final wordLookupMode = WordLookupMode.values.firstWhere(
+      (m) => m.name == wordLookupModeName,
+      orElse: () => WordLookupMode.page,
+    );
     state = Settings(
       themeMode: themeMode,
       colourScheme: colourScheme,
@@ -226,6 +239,7 @@ class SettingsNotifier extends StateNotifier<Settings> {
       tapMode: tapMode,
       showConstructionInSummary: showConstructionInSummary,
       showOtherDictsInSummary: showOtherDictsInSummary,
+      wordLookupMode: wordLookupMode,
     );
   }
 
@@ -322,6 +336,11 @@ class SettingsNotifier extends StateNotifier<Settings> {
   Future<void> setShowOtherDictsInSummary(bool value) async {
     await _prefs.setBool('show_other_dicts_in_summary', value);
     state = state.copyWith(showOtherDictsInSummary: value);
+  }
+
+  Future<void> setWordLookupMode(WordLookupMode mode) async {
+    await _prefs.setString('word_lookup_mode', mode.name);
+    state = state.copyWith(wordLookupMode: mode);
   }
 }
 

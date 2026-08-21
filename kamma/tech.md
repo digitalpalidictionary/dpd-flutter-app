@@ -101,6 +101,20 @@ External (non-DPD) dictionaries are not app code: the app auto-discovers any dic
 ## Deep Links (2026-07-31)
 Android registers a custom `dpd://word/<word>` scheme (`BROWSABLE` intent-filter on `MainActivity` in `AndroidManifest.xml`) so external sites (e.g. dhamma.gift) can link straight to a word. It rides the existing external-entry funnel rather than forking a new one: `MainActivity.extractText()` gained an `Intent.ACTION_VIEW` arm that reads `intent.data?.lastPathSegment` (auto percent-decoded) and returns it as the lookup string, same as `ACTION_SEND`/`ACTION_PROCESS_TEXT` already did. From there it's unchanged — `getInitialText`/`onNewIntent` → `emitWord` → `intentStream` → `IntentService._clean()` → `externalSearchHandlerProvider.apply()`. No new Dart code, no new channel. `+` in the path is not form-decoded to a space (plain percent-decoding only) — out of scope for v1, which is single-headword links only.
 
+## Popup Word Lookup (2026-08-21)
+A "Word lookup" setting (`WordLookupMode`: `page`/`popup`, default `page`) changes what a
+word tap does. All word taps funnel through one seam,
+`TapSearchWrapper._executeSearch` (`lib/widgets/tap_search_wrapper.dart`) — in `popup`
+mode it calls `showWordPopup()` (`lib/widgets/word_popup.dart`) instead of writing
+`searchQueryProvider`/recording history/popping the page. The popup does its own lookup
+via `exactResultsProvider(word)` (DPD exact matches only — no partial/fuzzy/other
+dictionaries) and reuses `InlineEntryCard` verbatim, so it never touches the search bar
+or the underlying page's state. A nested tap inside the popup swaps its own contents
+(via `TapSearchWrapper.onWordTap`) rather than opening a second sheet — there is no back
+stack. The popup's own "Full search" action is the only popup-lookup action that records
+history or pops the underlying page (mirrors `TapSearchWrapper.shouldPop`, threaded into
+`showWordPopup`).
+
 ## Chrome Text Scaling (2026-08-21)
 App chrome has no text-scale override, so the phone's system font-size setting drives every menu, title, and button directly. There is deliberately no in-app setting for chrome font size and no cap on it — `ContentTextScale` (`lib/widgets/content_text_scale.dart`) and the `Results font size` slider are scoped to results/entry/root content only, and must stay that way. A large system font is therefore a supported state that layout has to survive, not an edge case to clamp away.
 

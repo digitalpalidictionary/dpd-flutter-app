@@ -8,6 +8,7 @@ import '../providers/search_provider.dart';
 import '../utils/history_recording.dart';
 import '../providers/settings_provider.dart';
 import '../utils/text_filters.dart';
+import 'word_popup.dart';
 
 /// Expands [offset] outwards to the surrounding word.
 ///
@@ -42,10 +43,17 @@ class TapSearchWrapper extends ConsumerStatefulWidget {
   final Widget child;
   final bool shouldPop;
 
+  /// When set, a tapped word is handed to this callback instead of triggering
+  /// the normal search/popup behaviour. Used inside [showWordPopup] so a tap
+  /// on a word in the popup body swaps the popup's own contents rather than
+  /// opening a second popup or touching the search bar.
+  final void Function(String word)? onWordTap;
+
   const TapSearchWrapper({
     super.key,
     required this.child,
     this.shouldPop = false,
+    this.onWordTap,
   });
 
   @override
@@ -58,6 +66,7 @@ class _TapSearchWrapperState extends ConsumerState<TapSearchWrapper> {
   int _lastTapTime = 0;
   bool _awaitingSelection = false;
   bool _suppressContextMenu = false;
+  bool _popupShowing = false;
   Timer? _fallbackTimer;
 
   Offset? _downPosition;
@@ -181,6 +190,23 @@ class _TapSearchWrapperState extends ConsumerState<TapSearchWrapper> {
       if (!mounted) return;
       _suppressContextMenu = false;
       _selectionAreaKey.currentState?.selectableRegion.clearSelection();
+
+      final onWordTap = widget.onWordTap;
+      if (onWordTap != null) {
+        onWordTap(selectedText);
+        return;
+      }
+
+      if (ref.read(settingsProvider).wordLookupMode == WordLookupMode.popup) {
+        if (_popupShowing) return;
+        _popupShowing = true;
+        showWordPopup(context, selectedText, shouldPop: widget.shouldPop)
+            .whenComplete(() {
+          if (mounted) _popupShowing = false;
+        });
+        return;
+      }
+
       ref.read(searchQueryProvider.notifier).state = selectedText;
       if (shouldRecordCommittedSearch(selectedText)) {
         ref.read(historyProvider.notifier).navigateTo(selectedText);

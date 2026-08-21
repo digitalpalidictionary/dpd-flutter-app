@@ -58,6 +58,12 @@ void main() {
       expect(copy.audioGender, AudioGender.female);
     });
 
+    test('copyWith overrides wordLookupMode', () {
+      const settings = Settings();
+      final copy = settings.copyWith(wordLookupMode: WordLookupMode.popup);
+      expect(copy.wordLookupMode, WordLookupMode.popup);
+    });
+
     test('copyWith preserves other fields when overriding one', () {
       const settings = Settings(
         fontSize: 20.0,
@@ -139,6 +145,12 @@ void main() {
       const b = Settings(audioGender: AudioGender.female);
       expect(a, isNot(equals(b)));
     });
+
+    test('Settings with different wordLookupMode are not equal', () {
+      const a = Settings(wordLookupMode: WordLookupMode.page);
+      const b = Settings(wordLookupMode: WordLookupMode.popup);
+      expect(a, isNot(equals(b)));
+    });
   });
 
   group('Settings defaults', () {
@@ -164,6 +176,10 @@ void main() {
 
     test('default lookupHotkey is empty', () {
       expect(const Settings().lookupHotkey, '');
+    });
+
+    test('default wordLookupMode is page', () {
+      expect(const Settings().wordLookupMode, WordLookupMode.page);
     });
   });
 }

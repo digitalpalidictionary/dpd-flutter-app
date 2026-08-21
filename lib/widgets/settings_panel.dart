@@ -229,6 +229,18 @@ class _SettingsContentState extends ConsumerState<SettingsContent> {
         ),
       ),
       () => _buildSettingTile(
+        title: 'Word lookup',
+        topic: _wordLookupTopic(),
+        trailing: CompactSegmented<WordLookupMode>(
+          segments: const [
+            ButtonSegment(value: WordLookupMode.page, label: Text('Page')),
+            ButtonSegment(value: WordLookupMode.popup, label: Text('Popup')),
+          ],
+          selected: settings.wordLookupMode,
+          onChanged: notifier.setWordLookupMode,
+        ),
+      ),
+      () => _buildSettingTile(
         title: 'Updates',
         topic: _updatesTopic(),
         trailing: CompactSegmented<bool>(
@@ -414,6 +426,14 @@ class _SettingsContentState extends ConsumerState<SettingsContent> {
       title: 'Word search tap',
       description:
           'Chooses whether word lookup inside entries uses a single tap or double tap.',
+    );
+  }
+
+  SettingHelpTopic _wordLookupTopic() {
+    return const SettingHelpTopic(
+      title: 'Word lookup',
+      description:
+          'Chooses whether tapping a word opens the full page or a popup over what you are reading.',
     );
   }
 
