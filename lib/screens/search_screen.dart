@@ -576,10 +576,19 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                         Expanded(
                           child: GestureDetector(
                             onTap: _goHome,
-                            child: Text(
-                              'Digital Pāḷi Dictionary',
-                              style: theme.textTheme.titleLarge?.copyWith(
-                                fontWeight: FontWeight.w700,
+                            // FittedBox hit-tests only the painted glyph box, so
+                            // without this the strip beside the title goes dead.
+                            behavior: HitTestBehavior.opaque,
+                            child: FittedBox(
+                              fit: BoxFit.scaleDown,
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                'Digital Pāḷi Dictionary',
+                                maxLines: 1,
+                                softWrap: false,
+                                style: theme.textTheme.titleLarge?.copyWith(
+                                  fontWeight: FontWeight.w700,
+                                ),
                               ),
                             ),
                           ),

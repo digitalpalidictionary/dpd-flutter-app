@@ -100,3 +100,12 @@ External (non-DPD) dictionaries are not app code: the app auto-discovers any dic
 
 ## Deep Links (2026-07-31)
 Android registers a custom `dpd://word/<word>` scheme (`BROWSABLE` intent-filter on `MainActivity` in `AndroidManifest.xml`) so external sites (e.g. dhamma.gift) can link straight to a word. It rides the existing external-entry funnel rather than forking a new one: `MainActivity.extractText()` gained an `Intent.ACTION_VIEW` arm that reads `intent.data?.lastPathSegment` (auto percent-decoded) and returns it as the lookup string, same as `ACTION_SEND`/`ACTION_PROCESS_TEXT` already did. From there it's unchanged — `getInitialText`/`onNewIntent` → `emitWord` → `intentStream` → `IntentService._clean()` → `externalSearchHandlerProvider.apply()`. No new Dart code, no new channel. `+` in the path is not form-decoded to a space (plain percent-decoding only) — out of scope for v1, which is single-headword links only.
+
+## Chrome Text Scaling (2026-08-21)
+App chrome has no text-scale override, so the phone's system font-size setting drives every menu, title, and button directly. There is deliberately no in-app setting for chrome font size and no cap on it — `ContentTextScale` (`lib/widgets/content_text_scale.dart`) and the `Results font size` slider are scoped to results/entry/root content only, and must stay that way. A large system font is therefore a supported state that layout has to survive, not an edge case to clamp away.
+
+Two traps this exposed, both silent:
+- `ListTile` measures `trailing` at its intrinsic width first. A `trailing` widget that never shrinks (`MainAxisSize.min`) will consume the row and leave the title's `RenderParagraph` unlaid-out — the label renders one letter per line. Settings rows therefore go through `SettingTile` (`lib/widgets/setting_tile.dart`), which puts a `Wrap` in the `title` slot with `trailing: null` so the row reflows by measurement. Do not add a text-scale threshold; `Wrap` already measures.
+- `FittedBox` hit-tests only the painted glyph box, so a `GestureDetector` wrapping one silently loses the surrounding tap area unless given `behavior: HitTestBehavior.opaque`.
+
+Absolute text widths cannot be measured in widget tests here: no fonts are bundled (`google_fonts` fetches Inter and Noto Serif at runtime), so tests fall back to Flutter's test font where every glyph is a full-size square, roughly 60% too wide. Only the presence or absence of layout errors is trustworthy from a test — appearance must be checked in the running app.

@@ -51,6 +51,9 @@ class DpdLogo extends StatelessWidget {
           child: Text(
             'dpd',
             textAlign: TextAlign.center,
+            // A brand mark, not body text: its proportions come from [size], so
+            // letting the system font scale grow the label clips it to "d".
+            textScaler: TextScaler.noScaling,
             style: GoogleFonts.inter(
               fontWeight: FontWeight.w700,
               fontSize: size * 0.39,

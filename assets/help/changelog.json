@@ -3,6 +3,7 @@
     {
       "title": "unreleased",
       "items": [
+        "fix: mistyped inflected words give valid results everywhere",
         "feat: niggahīta setting now applies everywhere in the app",
         "fix: swap dhamma.gift links to f.dhamma.gift host",
         "feat: external sites can now deep-link straight to a word",

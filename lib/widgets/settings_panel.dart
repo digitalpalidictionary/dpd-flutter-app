@@ -13,6 +13,7 @@ import '../theme/dpd_colors.dart';
 import '../theme/dpd_scheme.dart';
 import 'compact_segmented.dart';
 import 'dict_settings_widget.dart';
+import 'setting_tile.dart';
 import 'settings_help_dialog.dart';
 
 class SettingsContent extends ConsumerStatefulWidget {
@@ -86,7 +87,9 @@ class _SettingsContentState extends ConsumerState<SettingsContent> {
         topic: _fontSizeTopic(theme),
         trailing: Text(
           settings.fontSize.toStringAsFixed(0),
-          style: theme.textTheme.bodyMedium,
+          style: theme.textTheme.bodyMedium?.copyWith(
+            color: theme.colorScheme.onSurfaceVariant,
+          ),
         ),
         subtitle: Slider(
           value: settings.fontSize,
@@ -303,14 +306,9 @@ class _SettingsContentState extends ConsumerState<SettingsContent> {
     required Widget trailing,
     Widget? subtitle,
   }) {
-    return ListTile(
-      title: Row(
-        children: [
-          Flexible(child: Text(title)),
-          const SizedBox(width: 4),
-          SettingHelpButton(topic: topic),
-        ],
-      ),
+    return SettingTile(
+      title: title,
+      topic: topic,
       subtitle: subtitle,
       trailing: trailing,
     );
@@ -464,7 +462,7 @@ class _BubbleTileState extends ConsumerState<_BubbleTile> {
   @override
   Widget build(BuildContext context) {
     final on = ref.watch(bubbleOnProvider);
-    return _buildSettingTile(
+    return SettingTile(
       title: 'Floating bubble',
       topic: const SettingHelpTopic(
         title: 'Floating bubble',
@@ -483,23 +481,6 @@ class _BubbleTileState extends ConsumerState<_BubbleTile> {
       ),
     );
   }
-
-  Widget _buildSettingTile({
-    required String title,
-    required SettingHelpTopic topic,
-    required Widget trailing,
-  }) {
-    return ListTile(
-      title: Row(
-        children: [
-          Flexible(child: Text(title)),
-          const SizedBox(width: 4),
-          SettingHelpButton(topic: topic),
-        ],
-      ),
-      trailing: trailing,
-    );
-  }
 }
 
 class _HotkeyTile extends StatelessWidget {
@@ -513,14 +494,9 @@ class _HotkeyTile extends StatelessWidget {
     final theme = Theme.of(context);
     final display = hotkey.isEmpty ? 'Not set' : _gsettingsToDisplay(hotkey);
 
-    return ListTile(
-      title: Row(
-        children: [
-          const Flexible(child: Text('Lookup hotkey')),
-          const SizedBox(width: 4),
-          SettingHelpButton(topic: _lookupHotkeyTopic()),
-        ],
-      ),
+    return SettingTile(
+      title: 'Lookup hotkey',
+      topic: _lookupHotkeyTopic(),
       subtitle: Text(
         'Highlight text in any app, press hotkey to search in DPD.',
         style: theme.textTheme.bodySmall?.copyWith(

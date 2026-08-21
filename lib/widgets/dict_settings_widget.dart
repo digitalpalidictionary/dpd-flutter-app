@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../providers/dict_provider.dart';
 import 'compact_segmented.dart';
+import 'setting_tile.dart';
 import 'settings_help_dialog.dart';
 
 class DictSettingsWidget extends ConsumerWidget {
@@ -76,16 +77,11 @@ class DictSettingsWidget extends ConsumerWidget {
             final count = metaMap[id]?.entryCount;
             final enabled = visibility.enabled.contains(id);
 
-            return ListTile(
+            return SettingTile(
               key: ValueKey(id),
               leading: _ReorderHandle(index: index),
-              title: Row(
-                children: [
-                  Flexible(child: Text(name)),
-                  const SizedBox(width: 4),
-                  SettingHelpButton(topic: _dictVisibilityTopic(name)),
-                ],
-              ),
+              title: name,
+              topic: _dictVisibilityTopic(name),
               subtitle: count != null
                   ? Text(
                       '$count entries',
