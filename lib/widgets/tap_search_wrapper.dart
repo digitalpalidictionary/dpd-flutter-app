@@ -7,6 +7,7 @@ import '../providers/history_provider.dart';
 import '../providers/search_provider.dart';
 import '../utils/history_recording.dart';
 import '../providers/settings_provider.dart';
+import '../utils/text_filters.dart';
 
 /// Expands [offset] outwards to the surrounding word.
 ///
@@ -164,7 +165,7 @@ class _TapSearchWrapperState extends ConsumerState<TapSearchWrapper> {
   String _cleanPali(String word) {
     if (word.isEmpty) return '';
 
-    return word
+    return canonicalNiggahita(word)
         .replaceFirst(RegExp(r'''^[\s''—.–।॥|…"""\[\](){}]+'''), '')
         .replaceFirst(RegExp(r'''[\s'',—.—–।॥|""…:;"\[\](){}]+$'''), '')
         .replaceAll(RegExp(r'''[''''""""]+'''), "'")

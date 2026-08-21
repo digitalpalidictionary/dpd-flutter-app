@@ -49,7 +49,7 @@ TableRow? buildKvTextRow(
   TextStyle? labelStyle,
 }) {
   if (text == null || text.isEmpty) return null;
-  final display = filter != null ? filter(text) : text;
+  final display = context.nigg(filter != null ? filter(text) : text);
   return buildKvRow(
     context,
     label,
@@ -118,7 +118,7 @@ TableRow? buildKvRichRow(
   void Function(String url)? onLinkTap,
 }) {
   if (html == null || html.isEmpty) return null;
-  final data = filter != null ? filter(html) : html;
+  final data = context.nigg(filter != null ? filter(html) : html);
   return buildKvRow(
     context,
     label,
@@ -387,17 +387,11 @@ class _SingleExampleBlock extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final niggahitaMode = ref.watch(
-      settingsProvider.select((s) => s.niggahitaMode),
-    );
     final showApostrophe = ref.watch(
       settingsProvider.select((s) => s.showSandhiApostrophe),
     );
-    final filterMode = NiggahitaFilterMode.values[niggahitaMode.index];
-    String n(String t) => filterNiggahita(
-      filterApostrophe(t, show: showApostrophe),
-      mode: filterMode,
-    );
+    String n(String t) =>
+        context.nigg(filterApostrophe(t, show: showApostrophe));
     final theme = Theme.of(context);
     final boldStyle = theme.textTheme.bodyMedium?.copyWith(
       fontWeight: FontWeight.bold,
@@ -438,19 +432,14 @@ class EntrySummaryBox extends ConsumerWidget {
     final showApostrophe = ref.watch(
       settingsProvider.select((s) => s.showSandhiApostrophe),
     );
-    final niggahitaMode = ref.watch(
-      settingsProvider.select((s) => s.niggahitaMode),
-    );
     final theme = Theme.of(context);
     final h = headword.headword;
     final baseStyle = theme.textTheme.bodyMedium?.copyWith(height: 1.5);
     final boldStyle = baseStyle?.copyWith(fontWeight: FontWeight.w700);
     final grayStyle = baseStyle?.copyWith(color: context.palette.gray);
 
-    String f(String? text) => filterNiggahita(
-      filterApostrophe(text ?? '', show: showApostrophe),
-      mode: NiggahitaFilterMode.values[niggahitaMode.index],
-    );
+    String f(String? text) =>
+        context.nigg(filterApostrophe(text ?? '', show: showApostrophe));
 
     final hasMeaning1 = h.meaning1 != null && h.meaning1!.isNotEmpty;
     final summary = h.constructionSummary;

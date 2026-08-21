@@ -13,6 +13,7 @@ import '../widgets/inline_entry_card.dart';
 import '../widgets/inline_root_card.dart';
 import '../widgets/secondary/secondary_result_cards.dart';
 import '../widgets/summary_section.dart';
+import '../utils/text_filters.dart';
 
 class SplitResultsList extends StatefulWidget {
   const SplitResultsList({
@@ -455,7 +456,7 @@ class _AccordionSecondaryCardState extends State<AccordionSecondaryCard> {
                     onTap: () => setState(() => _isExpanded = true),
                     child: Padding(
                       padding: const EdgeInsets.fromLTRB(4, 6, 4, 6),
-                      child: Text(widget.title, style: boldStyle),
+                      child: Text(context.nigg(widget.title), style: boldStyle),
                     ),
                   ),
                 ),
@@ -481,7 +482,9 @@ class CompactGrammarTable extends StatelessWidget {
         children: [
           for (final e in entries)
             Text(
-              '${e.components.where((c) => c.isNotEmpty).join(' ')} of ${e.headword}',
+              context.nigg(
+                '${e.components.where((c) => c.isNotEmpty).join(' ')} of ${e.headword}',
+              ),
               style: style,
             ),
         ],
@@ -502,7 +505,9 @@ class CompactTextLines extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(4, 0, 4, 0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: [for (final line in lines) Text(line, style: style)],
+        children: [
+          for (final line in lines) Text(context.nigg(line), style: style),
+        ],
       ),
     );
   }
@@ -527,7 +532,7 @@ class CompactEpdList extends StatelessWidget {
               TextSpan(
                 style: style,
                 children: [
-                  TextSpan(text: e.headword, style: boldStyle),
+                  TextSpan(text: context.nigg(e.headword), style: boldStyle),
                   if (e.posInfo.isNotEmpty) TextSpan(text: ' ${e.posInfo}.'),
                   TextSpan(text: ' ${e.meaning}.'),
                 ],
@@ -561,7 +566,9 @@ class CompactVariantSummary extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(4, 0, 4, 0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: [for (final line in lines) Text(line, style: style)],
+        children: [
+          for (final line in lines) Text(context.nigg(line), style: style),
+        ],
       ),
     );
   }

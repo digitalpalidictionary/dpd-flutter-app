@@ -5,6 +5,7 @@ import '../theme/dpd_palette.dart';
 import 'entry_content.dart';
 import 'feedback_type.dart';
 import 'root_matrix_builder.dart';
+import '../utils/text_filters.dart';
 
 class RootMatrixTable extends StatelessWidget {
   const RootMatrixTable({super.key, required this.root, required this.data});
@@ -49,7 +50,7 @@ class RootMatrixTable extends StatelessWidget {
           ),
           padding: const EdgeInsets.all(5),
           child: Text(
-            categoryEntry.key,
+            context.nigg(categoryEntry.key),
             textAlign: TextAlign.center,
             style: headerStyle,
           ),
@@ -69,7 +70,7 @@ class RootMatrixTable extends StatelessWidget {
                   child: _Cell(
                     margin: const EdgeInsets.only(bottom: 2, right: 2),
                     child: Text(
-                      sub.key,
+                      context.nigg(sub.key),
                       style: labelStyle,
                       maxLines: 1,
                       softWrap: false,
@@ -79,7 +80,10 @@ class RootMatrixTable extends StatelessWidget {
                 Expanded(
                   child: _Cell(
                     margin: const EdgeInsets.only(bottom: 2),
-                    child: Text(sub.value.join(', '), style: textStyle),
+                    child: Text(
+                      context.nigg(sub.value.join(', ')),
+                      style: textStyle,
+                    ),
                   ),
                 ),
               ],

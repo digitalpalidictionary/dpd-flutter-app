@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../providers/search_provider.dart';
+import '../utils/text_filters.dart';
 
 class EmptyPrompt extends StatelessWidget {
   const EmptyPrompt({super.key});
@@ -50,7 +51,7 @@ class NoResultsWithSuggestions extends ConsumerWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              'No results for "$query"',
+              context.nigg('No results for "$query"'),
               style: theme.textTheme.titleSmall?.copyWith(
                 color: theme.colorScheme.outline,
               ),
@@ -67,7 +68,10 @@ class NoResultsWithSuggestions extends ConsumerWidget {
               for (final match in matches)
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 2),
-                  child: Text(match, style: theme.textTheme.bodyLarge),
+                  child: Text(
+                    context.nigg(match),
+                    style: theme.textTheme.bodyLarge,
+                  ),
                 ),
             ],
           ],

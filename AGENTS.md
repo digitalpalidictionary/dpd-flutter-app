@@ -115,6 +115,16 @@ Testing the `dpd://` deep link's `BROWSABLE` category requires a real hosted web
 
 These paths diverged in history and caused a bug where bracket stripping was added to tap-to-search but missed in share/intent. Never fix or extend one without checking the other.
 
+### Display Transforms Must Not Reach Stored Data
+**CRITICAL:** Tap-to-search reads the **rendered** string — `RenderParagraph.text.toPlainText()` in `_getWordAtPosition` — not the underlying data. Anything that changes how Pāḷi is *displayed* therefore flows straight back into the search query and into `historyProvider`, which persists to SharedPreferences.
+
+The database stores the dot niggahīta `ṃ` exclusively. Display may show `ṁ` (the user's setting), but every path back into data must fold to canonical first:
+- `context.nigg(text)` (`lib/utils/text_filters.dart`) converts **for display only** — at the `Text`/`TextSpan`/`label:` call, never on a model field, map key, navigation argument, or feedback payload.
+- `canonicalNiggahita(text)` folds back, and must be applied wherever displayed text re-enters the data layer: `_cleanPali`, `IntentService._clean`, and the search screen's query construction.
+- `DpdDao._foldNiggahita` is the last line of defence on every query path. Do not replace it with `_normalizePunctuation`, which also strips hyphens and apostrophes and would change which external dictionary entries match.
+
+Before adding any new display transform, trace every place rendered output is read back as input.
+
 ### Fuzzy Keys Must Match The Exporter Byte-For-Byte
 **CRITICAL:** `stripDiacritics()` in `lib/utils/diacritics.dart` reimplements `_strip_diacritics_mobile()` in `../dpd-db/exporter/mobile/mobile_exporter.py`, which generates the stored `word_fuzzy` and `fuzzy_key` columns. Any query that computes a key in Dart and matches it against those columns breaks silently — no error, just zero results — the moment the two disagree.
 

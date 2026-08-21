@@ -651,18 +651,19 @@ class DpdDao extends DatabaseAccessor<AppDatabase> with _$DpdDaoMixin {
   ) async {
     if (dictIds.isEmpty || query.isEmpty) return [];
 
-    final fuzzyKey = stripDiacritics(query.toLowerCase());
+    final normalized = _foldNiggahita(query.toLowerCase());
+    final fuzzyKey = stripDiacritics(normalized);
     final rows =
         await (select(dictEntries)..where(
               (t) => t.dictId.isIn(dictIds) & t.wordFuzzy.equals(fuzzyKey),
             ))
             .get();
 
-    final lowered = query.toLowerCase();
-    return rows.where((row) => row.word.toLowerCase() == lowered).toList();
+    return rows.where((row) => row.word.toLowerCase() == normalized).toList();
   }
 
-  Future<List<DictEntry>> searchDictPartial(String word, {int limit = 50}) {
+  Future<List<DictEntry>> searchDictPartial(String rawWord, {int limit = 50}) {
+    final word = _foldNiggahita(rawWord);
     return (select(dictEntries)
           ..where((t) => t.word.like('$word%') & t.word.equals(word).not())
           ..limit(limit))
@@ -760,15 +761,21 @@ class DpdDao extends DatabaseAccessor<AppDatabase> with _$DpdDaoMixin {
   String _normalizeQuery(String input) => _normalizePunctuation(input).toLowerCase();
 
   String _normalizePunctuation(String input) {
-    return input
-        .trim()
-        .replaceAll("'", '')
-        .replaceAll('-', '')
-        .replaceAll('?', '')
-        .replaceAll('!', '')
-        .replaceAll('ṁ', 'ṃ')
-        .replaceAll('ŋ', 'ṃ');
+    return _foldNiggahita(
+      input
+          .trim()
+          .replaceAll("'", '')
+          .replaceAll('-', '')
+          .replaceAll('?', '')
+          .replaceAll('!', ''),
+    );
   }
+
+  /// Folds the display and legacy niggahīta forms onto the canonical ṃ the
+  /// database stores. Every query path must apply this — the user may be
+  /// looking at ṁ, and external callers may send either form.
+  String _foldNiggahita(String input) =>
+      input.replaceAll('ṁ', 'ṃ').replaceAll('ŋ', 'ṃ');
 
   /// Get the next string lexicographically (for range queries).
   /// Increments the last character by 1, enabling prefix matching via

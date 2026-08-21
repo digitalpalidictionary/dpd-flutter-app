@@ -24,6 +24,7 @@ import 'services/database_update_service.dart';
 import 'services/intent_service.dart';
 import 'theme/dpd_palette.dart';
 import 'theme/dpd_scheme.dart';
+import 'utils/text_filters.dart';
 
 SwitchThemeData _buildSwitchTheme(DpdPalette palette) => SwitchThemeData(
   thumbColor: WidgetStateProperty.resolveWith((states) {
@@ -203,43 +204,47 @@ class _DpdAppState extends ConsumerState<DpdApp> {
     final isDesktop =
         Platform.isLinux || Platform.isMacOS || Platform.isWindows;
 
-    return CallbackShortcuts(
-      bindings: <ShortcutActivator, VoidCallback>{
-        if (isDesktop)
-          const SingleActivator(LogicalKeyboardKey.keyQ, control: true):
-              _exitApp,
-        if (Platform.isMacOS)
-          const SingleActivator(LogicalKeyboardKey.keyQ, meta: true): _exitApp,
-      },
-      child: Focus(
-        autofocus: true,
-        child: MaterialApp(
-          navigatorKey: _navKey,
-          title: 'DPD',
-          debugShowCheckedModeBanner: false,
-          themeMode: settings.themeMode,
-          theme: ThemeData(
-            colorScheme: lightScheme,
-            scaffoldBackgroundColor: lightPalette.light,
-            textTheme: buildTextTheme(
-              ThemeData(colorScheme: lightScheme).textTheme,
+    return NiggahitaScope(
+      circle: settings.niggahitaMode == NiggahitaMode.circle,
+      child: CallbackShortcuts(
+        bindings: <ShortcutActivator, VoidCallback>{
+          if (isDesktop)
+            const SingleActivator(LogicalKeyboardKey.keyQ, control: true):
+                _exitApp,
+          if (Platform.isMacOS)
+            const SingleActivator(LogicalKeyboardKey.keyQ, meta: true):
+                _exitApp,
+        },
+        child: Focus(
+          autofocus: true,
+          child: MaterialApp(
+            navigatorKey: _navKey,
+            title: 'DPD',
+            debugShowCheckedModeBanner: false,
+            themeMode: settings.themeMode,
+            theme: ThemeData(
+              colorScheme: lightScheme,
+              scaffoldBackgroundColor: lightPalette.light,
+              textTheme: buildTextTheme(
+                ThemeData(colorScheme: lightScheme).textTheme,
+              ),
+              switchTheme: _buildSwitchTheme(lightPalette),
+              extensions: [lightPalette],
+              useMaterial3: true,
             ),
-            switchTheme: _buildSwitchTheme(lightPalette),
-            extensions: [lightPalette],
-            useMaterial3: true,
-          ),
-          darkTheme: ThemeData(
-            colorScheme: darkScheme,
-            scaffoldBackgroundColor: darkPalette.dark,
-            textTheme: buildTextTheme(
-              ThemeData.dark().copyWith(colorScheme: darkScheme).textTheme,
+            darkTheme: ThemeData(
+              colorScheme: darkScheme,
+              scaffoldBackgroundColor: darkPalette.dark,
+              textTheme: buildTextTheme(
+                ThemeData.dark().copyWith(colorScheme: darkScheme).textTheme,
+              ),
+              switchTheme: _buildSwitchTheme(darkPalette),
+              extensions: [darkPalette],
+              useMaterial3: true,
             ),
-            switchTheme: _buildSwitchTheme(darkPalette),
-            extensions: [darkPalette],
-            useMaterial3: true,
+            initialRoute: '/',
+            onGenerateRoute: _onGenerateRoute,
           ),
-          initialRoute: '/',
-          onGenerateRoute: _onGenerateRoute,
         ),
       ),
     );

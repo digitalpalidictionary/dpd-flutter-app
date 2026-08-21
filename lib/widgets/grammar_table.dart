@@ -18,17 +18,11 @@ class GrammarTable extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final niggahitaMode = ref.watch(
-      settingsProvider.select((s) => s.niggahitaMode),
-    );
     final showApostrophe = ref.watch(
       settingsProvider.select((s) => s.showSandhiApostrophe),
     );
-    final filterMode = NiggahitaFilterMode.values[niggahitaMode.index];
-    String n(String t) => filterNiggahita(
-      filterApostrophe(t, show: showApostrophe),
-      mode: filterMode,
-    );
+    String n(String t) =>
+        context.nigg(filterApostrophe(t, show: showApostrophe));
 
     final hasInternet = ref.watch(hasInternetProvider).valueOrNull ?? true;
 

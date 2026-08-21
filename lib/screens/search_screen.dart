@@ -23,6 +23,7 @@ import '../utils/velthuis.dart';
 import '../utils/back_navigation.dart';
 import '../utils/history_recording.dart';
 import '../utils/search_timing.dart';
+import '../utils/text_filters.dart';
 import '../services/bubble_service.dart';
 import '../widgets/autocomplete_dropdown.dart';
 import '../widgets/bubble_toggle.dart';
@@ -90,7 +91,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
       final initialQuery = ref.read(searchQueryProvider);
       if (initialQuery.isEmpty) return;
       final displayText = ref.read(searchBarTextProvider);
-      final textToShow = displayText ?? initialQuery;
+      final textToShow = context.nigg(displayText ?? initialQuery);
       _controller.text = textToShow;
       _controller.selection =
           TextSelection.collapsed(offset: textToShow.length);
@@ -124,14 +125,16 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
 
   void _onChanged(String raw) {
     _autocompleteGeneration++;
-    final converted = velthuis(raw);
+    final converted = context.nigg(velthuis(raw));
     if (converted != raw) {
       _controller.value = TextEditingValue(
         text: converted,
         selection: TextSelection.collapsed(offset: converted.length),
       );
     }
-    final query = toRoman(converted).replaceAll('?', '').replaceAll('!', '');
+    final query = canonicalNiggahita(
+      toRoman(converted).replaceAll('?', '').replaceAll('!', ''),
+    );
     setState(() {});
     _autocompleteDebounce?.cancel();
     _autocompleteDebounce = Timer(const Duration(milliseconds: 150), () {
@@ -149,8 +152,9 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     _hideVelthuisHelp();
     _autocompleteDebounce?.cancel();
     _debounce?.cancel();
-    final query =
-        toRoman(_controller.text.trim()).replaceAll('?', '').replaceAll('!', '');
+    final query = canonicalNiggahita(
+      toRoman(_controller.text.trim()).replaceAll('?', '').replaceAll('!', ''),
+    );
     _setSearchQuery(query);
     if (shouldRecordCommittedSearch(query)) {
       ref.read(historyProvider.notifier).navigateTo(query);
@@ -176,7 +180,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     _removeOverlay();
     _autocompleteDebounce?.cancel();
     _debounce?.cancel();
-    _controller.text = query;
+    _controller.text = context.nigg(query);
     _setSearchQuery(query);
     if (shouldRecordCommittedSearch(query)) {
       ref.read(historyProvider.notifier).navigateTo(query);
@@ -260,6 +264,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     final overlay = Overlay.of(context);
     final renderBox = context.findRenderObject() as RenderBox;
     final width = renderBox.size.width;
+    final shown = suggestions.map(context.nigg).toList();
 
     _overlayEntry = OverlayEntry(
       builder: (_) => Stack(
@@ -271,7 +276,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
           Positioned(
             width: width,
             child: AutocompleteDropdown(
-              suggestions: suggestions,
+              suggestions: shown,
               onSelected: _onSuggestionSelected,
               layerLink: _layerLink,
               width: width - 16,
@@ -293,9 +298,10 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     _removeOverlay();
     _autocompleteDebounce?.cancel();
     _debounce?.cancel();
-    ref.read(searchQueryProvider.notifier).state = term;
-    if (shouldRecordCommittedSearch(term)) {
-      ref.read(historyProvider.notifier).navigateTo(term);
+    final query = canonicalNiggahita(term);
+    _setSearchQuery(query);
+    if (shouldRecordCommittedSearch(query)) {
+      ref.read(historyProvider.notifier).navigateTo(query);
     }
     setState(() {});
   }
@@ -474,6 +480,22 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     final exactAsync = ref.watch(exactResultsProvider(query));
     final partialAsync = ref.watch(partialResultsProvider(query));
 
+    // Re-render the field when the niggahita setting is toggled. The field is
+    // written from callbacks, not from build, so nothing else would refresh it.
+    // Both characters are one UTF-16 unit, so the selection stays valid.
+    ref.listen<NiggahitaMode>(settingsProvider.select((s) => s.niggahitaMode), (
+      _,
+      _,
+    ) {
+      final current = _controller.text;
+      if (current.isEmpty) return;
+      final shown = context.nigg(canonicalNiggahita(current));
+      if (shown == current) return;
+      final selection = _controller.selection;
+      _controller.text = shown;
+      _controller.selection = selection;
+    });
+
     // Initialize dict visibility from meta (no-op after first run)
     ref.listen<AsyncValue<List<DictMetaData>>>(dictMetaAllProvider, (_, next) {
       if (next.hasValue) {
@@ -488,7 +510,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     ref.listen<String>(searchQueryProvider, (previous, next) {
       if (!_suppressProviderSync && next != _controller.text) {
         final displayText = ref.read(searchBarTextProvider);
-        final textToShow = displayText ?? next;
+        final textToShow = context.nigg(displayText ?? next);
         _controller.text = textToShow;
         _controller.selection = TextSelection.collapsed(
           offset: textToShow.length,
@@ -693,7 +715,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                                 _BarIconButton(
                                   icon: Icons.arrow_back,
                                   tooltip: backWord != null
-                                      ? '← $backWord'
+                                      ? context.nigg('← $backWord')
                                       : 'Previous search',
                                   onPressed: history.canGoBack
                                       ? () {
@@ -716,7 +738,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                                 _BarIconButton(
                                   icon: Icons.arrow_forward,
                                   tooltip: fwdWord != null
-                                      ? '$fwdWord →'
+                                      ? context.nigg('$fwdWord →')
                                       : 'Next search',
                                   onPressed: history.canGoForward
                                       ? () {

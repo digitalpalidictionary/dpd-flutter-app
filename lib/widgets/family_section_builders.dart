@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../database/database.dart';
+import '../utils/text_filters.dart';
 import 'family_table.dart';
 import 'feedback_type.dart';
 
@@ -46,12 +47,13 @@ Widget _richHeader(
   );
 }
 
-TextSpan _bold(String text, TextStyle? base) => TextSpan(
-  text: text,
+TextSpan _bold(BuildContext context, String text, TextStyle? base) => TextSpan(
+  text: context.nigg(text),
   style: base?.copyWith(fontWeight: FontWeight.w700),
 );
 
-TextSpan _normal(String text) => TextSpan(text: text);
+TextSpan _normal(BuildContext context, String text) =>
+    TextSpan(text: context.nigg(text));
 
 /// Root: "(bold N) word(s) belong to the root family (bold X) (meaning)"
 Widget buildRootFamilyHeader(BuildContext context, FamilyRootData data) {
@@ -59,10 +61,10 @@ Widget buildRootFamilyHeader(BuildContext context, FamilyRootData data) {
   final word = n == 1 ? 'word' : 'words';
   final base = Theme.of(context).textTheme.bodyMedium;
   return _richHeader(context, [
-    _bold('$n', base),
-    _normal(' $word belong to the root family '),
-    _bold(data.rootFamily, base),
-    _normal(' (${data.rootMeaning})'),
+    _bold(context, '$n', base),
+    _normal(context, ' $word belong to the root family '),
+    _bold(context, data.rootFamily, base),
+    _normal(context, ' (${data.rootMeaning})'),
   ]);
 }
 
@@ -70,10 +72,10 @@ Widget buildRootFamilyHeader(BuildContext context, FamilyRootData data) {
 Widget buildWordFamilyHeader(BuildContext context, FamilyWordData data) {
   final base = Theme.of(context).textTheme.bodyMedium;
   return _richHeader(context, [
-    _bold('${data.count}', base),
-    _normal(' words which belong to the '),
-    _bold(data.wordFamily, base),
-    _normal(' family'),
+    _bold(context, '${data.count}', base),
+    _normal(context, ' words which belong to the '),
+    _bold(context, data.wordFamily, base),
+    _normal(context, ' family'),
   ]);
 }
 
@@ -88,9 +90,9 @@ Widget buildCompoundFamilyHeader(
   final contains = n == 1 ? 'contains' : 'contain';
   final base = Theme.of(context).textTheme.bodyMedium;
   return _richHeader(context, [
-    _bold('$n', base),
-    _normal(' $compound which $contains '),
-    _bold(data.compoundFamily, base),
+    _bold(context, '$n', base),
+    _normal(context, ' $compound which $contains '),
+    _bold(context, data.compoundFamily, base),
   ], onJumpTop: onJumpTop);
 }
 
@@ -105,9 +107,9 @@ Widget buildIdiomHeader(
   final contains = n == 1 ? 'contains' : 'contain';
   final base = Theme.of(context).textTheme.bodyMedium;
   return _richHeader(context, [
-    _bold('$n', base),
-    _normal(' $expr which $contains '),
-    _bold(data.idiom, base),
+    _bold(context, '$n', base),
+    _normal(context, ' $expr which $contains '),
+    _bold(context, data.idiom, base),
   ], onJumpTop: onJumpTop);
 }
 
@@ -120,9 +122,9 @@ Widget buildSetHeader(
 }) {
   final base = Theme.of(context).textTheme.bodyMedium;
   return _richHeader(context, [
-    _bold(lemma, base),
-    _normal(' belongs to the set of '),
-    _bold(data.set_, base),
+    _bold(context, lemma, base),
+    _normal(context, ' belongs to the set of '),
+    _bold(context, data.set_, base),
   ], onJumpTop: onJumpTop);
 }
 

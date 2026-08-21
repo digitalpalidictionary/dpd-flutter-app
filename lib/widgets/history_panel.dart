@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/history_provider.dart';
 import '../providers/search_provider.dart';
 import '../theme/dpd_colors.dart';
+import '../utils/text_filters.dart';
 
 Future<void> showHistoryOverlay(BuildContext context) {
   final screenHeight = MediaQuery.of(context).size.height;
@@ -206,7 +207,7 @@ class _HistoryTile extends ConsumerWidget {
       child: ListTile(
         dense: true,
         title: Text(
-          entry.query,
+          context.nigg(entry.query),
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
           style: theme.textTheme.bodyLarge,

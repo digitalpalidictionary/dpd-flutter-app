@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../models/summary_entry.dart';
 import '../theme/dpd_colors.dart';
 import '../theme/dpd_palette.dart';
+import '../utils/text_filters.dart';
 
 @visibleForTesting
 ({String lemma, String? suffix}) splitSummaryLemma(String label) {
@@ -133,9 +134,12 @@ class _SummaryRow extends StatelessWidget {
     final boldStyle = baseStyle?.copyWith(fontWeight: FontWeight.bold);
     final splitLabel = splitSummaryLemma(entry.label);
 
-    List<InlineSpan> meaningSpans(String text) => entry.meaningHasBold
-        ? _parseBoldSpans(text, boldStyle: boldStyle)
-        : [TextSpan(text: text, style: baseStyle)];
+    List<InlineSpan> meaningSpans(String raw) {
+      final text = context.nigg(raw);
+      return entry.meaningHasBold
+          ? _parseBoldSpans(text, boldStyle: boldStyle)
+          : [TextSpan(text: text, style: baseStyle)];
+    }
 
     return InkWell(
       onTap: onTap,
@@ -149,7 +153,7 @@ class _SummaryRow extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   if (showHeadwordHeading)
-                    Text(splitLabel.lemma, style: labelStyle),
+                    Text(context.nigg(splitLabel.lemma), style: labelStyle),
                   if (entry.typeLabel.isNotEmpty ||
                       entry.meaning.isNotEmpty ||
                       splitLabel.suffix != null)
@@ -162,7 +166,9 @@ class _SummaryRow extends StatelessWidget {
                               children: [
                                 if (splitLabel.suffix != null)
                                   TextSpan(
-                                    text: '${splitLabel.suffix} ',
+                                    text: context.nigg(
+                                      '${splitLabel.suffix} ',
+                                    ),
                                     style: linkStyle,
                                   ),
                                 if (entry.typeLabel.isNotEmpty)
@@ -193,7 +199,10 @@ class _SummaryRow extends StatelessWidget {
                     child: Text.rich(
                       TextSpan(
                         children: [
-                          TextSpan(text: entry.label, style: labelStyle),
+                          TextSpan(
+                            text: context.nigg(entry.label),
+                            style: labelStyle,
+                          ),
                           if (entry.typeLabel.isNotEmpty)
                             TextSpan(
                               text: ' ${entry.typeLabel}',

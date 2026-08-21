@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
+import '../utils/text_filters.dart';
+
 /// Handles Android ACTION_PROCESS_TEXT and ACTION_SEND intents,
 /// and Linux global hotkey lookups via native method channel.
 class IntentService {
@@ -85,7 +87,7 @@ class IntentService {
 
   static String? _clean(String? text) {
     if (text == null) return null;
-    var s = text.replaceAll(_urlPattern, '');
+    var s = canonicalNiggahita(text).replaceAll(_urlPattern, '');
     s = s.replaceAll(_curlyApostrophe, "'");
     s = s.replaceAll(_disallowedPattern, '');
     s = s.replaceAll(_edgePattern, '');

@@ -26,28 +26,57 @@ void main() {
   });
 
   group('filterNiggahita', () {
-    test('returns text unchanged when mode is dot (ṃ)', () {
-      expect(filterNiggahita('saṃsāra', mode: NiggahitaFilterMode.dot), 'saṃsāra');
+    test('returns text unchanged when circle is false (ṃ)', () {
+      expect(filterNiggahita('saṃsāra', circle: false), 'saṃsāra');
     });
 
-    test('substitutes ṃ with ṁ when mode is circle', () {
-      expect(filterNiggahita('saṃsāra', mode: NiggahitaFilterMode.circle), 'saṁsāra');
+    test('substitutes ṃ with ṁ when circle is true', () {
+      expect(filterNiggahita('saṃsāra', circle: true), 'saṁsāra');
     });
 
     test('substitutes all occurrences', () {
-      expect(filterNiggahita('saṃsāraṃ', mode: NiggahitaFilterMode.circle), 'saṁsāraṁ');
+      expect(filterNiggahita('saṃsāraṃ', circle: true), 'saṁsāraṁ');
     });
 
     test('handles uppercase Ṃ', () {
-      expect(filterNiggahita('Ṃ', mode: NiggahitaFilterMode.circle), 'Ṁ');
+      expect(filterNiggahita('Ṃ', circle: true), 'Ṁ');
     });
 
     test('returns empty string unchanged', () {
-      expect(filterNiggahita('', mode: NiggahitaFilterMode.circle), '');
+      expect(filterNiggahita('', circle: true), '');
     });
 
     test('returns text without niggahita unchanged', () {
-      expect(filterNiggahita('nibbāna', mode: NiggahitaFilterMode.circle), 'nibbāna');
+      expect(filterNiggahita('nibbāna', circle: true), 'nibbāna');
+    });
+
+    test('leaves an already-circle ṁ untouched in both modes', () {
+      expect(filterNiggahita('saṁsāra', circle: true), 'saṁsāra');
+      expect(filterNiggahita('saṁsāra', circle: false), 'saṁsāra');
+    });
+  });
+
+  group('canonicalNiggahita', () {
+    test('folds ṁ back to ṃ', () {
+      expect(canonicalNiggahita('saṁsāra'), 'saṃsāra');
+    });
+
+    test('folds uppercase Ṁ back to Ṃ', () {
+      expect(canonicalNiggahita('Ṁ'), 'Ṃ');
+    });
+
+    test('leaves canonical text unchanged', () {
+      expect(canonicalNiggahita('saṃsāra'), 'saṃsāra');
+      expect(canonicalNiggahita('nibbāna'), 'nibbāna');
+      expect(canonicalNiggahita(''), '');
+    });
+
+    test('round-trips with filterNiggahita', () {
+      const canonical = 'saṃsāraṃ Ṃ';
+      expect(
+        canonicalNiggahita(filterNiggahita(canonical, circle: true)),
+        canonical,
+      );
     });
   });
 }

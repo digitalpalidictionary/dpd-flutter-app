@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../models/family_data.dart';
 import '../theme/dpd_colors.dart';
 import '../theme/dpd_palette.dart';
+import '../utils/text_filters.dart';
 import 'entry_content.dart';
 import 'feedback_type.dart';
 
@@ -118,7 +119,7 @@ class FamilyEntryTable extends StatelessWidget {
           children: [
             Padding(
               padding: const EdgeInsets.only(right: 7, bottom: 2),
-              child: Text(entry.lemma, style: lemmaStyle),
+              child: Text(context.nigg(entry.lemma), style: lemmaStyle),
             ),
             Padding(
               padding: const EdgeInsets.only(right: 7, bottom: 2),
@@ -126,12 +127,12 @@ class FamilyEntryTable extends StatelessWidget {
             ),
             Padding(
               padding: const EdgeInsets.only(right: 7, bottom: 2),
-              child: Text(entry.meaning, style: regularStyle),
+              child: Text(context.nigg(entry.meaning), style: regularStyle),
             ),
             Padding(
               padding: const EdgeInsets.only(bottom: 2),
               child: Text(
-                entry.completion,
+                context.nigg(entry.completion),
                 style: regularStyle?.copyWith(color: context.palette.gray),
               ),
             ),

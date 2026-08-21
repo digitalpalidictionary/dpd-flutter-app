@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../models/frequency_data.dart';
 import '../theme/dpd_colors.dart';
 import '../theme/dpd_palette.dart';
+import '../utils/text_filters.dart';
 
 /// Font size for FrequencyTable cells/labels — matches Material3 bodySmall (12sp).
 /// Fixed rather than theme-derived because the layout uses pixel-precise positioning.
@@ -80,16 +81,16 @@ class FrequencyTable extends StatelessWidget {
     _addHeaders(children);
 
     // Vinaya section (rows 2-6, vertical label spans 5)
-    _addVinaya(children, isDark, palette);
+    _addVinaya(context, children, isDark, palette);
 
     // Sutta section (rows 7-13, vertical label spans 7)
-    _addSutta(children, isDark, palette);
+    _addSutta(context, children, isDark, palette);
 
     // Abhidhamma section (rows 14-20, vertical label spans 7)
-    _addAbhidhamma(children, isDark, palette);
+    _addAbhidhamma(context, children, isDark, palette);
 
     // Aññā section (rows 21-29, vertical label spans 9)
-    _addAnna(children, isDark, palette);
+    _addAnna(context, children, isDark, palette);
 
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
@@ -156,7 +157,12 @@ class FrequencyTable extends StatelessWidget {
     );
   }
 
-  Widget _posRowLabel(int row, String text, DpdPalette palette) {
+  Widget _posRowLabel(
+    BuildContext context,
+    int row,
+    String text,
+    DpdPalette palette,
+  ) {
     return Positioned(
       left: _colX(1),
       top: row * _cellH,
@@ -170,7 +176,7 @@ class FrequencyTable extends StatelessWidget {
         ),
         alignment: Alignment.center,
         child: Text(
-          text,
+          context.nigg(text),
           style: const TextStyle(fontSize: _kFreqSmallFontSize),
           textAlign: TextAlign.center,
           overflow: TextOverflow.ellipsis,
@@ -264,7 +270,12 @@ class FrequencyTable extends StatelessWidget {
     ]);
   }
 
-  void _addVinaya(List<Widget> children, bool isDark, DpdPalette palette) {
+  void _addVinaya(
+    BuildContext context,
+    List<Widget> children,
+    bool isDark,
+    DpdPalette palette,
+  ) {
     final d = data;
     const base = 2; // first data row
 
@@ -273,7 +284,7 @@ class FrequencyTable extends StatelessWidget {
     // Row labels
     const labels = ['Pārājika', 'Pācittiya', 'Mahāvagga', 'Cūḷavagga', 'Parivāra'];
     for (var i = 0; i < labels.length; i++) {
-      children.add(_posRowLabel(base + i, labels[i], palette));
+      children.add(_posRowLabel(context, base + i, labels[i], palette));
     }
 
     // CST M (col 2): indices 0-4
@@ -322,7 +333,12 @@ class FrequencyTable extends StatelessWidget {
     }
   }
 
-  void _addSutta(List<Widget> children, bool isDark, DpdPalette palette) {
+  void _addSutta(
+    BuildContext context,
+    List<Widget> children,
+    bool isDark,
+    DpdPalette palette,
+  ) {
     final d = data;
     const base = 7;
 
@@ -333,7 +349,7 @@ class FrequencyTable extends StatelessWidget {
       'Khuddaka 1', 'Khuddaka 2', 'Khuddaka 3',
     ];
     for (var i = 0; i < labels.length; i++) {
-      children.add(_posRowLabel(base + i, labels[i], palette));
+      children.add(_posRowLabel(context, base + i, labels[i], palette));
     }
 
     // CST M (col 2): indices 5-11
@@ -393,7 +409,12 @@ class FrequencyTable extends StatelessWidget {
     }
   }
 
-  void _addAbhidhamma(List<Widget> children, bool isDark, DpdPalette palette) {
+  void _addAbhidhamma(
+    BuildContext context,
+    List<Widget> children,
+    bool isDark,
+    DpdPalette palette,
+  ) {
     final d = data;
     const base = 14;
 
@@ -404,7 +425,7 @@ class FrequencyTable extends StatelessWidget {
       'Kathāvatthu', 'Yamaka', 'Paṭṭhāna',
     ];
     for (var i = 0; i < labels.length; i++) {
-      children.add(_posRowLabel(base + i, labels[i], palette));
+      children.add(_posRowLabel(context, base + i, labels[i], palette));
     }
 
     // CST M (col 2): indices 12-18
@@ -458,14 +479,19 @@ class FrequencyTable extends StatelessWidget {
     }
   }
 
-  void _addAnna(List<Widget> children, bool isDark, DpdPalette palette) {
+  void _addAnna(
+    BuildContext context,
+    List<Widget> children,
+    bool isDark,
+    DpdPalette palette,
+  ) {
     final d = data;
     const base = 21;
 
     children.add(_posVerticalLabel(base, 9, 'Aññā', palette));
 
     // Visuddhimagga (row 21) — full row with voids
-    children.add(_posRowLabel(base, 'Visuddhimagga', palette));
+    children.add(_posRowLabel(context, base, 'Visuddhimagga', palette));
     children.add(_posVoidCell(base, 2)); // CST M void
     children.add(
         _posFreqCell(base, 3, d.cstFreq, d.cstGrad, 32, isDark, palette)); // CST A
@@ -486,7 +512,7 @@ class FrequencyTable extends StatelessWidget {
     ];
     for (var i = 0; i < annaLabels.length; i++) {
       final row = base + 1 + i;
-      children.add(_posRowLabel(row, annaLabels[i], palette));
+      children.add(_posRowLabel(context, row, annaLabels[i], palette));
       children.add(_posVoidCell(row, 2)); // CST M void
       children.add(_posVoidCell(row, 3)); // CST A void
       children.add(_posFreqCell(

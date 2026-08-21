@@ -7,6 +7,7 @@ import '../theme/dpd_colors.dart';
 import '../theme/dpd_palette.dart';
 import 'entry_content.dart';
 import 'feedback_type.dart';
+import '../utils/text_filters.dart';
 
 class SuttaInfoSection extends StatelessWidget {
   const SuttaInfoSection({
@@ -89,7 +90,7 @@ class SuttaInfoSection extends StatelessWidget {
             ])
           else if (isSamyutta && s.scVaggaLink != null)
             _multiLinkRow(context, 'Links', [
-              ('SC Saṃyutta Card', s.scVaggaLink),
+              (context.nigg('SC Saṃyutta Card'), s.scVaggaLink),
             ])
           else if (isNipata && s.scVaggaLink != null)
             _multiLinkRow(context, 'Links', [

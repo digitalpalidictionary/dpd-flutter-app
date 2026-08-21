@@ -42,10 +42,7 @@ class _InlineEntryCardState extends ConsumerState<InlineEntryCard>
 
   @override
   Widget build(BuildContext context) {
-    final niggahitaMode =
-        ref.watch(settingsProvider.select((s) => s.niggahitaMode));
-    final filterMode = NiggahitaFilterMode.values[niggahitaMode.index];
-    String n(String t) => filterNiggahita(t, mode: filterMode);
+    String n(String t) => context.nigg(t);
     final theme = Theme.of(context);
     final h = widget.headword;
 

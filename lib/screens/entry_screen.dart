@@ -10,6 +10,7 @@ import '../widgets/entry_content.dart';
 import '../widgets/entry_sections_mixin.dart';
 import '../widgets/family_state_mixin.dart';
 import '../widgets/feedback_footer.dart';
+import '../utils/text_filters.dart';
 
 final _entryProvider = FutureProvider.autoDispose
     .family<DpdHeadwordWithRoot?, int>((ref, id) {
@@ -86,14 +87,14 @@ class _EntryViewState extends ConsumerState<_EntryView>
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    h.lemma1,
+                    context.nigg(h.lemma1),
                     style: theme.textTheme.titleLarge?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   if (h.pos != null)
                     Text(
-                      posGrammarLine(h),
+                      context.nigg(posGrammarLine(h)),
                       style: theme.textTheme.bodySmall?.copyWith(
                         color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
                       ),
@@ -127,7 +128,7 @@ class _EntryViewState extends ConsumerState<_EntryView>
                     DpdSectionContainer(
                       child: Padding(
                         padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
-                        child: Text(h.notes!),
+                        child: Text(context.nigg(h.notes!)),
                       ),
                     ),
                   const SizedBox(height: 24),

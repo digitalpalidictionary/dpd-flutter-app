@@ -15,6 +15,7 @@ import '../widgets/root_matrix_table.dart';
 import '../widgets/content_text_scale.dart';
 import '../widgets/tap_search_wrapper.dart';
 import '../widgets/feedback_footer.dart';
+import '../utils/text_filters.dart';
 
 final _rootProvider = FutureProvider.autoDispose
     .family<RootWithFamilies?, String>((ref, rootKey) {
@@ -89,13 +90,13 @@ class _RootViewState extends ConsumerState<_RootView> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'root: $_rootClean',
+                  context.nigg('root: $_rootClean'),
                   style: theme.textTheme.titleLarge?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 Text(
-                  root.rootMeaning,
+                  context.nigg(root.rootMeaning),
                   style: theme.textTheme.bodySmall?.copyWith(
                     color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
                   ),
@@ -169,7 +170,7 @@ class _RootViewState extends ConsumerState<_RootView> {
                         ),
                       for (final fam in families)
                         DpdSectionButton(
-                          label: fam.rootFamily,
+                          label: context.nigg(fam.rootFamily),
                           isActive: _activeSection == fam.rootFamilyKey,
                           onTap: () => _toggle(fam.rootFamilyKey),
                         ),

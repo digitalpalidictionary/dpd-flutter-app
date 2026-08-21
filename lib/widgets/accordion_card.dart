@@ -56,10 +56,7 @@ class _AccordionCardState extends ConsumerState<AccordionCard>
 
   @override
   Widget build(BuildContext context) {
-    final niggahitaMode =
-        ref.watch(settingsProvider.select((s) => s.niggahitaMode));
-    final filterMode = NiggahitaFilterMode.values[niggahitaMode.index];
-    String n(String t) => filterNiggahita(t, mode: filterMode);
+    String n(String t) => context.nigg(t);
     final theme = Theme.of(context);
     final h = widget.headword;
     final isExpanded = _cardState == _CardState.buttonsVisible;
@@ -67,10 +64,8 @@ class _AccordionCardState extends ConsumerState<AccordionCard>
     final showApostrophe = ref.watch(
       settingsProvider.select((s) => s.showSandhiApostrophe),
     );
-    String f(String? text) => filterNiggahita(
-      filterApostrophe(text ?? '', show: showApostrophe),
-      mode: filterMode,
-    );
+    String f(String? text) =>
+        context.nigg(filterApostrophe(text ?? '', show: showApostrophe));
 
     final hw = h.headword;
     final hasMeaning1 = hw.meaning1 != null && hw.meaning1!.isNotEmpty;

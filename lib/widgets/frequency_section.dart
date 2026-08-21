@@ -7,6 +7,7 @@ import '../theme/dpd_palette.dart';
 import 'entry_content.dart';
 import 'feedback_type.dart';
 import 'frequency_table.dart';
+import '../utils/text_filters.dart';
 
 class FrequencySection extends StatelessWidget {
   const FrequencySection({
@@ -58,11 +59,13 @@ class FrequencySection extends StatelessWidget {
     heading.splitMapJoin(
       RegExp(r'<b>(.*?)</b>'),
       onMatch: (m) {
-        spans.add(TextSpan(text: m.group(1), style: boldStyle));
+        spans.add(
+          TextSpan(text: context.nigg(m.group(1) ?? ''), style: boldStyle),
+        );
         return '';
       },
       onNonMatch: (s) {
-        if (s.isNotEmpty) spans.add(TextSpan(text: s));
+        if (s.isNotEmpty) spans.add(TextSpan(text: context.nigg(s)));
         return '';
       },
     );

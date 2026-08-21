@@ -6,6 +6,7 @@ import '../providers/settings_provider.dart';
 import '../providers/word_of_day_provider.dart';
 import 'accordion_card.dart';
 import 'inline_entry_card.dart';
+import '../utils/text_filters.dart';
 
 class HomeContent extends ConsumerWidget {
   const HomeContent({super.key, required this.onSearch});
@@ -133,7 +134,7 @@ class _RecentSearchesSection extends StatelessWidget {
             children: [
               for (final entry in recent)
                 ActionChip(
-                  label: Text(entry.query),
+                  label: Text(context.nigg(entry.query)),
                   labelStyle: theme.textTheme.bodySmall?.copyWith(
                     color: theme.colorScheme.onSurface,
                   ),

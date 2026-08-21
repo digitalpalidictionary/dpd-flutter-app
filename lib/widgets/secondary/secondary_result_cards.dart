@@ -7,20 +7,25 @@ import '../../utils/pali_sort.dart';
 import '../add_word_form_sheet.dart';
 import '../dpd_feedback_form_sheet.dart';
 import '../entry_content.dart';
+import '../../utils/text_filters.dart';
 import 'secondary_card.dart';
 
 // ── Shared helpers ────────────────────────────────────────────────────────────
 
 const _lineHeight = 1.5;
 
-Widget _lineBreakText(List<String> lines, TextStyle? baseStyle) {
+Widget _lineBreakText(
+  BuildContext context,
+  List<String> lines,
+  TextStyle? baseStyle,
+) {
   if (lines.isEmpty) return const SizedBox.shrink();
   return Text.rich(
     TextSpan(
       style: baseStyle?.copyWith(height: _lineHeight),
       children: [
         for (int i = 0; i < lines.length; i++) ...[
-          TextSpan(text: lines[i]),
+          TextSpan(text: context.nigg(lines[i])),
           if (i < lines.length - 1) const TextSpan(text: '\n'),
         ],
       ],
@@ -42,7 +47,7 @@ class DeconstructorCard extends StatelessWidget {
 
     return DpdSecondaryCard(
       title: 'deconstructor: ${result.headword}',
-      content: _lineBreakText(result.deconstructions, bodyStyle),
+      content: _lineBreakText(context, result.deconstructions, bodyStyle),
       footer: _DeconstructorFooter(encodedHeadword: encodedHeadword),
     );
   }
@@ -274,7 +279,7 @@ class _GrammarDictTableState extends State<_GrammarDictTable> {
   Widget _cell(String text, {TextStyle? style}) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(0, 2, 10, 0),
-      child: Text(text, style: style),
+      child: Text(context.nigg(text), style: style),
     );
   }
 }
@@ -354,9 +359,12 @@ class _AbbreviationOtherTable extends StatelessWidget {
                     TextSpan(
                       style: bodyStyle,
                       children: [
-                        TextSpan(text: row.meaning),
+                        TextSpan(text: context.nigg(row.meaning)),
                         if (row.notes != null)
-                          TextSpan(text: ' ${row.notes}', style: noteStyle),
+                          TextSpan(
+                            text: context.nigg(' ${row.notes}'),
+                            style: noteStyle,
+                          ),
                       ],
                     ),
                   ),
@@ -422,7 +430,7 @@ class _HelpStyleTable extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.only(right: 5),
               child: Text(
-                value,
+                context.nigg(value),
                 style: bold
                     ? bodyStyle?.copyWith(fontWeight: FontWeight.w700)
                     : bodyStyle,
@@ -458,7 +466,7 @@ class EpdCard extends StatelessWidget {
               style: bodyStyle,
               children: [
                 TextSpan(
-                  text: entry.headword,
+                  text: context.nigg(entry.headword),
                   style: TextStyle(
                     color: context.palette.primaryText,
                     fontWeight: FontWeight.w700,
@@ -648,11 +656,12 @@ class _VariantTableState extends State<_VariantTable> {
   }
 
   Widget _cell(String text, {TextStyle? style, bool noWrap = false}) {
+    final shown = context.nigg(text);
     return Padding(
       padding: const EdgeInsets.fromLTRB(0, 2, 10, 0),
       child: noWrap
-          ? Text(text, style: style, softWrap: false)
-          : Text(text, style: style),
+          ? Text(shown, style: style, softWrap: false)
+          : Text(shown, style: style),
     );
   }
 }
@@ -678,7 +687,7 @@ class SpellingCard extends StatelessWidget {
             for (int i = 0; i < result.spellings.length; i++) ...[
               const TextSpan(text: 'incorrect spelling of '),
               TextSpan(
-                text: result.spellings[i],
+                text: context.nigg(result.spellings[i]),
                 style: const TextStyle(
                   fontWeight: FontWeight.w700,
                   fontStyle: FontStyle.italic,
@@ -714,7 +723,7 @@ class SeeCard extends StatelessWidget {
             for (int i = 0; i < result.seeHeadwords.length; i++) ...[
               const TextSpan(text: 'see '),
               TextSpan(
-                text: result.seeHeadwords[i],
+                text: context.nigg(result.seeHeadwords[i]),
                 style: const TextStyle(
                   fontWeight: FontWeight.w700,
                   fontStyle: FontStyle.italic,

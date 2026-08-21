@@ -5,6 +5,7 @@ import '../theme/dpd_colors.dart';
 import '../theme/dpd_palette.dart';
 import 'entry_content.dart';
 import 'feedback_type.dart';
+import '../utils/text_filters.dart';
 
 const Map<int, String> _rootGroupPali = {
   1: 'bhūvādigaṇa',
@@ -47,7 +48,7 @@ class RootInfoTable extends StatelessWidget {
           TextSpan(
             style: valueStyle,
             children: [
-              TextSpan(text: rootClean),
+              TextSpan(text: context.nigg(rootClean)),
               if (root.rootHasVerb.isNotEmpty)
                 TextSpan(
                   text: root.rootHasVerb,
@@ -57,9 +58,11 @@ class RootInfoTable extends StatelessWidget {
                   ),
                 ),
               TextSpan(
-                text: ' ${root.rootGroup} $groupPali + ${root.rootSign}',
+                text: context.nigg(
+                  ' ${root.rootGroup} $groupPali + ${root.rootSign}',
+                ),
               ),
-              TextSpan(text: ' (${root.rootMeaning})'),
+              TextSpan(text: context.nigg(' (${root.rootMeaning})')),
             ],
           ),
         ),

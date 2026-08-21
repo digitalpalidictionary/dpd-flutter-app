@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../models/inflection_table_data.dart';
 import '../theme/dpd_colors.dart';
 import '../theme/dpd_palette.dart';
+import '../utils/text_filters.dart';
 import 'tap_search_wrapper.dart';
 
 class InflectionTable extends StatelessWidget {
@@ -180,9 +181,9 @@ class InflectionTable extends StatelessWidget {
       TextSpan(
         style: textStyle,
         children: [
-          if (form.stem.isNotEmpty) TextSpan(text: form.stem),
+          if (form.stem.isNotEmpty) TextSpan(text: context.nigg(form.stem)),
           TextSpan(
-            text: form.ending,
+            text: context.nigg(form.ending),
             style: const TextStyle(fontWeight: FontWeight.bold),
           ),
         ],

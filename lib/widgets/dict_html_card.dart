@@ -7,6 +7,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../database/database.dart';
 import '../theme/dpd_colors.dart';
 import '../theme/dpd_palette.dart';
+import '../utils/text_filters.dart';
 
 final _hTagRe = RegExp(r'<strong>\((?:H\d[A-Z]?|C\d)\)</strong>\s*');
 final _docWrapRe = RegExp(
@@ -139,18 +140,18 @@ class DictHtmlCard extends StatelessWidget {
 
     return [
       Text(
-        title,
+        context.nigg(title),
         style: Theme.of(
           context,
         ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
       ),
       const SizedBox(height: 4),
       HtmlWidget(
-        html,
+        context.nigg(html),
         customStylesBuilder: stylesBuilder,
         onTapUrl: (url) {
           if (url.startsWith('tooltip:')) {
-            final text = Uri.decodeComponent(url.substring(8));
+            final text = context.nigg(Uri.decodeComponent(url.substring(8)));
             _showTooltip(context, text);
             return true;
           }

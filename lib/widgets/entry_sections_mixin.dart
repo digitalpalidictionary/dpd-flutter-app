@@ -17,6 +17,7 @@ import 'frequency_section.dart';
 import 'grammar_table.dart';
 import 'inflection_section.dart';
 import 'sutta_info_section.dart';
+import '../utils/text_filters.dart';
 
 /// Manages section open/close state, sutta loading, and builds the shared
 /// button row and section content for all three entry display contexts
@@ -130,7 +131,7 @@ mixin EntrySectionsMixin<T extends ConsumerStatefulWidget>
       if (suttaLoaded && suttaInfo != null)
         DpdSectionButton(
           label: suttaInfo!.isSamyutta
-              ? 'saṃyutta'
+              ? context.nigg('saṃyutta')
               : suttaInfo!.isVagga
               ? 'vagga'
               : suttaInfo!.isNipata

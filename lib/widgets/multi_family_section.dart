@@ -5,6 +5,7 @@ import '../theme/dpd_colors.dart';
 import '../theme/dpd_palette.dart';
 import 'entry_content.dart';
 import 'family_table.dart';
+import '../utils/text_filters.dart';
 
 /// A single sub-family entry for multi-family display.
 class FamilySubSection {
@@ -198,7 +199,9 @@ class _JumpToNav extends StatelessWidget {
               child: GestureDetector(
                 onTap: () => onTap(i),
                 child: Text(
-                  i < keys.length - 1 ? '${keys[i]}, ' : keys[i],
+                  context.nigg(
+                    i < keys.length - 1 ? '${keys[i]}, ' : keys[i],
+                  ),
                   style: TextStyle(
                     fontSize: 12,
                     color: context.palette.primaryText,

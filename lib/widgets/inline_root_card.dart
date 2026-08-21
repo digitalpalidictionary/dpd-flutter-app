@@ -12,6 +12,7 @@ import 'family_table.dart';
 import 'feedback_type.dart';
 import 'root_info_table.dart';
 import 'root_matrix_table.dart';
+import '../utils/text_filters.dart';
 
 class InlineRootCard extends ConsumerStatefulWidget {
   const InlineRootCard({super.key, required this.rwf});
@@ -55,7 +56,7 @@ class _InlineRootCardState extends ConsumerState<InlineRootCard> {
           Padding(
             padding: const EdgeInsets.fromLTRB(12, 10, 12, 1),
             child: Text(
-              'root: $_rootClean',
+              context.nigg('root: $_rootClean'),
               style: theme.textTheme.titleLarge?.copyWith(
                 fontWeight: FontWeight.w700,
               ),
@@ -91,7 +92,7 @@ class _InlineRootCardState extends ConsumerState<InlineRootCard> {
                   ),
                 for (final fam in families)
                   DpdSectionButton(
-                    label: fam.rootFamily,
+                    label: context.nigg(fam.rootFamily),
                     isActive: _activeSection == fam.rootFamilyKey,
                     onTap: () => _toggle(fam.rootFamilyKey),
                   ),
@@ -212,7 +213,7 @@ class _AccordionRootCardState extends ConsumerState<AccordionRootCard> {
                         Padding(
                           padding: const EdgeInsets.fromLTRB(12, 10, 12, 1),
                           child: Text(
-                            'root: $_rootClean',
+                            context.nigg('root: $_rootClean'),
                             style: theme.textTheme.titleLarge?.copyWith(
                               fontWeight: FontWeight.w700,
                             ),
@@ -235,7 +236,7 @@ class _AccordionRootCardState extends ConsumerState<AccordionRootCard> {
                           style: baseStyle,
                           children: [
                             TextSpan(
-                              text: '$_rootClean  ',
+                              text: context.nigg('$_rootClean  '),
                               style: boldStyle?.copyWith(
                                 color: theme.colorScheme.primary,
                               ),
@@ -251,9 +252,13 @@ class _AccordionRootCardState extends ConsumerState<AccordionRootCard> {
                                   ],
                                 ),
                               ),
-                            TextSpan(text: ' ${root.rootGroup} '),
-                            TextSpan(text: root.rootSign),
-                            TextSpan(text: ' (${root.rootMeaning})'),
+                            TextSpan(
+                              text: context.nigg(' ${root.rootGroup} '),
+                            ),
+                            TextSpan(text: context.nigg(root.rootSign)),
+                            TextSpan(
+                              text: context.nigg(' (${root.rootMeaning})'),
+                            ),
                             TextSpan(
                               text: ' ${widget.rwf.count}',
                               style: grayStyle,
@@ -283,7 +288,7 @@ class _AccordionRootCardState extends ConsumerState<AccordionRootCard> {
                     ),
                   for (final fam in families)
                     DpdSectionButton(
-                      label: fam.rootFamily,
+                      label: context.nigg(fam.rootFamily),
                       isActive: _activeSection == fam.rootFamilyKey,
                       onTap: () => _toggle(fam.rootFamilyKey),
                     ),
@@ -383,7 +388,7 @@ class _RootSummaryBox extends StatelessWidget {
           style: baseStyle,
           children: [
             const TextSpan(text: 'root. '),
-            TextSpan(text: rootClean, style: boldStyle),
+            TextSpan(text: context.nigg(rootClean), style: boldStyle),
             if (root.rootHasVerb.isNotEmpty)
               TextSpan(
                 text: root.rootHasVerb,
@@ -392,9 +397,9 @@ class _RootSummaryBox extends StatelessWidget {
                   fontFeatures: [const FontFeature.superscripts()],
                 ),
               ),
-            TextSpan(text: ' ${root.rootGroup} '),
-            TextSpan(text: root.rootSign),
-            TextSpan(text: ' (${root.rootMeaning})'),
+            TextSpan(text: context.nigg(' ${root.rootGroup} ')),
+            TextSpan(text: context.nigg(root.rootSign)),
+            TextSpan(text: context.nigg(' (${root.rootMeaning})')),
             TextSpan(text: ' $count', style: grayStyle),
           ],
         ),
