@@ -3,6 +3,7 @@
     {
       "title": "unreleased",
       "items": [
+        "feat: niggahīta setting now applies everywhere in the app",
         "fix: swap dhamma.gift links to f.dhamma.gift host",
         "feat: external sites can now deep-link straight to a word",
         "feat: sutta info now shows an s.4nt.org link"
