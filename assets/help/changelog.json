@@ -3,6 +3,8 @@
     {
       "title": "unreleased",
       "items": [
+        "feat: word taps can open as a popup instead of full page",
+        "fix: menus and titles now stay readable at large font sizes",
         "fix: mistyped inflected words give valid results everywhere",
         "feat: niggahīta setting now applies everywhere in the app",
         "fix: swap dhamma.gift links to f.dhamma.gift host",
