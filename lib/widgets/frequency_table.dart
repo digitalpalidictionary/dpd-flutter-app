@@ -9,6 +9,13 @@ import '../utils/text_filters.dart';
 /// Fixed rather than theme-derived because the layout uses pixel-precise positioning.
 const double _kFreqSmallFontSize = 12.0;
 
+/// WCAG relative-luminance contrast ratio between two colors (1.0-21.0).
+double _contrastRatio(double luminanceA, double luminanceB) {
+  final lighter = (luminanceA > luminanceB ? luminanceA : luminanceB) + 0.05;
+  final darker = (luminanceA < luminanceB ? luminanceA : luminanceB) + 0.05;
+  return lighter / darker;
+}
+
 /// Native Flutter frequency heatmap table replicating the webapp layout.
 class FrequencyTable extends StatelessWidget {
   const FrequencyTable({super.key, required this.data});
@@ -69,7 +76,7 @@ class FrequencyTable extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final surfaceColor = Theme.of(context).colorScheme.surface;
     final palette = context.palette;
 
     // Total rows: 2 headers + 5 vinaya + 7 sutta + 7 abhidhamma + 9 aññā = 30
@@ -81,16 +88,16 @@ class FrequencyTable extends StatelessWidget {
     _addHeaders(children);
 
     // Vinaya section (rows 2-6, vertical label spans 5)
-    _addVinaya(context, children, isDark, palette);
+    _addVinaya(context, children, surfaceColor, palette);
 
     // Sutta section (rows 7-13, vertical label spans 7)
-    _addSutta(context, children, isDark, palette);
+    _addSutta(context, children, surfaceColor, palette);
 
     // Abhidhamma section (rows 14-20, vertical label spans 7)
-    _addAbhidhamma(context, children, isDark, palette);
+    _addAbhidhamma(context, children, surfaceColor, palette);
 
     // Aññā section (rows 21-29, vertical label spans 9)
-    _addAnna(context, children, isDark, palette);
+    _addAnna(context, children, surfaceColor, palette);
 
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
@@ -104,9 +111,8 @@ class FrequencyTable extends StatelessWidget {
 
   // ─── POSITIONED CELL HELPERS ──────────────────────────────
 
-  Widget _posFreqCell(
-      int row, int col, List<int> freq, List<int> grad, int idx, bool isDark,
-      DpdPalette palette,
+  Widget _posFreqCell(int row, int col, List<int> freq, List<int> grad,
+      int idx, Color surfaceColor, DpdPalette palette,
       {int rowSpan = 1}) {
     if (idx < 0 || idx >= freq.length) return _posVoidCell(row, col);
 
@@ -124,9 +130,18 @@ class FrequencyTable extends StatelessWidget {
     } else {
       bgColor = palette.freq[level.clamp(0, 10)];
       borderColor = bgColor;
-      textColor = isDark
+      // The cell color is semi-transparent, so composite it over the real
+      // surface color, then pick whichever text color actually has higher
+      // contrast against that. A luminance-threshold guess (e.g.
+      // estimateBrightnessForColor) misjudges saturated orange/yellow
+      // hues, which read as bright to the eye but score low on the
+      // green-weighted luminance formula.
+      final effectiveColor = Color.alphaBlend(bgColor, surfaceColor);
+      final bgLuminance = effectiveColor.computeLuminance();
+      textColor = _contrastRatio(bgLuminance, palette.light.computeLuminance()) >=
+              _contrastRatio(bgLuminance, palette.dark.computeLuminance())
           ? palette.light
-          : (level <= 5 ? palette.dark : palette.light);
+          : palette.dark;
     }
 
     return Positioned(
@@ -273,7 +288,7 @@ class FrequencyTable extends StatelessWidget {
   void _addVinaya(
     BuildContext context,
     List<Widget> children,
-    bool isDark,
+    Color surfaceColor,
     DpdPalette palette,
   ) {
     final d = data;
@@ -289,54 +304,54 @@ class FrequencyTable extends StatelessWidget {
 
     // CST M (col 2): indices 0-4
     for (var i = 0; i < 5; i++) {
-      children.add(_posFreqCell(base + i, 2, d.cstFreq, d.cstGrad, i, isDark, palette));
+      children.add(_posFreqCell(base + i, 2, d.cstFreq, d.cstGrad, i, surfaceColor, palette));
     }
 
     // CST A (col 3): indices 19-23
     for (var i = 0; i < 5; i++) {
       children.add(
-          _posFreqCell(base + i, 3, d.cstFreq, d.cstGrad, 19 + i, isDark, palette));
+          _posFreqCell(base + i, 3, d.cstFreq, d.cstGrad, 19 + i, surfaceColor, palette));
     }
 
     // CST Ṭ (col 4): index 33, rowspan=5
     children.add(
-        _posFreqCell(base, 4, d.cstFreq, d.cstGrad, 33, isDark, palette, rowSpan: 5));
+        _posFreqCell(base, 4, d.cstFreq, d.cstGrad, 33, surfaceColor, palette, rowSpan: 5));
 
     // BJT M (col 6): indices 0-4
     for (var i = 0; i < 5; i++) {
       children.add(
-          _posFreqCell(base + i, 6, d.bjtFreq, d.bjtGrad, i, isDark, palette));
+          _posFreqCell(base + i, 6, d.bjtFreq, d.bjtGrad, i, surfaceColor, palette));
     }
 
     // BJT A (col 7): indices 19-23
     for (var i = 0; i < 5; i++) {
       children.add(
-          _posFreqCell(base + i, 7, d.bjtFreq, d.bjtGrad, 19 + i, isDark, palette));
+          _posFreqCell(base + i, 7, d.bjtFreq, d.bjtGrad, 19 + i, surfaceColor, palette));
     }
 
     // SYA M (col 9): index 0 rowspan=2, then 1,2,3
     children.add(
-        _posFreqCell(base, 9, d.syaFreq, d.syaGrad, 0, isDark, palette, rowSpan: 2));
+        _posFreqCell(base, 9, d.syaFreq, d.syaGrad, 0, surfaceColor, palette, rowSpan: 2));
     for (var i = 2; i < 5; i++) {
       children.add(
-          _posFreqCell(base + i, 9, d.syaFreq, d.syaGrad, i - 1, isDark, palette));
+          _posFreqCell(base + i, 9, d.syaFreq, d.syaGrad, i - 1, surfaceColor, palette));
     }
 
     // SYA A (col 10): index 17, rowspan=5
     children.add(
-        _posFreqCell(base, 10, d.syaFreq, d.syaGrad, 17, isDark, palette, rowSpan: 5));
+        _posFreqCell(base, 10, d.syaFreq, d.syaGrad, 17, surfaceColor, palette, rowSpan: 5));
 
     // SC M (col 12): indices 0-4
     for (var i = 0; i < 5; i++) {
       children
-          .add(_posFreqCell(base + i, 12, d.scFreq, d.scGrad, i, isDark, palette));
+          .add(_posFreqCell(base + i, 12, d.scFreq, d.scGrad, i, surfaceColor, palette));
     }
   }
 
   void _addSutta(
     BuildContext context,
     List<Widget> children,
-    bool isDark,
+    Color surfaceColor,
     DpdPalette palette,
   ) {
     final d = data;
@@ -355,64 +370,64 @@ class FrequencyTable extends StatelessWidget {
     // CST M (col 2): indices 5-11
     for (var i = 0; i < 7; i++) {
       children.add(
-          _posFreqCell(base + i, 2, d.cstFreq, d.cstGrad, 5 + i, isDark, palette));
+          _posFreqCell(base + i, 2, d.cstFreq, d.cstGrad, 5 + i, surfaceColor, palette));
     }
 
     // CST A (col 3): indices 24-30
     for (var i = 0; i < 7; i++) {
       children.add(
-          _posFreqCell(base + i, 3, d.cstFreq, d.cstGrad, 24 + i, isDark, palette));
+          _posFreqCell(base + i, 3, d.cstFreq, d.cstGrad, 24 + i, surfaceColor, palette));
     }
 
     // CST Ṭ (col 4): indices 34-38, with voids at Khuddaka 1 (row 4) and Khuddaka 2 (row 5)
     children.add(
-        _posFreqCell(base, 4, d.cstFreq, d.cstGrad, 34, isDark, palette)); // Dīgha
+        _posFreqCell(base, 4, d.cstFreq, d.cstGrad, 34, surfaceColor, palette)); // Dīgha
     children.add(
-        _posFreqCell(base + 1, 4, d.cstFreq, d.cstGrad, 35, isDark, palette)); // Majjhima
+        _posFreqCell(base + 1, 4, d.cstFreq, d.cstGrad, 35, surfaceColor, palette)); // Majjhima
     children.add(
-        _posFreqCell(base + 2, 4, d.cstFreq, d.cstGrad, 36, isDark, palette)); // Saṃyutta
+        _posFreqCell(base + 2, 4, d.cstFreq, d.cstGrad, 36, surfaceColor, palette)); // Saṃyutta
     children.add(
-        _posFreqCell(base + 3, 4, d.cstFreq, d.cstGrad, 37, isDark, palette)); // Aṅguttara
+        _posFreqCell(base + 3, 4, d.cstFreq, d.cstGrad, 37, surfaceColor, palette)); // Aṅguttara
     children.add(_posVoidCell(base + 4, 4)); // Khuddaka 1 — void
     children.add(_posVoidCell(base + 5, 4)); // Khuddaka 2 — void
     children.add(
-        _posFreqCell(base + 6, 4, d.cstFreq, d.cstGrad, 38, isDark, palette)); // Khuddaka 3
+        _posFreqCell(base + 6, 4, d.cstFreq, d.cstGrad, 38, surfaceColor, palette)); // Khuddaka 3
 
     // BJT M (col 6): indices 5-11
     for (var i = 0; i < 7; i++) {
       children.add(
-          _posFreqCell(base + i, 6, d.bjtFreq, d.bjtGrad, 5 + i, isDark, palette));
+          _posFreqCell(base + i, 6, d.bjtFreq, d.bjtGrad, 5 + i, surfaceColor, palette));
     }
 
     // BJT A (col 7): indices 24-30
     for (var i = 0; i < 7; i++) {
       children.add(
-          _posFreqCell(base + i, 7, d.bjtFreq, d.bjtGrad, 24 + i, isDark, palette));
+          _posFreqCell(base + i, 7, d.bjtFreq, d.bjtGrad, 24 + i, surfaceColor, palette));
     }
 
     // SYA M (col 9): indices 4-10
     for (var i = 0; i < 7; i++) {
       children.add(
-          _posFreqCell(base + i, 9, d.syaFreq, d.syaGrad, 4 + i, isDark, palette));
+          _posFreqCell(base + i, 9, d.syaFreq, d.syaGrad, 4 + i, surfaceColor, palette));
     }
 
     // SYA A (col 10): indices 18-24
     for (var i = 0; i < 7; i++) {
       children.add(
-          _posFreqCell(base + i, 10, d.syaFreq, d.syaGrad, 18 + i, isDark, palette));
+          _posFreqCell(base + i, 10, d.syaFreq, d.syaGrad, 18 + i, surfaceColor, palette));
     }
 
     // SC M (col 12): indices 5-11
     for (var i = 0; i < 7; i++) {
       children.add(
-          _posFreqCell(base + i, 12, d.scFreq, d.scGrad, 5 + i, isDark, palette));
+          _posFreqCell(base + i, 12, d.scFreq, d.scGrad, 5 + i, surfaceColor, palette));
     }
   }
 
   void _addAbhidhamma(
     BuildContext context,
     List<Widget> children,
-    bool isDark,
+    Color surfaceColor,
     DpdPalette palette,
   ) {
     final d = data;
@@ -431,58 +446,58 @@ class FrequencyTable extends StatelessWidget {
     // CST M (col 2): indices 12-18
     for (var i = 0; i < 7; i++) {
       children.add(
-          _posFreqCell(base + i, 2, d.cstFreq, d.cstGrad, 12 + i, isDark, palette));
+          _posFreqCell(base + i, 2, d.cstFreq, d.cstGrad, 12 + i, surfaceColor, palette));
     }
 
     // CST A (col 3): index 31, rowspan=7
-    children.add(_posFreqCell(base, 3, d.cstFreq, d.cstGrad, 31, isDark, palette,
+    children.add(_posFreqCell(base, 3, d.cstFreq, d.cstGrad, 31, surfaceColor, palette,
         rowSpan: 7));
 
     // CST Ṭ (col 4): index 39, rowspan=7
-    children.add(_posFreqCell(base, 4, d.cstFreq, d.cstGrad, 39, isDark, palette,
+    children.add(_posFreqCell(base, 4, d.cstFreq, d.cstGrad, 39, surfaceColor, palette,
         rowSpan: 7));
 
     // BJT M (col 6): indices 12-18
     for (var i = 0; i < 7; i++) {
       children.add(
-          _posFreqCell(base + i, 6, d.bjtFreq, d.bjtGrad, 12 + i, isDark, palette));
+          _posFreqCell(base + i, 6, d.bjtFreq, d.bjtGrad, 12 + i, surfaceColor, palette));
     }
 
     // BJT A (col 7): indices 31-37
     for (var i = 0; i < 7; i++) {
       children.add(
-          _posFreqCell(base + i, 7, d.bjtFreq, d.bjtGrad, 31 + i, isDark, palette));
+          _posFreqCell(base + i, 7, d.bjtFreq, d.bjtGrad, 31 + i, surfaceColor, palette));
     }
 
     // SYA M (col 9): indices 11-16, with rowspan=2 at index 13 (Dhātukathā+Puggalapaññatti)
     children.add(
-        _posFreqCell(base, 9, d.syaFreq, d.syaGrad, 11, isDark, palette)); // Dhammasaṅgaṇī
+        _posFreqCell(base, 9, d.syaFreq, d.syaGrad, 11, surfaceColor, palette)); // Dhammasaṅgaṇī
     children.add(
-        _posFreqCell(base + 1, 9, d.syaFreq, d.syaGrad, 12, isDark, palette)); // Vibhaṅga
-    children.add(_posFreqCell(base + 2, 9, d.syaFreq, d.syaGrad, 13, isDark, palette,
+        _posFreqCell(base + 1, 9, d.syaFreq, d.syaGrad, 12, surfaceColor, palette)); // Vibhaṅga
+    children.add(_posFreqCell(base + 2, 9, d.syaFreq, d.syaGrad, 13, surfaceColor, palette,
         rowSpan: 2)); // Dhātukathā+Puggalapaññatti
     children.add(
-        _posFreqCell(base + 4, 9, d.syaFreq, d.syaGrad, 14, isDark, palette)); // Kathāvatthu
+        _posFreqCell(base + 4, 9, d.syaFreq, d.syaGrad, 14, surfaceColor, palette)); // Kathāvatthu
     children.add(
-        _posFreqCell(base + 5, 9, d.syaFreq, d.syaGrad, 15, isDark, palette)); // Yamaka
+        _posFreqCell(base + 5, 9, d.syaFreq, d.syaGrad, 15, surfaceColor, palette)); // Yamaka
     children.add(
-        _posFreqCell(base + 6, 9, d.syaFreq, d.syaGrad, 16, isDark, palette)); // Paṭṭhāna
+        _posFreqCell(base + 6, 9, d.syaFreq, d.syaGrad, 16, surfaceColor, palette)); // Paṭṭhāna
 
     // SYA A (col 10): index 25, rowspan=7
-    children.add(_posFreqCell(base, 10, d.syaFreq, d.syaGrad, 25, isDark, palette,
+    children.add(_posFreqCell(base, 10, d.syaFreq, d.syaGrad, 25, surfaceColor, palette,
         rowSpan: 7));
 
     // SC M (col 12): indices 12-18
     for (var i = 0; i < 7; i++) {
       children.add(
-          _posFreqCell(base + i, 12, d.scFreq, d.scGrad, 12 + i, isDark, palette));
+          _posFreqCell(base + i, 12, d.scFreq, d.scGrad, 12 + i, surfaceColor, palette));
     }
   }
 
   void _addAnna(
     BuildContext context,
     List<Widget> children,
-    bool isDark,
+    Color surfaceColor,
     DpdPalette palette,
   ) {
     final d = data;
@@ -494,15 +509,15 @@ class FrequencyTable extends StatelessWidget {
     children.add(_posRowLabel(context, base, 'Visuddhimagga', palette));
     children.add(_posVoidCell(base, 2)); // CST M void
     children.add(
-        _posFreqCell(base, 3, d.cstFreq, d.cstGrad, 32, isDark, palette)); // CST A
+        _posFreqCell(base, 3, d.cstFreq, d.cstGrad, 32, surfaceColor, palette)); // CST A
     children.add(
-        _posFreqCell(base, 4, d.cstFreq, d.cstGrad, 40, isDark, palette)); // CST Ṭ
+        _posFreqCell(base, 4, d.cstFreq, d.cstGrad, 40, surfaceColor, palette)); // CST Ṭ
     children.add(_posVoidCell(base, 6)); // BJT M void
     children.add(
-        _posFreqCell(base, 7, d.bjtFreq, d.bjtGrad, 38, isDark, palette)); // BJT A
+        _posFreqCell(base, 7, d.bjtFreq, d.bjtGrad, 38, surfaceColor, palette)); // BJT A
     children.add(_posVoidCell(base, 9)); // SYA M void
     children.add(
-        _posFreqCell(base, 10, d.syaFreq, d.syaGrad, 26, isDark, palette)); // SYA A
+        _posFreqCell(base, 10, d.syaFreq, d.syaGrad, 26, surfaceColor, palette)); // SYA A
     children.add(_posVoidCell(base, 12)); // SC M void
 
     // Rows 22-29: CST-only (void CST M, void CST A, CstṬ value)
@@ -516,7 +531,7 @@ class FrequencyTable extends StatelessWidget {
       children.add(_posVoidCell(row, 2)); // CST M void
       children.add(_posVoidCell(row, 3)); // CST A void
       children.add(_posFreqCell(
-          row, 4, d.cstFreq, d.cstGrad, 41 + i, isDark, palette)); // CST Ṭ
+          row, 4, d.cstFreq, d.cstGrad, 41 + i, surfaceColor, palette)); // CST Ṭ
     }
   }
 }
