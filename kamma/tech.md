@@ -107,13 +107,29 @@ word tap does. All word taps funnel through one seam,
 `TapSearchWrapper._executeSearch` (`lib/widgets/tap_search_wrapper.dart`) — in `popup`
 mode it calls `showWordPopup()` (`lib/widgets/word_popup.dart`) instead of writing
 `searchQueryProvider`/recording history/popping the page. The popup does its own lookup
-via `exactResultsProvider(word)` (DPD exact matches only — no partial/fuzzy/other
-dictionaries) and reuses `InlineEntryCard` verbatim, so it never touches the search bar
-or the underlying page's state. A nested tap inside the popup swaps its own contents
+via `SearchResultsBody` (`lib/widgets/search_results_body.dart`) with `allowSummary: false`,
+so it shows the same full stack the results page does — headwords, roots, secondary sources
+and external dictionaries across the exact/partial/fuzzy tiers — minus the summary. It never
+touches the search bar or the underlying page's state. A nested tap inside the popup swaps its own contents
 (via `TapSearchWrapper.onWordTap`) rather than opening a second sheet — there is no back
 stack. The popup's own "Full search" action is the only popup-lookup action that records
 history or pops the underlying page (mirrors `TapSearchWrapper.shouldPop`, threaded into
 `showWordPopup`).
+
+**Shared results body (2026-09-05).** The assembly logic — provider watches, partial/fuzzy
+dedup against exact, the per-tier setting gates, the loading/error/no-results branches — lives
+in `SearchResultsBody`, not in `SearchScreen`. Both the screen and the popup render it, so a
+change to what a search shows only has to be made once. Two things stay with the caller: the
+surrounding `TapSearchWrapper`, because a tap means different things on the two surfaces, and
+the search-timing instrumentation, gated behind `recordTimings` so popup renders don't pollute
+the numbers. `SearchScreen.build` also holds `exactResultsProvider`/`partialResultsProvider`
+subscriptions itself — the info view replaces the body entirely, and these providers are
+`autoDispose`, so without a watch that outlives the body the results would be discarded and
+re-fetched every time an info page closes.
+
+**Known gap:** `InflectionTable` (`lib/widgets/inflection_table.dart`) nests its own
+`TapSearchWrapper` with no `onWordTap`, so tapping an inflected form inside the sheet opens a
+*second* sheet instead of swapping the first — contrary to the no-back-stack rule above.
 
 ## Chrome Text Scaling (2026-08-21)
 App chrome has no text-scale override, so the phone's system font-size setting drives every menu, title, and button directly. There is deliberately no in-app setting for chrome font size and no cap on it — `ContentTextScale` (`lib/widgets/content_text_scale.dart`) and the `Results font size` slider are scoped to results/entry/root content only, and must stay that way. A large system font is therefore a supported state that layout has to survive, not an edge case to clamp away.

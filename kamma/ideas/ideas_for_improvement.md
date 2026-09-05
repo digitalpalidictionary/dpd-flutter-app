@@ -59,6 +59,13 @@ A URL scheme (`dpd://entry/12345`) with a web fallback to dpdict.net so users ca
 
 ---
 
+## Found During Other Work
+
+### 12. Inflected forms in the popup open a second sheet
+`InflectionTable` (`lib/widgets/inflection_table.dart`) nests its own `TapSearchWrapper` with no `onWordTap`, so a tap on an inflected form inside the word popup falls through to the default path and opens a **second** bottom sheet on top of the first — contrary to the popup's documented no-back-stack rule. Pre-existing, but hit far more often now the popup shows the full result stack. Fix by threading the popup's `onWordTap` down, or by giving the popup an inherited context the nested wrapper can read. Found 2026-09-05 during the popup full-results thread.
+
+---
+
 ## Source
 
 Compiled 2026-04-23 from two independent reviews of `lib/` — merged and deduplicated. Items 1, 4, 7, 11 from review A; items 3, 6, 9, 10 from review B; items 2, 5, 8 present in both.

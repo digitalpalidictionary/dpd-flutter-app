@@ -5,7 +5,8 @@ import '../providers/history_provider.dart';
 import '../providers/search_provider.dart';
 import '../theme/dpd_colors.dart';
 import '../utils/history_recording.dart';
-import 'inline_entry_card.dart';
+import '../utils/text_filters.dart';
+import 'search_results_body.dart';
 import 'tap_search_wrapper.dart';
 
 /// Shows a word's DPD entries in a sheet over the current screen, without
@@ -79,7 +80,6 @@ class _WordPopupContentState extends ConsumerState<_WordPopupContent> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final resultsAsync = ref.watch(exactResultsProvider(_word));
 
     return Column(
       children: [
@@ -100,7 +100,7 @@ class _WordPopupContentState extends ConsumerState<_WordPopupContent> {
             children: [
               Expanded(
                 child: Text(
-                  _word,
+                  context.nigg(_word),
                   style: theme.textTheme.titleLarge?.copyWith(
                     fontWeight: FontWeight.w700,
                   ),
@@ -119,31 +119,9 @@ class _WordPopupContentState extends ConsumerState<_WordPopupContent> {
           ),
         ),
         Expanded(
-          child: resultsAsync.when(
-            loading: () =>
-                const Center(child: CircularProgressIndicator()),
-            error: (e, _) => Center(child: Text('Error: $e')),
-            data: (results) {
-              if (results.isEmpty) {
-                return Center(
-                  child: Text(
-                    'No results for "$_word"',
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: theme.colorScheme.onSurfaceVariant,
-                    ),
-                  ),
-                );
-              }
-              return TapSearchWrapper(
-                onWordTap: (tapped) => setState(() => _word = tapped),
-                child: ListView.builder(
-                  padding: const EdgeInsets.only(bottom: 16),
-                  itemCount: results.length,
-                  itemBuilder: (context, index) =>
-                      InlineEntryCard(headword: results[index]),
-                ),
-              );
-            },
+          child: TapSearchWrapper(
+            onWordTap: (tapped) => setState(() => _word = tapped),
+            child: SearchResultsBody(query: _word, allowSummary: false),
           ),
         ),
       ],

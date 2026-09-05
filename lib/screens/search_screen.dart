@@ -12,17 +12,14 @@ import '../providers/autocomplete_provider.dart';
 import '../providers/dict_provider.dart';
 import '../providers/history_provider.dart';
 import '../providers/search_provider.dart';
-import '../providers/secondary_results_provider.dart';
 import '../providers/database_update_provider.dart';
 import '../providers/settings_provider.dart';
-import '../providers/summary_provider.dart';
 import '../theme/dpd_colors.dart';
 import '../theme/dpd_palette.dart';
 import '../utils/transliteration.dart';
 import '../utils/velthuis.dart';
 import '../utils/back_navigation.dart';
 import '../utils/history_recording.dart';
-import '../utils/search_timing.dart';
 import '../utils/text_filters.dart';
 import '../services/bubble_service.dart';
 import '../widgets/autocomplete_dropdown.dart';
@@ -35,7 +32,7 @@ import '../widgets/home_content.dart';
 import '../widgets/history_panel.dart';
 import '../widgets/info_popup.dart';
 import '../widgets/settings_panel.dart';
-import '../widgets/split_results_list.dart';
+import '../widgets/search_results_body.dart';
 import '../widgets/content_text_scale.dart';
 import '../widgets/tap_search_wrapper.dart';
 import '../widgets/velthuis_help_popup.dart';
@@ -504,8 +501,13 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     final theme = Theme.of(context);
     final palette = context.palette;
     final query = ref.watch(searchQueryProvider);
-    final exactAsync = ref.watch(exactResultsProvider(query));
-    final partialAsync = ref.watch(partialResultsProvider(query));
+
+    // Hold the result subscriptions at screen level. The info view replaces the
+    // results body entirely, and these providers are autoDispose — without a
+    // watch that outlives the body, closing an info page would throw the
+    // results away and show a spinner on the way back.
+    ref.watch(exactResultsProvider(query));
+    ref.watch(partialResultsProvider(query));
 
     // Re-render the field when the niggahita setting is toggled. The field is
     // written from callbacks, not from build, so nothing else would refresh it.
@@ -808,12 +810,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                         ? InfoContentView(content: _activeInfo!)
                         : ContentTextScale(
                             child: TapSearchWrapper(
-                              child: _buildBody(
-                                context,
-                                query,
-                                exactAsync,
-                                partialAsync,
-                              ),
+                              child: _buildBody(context, query),
                             ),
                           ),
                   ),
@@ -904,121 +901,17 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     );
   }
 
-  Widget _buildBody(
-    BuildContext context,
-    String query,
-    AsyncValue<List<DpdHeadwordWithRoot>> exactAsync,
-    AsyncValue<List<DpdHeadwordWithRoot>> partialAsync,
-  ) {
+  Widget _buildBody(BuildContext context, String query) {
     if (query.isEmpty) {
       return _showHome
           ? HomeContent(onSearch: _searchFromHome)
           : const EmptyPrompt();
     }
 
-    final exact = exactAsync.valueOrNull ?? [];
-    final exactIds = exact.map((e) => e.headword.id).toSet();
-    final partial = (partialAsync.valueOrNull ?? [])
-        .where((e) => !exactIds.contains(e.headword.id))
-        .toList();
-    final exactLoading = exactAsync.isLoading;
-    final partialLoading = partialAsync.isLoading;
-
-    final rootAsync = ref.watch(rootResultsProvider(query));
-    final roots = rootAsync.valueOrNull ?? [];
-
-    final secondaryAsync = ref.watch(secondaryResultsProvider(query));
-    final secondary = secondaryAsync.valueOrNull ?? [];
-
-    final dictAsync = ref.watch(dictResultsProvider(query));
-    final dictSearch = dictAsync.valueOrNull ?? const DictSearchResults();
-    final dictExact = dictSearch.exact;
-    final dictPartial = dictSearch.partial;
-    final dictFuzzy = dictSearch.fuzzy;
-
-    if (exactLoading && exact.isEmpty) {
-      return const Center(child: CircularProgressIndicator());
-    }
-
-    if (exactAsync.hasError && exact.isEmpty) {
-      return Center(child: Text('Error: ${exactAsync.error}'));
-    }
-
-    final settings = ref.watch(settingsProvider);
-
-    final fuzzyAsync = ref.watch(fuzzyResultsProvider(query));
-    final exactAndPartialIds = {
-      ...exactIds,
-      ...partial.map((e) => e.headword.id),
-    };
-    final fuzzyRaw = (fuzzyAsync.valueOrNull ?? [])
-        .where((e) => !exactAndPartialIds.contains(e.headword.id))
-        .toList();
-
-    final visiblePartial = settings.showPartialResults
-        ? partial
-        : <DpdHeadwordWithRoot>[];
-    final visibleFuzzy = settings.showFuzzyResults
-        ? fuzzyRaw
-        : <DpdHeadwordWithRoot>[];
-    final visibleDictPartial = settings.showPartialResults
-        ? dictPartial
-        : <DictResult>[];
-    final visibleDictFuzzy = settings.showFuzzyResults
-        ? dictFuzzy
-        : <DictResult>[];
-
-    if (exact.isEmpty &&
-        visiblePartial.isEmpty &&
-        roots.isEmpty &&
-        secondary.isEmpty &&
-        dictExact.isEmpty &&
-        visibleDictPartial.isEmpty &&
-        visibleDictFuzzy.isEmpty &&
-        visibleFuzzy.isEmpty &&
-        !partialLoading &&
-        !fuzzyAsync.isLoading &&
-        !dictAsync.isLoading) {
-      // While the dropdown is offering completions the user is still mid-word,
-      // so withhold the no-results verdict — declaring failure and suggesting
-      // words at the same time is contradictory. The verdict appears as soon
-      // as the dropdown closes (word finished, tapped, or no completions).
-      if (_suggestionsVisible) {
-        return const EmptyPrompt();
-      }
-      return NoResultsWithSuggestions(query: query);
-    }
-
-    final visibility = ref.watch(dictVisibilityProvider);
-    final summaryEntries = ref.watch(summaryEntriesProvider(query));
-
-    if (enableSearchTiming) {
-      final timing = SearchTimingData(query: query);
-      timing.startRenderTimer();
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        timing.endRenderTimer();
-        timing.recordTotalSearchTime(
-          DateTime.now().difference(timing.startedAt),
-        );
-        recordTiming(timing);
-      });
-    }
-
-    return SplitResultsList(
-      exact: exact,
-      partial: visiblePartial,
-      partialLoading: partialLoading,
-      roots: roots,
-      secondary: secondary,
-      dictExact: dictExact,
-      dictPartial: visibleDictPartial,
-      dictFuzzy: visibleDictFuzzy,
-      summaryEntries: summaryEntries,
-      showSummary:
-          settings.showSummary && settings.displayMode != DisplayMode.compact,
-      mode: settings.displayMode,
-      visibility: visibility,
-      fuzzy: visibleFuzzy,
+    return SearchResultsBody(
+      query: query,
+      suggestionsVisible: _suggestionsVisible,
+      recordTimings: true,
     );
   }
 }
