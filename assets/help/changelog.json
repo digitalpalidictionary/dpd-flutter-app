@@ -3,6 +3,7 @@
     {
       "title": "unreleased",
       "items": [
+        "fix: frequency table text now readable on every heatmap color",
         "feat: word taps can open as a popup instead of full page",
         "fix: menus and titles now stay readable at large font sizes",
         "fix: mistyped inflected words give valid results everywhere",
