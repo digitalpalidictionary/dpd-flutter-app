@@ -8,9 +8,10 @@ import '../providers/settings_provider.dart';
 import '../theme/dpd_colors.dart';
 import '../theme/dpd_palette.dart';
 import '../widgets/secondary/bibliography_card.dart';
+import '../widgets/secondary/citation_card.dart';
 import '../widgets/secondary/thanks_card.dart';
 
-enum InfoContent { changelog, bibliography, thanks }
+enum InfoContent { changelog, bibliography, thanks, citation }
 
 // ── Info popup ────────────────────────────────────────────────────────────────
 
@@ -104,6 +105,12 @@ class InfoPopup extends ConsumerWidget {
               label: 'Thanks',
               icon: Icons.volunteer_activism_outlined,
               onTap: () => onSelect(InfoContent.thanks),
+            ),
+            divider,
+            InfoMenuItem(
+              label: 'How to Cite',
+              icon: Icons.format_quote_outlined,
+              onTap: () => onSelect(InfoContent.citation),
             ),
             divider,
             InfoMenuItem(
@@ -203,6 +210,8 @@ class _InfoContentViewState extends State<InfoContentView> {
       case InfoContent.thanks:
         final cats = await loadThanks();
         return ThanksCard(result: ThanksResult(categories: cats));
+      case InfoContent.citation:
+        return const CitationCard();
     }
   }
 

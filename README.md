@@ -67,6 +67,12 @@ just linux-run          # build and run the Linux app
 just linux-push-db      # copy local DB from ../dpd-db into the Linux app location used for local testing
 ```
 
+## How to Cite
+
+Cite the bundled database, not the app. The citation naming the exact database
+version you have is in the app under **info → How to Cite**, with a copy button.
+[Full guidance](https://digitalpalidictionary.github.io/how_to_cite/)
+
 ## License
 
 **App source code** — [MIT License](LICENSE)
