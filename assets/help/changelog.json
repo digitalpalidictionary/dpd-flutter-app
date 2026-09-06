@@ -3,6 +3,8 @@
     {
       "title": "unreleased",
       "items": [
+        "feat added how to cite card to the info menu",
+        "feat: word popup now shows the same results as the full page",
         "fix: frequency table text now readable on every heatmap color",
         "feat: word taps can open as a popup instead of full page",
         "fix: menus and titles now stay readable at large font sizes",
