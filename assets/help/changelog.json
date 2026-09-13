@@ -3,6 +3,7 @@
     {
       "title": "unreleased",
       "items": [
+        "feat: feedback now shows a permanent link to the entry",
         "feat added how to cite card to the info menu",
         "feat: word popup now shows the same results as the full page",
         "fix: frequency table text now readable on every heatmap color",
