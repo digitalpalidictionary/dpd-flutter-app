@@ -18,6 +18,9 @@ class FeedbackSection extends StatelessWidget {
   final String lemma1;
 
 
+  // Ids are never reused, so this link can never rot onto another word.
+  String get _permalink => 'https://dpdict.net/$headwordId';
+
   static const _docsUrl = 'https://digitalpalidictionary.github.io/';
 
   static const _getInvolvedUrl =
@@ -45,6 +48,32 @@ class FeedbackSection extends StatelessWidget {
                   TextSpan(
                     text: '$headwordId',
                     style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text.rich(
+              TextSpan(
+                style: Theme.of(context).textTheme.bodyMedium,
+                children: [
+                  const TextSpan(text: 'permalink '),
+                  WidgetSpan(
+                    alignment: PlaceholderAlignment.baseline,
+                    baseline: TextBaseline.alphabetic,
+                    child: MouseRegion(
+                      cursor: SystemMouseCursors.click,
+                      child: GestureDetector(
+                        onTap: () => _openUrl(_permalink),
+                        child: Text(
+                          _permalink,
+                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            color: context.palette.primaryText,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ),
+                    ),
                   ),
                 ],
               ),
