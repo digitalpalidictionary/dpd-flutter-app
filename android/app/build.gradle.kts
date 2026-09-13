@@ -24,8 +24,8 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
 
-    kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_17.toString()
+    buildFeatures {
+        resValues = true
     }
 
     defaultConfig {
@@ -56,6 +56,12 @@ android {
             signingConfig = signingConfigs.getByName("release")
             resValue("string", "app_name", "Digital Pāḷi Dictionary")
         }
+    }
+}
+
+kotlin {
+    compilerOptions {
+        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
     }
 }
 
