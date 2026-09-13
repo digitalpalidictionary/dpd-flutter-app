@@ -63,13 +63,19 @@ class FeedbackSection extends StatelessWidget {
                     baseline: TextBaseline.alphabetic,
                     child: MouseRegion(
                       cursor: SystemMouseCursors.click,
-                      child: GestureDetector(
-                        onTap: () => _openUrl(_permalink),
-                        child: Text(
-                          _permalink,
-                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            color: context.palette.primaryText,
-                            fontWeight: FontWeight.w700,
+                      // disabled like every other link: the entry screen wraps
+                      // this subtree in a SelectionArea that fires a lookup on
+                      // selection change, so a tap would start a tap-search
+                      child: SelectionContainer.disabled(
+                        child: GestureDetector(
+                          onTap: () => _openUrl(_permalink),
+                          child: Text(
+                            _permalink,
+                            style: Theme.of(context).textTheme.bodyMedium
+                                ?.copyWith(
+                                  color: context.palette.primaryText,
+                                  fontWeight: FontWeight.w700,
+                                ),
                           ),
                         ),
                       ),
