@@ -66,7 +66,7 @@ extension SuttaInfoExtensions on SuttaInfoData {
       : null;
 
   String? get dhammaGift => _notEmpty(scCode)
-      ? 'https://f.dhamma.gift/read/?q=$scCode'
+      ? 'https://dhamma.gift/${scCode!.toLowerCase()}'
       : null;
 
   // s.4nt.org container pages (SN saṃyutta, AN nipāta, KN book) embed one TOC

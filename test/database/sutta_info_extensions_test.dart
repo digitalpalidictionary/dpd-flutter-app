@@ -19,16 +19,33 @@ void main() {
     });
 
     group('dhammaGift', () {
-      test('read link uses f.dhamma.gift host', () {
+      test('read link is the short lowercased path', () {
         const suttaInfo = SuttaInfoData(dpdSutta: 'aggisutta', scCode: 'SN35.28');
         expect(
           suttaInfo.dhammaGift,
-          'https://f.dhamma.gift/read/?q=SN35.28',
+          'https://dhamma.gift/sn35.28',
+        );
+      });
+
+      test('range scCode keeps its hyphen', () {
+        const suttaInfo = SuttaInfoData(
+          dpdSutta: 'pasadabahulabrahmanavatthu',
+          scCode: 'DHP383-423',
+        );
+        expect(
+          suttaInfo.dhammaGift,
+          'https://dhamma.gift/dhp383-423',
         );
       });
 
       test('no scCode -> null', () {
         const suttaInfo = SuttaInfoData(dpdSutta: 'something');
+        expect(suttaInfo.dhammaGift, isNull);
+      });
+
+      // One live row carries an empty-string scCode rather than null.
+      test('empty scCode -> null', () {
+        const suttaInfo = SuttaInfoData(dpdSutta: 'something', scCode: '');
         expect(suttaInfo.dhammaGift, isNull);
       });
     });
