@@ -27,6 +27,7 @@ const _dictShortNames = {
   'apte': 'Apte',
   'wordnet': 'WordNet',
   'nyanatiloka': 'Nyanatiloka',
+  'pts': 'PTS',
 };
 
 /// Short, one-word label for an external dictionary, for use in the summary.

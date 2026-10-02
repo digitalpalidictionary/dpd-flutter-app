@@ -722,6 +722,7 @@ void main() {
       expect(dictShortName('apte'), 'Apte');
       expect(dictShortName('wordnet'), 'WordNet');
       expect(dictShortName('nyanatiloka'), 'Nyanatiloka');
+      expect(dictShortName('pts'), 'PTS');
     });
 
     test('falls back to a capitalised dictId for an unknown dictionary', () {

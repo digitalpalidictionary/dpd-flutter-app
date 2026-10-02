@@ -332,6 +332,9 @@ Map<String, String>? Function(dom.Element) _buildStylesBuilder(bool isDark, DpdP
     if (classes.contains('div-sep')) {
       return {'margin-top': '0.6em'};
     }
+    if (classes.contains('in1')) {
+      return {'margin-left': '1em'};
+    }
     if (classes.contains('pcol-ref')) {
       return {'color': grayColor, 'font-size': 'smaller'};
     }

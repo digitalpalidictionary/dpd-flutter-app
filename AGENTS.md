@@ -136,4 +136,4 @@ When changing either implementation, verify parity **across the whole built data
 `assets/help/changelog.json` is generated at build time from commit subject lines. Never edit it manually; write a good commit subject instead. This is why commit subjects must read as user-facing release notes.
 
 ### External Dictionary Attribution
-The app renders only `dict_meta.name` (in the dictionary list and on each result card); it never renders `dict_meta.author`. For any CC-licensed external dictionary, the required attribution MUST be placed in `dict_meta.name` (set in `../dpd-db/exporter/mobile/mobile_exporter.py`), not `author`.
+The app renders only `dict_meta.name` (in the dictionary list and on each result card); it never renders `dict_meta.author`. For any CC-licensed external dictionary, the required attribution MUST be placed in `dict_meta.name` (set in `../dpd-db/exporter/mobile/mobile_exporter.py`), not `author`. Exception, by user decision (2026-10-02): the PTS dictionary keeps its licence out of the name (README, GoldenDict/MDict description and docs only). If a licence seems to require the name, ask first.
