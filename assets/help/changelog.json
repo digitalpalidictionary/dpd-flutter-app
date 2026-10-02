@@ -1,9 +1,10 @@
 {
   "sections": [
     {
-      "title": "unreleased",
+      "title": "v0.1.12",
       "items": [
-        "fix: dhamma.gift sutta links now use the new short form",
+        "fix: show short dhamma.gift links",
+        "fix: tap the entry permalink instead of starting a tap-search",
         "feat: feedback now shows a permanent link to the entry",
         "feat added how to cite card to the info menu",
         "feat: word popup now shows the same results as the full page",
@@ -12,7 +13,7 @@
         "fix: menus and titles now stay readable at large font sizes",
         "fix: mistyped inflected words give valid results everywhere",
         "feat: niggahīta setting now applies everywhere in the app",
-        "fix: swap the Buddha's Words mirror links to the f.dhamma.gift host",
+        "fix: swap dhamma.gift links to f.dhamma.gift host",
         "feat: external sites can now deep-link straight to a word",
         "feat: sutta info now shows an s.4nt.org link"
       ]
