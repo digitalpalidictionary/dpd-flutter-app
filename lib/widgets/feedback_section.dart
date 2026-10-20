@@ -57,7 +57,7 @@ class FeedbackSection extends StatelessWidget {
               TextSpan(
                 style: Theme.of(context).textTheme.bodyMedium,
                 children: [
-                  const TextSpan(text: 'permalink '),
+                  const TextSpan(text: 'Permalink '),
                   WidgetSpan(
                     alignment: PlaceholderAlignment.baseline,
                     baseline: TextBaseline.alphabetic,
