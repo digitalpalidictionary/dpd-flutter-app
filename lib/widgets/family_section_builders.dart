@@ -55,14 +55,15 @@ TextSpan _bold(BuildContext context, String text, TextStyle? base) => TextSpan(
 TextSpan _normal(BuildContext context, String text) =>
     TextSpan(text: context.nigg(text));
 
-/// Root: "(bold N) word(s) belong to the root family (bold X) (meaning)"
+/// Root: "(bold N) word(s) belong(s) to the root family (bold X) (meaning)"
 Widget buildRootFamilyHeader(BuildContext context, FamilyRootData data) {
   final n = data.count;
   final word = n == 1 ? 'word' : 'words';
+  final belongs = n == 1 ? 'belongs' : 'belong';
   final base = Theme.of(context).textTheme.bodyMedium;
   return _richHeader(context, [
     _bold(context, '$n', base),
-    _normal(context, ' $word belong to the root family '),
+    _normal(context, ' $word $belongs to the root family '),
     _bold(context, data.rootFamily, base),
     _normal(context, ' (${data.rootMeaning})'),
   ]);
