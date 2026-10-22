@@ -24,7 +24,7 @@ class FeedbackSection extends StatelessWidget {
   static const _docsUrl = 'https://digitalpalidictionary.github.io/';
 
   static const _getInvolvedUrl =
-      'mailto:digitalpalidictionary@gmail.com?subject=I%20want%20to%20help!&body=Please%20let%20me%20know%20how%20I%20can%20get%20involved%20with%20the%20development%20of%20DPD.';
+      'https://digitalpalidictionary.github.io/contributing/';
 
   static const _mailingListUrl = 'https://forms.gle/gJ7ouhJriYREPm1s8';
 
@@ -118,7 +118,7 @@ class FeedbackSection extends StatelessWidget {
             _FeedbackLink(
               linkText: 'Get involved',
               description:
-                  '. If you\'re a Pāḷi specialist or a coder, or would like to contribute to the project in any way, please get in touch.',
+                  '. If you\'re a Pāḷi specialist or a coder, or would like to contribute to the project in any way, please use the form.',
               onTap: () => _openUrl(_getInvolvedUrl),
             ),
             const SizedBox(height: 8),
