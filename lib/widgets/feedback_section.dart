@@ -17,14 +17,19 @@ class FeedbackSection extends StatelessWidget {
   final int headwordId;
   final String lemma1;
 
+  // The feedback wording is written three times and has no shared source. Change it in
+  // all three places together:
+  //   - website: exporter/webapp/templates/dpd_headword.html in the dpd-db repo
+  //   - GoldenDict: exporter/goldendict/javascript/feedback_template.js in the dpd-db repo
+  // "Get updated" exists only in GoldenDict, on purpose.
 
   // Ids are never reused, so this link can never rot onto another word.
   String get _permalink => 'https://dpdict.net/$headwordId';
 
   static const _docsUrl = 'https://digitalpalidictionary.github.io/';
 
-  static const _getInvolvedUrl =
-      'https://digitalpalidictionary.github.io/contributing/';
+  static const _contributeUrl =
+      'https://digitalpalidictionary.github.io/contributing/#offer-your-help';
 
   static const _mailingListUrl = 'https://forms.gle/gJ7ouhJriYREPm1s8';
 
@@ -100,7 +105,7 @@ class FeedbackSection extends StatelessWidget {
             _FeedbackLink(
               linkText: 'Correct a mistake',
               description:
-                  '. Did you spot a mistake in the dictionary? Have something to add? Please report it. It generally takes less than a minute and your corrections and suggestions help to improve the quality of this dictionary for everyone who uses it.',
+                  '. Did you spot a mistake in the dictionary? Please report it. It generally takes less than a minute and your corrections and suggestions help to improve the quality of this dictionary for everyone who uses it.',
               onTap: () => showDpdFeedbackSheet(
                 context,
                 headword: lemma1,
@@ -116,10 +121,10 @@ class FeedbackSection extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             _FeedbackLink(
-              linkText: 'Get involved',
+              linkText: 'Contribute to DPD',
               description:
-                  '. If you\'re a Pāḷi specialist or a coder, or would like to contribute to the project in any way, please use the form.',
-              onTap: () => _openUrl(_getInvolvedUrl),
+                  '. Contribute your time, skills or resources to the project. Please use the form.',
+              onTap: () => _openUrl(_contributeUrl),
             ),
             const SizedBox(height: 8),
             _FeedbackLink(
