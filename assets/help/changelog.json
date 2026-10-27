@@ -1,6 +1,17 @@
 {
   "sections": [
     {
+      "title": "v0.1.13",
+      "items": [
+        "fix: feedback section now says \"Contribute to DPD\" and links straight to the form",
+        "feedback: get involved links to the contributing page",
+        "fix: capitalize Permalink in feedback",
+        "fix: root family heading now says \"1 word belongs\"",
+        "github: release uses personal token",
+        "feat: add PTS Pāḷi-English Dictionary"
+      ]
+    },
+    {
       "title": "v0.1.12",
       "items": [
         "fix: show short dhamma.gift links",
