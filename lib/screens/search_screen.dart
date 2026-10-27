@@ -49,7 +49,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   final _focusNode = FocusNode();
   final _layerLink = LayerLink();
   final _helpLayerLink = LayerLink();
-  final _infoLayerLink = LayerLink();
+  final _infoButtonKey = GlobalKey();
   Timer? _debounce;
   Timer? _autocompleteDebounce;
   OverlayEntry? _overlayEntry;
@@ -396,6 +396,12 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
 
   void _showInfoPopup() {
     final overlay = Overlay.of(context);
+    final button =
+        _infoButtonKey.currentContext!.findRenderObject()! as RenderBox;
+    final anchor = button.localToGlobal(
+      button.size.bottomRight(Offset.zero),
+      ancestor: overlay.context.findRenderObject(),
+    );
     _infoOverlayEntry = OverlayEntry(
       builder: (_) => Stack(
         children: [
@@ -404,12 +410,9 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
             onTap: _removeInfoOverlay,
             child: const SizedBox.expand(),
           ),
-          CompositedTransformFollower(
-            link: _infoLayerLink,
-            targetAnchor: Alignment.bottomRight,
-            followerAnchor: Alignment.topRight,
-            child: UnconstrainedBox(
-              alignment: Alignment.topRight,
+          Positioned.fill(
+            child: CustomSingleChildLayout(
+              delegate: _InfoPopupLayout(anchor),
               child: InfoPopup(
                 dbVersion: ref.read(dbUpdateProvider).localVersion,
                 onSelect: (content) {
@@ -595,26 +598,24 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                             ),
                           ),
                         ),
-                        CompositedTransformTarget(
-                          link: _infoLayerLink,
-                          child: Tooltip(
-                            message: 'Information',
-                            decoration: BoxDecoration(
-                              color: palette.primaryAlt,
-                              borderRadius: DpdColors.borderRadius,
+                        Tooltip(
+                          key: _infoButtonKey,
+                          message: 'Information',
+                          decoration: BoxDecoration(
+                            color: palette.primaryAlt,
+                            borderRadius: DpdColors.borderRadius,
+                          ),
+                          textStyle: TextStyle(
+                            color: palette.light,
+                            fontSize: 12,
+                          ),
+                          child: IconButton(
+                            icon: Icon(
+                              _activeInfo != null
+                                  ? Icons.info
+                                  : Icons.info_outline,
                             ),
-                            textStyle: TextStyle(
-                              color: palette.light,
-                              fontSize: 12,
-                            ),
-                            child: IconButton(
-                              icon: Icon(
-                                _activeInfo != null
-                                    ? Icons.info
-                                    : Icons.info_outline,
-                              ),
-                              onPressed: _onInfoButtonPressed,
-                            ),
+                            onPressed: _onInfoButtonPressed,
                           ),
                         ),
                         Tooltip(
@@ -917,6 +918,35 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+
+/// Places the info menu under the info button, right edges aligned, but
+/// slides it right when large fonts make it wider than the space to the left.
+class _InfoPopupLayout extends SingleChildLayoutDelegate {
+  const _InfoPopupLayout(this.anchor);
+
+  /// Bottom-right corner of the info button.
+  final Offset anchor;
+
+  static const _margin = 8.0;
+
+  @override
+  BoxConstraints getConstraintsForChild(BoxConstraints constraints) =>
+      const BoxConstraints();
+
+  @override
+  Offset getPositionForChild(Size size, Size childSize) {
+    final maxLeft = size.width - _margin - childSize.width;
+    final left = anchor.dx - childSize.width;
+    return Offset(
+      maxLeft < _margin ? _margin : left.clamp(_margin, maxLeft),
+      anchor.dy,
+    );
+  }
+
+  @override
+  bool shouldRelayout(_InfoPopupLayout oldDelegate) =>
+      anchor != oldDelegate.anchor;
+}
 
 // Header toggle for the system-wide floating lookup bubble. Shares
 // bubbleOnProvider + the same action as the Settings toggle, so the two
