@@ -58,15 +58,18 @@ TableRow? buildKvTextRow(
   );
 }
 
-/// Parses simple markup (`<b>`, `<i>`, `<a href>`, `<br>`) into [InlineSpan]s.
+/// Parses simple markup (`<b>`, `<i>`, `<a href>`, `<sup>`, `<br>`) into
+/// [InlineSpan]s.
 ///
-/// Handles non-nested tags as found in DPD database fields (phonetic, commentary,
-/// notes). Links are rendered as styled tap targets when [onLinkTap] is provided.
+/// Handles tags as found in DPD database fields (phonetic, commentary, notes,
+/// abbreviations, help). Only `<b>` may contain other tags. Links are rendered
+/// as styled tap targets when [onLinkTap] is provided.
 List<InlineSpan> parseSimpleMarkup(
   String html, {
   TextStyle? boldStyle,
   TextStyle? italicStyle,
   TextStyle? linkStyle,
+  TextStyle? superscriptStyle,
   void Function(String url)? onLinkTap,
 }) {
   final spans = <InlineSpan>[];
@@ -74,17 +77,36 @@ List<InlineSpan> parseSimpleMarkup(
       .replaceAll(RegExp(r'<br\s*/?>'), '\n')
       .replaceAll('\n\n', '\n');
   final pattern = RegExp(
-    r'<b>(.*?)</b>|<i>(.*?)</i>|<a\s+href="([^"]*)"[^>]*>(.*?)</a>|([^<]+)',
+    r'<b>(.*?)</b>|<i>(.*?)</i>|<a\s+(?:[^>]*?\s)?href="([^"]*)"[^>]*>(.*?)</a>|([^<]+)|<sup>(.*?)</sup>',
     dotAll: true,
   );
   for (final m in pattern.allMatches(normalized)) {
     if (m.group(1) != null) {
-      spans.add(TextSpan(text: m.group(1), style: boldStyle));
+      // Help text nests <sup> inside <b>, e.g. <b>√gam<sup>･</sup></b>.
+      spans.add(
+        TextSpan(
+          style: boldStyle,
+          children: parseSimpleMarkup(
+            m.group(1)!,
+            boldStyle: boldStyle,
+            italicStyle: italicStyle,
+            linkStyle: linkStyle,
+            superscriptStyle: superscriptStyle,
+            onLinkTap: onLinkTap,
+          ),
+        ),
+      );
+    } else if (m.group(6) != null) {
+      spans.add(
+        TextSpan(text: _decodeEntities(m.group(6)!), style: superscriptStyle),
+      );
     } else if (m.group(2) != null) {
-      spans.add(TextSpan(text: m.group(2), style: italicStyle));
+      spans.add(
+        TextSpan(text: _decodeEntities(m.group(2)!), style: italicStyle),
+      );
     } else if (m.group(3) != null) {
       final url = m.group(3)!;
-      final text = m.group(4)!;
+      final text = _decodeEntities(m.group(4)!);
       spans.add(
         WidgetSpan(
           alignment: PlaceholderAlignment.baseline,
@@ -101,11 +123,19 @@ List<InlineSpan> parseSimpleMarkup(
         ),
       );
     } else if (m.group(5) != null) {
-      spans.add(TextSpan(text: m.group(5)));
+      spans.add(TextSpan(text: _decodeEntities(m.group(5)!)));
     }
   }
   return spans;
 }
+
+// The ">" abbreviation's example is stored as <b>&gt;</b>.
+// &amp; goes last so "&amp;gt;" stays "&gt;" instead of becoming ">".
+String _decodeEntities(String text) => text
+    .replaceAll('&lt;', '<')
+    .replaceAll('&gt;', '>')
+    .replaceAll('&quot;', '"')
+    .replaceAll('&amp;', '&');
 
 /// Builds a nullable rich-text [TableRow] parsing simple markup (`<b>`, `<i>`, `<a href>`).
 /// Returns null when [html] is empty or null.

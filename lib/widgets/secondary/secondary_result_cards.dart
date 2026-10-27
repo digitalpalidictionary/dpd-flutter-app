@@ -14,6 +14,8 @@ import 'secondary_card.dart';
 
 const _lineHeight = 1.5;
 
+final _leadingBreak = RegExp(r'^\s*<br\s*/?>');
+
 Widget _lineBreakText(
   BuildContext context,
   List<String> lines,
@@ -409,12 +411,27 @@ class _HelpStyleTable extends StatelessWidget {
     final bodyStyle = Theme.of(
       context,
     ).textTheme.bodyMedium?.copyWith(height: _lineHeight);
+    final palette = context.palette;
+    final linkStyle = TextStyle(
+      color: palette.primaryText,
+      fontWeight: FontWeight.w700,
+      decoration: TextDecoration.underline,
+      decorationColor: palette.primaryText,
+    );
+    // Only size and features, so a superscript inside <b> stays bold.
+    final superscriptStyle = TextStyle(
+      fontSize: (bodyStyle?.fontSize ?? 14) * 0.7,
+      fontFeatures: [const FontFeature.superscripts()],
+    );
 
     return Table(
       columnWidths: const {0: IntrinsicColumnWidth(), 1: FlexColumnWidth()},
       defaultVerticalAlignment: TableCellVerticalAlignment.top,
       children: rows.map(((String, String, bool) row) {
         final (label, value, bold) = row;
+        final valueStyle = bold
+            ? bodyStyle?.copyWith(fontWeight: FontWeight.w700)
+            : bodyStyle;
         return TableRow(
           children: [
             Padding(
@@ -429,11 +446,21 @@ class _HelpStyleTable extends StatelessWidget {
             ),
             Padding(
               padding: const EdgeInsets.only(right: 5),
-              child: Text(
-                context.nigg(value),
-                style: bold
-                    ? bodyStyle?.copyWith(fontWeight: FontWeight.w700)
-                    : bodyStyle,
+              child: Text.rich(
+                TextSpan(
+                  style: valueStyle,
+                  children: parseSimpleMarkup(
+                    // The "family" help text starts with a <br>.
+                    context.nigg(value).replaceFirst(_leadingBreak, ''),
+                    boldStyle: const TextStyle(fontWeight: FontWeight.w700),
+                    linkStyle: linkStyle,
+                    superscriptStyle: superscriptStyle,
+                    onLinkTap: (url) => launchUrl(
+                      Uri.parse(url),
+                      mode: LaunchMode.externalApplication,
+                    ),
+                  ),
+                ),
               ),
             ),
           ],
