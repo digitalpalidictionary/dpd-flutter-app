@@ -7,6 +7,7 @@ import '../theme/dpd_colors.dart';
 import '../theme/dpd_palette.dart';
 import 'entry_content.dart';
 import 'feedback_type.dart';
+import '../utils/open_epitaka.dart';
 import '../utils/text_filters.dart';
 
 class SuttaInfoSection extends StatelessWidget {
@@ -58,6 +59,7 @@ class SuttaInfoSection extends StatelessWidget {
           _linkRow(context, 'Digital Pali Reader', s.dprLink),
           _linkRow(context, 'Tipiṭaka Pāḷi Reader', s.tprLink),
           _linkRow(context, 'TipitakaPali.org', s.tppOrg),
+          _epitakaRow(context, s),
         ]),
       ],
 
@@ -260,6 +262,19 @@ class SuttaInfoSection extends StatelessWidget {
 
   TableRow? _linkRow(BuildContext context, String label, String? url) =>
       buildKvLinkRow(context, label, url, onOpen: _openUrl);
+
+  // Opens the ePitaka app, or the web link when the app is not installed.
+  TableRow? _epitakaRow(BuildContext context, SuttaInfoData s) {
+    final link = s.epitakaLink;
+    if (link == null) return null;
+    return buildKvLinkRow(
+      context,
+      'ePitaka',
+      link,
+      displayText: 'Open in ePitaka',
+      onOpen: (_) => openInEpitaka(s),
+    );
+  }
 
   TableRow? _multiLinkRow(
     BuildContext context,

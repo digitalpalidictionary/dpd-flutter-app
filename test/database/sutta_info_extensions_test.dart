@@ -156,5 +156,77 @@ void main() {
         expect(suttaInfo.s4ntLink, isNull);
       });
     });
+
+    // Rows copied from sutta_info in dpd.db.
+    group('ePitaka link', () {
+      test('a sutta links by its SuttaCentral code, in lower case', () {
+        const suttaInfo = SuttaInfoData(
+          dpdCode: 'AN4.126',
+          dpdSutta: 'dutiyamettāsutta',
+          dpdSuttaVar: '',
+          scCode: 'AN4.126',
+          cstVagga: '3. Bhayavaggo',
+          scVagga: '13. Bhayavagga',
+          bjtVagga: '2. kesivaggo',
+        );
+        expect(suttaInfo.epitakaLink, 'epitaka://sutta?code=an4.126');
+        expect(
+          suttaInfo.epitakaWebLink,
+          'https://epitaka.org/app/sutta?code=an4.126',
+        );
+      });
+
+      test('the SuttaCentral code wins over the DPD code', () {
+        const suttaInfo = SuttaInfoData(
+          dpdCode: 'TH1',
+          dpdSutta: 'subhūtittheragāthā',
+          dpdSuttaVar: '',
+          scCode: 'THAG1.1',
+          cstVagga: '1. Paṭhamavaggo',
+          scVagga: 'Ekakanipāta, Paṭhamavagga',
+          bjtVagga: '4. mahāvaggo',
+        );
+        expect(suttaInfo.epitakaCode, 'thag1.1');
+      });
+
+      test('the DPD code is used when there is no SuttaCentral code', () {
+        const suttaInfo = SuttaInfoData(
+          dpdCode: 'SN46.36',
+          dpdSutta: 'yonisomanasikārasutta',
+          dpdSuttaVar: '',
+          scCode: '',
+          cstVagga: '4. Nīvaraṇavaggo',
+        );
+        expect(suttaInfo.epitakaCode, 'sn46.36');
+      });
+
+      test('a saṃyutta has no link', () {
+        const suttaInfo = SuttaInfoData(
+          dpdCode: 'SN1',
+          dpdSutta: 'devatāsaṃyutta',
+          dpdSuttaVar: '',
+          scCode: 'SN1.1',
+          cstVagga: '1. Naḷavaggo',
+          scVagga: '1. Naḷavagga',
+          bjtVagga: '1. naḷavaggo',
+        );
+        expect(suttaInfo.epitakaLink, isNull);
+        expect(suttaInfo.epitakaWebLink, isNull);
+      });
+
+      test('a paṇṇāsaka has no link', () {
+        const suttaInfo = SuttaInfoData(
+          dpdCode: 'MN1-50',
+          dpdSutta: 'mūlapaṇṇāsapāḷi',
+          dpdSuttaVar: 'mūlapaṇṇāsaka 1',
+          scCode: 'MN1',
+          cstVagga: '1. Mūlapariyāyavaggo',
+          scVagga: 'Mūlapariyāyavagga',
+          bjtVagga: '1. mūlapariyāyavaggo',
+        );
+        expect(suttaInfo.isPannasaka, isTrue);
+        expect(suttaInfo.epitakaLink, isNull);
+      });
+    });
   });
 }
