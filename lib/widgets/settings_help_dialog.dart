@@ -60,10 +60,7 @@ Future<void> showSettingHelpDialog(
                 Flexible(
                   child: SingleChildScrollView(
                     padding: const EdgeInsets.fromLTRB(20, 16, 20, 20),
-                    child: Text(
-                      topic.description,
-                      style: theme.textTheme.bodyLarge,
-                    ),
+                    child: HelpText(topic.description),
                   ),
                 ),
               ],
@@ -73,6 +70,40 @@ Future<void> showSettingHelpDialog(
       );
     },
   );
+}
+
+/// Help body text. Segments wrapped in underscores render in italics,
+/// e.g. "_nīla_ is the classic blue".
+class HelpText extends StatelessWidget {
+  const HelpText(this.text, {super.key});
+
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    final style = Theme.of(context).textTheme.bodyLarge;
+    final spans = <TextSpan>[];
+    final pattern = RegExp(r'_([^_]+)_');
+    var start = 0;
+
+    for (final match in pattern.allMatches(text)) {
+      if (match.start > start) {
+        spans.add(TextSpan(text: text.substring(start, match.start)));
+      }
+      spans.add(
+        TextSpan(
+          text: match.group(1),
+          style: const TextStyle(fontStyle: FontStyle.italic),
+        ),
+      );
+      start = match.end;
+    }
+    if (start < text.length) {
+      spans.add(TextSpan(text: text.substring(start)));
+    }
+
+    return Text.rich(TextSpan(style: style, children: spans));
+  }
 }
 
 class SettingHelpButton extends StatelessWidget {

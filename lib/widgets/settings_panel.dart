@@ -329,7 +329,8 @@ class _SettingsContentState extends ConsumerState<SettingsContent> {
   SettingHelpTopic _resultStyleTopic() {
     return const SettingHelpTopic(
       title: 'Result style',
-      description: 'Changes how search results are laid out on the screen.',
+      description:
+          'Show results in a very compact style, or in the classic DPD style.',
     );
   }
 
@@ -337,7 +338,7 @@ class _SettingsContentState extends ConsumerState<SettingsContent> {
     return const SettingHelpTopic(
       title: 'Theme',
       description:
-          'Chooses whether the app follows your device theme or stays light or dark.',
+          'The app follows your device’s theme automatically, or you can keep it always light or always dark. The change applies throughout the app.',
     );
   }
 
@@ -345,7 +346,7 @@ class _SettingsContentState extends ConsumerState<SettingsContent> {
     return const SettingHelpTopic(
       title: 'Colour',
       description:
-          'Switches between colour palettes. nīla is the classic blue, suriya is warm golden sunshine, tiṇa is fresh grass-green, dhūma is a monochrome smoke palette.',
+          'Switches between colour palettes. _nīla_ is the classic blue, _suriya_ is warm golden sunshine, _tiṇa_ is fresh grass-green, _dhūma_ is a monochrome smoke palette.',
     );
   }
 
@@ -359,14 +360,15 @@ class _SettingsContentState extends ConsumerState<SettingsContent> {
   SettingHelpTopic _fontTopic(ThemeData theme) {
     return const SettingHelpTopic(
       title: 'Font',
-      description: 'Changes the reading font used in the app.',
+      description:
+          'Changes the reading font used for results and entries. Sans (Inter) is clean and modern; Serif (Noto Serif) gives a more traditional book feel.',
     );
   }
 
   SettingHelpTopic _niggahitaTopic() {
     return const SettingHelpTopic(
       title: 'Niggahīta',
-      description: 'Chooses which niggahīta character style the app displays.',
+      description: 'Sets which niggahīta character the app displays: ṃ or ṁ.',
     );
   }
 
@@ -374,14 +376,15 @@ class _SettingsContentState extends ConsumerState<SettingsContent> {
     return const SettingHelpTopic(
       title: 'Sandhi apostrophes',
       description:
-          'Shows or hides apostrophes used to mark sandhi in displayed words.',
+          'Shows or hides apostrophes and hyphens used to show sandhi and samāsa.',
     );
   }
 
   SettingHelpTopic _constructionTopic() {
     return const SettingHelpTopic(
       title: 'Construction in summary',
-      description: 'Shows or hides construction notes in the entry summary.',
+      description:
+          'Shows or hides the construction in the entry summary, e.g. [√gam + a + ti].',
     );
   }
 
@@ -389,35 +392,37 @@ class _SettingsContentState extends ConsumerState<SettingsContent> {
     return const SettingHelpTopic(
       title: 'Other dictionaries in summary',
       description:
-          'Shows or hides rows in the summary for other dictionaries (Cone, CPD, DPPN, etc.) with an exact match for the searched word.',
+          'Shows or hides rows in the summary for other dictionaries (PTS, CPD, DPPN, etc.) with an exact match for the searched word.',
     );
   }
 
   SettingHelpTopic _grammarButtonTopic() {
     return const SettingHelpTopic(
       title: 'Grammar button',
-      description: 'Sets whether the grammar section starts open or closed.',
+      description:
+          'Sets whether the grammar section of an entry starts open or closed. You can still open or close it with the Grammar button.',
     );
   }
 
   SettingHelpTopic _examplesButtonTopic() {
     return const SettingHelpTopic(
       title: 'Examples button',
-      description: 'Sets whether the examples section starts open or closed.',
+      description:
+          'Sets whether the examples (suttas) start open or closed. You can still open or close them with the Examples button.',
     );
   }
 
   SettingHelpTopic _oneButtonTopic() {
     return const SettingHelpTopic(
       title: 'One button at a time',
-      description: 'Opening one entry section closes the others automatically.',
+      description: 'Opening one section closes the others automatically.',
     );
   }
 
   SettingHelpTopic _audioGenderTopic() {
     return const SettingHelpTopic(
       title: 'Audio gender',
-      description: 'Chooses which voice is used for available audio.',
+      description: 'Choose which voice is used for audio pronunciation.',
     );
   }
 
@@ -425,7 +430,7 @@ class _SettingsContentState extends ConsumerState<SettingsContent> {
     return const SettingHelpTopic(
       title: 'Word search tap',
       description:
-          'Chooses whether word lookup inside entries uses a single tap or double tap.',
+          'Look up another word using a single or a double tap.',
     );
   }
 
@@ -433,7 +438,7 @@ class _SettingsContentState extends ConsumerState<SettingsContent> {
     return const SettingHelpTopic(
       title: 'Word lookup',
       description:
-          'Chooses whether tapping a word opens the full page or a popup over what you are reading.',
+          'Tapping a word opens the full page or a popup over what you are reading.',
     );
   }
 
@@ -441,7 +446,7 @@ class _SettingsContentState extends ConsumerState<SettingsContent> {
     return const SettingHelpTopic(
       title: 'Updates',
       description:
-          'Chooses whether updates can download on any connection or only on WiFi.',
+          'Updates download on any connection or only on WiFi.',
     );
   }
 
@@ -548,7 +553,7 @@ class _HotkeyTile extends StatelessWidget {
     return const SettingHelpTopic(
       title: 'Lookup hotkey',
       description:
-          'Lets you set a keyboard shortcut to send highlighted text from another app into DPD.',
+          'Set up a keyboard shortcut to send text from any other app to DPD.',
     );
   }
 
