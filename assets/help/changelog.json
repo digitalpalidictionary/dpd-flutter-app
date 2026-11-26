@@ -1,6 +1,13 @@
 {
   "sections": [
     {
+      "title": "unreleased",
+      "items": [
+        "fix: abbreviation and help cards now show bold text, line breaks and links",
+        "fix: info menu now stays on screen at large font sizes"
+      ]
+    },
+    {
       "title": "v0.1.13",
       "items": [
         "fix: feedback section now says \"Contribute to DPD\" and links straight to the form",
