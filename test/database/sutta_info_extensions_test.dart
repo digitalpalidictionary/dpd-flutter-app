@@ -159,7 +159,7 @@ void main() {
 
     // Rows copied from sutta_info in dpd.db.
     group('ePitaka link', () {
-      test('a sutta links by its SuttaCentral code, in lower case', () {
+      test('a sutta links by its DPD code, in lower case', () {
         const suttaInfo = SuttaInfoData(
           dpdCode: 'AN4.126',
           dpdSutta: 'dutiyamettāsutta',
@@ -176,7 +176,20 @@ void main() {
         );
       });
 
-      test('the SuttaCentral code wins over the DPD code', () {
+      test('the DPD code wins where the SuttaCentral code is one off', () {
+        const suttaInfo = SuttaInfoData(
+          dpdCode: 'SN45.172',
+          dpdSutta: 'oghasutta',
+          dpdSuttaVar: '',
+          scCode: 'SN45.171',
+          cstVagga: '8. Oghavaggo',
+          scVagga: '14. Oghavagga',
+          bjtVagga: '16. oghavaggo',
+        );
+        expect(suttaInfo.epitakaCode, 'sn45.172');
+      });
+
+      test('a verse book links by its DPD code', () {
         const suttaInfo = SuttaInfoData(
           dpdCode: 'TH1',
           dpdSutta: 'subhūtittheragāthā',
@@ -186,10 +199,10 @@ void main() {
           scVagga: 'Ekakanipāta, Paṭhamavagga',
           bjtVagga: '4. mahāvaggo',
         );
-        expect(suttaInfo.epitakaCode, 'thag1.1');
+        expect(suttaInfo.epitakaCode, 'th1');
       });
 
-      test('the DPD code is used when there is no SuttaCentral code', () {
+      test('a row with no SuttaCentral code links by its DPD code', () {
         const suttaInfo = SuttaInfoData(
           dpdCode: 'SN46.36',
           dpdSutta: 'yonisomanasikārasutta',
